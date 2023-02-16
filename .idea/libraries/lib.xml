@@ -1,0 +1,45 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-assimp-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-assimp.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-glfw-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-glfw.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-meshoptimizer-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-meshoptimizer.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-openal-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-openal.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-opengl-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-opengl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-opengles-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-opengles.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-stb-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-stb.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/joml-1.10.5.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-assimp-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-glfw-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-meshoptimizer-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-openal-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-opengl-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-opengles-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-stb-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-assimp-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-glfw-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-meshoptimizer-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-openal-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-opengl-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-opengles-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-stb-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/joml-1.10.5-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/joml-1.10.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
