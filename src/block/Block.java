@@ -1,38 +1,49 @@
 package block;
 
-public class Block {
+import world.Chunk;
+
+public abstract class Block {
     public final BlockAttribute[] attributes;
     public final String name;
     public final int totalStates;
+    private boolean initialized;
 
-    Block(String name, BlockAttribute...attributes) {
+    protected Block(String name, BlockAttribute... attributes) {
+        //noinspection ConstantConditions
+        if (this.initialized) throw new RuntimeException("Cannot reconstruct class");
+        this.initialized = true;
+
         this.name = name;
         this.attributes = attributes;
         int states = 1;
         for (BlockAttribute attribute : this.attributes) {
-            states *= attribute.property().max + 1;
+            states *= attribute.property().count + 1;
         }
         this.totalStates = states;
     }
-    public int getTotalStates()
-    {
+
+    protected int getTotalStates() {
         return this.totalStates;
     }
 
-    protected int genTotalStates(int index) {
+    protected int genStates(BlockState[] registry, int index) {
         byte[][] states = new byte[this.totalStates][this.attributes.length];
 
         int blockSize = 1;
-        for (int prop = 0; prop < this.attributes.length; prop ++) {
-            int size = this.attributes[prop].property().max + 1;
-            for (int i = 0; i < this.totalStates; i ++) {
+        for (int prop = 0; prop < this.attributes.length; prop++) {
+            int size = this.attributes[prop].property().count + 1;
+            for (int i = 0; i < this.totalStates; i++) {
                 states[i][prop] = (byte) ((i / blockSize) % size);
             }
             blockSize *= size;
         }
-        for (int i = 0; i < this.totalStates; i ++, index ++) {
-            BlockRegistry.registry[index] = new BlockState(this, states[i]);
+        for (int i = 0; i < this.totalStates; index++) {
+            registry[index] = new BlockState(this, states[i++]);
         }
         return index;
     }
+
+    protected abstract boolean isFullCube(BlockState blockState);
+
+    protected abstract short getTextureId(BlockState block, Chunk.Face face);
 }

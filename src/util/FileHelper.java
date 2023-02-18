@@ -7,8 +7,8 @@ import java.nio.charset.StandardCharsets;
 
 public class FileHelper {
     private FileHelper() {}
-    public static String readText(String path) throws IOException
-    {
+
+    public static String readText(String path) throws IOException {
         File file = new File(path);
         FileInputStream stream = new FileInputStream(file);
         byte[] data = new byte[(int) file.length()];

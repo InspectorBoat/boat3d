@@ -1,5 +1,5 @@
 package block;
 
-record BlockAttribute(String name, BlockProperty property) {
+public record BlockAttribute(String name, BlockProperty property) {
 
 }

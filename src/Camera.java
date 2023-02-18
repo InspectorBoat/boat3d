@@ -25,12 +25,14 @@ public class Camera {
         this.z = z;
         this.updateMatrix();
     }
+
     public void addPos(double x, double y, double z) {
         this.x += x;
         this.y += y;
         this.z += z;
         this.updateMatrix();
     }
+
     public void stepPos(double x, double z) {
         this.x += Math.cos(this.yaw) * x - Math.sin(this.yaw) * z;
         this.z += Math.sin(this.yaw) * x + Math.cos(this.yaw) * z;
@@ -42,6 +44,7 @@ public class Camera {
         this.pitch = pitch;
         this.updateMatrix();
     }
+
     public void addAngle(float yaw, float pitch) {
         this.yaw += yaw;
         this.pitch += pitch;
@@ -51,6 +54,7 @@ public class Camera {
     private void updateMatrix() {
 
     }
+
     public Matrix4f getMatrix() {
         this.cameraMatrix
                 .identity()
@@ -59,7 +63,7 @@ public class Camera {
                 .rotateX(-this.pitch)
                 .rotateY((float) (this.yaw + Math.PI))
                 .translate((float) -this.x, (float) -this.y, (float) -this.z)
-                ;
+        ;
         return this.cameraMatrix;
     }
 }

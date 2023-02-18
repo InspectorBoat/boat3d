@@ -1,20 +1,30 @@
 package block;
 
+import world.Chunk;
+
 public final class BlockState {
     private final Block block;
-    public final byte[] properties;
-    public final boolean isFullCube;
 
-    public BlockState(Block block, byte... properties)
-    {
+    public final byte[] properties;
+    private final boolean isFullCube;
+    private final short[] textureIds;
+
+    public BlockState(Block block, byte... properties) {
         if (properties.length != block.attributes.length) throw new RuntimeException();
         this.block = block;
         this.properties = properties;
-        isFullCube = Math.random() > 0.2;
+        this.isFullCube = block.isFullCube(this);
+        this.textureIds = new short[]{
+                this.block.getTextureId(this, Chunk.Face.NORTH),
+                this.block.getTextureId(this, Chunk.Face.SOUTH),
+                this.block.getTextureId(this, Chunk.Face.EAST),
+                this.block.getTextureId(this, Chunk.Face.WEST),
+                this.block.getTextureId(this, Chunk.Face.DOWN),
+                this.block.getTextureId(this, Chunk.Face.UP),
+        };
     }
 
-    public String toString()
-    {
+    public String toString() {
         StringBuilder str = new StringBuilder(this.block.name);
         str.append(":[");
         for (int j = 0; j < this.properties.length; j++) {
@@ -35,5 +45,9 @@ public final class BlockState {
 
     public boolean isFullCube() {
         return this.isFullCube;
+    }
+
+    public short getTexture(Chunk.Face face) {
+        return this.textureIds[face.ordinal()];
     }
 }

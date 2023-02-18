@@ -1,16 +1,16 @@
 package block;
 
 public class BlockProperty {
-    public final int max;
+    public final int count;
 
     public BlockProperty(int max) {
-        this.max = max;
+        this.count = max;
     }
-
 
     public static class NamedBlockProperty extends BlockProperty {
         public final String[] names;
-        public NamedBlockProperty(String ...names) {
+
+        public NamedBlockProperty(String... names) {
             super(names.length - 1);
             this.names = new String[names.length];
             System.arraycopy(names, 0, this.names, 0, names.length);
@@ -21,8 +21,8 @@ public class BlockProperty {
         }
     }
 
-    public static final NamedBlockProperty COLOR = new NamedBlockProperty("white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black");
     public static final BlockProperty POWER = new BlockProperty(15);
+    public static final NamedBlockProperty COLOR = new NamedBlockProperty("white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black");
     public static final NamedBlockProperty WIRE_CONNECTION = new NamedBlockProperty("none", "up", "side");
     public static final NamedBlockProperty HORIZONTAL_FACING = new NamedBlockProperty("north", "east", "south", "west");
     public static final NamedBlockProperty VERTICAL_FACING = new NamedBlockProperty("up", "down");

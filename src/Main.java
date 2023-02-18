@@ -1,6 +1,4 @@
-import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.system.MemoryStack;
 import world.Chunk;
 import world.World;
@@ -8,114 +6,36 @@ import world.World;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
-import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL46.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.opengl.GL46C.*;
 import static util.FileHelper.readText;
 import static util.GlHelper.createProgram;
 import static util.GlHelper.createShader;
 
 public class Main {
-    private long window;
-    public World world = new World();
-    private double prevMouseX = Double.NEGATIVE_INFINITY;
-    private double prevMouseY = Double.NEGATIVE_INFINITY;
-    public Camera camera = new Camera();
-    public boolean cursorCaptured = false;
+    public World world;
+    public Camera camera;
+    public Window window;
 
-    public int chunkX = 4;
-    public int chunkY = 4;
-    public int chunkZ = 4;
-    public boolean maximized;
-
-    public void run() throws IOException
-    {
-        System.out.println("Hello LWJGL " + Version.getVersion() + "!");
-        initWindow();
+    public Main() throws IOException {
+        this.camera = new Camera();
+        this.window = new Window(this.camera, 600, 600);
         initGl();
-        initWorld();
 
-        loop();
-
-        glfwFreeCallbacks(window);
-        glfwDestroyWindow(window);
-        glfwTerminate();
+        this.world = new World();
     }
 
-    public void initWorld()
-    {
-        glEnableVertexAttribArray(0);
-        for (int x = 0; x < chunkX; x++) {
-            for (int y = 0; y < chunkY; y++) {
-                for (int z = 0; z < chunkZ; z++) {
-                    this.world.genChunk(x, y, z);
-                }
-            }
-        }
+    public void run() {
+        do {
+            this.window.processKeys(this.camera, this.world);
+            this.draw();
+        } while (this.window.update());
+        this.window.close();
     }
 
-    private void initWindow()
-    {
-        GLFWErrorCallback.createPrint(System.out).set();
+    private void initGl() throws IOException {
+        glEnable(GL_DEBUG_OUTPUT);
+        GLUtil.setupDebugMessageCallback();
 
-        if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
-
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
-        window = glfwCreateWindow(600, 600, "Hello World!", NULL, NULL);
-        if (window == NULL) throw new RuntimeException("Failed to create the GLFW window");
-        camera.setScale(600, 600);
-
-        glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
-            if (action != GLFW_PRESS) return;
-            if (button == GLFW_MOUSE_BUTTON_1) {
-                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                this.cursorCaptured = true;
-            }
-            else if (button == GLFW_MOUSE_BUTTON_2) {
-                if (this.cursorCaptured) {
-                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-                    this.prevMouseX = Double.NEGATIVE_INFINITY;
-                    this.prevMouseY = Double.NEGATIVE_INFINITY;
-                    this.cursorCaptured = false;
-                }
-            }
-        });
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if (action != GLFW_PRESS) return;
-
-            if (key == GLFW_KEY_TAB) {
-                if (this.maximized) glfwRestoreWindow(window);
-                else glfwMaximizeWindow(window);
-            }
-            else if (key == GLFW_KEY_ESCAPE) {
-                glfwSetWindowShouldClose(window, true);
-            }
-        });
-        glfwSetWindowMaximizeCallback(window, (window, maximized) -> this.maximized = maximized);
-        glfwSetWindowSizeCallback(window, (window, width, height) -> {
-            glViewport(0, 0, width, height);
-            camera.setScale(width, height);
-        });
-        glfwSetCursorPosCallback(window, (window, x, y) -> {
-            if (!this.cursorCaptured) return;
-            if (this.prevMouseX != Double.NEGATIVE_INFINITY && this.prevMouseY != Double.NEGATIVE_INFINITY)
-                this.camera.addAngle((float) (this.prevMouseX - x) / 500, (float) (this.prevMouseY - y) / 500);
-            this.prevMouseX = x;
-            this.prevMouseY = y;
-        });
-
-        glfwShowWindow(window);
-        glfwMakeContextCurrent(window);
-        glfwSwapInterval(1);
-
-        GL.createCapabilities();
-    }
-
-    private void initGl() throws IOException
-    {
         int vertShader = createShader(GL_VERTEX_SHADER, readText("src/shader/shader.vert"));
         int fragShader = createShader(GL_FRAGMENT_SHADER, readText("src/shader/shader.frag"));
         int program = createProgram(vertShader, fragShader);
@@ -125,78 +45,56 @@ public class Main {
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
         glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+
+        int VAO = glGenVertexArrays();
+        glBindVertexArray(VAO);
+
+        glVertexAttribFormat(0, 3, GL_SHORT, false, 0);
+        glVertexAttribBinding(0, 0);
+        glEnableVertexAttribArray(0);
+
+        glVertexAttribFormat(1, 1, GL_UNSIGNED_SHORT, true, 2 * 3);
+        glVertexAttribBinding(1, 0);
+        glEnableVertexAttribArray(1);
+
+        int texture = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
+        glTextureStorage3D(texture, 1, GL_RGB8, 2, 2, 1024);
+        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, 2, 2, 2, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, new int[] {
+                0xff0000ff, 0x00ffffff,
+                0x00ff00ff, 0xaaaaaaff,
+                0x00ffffff, 0xaaaaaaff,
+                0x00fa00ff, 0xaa2aaaff,
+        });
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
     }
 
-    private void draw()
-    {
+
+    private void draw() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer buffer = this.camera.getMatrix().get(stack.mallocFloat(16));
             glUniformMatrix4fv(0, false, buffer);
         }
 
-        for (int x = 0; x < chunkX; x++) {
-            for (int y = 0; y < chunkY; y++) {
-                for (int z = 0; z < chunkZ; z++) {
+        for (int x = 0; x < this.world.chunkX; x++) {
+            for (int y = 0; y < this.world.chunkY; y++) {
+                for (int z = 0; z < this.world.chunkZ; z++) {
                     Chunk chunk = this.world.get(x, y, z);
                     glUniform4f(1, x * 16, y * 16, z * 16, 0);
-                    glBindBuffer(GL_ARRAY_BUFFER, chunk.buffer);
-                    glVertexAttribPointer(0, 3, GL_SHORT, false, 0, 0);
-                    glDrawArrays(GL_TRIANGLES, 0, chunk.triangleCount);
+                    glBindVertexBuffer(0, chunk.buffer, 0, 2 * 4);
+                    glPrimitiveRestartIndex(1);
+                    glDrawArrays(GL_QUADS, 0, chunk.vertexCount);
                 }
             }
         }
     }
 
-    private void processKeys()
-    {
-        int speedMult = (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) + 1) * 10;
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            this.camera.stepPos(-0.03 * speedMult, 0);
-        }
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            this.camera.stepPos(0.03 * speedMult, 0);
-        }
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            this.camera.stepPos(0, 0.03 * speedMult);
-        }
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            this.camera.stepPos(0, -0.03 * speedMult);
-        }
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            this.camera.addPos(0, 0.03 * speedMult, 0);
-        }
-        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-            this.camera.addPos(0, -0.03 * speedMult, 0);
-        }
-        if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-            this.world.regenChunk((int) (Math.random() * chunkX), (int) (Math.random() * chunkY), (int) (Math.random() * chunkZ));
-        }
-    }
 
-    private void loop()
-    {
-        long startTime = System.nanoTime();
-        double frameCounter = 1;
-        while (!glfwWindowShouldClose(window)) {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            this.processKeys();
-            this.draw();
-            glfwSwapBuffers(window);
-
-            if (frameCounter >= 1000) {
-                long time = System.nanoTime();
-                System.out.println("AVERAGE: " + 1000000000 / ((time - startTime) / frameCounter));
-                startTime = time;
-                frameCounter = 0;
-            }
-            else frameCounter++;
-
-            glfwPollEvents();
-        }
-    }
-
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         new Main().run();
     }
 
