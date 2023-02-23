@@ -7,21 +7,28 @@ public final class BlockState {
 
     public final byte[] properties;
     private final boolean isFullCube;
-    private final short[] textureIds;
+    private final boolean[] cullsFace;
+    public final BlockModel model;
 
     public BlockState(Block block, byte... properties) {
         if (properties.length != block.attributes.length) throw new RuntimeException();
         this.block = block;
         this.properties = properties;
+        this.model = block.getModel(this);
+        this.cullsFace = new boolean[6];
         this.isFullCube = block.isFullCube(this);
-        this.textureIds = new short[]{
-                this.block.getTextureId(this, Chunk.Face.NORTH),
-                this.block.getTextureId(this, Chunk.Face.SOUTH),
-                this.block.getTextureId(this, Chunk.Face.EAST),
-                this.block.getTextureId(this, Chunk.Face.WEST),
-                this.block.getTextureId(this, Chunk.Face.DOWN),
-                this.block.getTextureId(this, Chunk.Face.UP),
-        };
+
+        if (this.model == null) return;
+        short[][][] faces = this.model.faces;
+        for (int i = 0; i < faces.length; i++) {
+            short[][] dir = faces[i];
+            for (short[] face : dir) {
+                if (face[0] == 0 && face[1] == 0 && face[2] == 0 && face[3] == 16 && face[4] == 16) {
+                    this.cullsFace[i % 2 == 0 ? i + 1 : i - 1] = true;
+                    break;
+                }
+            }
+        }
     }
 
     public String toString() {
@@ -47,7 +54,11 @@ public final class BlockState {
         return this.isFullCube;
     }
 
-    public short getTexture(Chunk.Face face) {
-        return this.textureIds[face.ordinal()];
+    public boolean hasModel() {
+        return this.model != null;
+    }
+
+    public boolean cullsFace(Chunk.Face face) {
+        return this.cullsFace[face.ordinal()];
     }
 }

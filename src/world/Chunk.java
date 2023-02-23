@@ -3,32 +3,85 @@ package world;
 import block.BlockRegistry;
 import block.BlockState;
 import org.joml.Vector3i;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryUtil;
+import util.GlHelper;
 
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL46C.*;
-import static util.GlHelper.genVertices;
 
 public class Chunk {
     public BlockState[] blocks = new BlockState[4096];
-    public int buffer = -1;
+    public int buffer = glCreateBuffers();
     public int vertexCount;
+    public int[] counts = new int[6];
+    public long[] offsets = new long[6];
+    public IntBuffer countBuffer = MemoryUtil.memAllocInt(6);
+    public PointerBuffer offsetBuffer = MemoryUtil.memAllocPointer(6);
+    public World world;
+    public boolean doneMeshing;
 
     public Vector3i chunkPos;
 
-    public Chunk(int x, int y, int z) {
+    public Chunk(World world, int x, int y, int z) {
+        this.world = world;
         this.chunkPos = new Vector3i(x, y, z);
-        for (int i = 0; i < 4096; i++) {
-            blocks[i] = BlockRegistry.registry[(int) (Math.random() * BlockRegistry.totalStates)];
-        }
-        this.buildMesh();
     }
 
-    public void regen() {
-        for (int i = 0; i < 4096; i++) {
-            blocks[i] = BlockRegistry.registry[(int) (Math.random() * BlockRegistry.totalStates)];
+    public void generateBlocks() {
+        int i = 0;
+        for (int x = 0; x < 16; x ++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
+                    blocks[i] = BlockRegistry.registry[this.world.noise.eval(x / 16d + this.chunkPos.x, y / 16d + this.chunkPos.y, z / 16d + this.chunkPos.z) < 0.1 ? 0 : 1];
+//                    blocks[i] = BlockRegistry.registry[1];
+                    i++;
+                }
+            }
         }
-        this.buildMesh();
+//        System.out.printf("Generated chunk in %d ms\n", System.currentTimeMillis() - start);
+    }
+
+    public void buildMesh() {
+        long start = System.currentTimeMillis();
+        BlockState[] blockStates = this.blocks;
+        ArrayList<short[]> faceArray = new ArrayList<>();
+        for (Face face : Face.values()) {
+            this.offsets[face.ordinal()] = faceArray.size() * 20L;
+            int startingFaceArraySize = faceArray.size();
+            for (int i = 0; i < blockStates.length; i++) {
+                BlockState state = blockStates[i];
+                if (!state.hasModel()) continue;
+                // TODO: Fix inner face culling bug
+                short[] vertices = GlHelper.genVertices(this.world, this, state, face, (short) ((i & 0xf00) >> 8), (short) ((i & 0x0f0) >> 4), (short) (i & 0x00f));
+                if (vertices != null) faceArray.add(vertices);
+            }
+            this.counts[face.ordinal()] = (faceArray.size() - startingFaceArraySize) * 5;
+        }
+
+        this.vertexCount = faceArray.size() * 16;
+        short[] mesh = new short[faceArray.size() * 16];
+        int i = 0;
+
+        for (short[] face : faceArray) {
+            for (int v = 0; v < 16; ) {
+                mesh[i++] = face[v++];
+                mesh[i++] = face[v++];
+                mesh[i++] = face[v++];
+                // Left 14 bits represent texture Id
+                // Right 2 represent UV coords
+                mesh[i++] = (short) (face[v++] | face[16]);
+            }
+        }
+        glNamedBufferData(this.buffer, mesh, GL_STATIC_DRAW);
+        this.countBuffer.put(this.counts);
+        this.offsetBuffer.put(this.offsets);
+        countBuffer.position(0);
+        offsetBuffer.position(0);
+        this.doneMeshing = true;
+//        System.out.printf("Meshed chunk in %d ms\n", System.currentTimeMillis() - start);
     }
 
     public BlockState getBlockState(int x, int y, int z) {
@@ -37,36 +90,6 @@ public class Chunk {
 
     public void setBlockState(BlockState state, int x, int y, int z) {
         this.blocks[(x << 8) | (y << 4) | (z)] = state;
-    }
-
-    public void buildMesh() {
-        BlockState[] blockStates = this.blocks;
-        if (this.buffer == -1) this.buffer = glGenBuffers();
-
-        ArrayList<short[]> faceArray = new ArrayList<>();
-        for (Face face : Face.values()) {
-            for (int i = 0; i < blockStates.length; i++) {
-                BlockState state = blockStates[i];
-                if (!state.isFullCube()) continue;
-                short[] vertices = genVertices(this, state, face, (short) ((i & 0xf00) >> 8), (short) ((i & 0x0f0) >> 4), (short) (i & 0x00f));
-                if (vertices != null) faceArray.add(vertices);
-            }
-        }
-
-        short[] mesh = new short[faceArray.size() * 16];
-        int i = 0;
-
-        for (short[] face : faceArray) {
-            for (int v = 0; v < 12; ) {
-                mesh[i++] = face[v++];
-                mesh[i++] = face[v++];
-                mesh[i++] = face[v++];
-                mesh[i++] = face[12];
-            }
-        }
-        this.vertexCount = mesh.length / 4;
-
-        glNamedBufferData(this.buffer, mesh, GL_STATIC_DRAW);
     }
 
     public static Vector3i toVec(int i) {
@@ -84,9 +107,9 @@ public class Chunk {
     public enum Face {
         NORTH,
         SOUTH,
-        EAST,
         WEST,
-        UP,
+        EAST,
         DOWN,
+        UP,
     }
 }

@@ -1,7 +1,5 @@
 package block;
 
-import world.Chunk;
-
 public class WoolBlock extends Block {
     public WoolBlock() {
         super("wool", new BlockAttribute("color", BlockProperty.COLOR));
@@ -13,7 +11,15 @@ public class WoolBlock extends Block {
     }
 
     @Override
-    public short getTextureId(BlockState block, Chunk.Face face) {
-        return (short) (3 + block.properties[0] * 5000);
+    public BlockModel getModel(BlockState blockState) {
+        return new BlockModel(new short[][][] {
+                {{0, 0, 0, 16, 16, (short) (blockState.properties[0] + 3)}},
+                {{0, 0, 0, 16, 16, (short) (blockState.properties[0] + 3)}},
+                {{0, 0, 0, 16, 16, (short) (blockState.properties[0] + 3)}},
+                {{0, 0, 0, 16, 16, (short) (blockState.properties[0] + 3)}},
+                {{0, 0, 0, 16, 16, (short) (blockState.properties[0] + 3)}},
+                {{0, 0, 0, 16, 16, (short) (blockState.properties[0] + 3)}},
+        });
     }
+
 }

@@ -1,10 +1,9 @@
 package block;
 
-import world.Chunk;
-
 public class GrassBlock extends Block {
     public GrassBlock() {
         super("grass", new BlockAttribute("snowy", BlockProperty.BOOLEAN));
+//        super("grass");
     }
 
     @Override
@@ -13,11 +12,14 @@ public class GrassBlock extends Block {
     }
 
     @Override
-    public short getTextureId(BlockState block, Chunk.Face face) {
-        if (face == Chunk.Face.UP) {
-            if (block.properties[0] == 1) return 1;
-            return 0;
-        }
-        return 2;
+    public BlockModel getModel(BlockState blockState) {
+        return new BlockModel(new short[][][] {
+                {{0, 0, 0, 16, 16, 0}},
+                {{0, 0, 0, 16, 16, 0}},
+                {{0, 0, 0, 16, 16, 0}},
+                {{0, 0, 0, 16, 16, 0}},
+                {{0, 0, 0, 16, 16, 0}},
+                {{0, 0, 0, 16, 16, 0}},
+        });
     }
 }

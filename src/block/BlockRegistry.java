@@ -14,17 +14,13 @@ public class BlockRegistry {
     static {
         final ArrayList<Block> blocks = new ArrayList<>();
         register(blocks, new AirBlock());
-        register(blocks, new WoolBlock());
         register(blocks, new GrassBlock());
+        register(blocks, new WoolBlock());
 
         registry = new BlockState[totalStates];
         int index = 0;
         for (Block block : blocks) {
             index = block.genStates(registry, index);
-        }
-
-        for (BlockState state : registry) {
-//            System.out.println(state);
         }
     }
 }

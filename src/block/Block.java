@@ -1,7 +1,5 @@
 package block;
 
-import world.Chunk;
-
 public abstract class Block {
     public final BlockAttribute[] attributes;
     public final String name;
@@ -45,5 +43,5 @@ public abstract class Block {
 
     protected abstract boolean isFullCube(BlockState blockState);
 
-    protected abstract short getTextureId(BlockState block, Chunk.Face face);
+    public abstract BlockModel getModel(BlockState blockState);
 }

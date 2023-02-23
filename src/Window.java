@@ -4,17 +4,19 @@ import world.World;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11C.glViewport;
+import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
-    private final long windowId;
+    public final long windowId;
+    public int counter;
     private boolean maximized;
-    private double prevMouseX;
-    private double prevMouseY;
+    private double prevMouseX = Double.NEGATIVE_INFINITY;
+    private double prevMouseY = Double.NEGATIVE_INFINITY;
     private boolean cursorCaptured;
     private long frameCounter;
     private long startTime;
+    private boolean mesh;
 
     public Window(Camera camera, int startWidth, int startHeight) {
         GLFWErrorCallback.createPrint(System.out).set();
@@ -54,6 +56,11 @@ public class Window {
             else if (key == GLFW_KEY_ESCAPE) {
                 glfwSetWindowShouldClose(window, true);
             }
+            else if (key == GLFW_KEY_X) {
+                glPolygonMode(GL_FRONT_AND_BACK, this.mesh ? GL_FILL : GL_LINE);
+                this.mesh = !this.mesh;
+            }
+            else if (key == GLFW_KEY_F) System.out.println(++this.counter);
         });
         glfwSetWindowMaximizeCallback(this.windowId, (window, maximized) -> this.maximized = maximized);
         glfwSetWindowSizeCallback(this.windowId, (window, width, height) -> {
@@ -70,33 +77,39 @@ public class Window {
 
         glfwShowWindow(this.windowId);
         glfwMakeContextCurrent(this.windowId);
-        glfwSwapInterval(1);
+//        glfwSwapInterval(1);
 
         GL.createCapabilities();
     }
 
     public void processKeys(Camera camera, World world) {
+        float baseSpeed = 0.01f;
         int speedMult = (glfwGetKey(this.windowId, GLFW_KEY_LEFT_CONTROL) + 1) * 10;
         if (glfwGetKey(this.windowId, GLFW_KEY_A) == GLFW_PRESS) {
-            camera.stepPos(-0.03 * speedMult, 0);
+            camera.stepPos(-baseSpeed * speedMult, 0);
         }
         if (glfwGetKey(this.windowId, GLFW_KEY_D) == GLFW_PRESS) {
-            camera.stepPos(0.03 * speedMult, 0);
+            camera.stepPos(baseSpeed * speedMult, 0);
         }
         if (glfwGetKey(this.windowId, GLFW_KEY_W) == GLFW_PRESS) {
-            camera.stepPos(0, 0.03 * speedMult);
+            camera.stepPos(0, baseSpeed * speedMult);
         }
         if (glfwGetKey(this.windowId, GLFW_KEY_S) == GLFW_PRESS) {
-            camera.stepPos(0, -0.03 * speedMult);
+            camera.stepPos(0, -baseSpeed * speedMult);
         }
         if (glfwGetKey(this.windowId, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            camera.addPos(0, 0.03 * speedMult, 0);
+            camera.addPos(0, baseSpeed * speedMult, 0);
         }
         if (glfwGetKey(this.windowId, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-            camera.addPos(0, -0.03 * speedMult, 0);
+            camera.addPos(0, -baseSpeed * speedMult, 0);
         }
+        if (glfwGetKey(this.windowId, GLFW_KEY_C) == GLFW_PRESS) {
+            camera.fov = 20;
+        } else camera.fov = 70;
         if (glfwGetKey(this.windowId, GLFW_KEY_R) == GLFW_PRESS) {
-            world.regenChunk((int) (Math.random() * world.chunkX), (int) (Math.random() * world.chunkY), (int) (Math.random() * world.chunkZ));
+            int x = (int) (Math.random() * world.chunkX), y = (int) (Math.random() * world.chunkY), z = (int) (Math.random() * world.chunkZ);
+            world.genChunk(x, y, z);
+            world.meshChunk(x, y, z);
         }
     }
 

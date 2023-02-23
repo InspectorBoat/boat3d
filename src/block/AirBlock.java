@@ -1,7 +1,5 @@
 package block;
 
-import world.Chunk;
-
 public class AirBlock extends Block {
     protected AirBlock() {
         super("air");
@@ -13,7 +11,7 @@ public class AirBlock extends Block {
     }
 
     @Override
-    public short getTextureId(BlockState block, Chunk.Face face) {
-        return 0;
+    public BlockModel getModel(BlockState blockState) {
+        return null;
     }
 }
