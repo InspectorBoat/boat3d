@@ -19,10 +19,10 @@ public final class BlockState {
         this.isFullCube = block.isFullCube(this);
 
         if (this.model == null) return;
-        short[][][] faces = this.model.faces;
+        byte[][][] faces = this.model.faces;
         for (int i = 0; i < faces.length; i++) {
-            short[][] dir = faces[i];
-            for (short[] face : dir) {
+            byte[][] dir = faces[i];
+            for (byte[] face : dir) {
                 if (face[0] == 0 && face[1] == 0 && face[2] == 0 && face[3] == 16 && face[4] == 16) {
                     this.cullsFace[i % 2 == 0 ? i + 1 : i - 1] = true;
                     break;

@@ -77,7 +77,7 @@ public class Window {
 
         glfwShowWindow(this.windowId);
         glfwMakeContextCurrent(this.windowId);
-//        glfwSwapInterval(1);
+        glfwSwapInterval(1);
 
         GL.createCapabilities();
     }

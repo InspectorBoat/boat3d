@@ -12,13 +12,13 @@ public class WoolBlock extends Block {
 
     @Override
     public BlockModel getModel(BlockState blockState) {
-        return new BlockModel(new short[][][] {
-                {{0, 0, 0, 16, 16, (short) (blockState.properties[0] + 3)}},
-                {{0, 0, 0, 16, 16, (short) (blockState.properties[0] + 3)}},
-                {{0, 0, 0, 16, 16, (short) (blockState.properties[0] + 3)}},
-                {{0, 0, 0, 16, 16, (short) (blockState.properties[0] + 3)}},
-                {{0, 0, 0, 16, 16, (short) (blockState.properties[0] + 3)}},
-                {{0, 0, 0, 16, 16, (short) (blockState.properties[0] + 3)}},
+        return new BlockModel(new byte[][][] {
+                {{0, 0, 0, 16, 16, (byte) (blockState.properties[0] + 3)}},
+                {{0, 0, 0, 16, 16, (byte) (blockState.properties[0] + 3)}},
+                {{0, 0, 0, 16, 16, (byte) (blockState.properties[0] + 3)}},
+                {{0, 0, 0, 16, 16, (byte) (blockState.properties[0] + 3)}},
+                {{0, 0, 0, 16, 16, (byte) (blockState.properties[0] + 3)}},
+                {{0, 0, 0, 16, 16, (byte) (blockState.properties[0] + 3)}},
         });
     }
 

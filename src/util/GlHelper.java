@@ -29,7 +29,7 @@ public class GlHelper {
         throw new RuntimeException("Failed to link program");
     }
 
-    public static short[] genVertices(World world, Chunk chunk, BlockState block, Face face, short x, short y, short z) {
+    public static byte[] genVertices(World world, Chunk chunk, BlockState block, Face face, byte x, byte y, byte z) {
         int offset = dir(face, x, y, z);
         boolean faceCulled = false;
         if (offset >= 0 && offset <= 4095) {
@@ -37,7 +37,7 @@ public class GlHelper {
                 faceCulled = true;
             }
         } else {
-            int chunkOffset = dir(face, (short) chunk.chunkPos.x, (short) chunk.chunkPos.y, (short) chunk.chunkPos.z);
+            int chunkOffset = dir(face, (byte) chunk.chunkPos.x, (byte) chunk.chunkPos.y, (byte) chunk.chunkPos.z);
             if (chunkOffset >= 0 && chunkOffset <= 4095 && world.chunks[chunkOffset] != null && world.chunks[chunkOffset].blocks != null) {
                 if (world.chunks[chunkOffset].blocks[offset - 8192] != null && world.chunks[chunkOffset].blocks[offset - 8192].cullsFace(face)) {
                     faceCulled = true;
@@ -46,144 +46,147 @@ public class GlHelper {
         }
         switch (face) {
             case NORTH -> {
-                for (short[] faceInfo : block.model.faces[face.ordinal()]) {
-                    short depth = faceInfo[0];
+                for (byte[] faceInfo : block.model.faces[face.ordinal()]) {
+                    byte depth = faceInfo[0];
                     if (faceCulled && depth == 0) return null;
 
-                    short x1 = faceInfo[1];
-                    short y1 = faceInfo[2];
-                    short x2 = faceInfo[3];
-                    short y2 = faceInfo[4];
-                    short blockX = (short) (x * 16);
-                    short blockY = (short) (y * 16);
-                    short blockZ = (short) (z * 16);
-                    short texture = faceInfo[5];
-                    return new short[] {
-                            (short) (blockX + x1), (short) (blockY + y2), (short) (blockZ + depth), 0b00,
-                            (short) (blockX + x1), (short) (blockY + y1), (short) (blockZ + depth), 0b01,
-                            (short) (blockX + x2), (short) (blockY + y2), (short) (blockZ + depth), 0b10,
-                            (short) (blockX + x2), (short) (blockY + y1), (short) (blockZ + depth), 0b11,
+                    byte x1 = faceInfo[1];
+                    byte y1 = faceInfo[2];
+                    byte x2 = faceInfo[3];
+                    byte y2 = faceInfo[4];
+                    byte blockX = (byte) (x * 16);
+                    byte blockY = (byte) (y * 16);
+                    byte blockZ = (byte) (z * 16);
+                    byte texture = faceInfo[5];
+                    return new byte[] {
+                            (byte) (blockX + x1), (byte) (blockY + y2), (byte) (blockZ + depth), 0b00,
+                            (byte) (blockX + x1), (byte) (blockY + y1), (byte) (blockZ + depth), 0b01,
+                            (byte) (blockX + x2), (byte) (blockY + y2), (byte) (blockZ + depth), 0b10,
+                            (byte) (blockX + x2), (byte) (blockY + y1), (byte) (blockZ + depth), 0b11,
                             texture
                     };
                 }
-                break;
             }
+            /*
             case SOUTH -> {
-                for (short[] faceInfo : block.model.faces[face.ordinal()]) {
-                    short depth = faceInfo[0];
+                for (byte[] faceInfo : block.model.faces[face.ordinal()]) {
+                    byte depth = faceInfo[0];
                     if (faceCulled && depth == 0) return null;
-
-                    short x1 = faceInfo[1];
-                    short y1 = faceInfo[2];
-                    short x2 = faceInfo[3];
-                    short y2 = faceInfo[4];
-                    short texture = faceInfo[5];
-                    short blockX = (short) (x * 16);
-                    short blockY = (short) (y * 16);
-                    short blockZ = (short) (z * 16 + 16);
-                    return new short[] {
-                            (short) (blockX + x2), (short) (blockY + y2), (short) (blockZ - depth), 0b00,
-                            (short) (blockX + x2), (short) (blockY + y1), (short) (blockZ - depth), 0b01,
-                            (short) (blockX + x1), (short) (blockY + y2), (short) (blockZ - depth), 0b10,
-                            (short) (blockX + x1), (short) (blockY + y1), (short) (blockZ - depth), 0b11,
+                    if (z == 15) return null;
+                    byte x1 = faceInfo[1];
+                    byte y1 = faceInfo[2];
+                    byte x2 = faceInfo[3];
+                    byte y2 = faceInfo[4];
+                    byte texture = faceInfo[5];
+                    byte blockX = (byte) (x * 16);
+                    byte blockY = (byte) (y * 16);
+                    byte blockZ = (byte) (z * 16 + 16);
+                    return new byte[] {
+                            (byte) (blockX + x2), (byte) (blockY + y2), (byte) (blockZ - depth), 0b00,
+                            (byte) (blockX + x2), (byte) (blockY + y1), (byte) (blockZ - depth), 0b01,
+                            (byte) (blockX + x1), (byte) (blockY + y2), (byte) (blockZ - depth), 0b10,
+                            (byte) (blockX + x1), (byte) (blockY + y1), (byte) (blockZ - depth), 0b11,
                             texture
                     };
                 }
             }
             case WEST -> {
-                for (short[] faceInfo : block.model.faces[face.ordinal()]) {
-                    short depth = faceInfo[0];
+                for (byte[] faceInfo : block.model.faces[face.ordinal()]) {
+                    byte depth = faceInfo[0];
                     if (faceCulled && depth == 0) return null;
 
-                    short z1 = faceInfo[1];
-                    short y1 = faceInfo[2];
-                    short z2 = faceInfo[3];
-                    short y2 = faceInfo[4];
-                    short texture = faceInfo[5];
-                    short blockX = (short) (x * 16);
-                    short blockY = (short) (y * 16);
-                    short blockZ = (short) (z * 16);
-                    return new short[] {
-                            (short) (blockX + depth), (short) (blockY + y2), (short) (blockZ + z2), 0b00,
-                            (short) (blockX + depth), (short) (blockY + y1), (short) (blockZ + z2), 0b01,
-                            (short) (blockX + depth), (short) (blockY + y2), (short) (blockZ + z1), 0b10,
-                            (short) (blockX + depth), (short) (blockY + y1), (short) (blockZ + z1), 0b11,
+                    byte z1 = faceInfo[1];
+                    byte y1 = faceInfo[2];
+                    byte z2 = faceInfo[3];
+                    byte y2 = faceInfo[4];
+                    byte texture = faceInfo[5];
+                    byte blockX = (byte) (x * 16);
+                    byte blockY = (byte) (y * 16);
+                    byte blockZ = (byte) (z * 16);
+                    return new byte[] {
+                            (byte) (blockX + depth), (byte) (blockY + y2), (byte) (blockZ + z2), 0b00,
+                            (byte) (blockX + depth), (byte) (blockY + y1), (byte) (blockZ + z2), 0b01,
+                            (byte) (blockX + depth), (byte) (blockY + y2), (byte) (blockZ + z1), 0b10,
+                            (byte) (blockX + depth), (byte) (blockY + y1), (byte) (blockZ + z1), 0b11,
                             texture
                     };
                 }
             }
             case EAST -> {
-                for (short[] faceInfo : block.model.faces[face.ordinal()]) {
-                    short depth = faceInfo[0];
+                for (byte[] faceInfo : block.model.faces[face.ordinal()]) {
+                    byte depth = faceInfo[0];
                     if (faceCulled && depth == 0) return null;
+                    if (x == 15) return null;
 
-                    short z1 = faceInfo[1];
-                    short y1 = faceInfo[2];
-                    short z2 = faceInfo[3];
-                    short y2 = faceInfo[4];
-                    short texture = faceInfo[5];
-                    short blockX = (short) (x * 16 + 16);
-                    short blockY = (short) (y * 16);
-                    short blockZ = (short) (z * 16);
-                    return new short[] {
-                            (short) (blockX - depth), (short) (blockY + y2), (short) (blockZ + z1), 0b00,
-                            (short) (blockX - depth), (short) (blockY + y1), (short) (blockZ + z1), 0b01,
-                            (short) (blockX - depth), (short) (blockY + y2), (short) (blockZ + z2), 0b10,
-                            (short) (blockX - depth), (short) (blockY + y1), (short) (blockZ + z2), 0b11,
+                    byte z1 = faceInfo[1];
+                    byte y1 = faceInfo[2];
+                    byte z2 = faceInfo[3];
+                    byte y2 = faceInfo[4];
+                    byte texture = faceInfo[5];
+                    byte blockX = (byte) (x * 16 + 16);
+                    byte blockY = (byte) (y * 16);
+                    byte blockZ = (byte) (z * 16);
+                    return new byte[] {
+                            (byte) (blockX - depth), (byte) (blockY + y2), (byte) (blockZ + z1), 0b00,
+                            (byte) (blockX - depth), (byte) (blockY + y1), (byte) (blockZ + z1), 0b01,
+                            (byte) (blockX - depth), (byte) (blockY + y2), (byte) (blockZ + z2), 0b10,
+                            (byte) (blockX - depth), (byte) (blockY + y1), (byte) (blockZ + z2), 0b11,
                             texture
                     };
                 }
             }
             case DOWN -> {
-                for (short[] faceInfo : block.model.faces[face.ordinal()]) {
-                    short depth = faceInfo[0];
+                for (byte[] faceInfo : block.model.faces[face.ordinal()]) {
+                    byte depth = faceInfo[0];
                     if (faceCulled && depth == 0) return null;
 
-                    short x1 = faceInfo[1];
-                    short z1 = faceInfo[2];
-                    short x2 = faceInfo[3];
-                    short z2 = faceInfo[4];
-                    short texture = faceInfo[5];
-                    short blockX = (short) (x * 16);
-                    short blockY = (short) (y * 16);
-                    short blockZ = (short) (z * 16);
-                    return new short[] {
-                            (short) (blockX + x1), (short) (blockY + depth), (short) (blockZ + z1), 0b00,
-                            (short) (blockX + x1), (short) (blockY + depth), (short) (blockZ + z2), 0b01,
-                            (short) (blockX + x2), (short) (blockY + depth), (short) (blockZ + z1), 0b10,
-                            (short) (blockX + x2), (short) (blockY + depth), (short) (blockZ + z2), 0b11,
+                    byte x1 = faceInfo[1];
+                    byte z1 = faceInfo[2];
+                    byte x2 = faceInfo[3];
+                    byte z2 = faceInfo[4];
+                    byte texture = faceInfo[5];
+                    byte blockX = (byte) (x * 16);
+                    byte blockY = (byte) (y * 16);
+                    byte blockZ = (byte) (z * 16);
+                    return new byte[] {
+                            (byte) (blockX + x1), (byte) (blockY + depth), (byte) (blockZ + z1), 0b00,
+                            (byte) (blockX + x1), (byte) (blockY + depth), (byte) (blockZ + z2), 0b01,
+                            (byte) (blockX + x2), (byte) (blockY + depth), (byte) (blockZ + z1), 0b10,
+                            (byte) (blockX + x2), (byte) (blockY + depth), (byte) (blockZ + z2), 0b11,
                             texture
                     };
                 }
             }
             case UP -> {
-                for (short[] faceInfo : block.model.faces[face.ordinal()]) {
-                    short depth = faceInfo[0];
+                for (byte[] faceInfo : block.model.faces[face.ordinal()]) {
+                    byte depth = faceInfo[0];
                     if (faceCulled && depth == 0) return null;
+                    if (y == 15) return null;
 
-                    short x1 = faceInfo[1];
-                    short z1 = faceInfo[2];
-                    short x2 = faceInfo[3];
-                    short z2 = faceInfo[4];
-                    short texture = faceInfo[5];
-                    short blockX = (short) (x * 16);
-                    short blockY = (short) (y * 16 + 16);
-                    short blockZ = (short) (z * 16);
-                    return new short[]{
-                            (short) (blockX + x1), (short) (blockY - depth), (short) (blockZ + z2), 0b00,
-                            (short) (blockX + x1), (short) (blockY - depth), (short) (blockZ + z1), 0b01,
-                            (short) (blockX + x2), (short) (blockY - depth), (short) (blockZ + z2), 0b10,
-                            (short) (blockX + x2), (short) (blockY - depth), (short) (blockZ + z1), 0b11,
+                    byte x1 = faceInfo[1];
+                    byte z1 = faceInfo[2];
+                    byte x2 = faceInfo[3];
+                    byte z2 = faceInfo[4];
+                    byte texture = faceInfo[5];
+                    byte blockX = (byte) (x * 16);
+                    byte blockY = (byte) (y * 16 + 16);
+                    byte blockZ = (byte) (z * 16);
+                    return new byte[]{
+                            (byte) (blockX + x1), (byte) (blockY - depth), (byte) (blockZ + z2), 0b00,
+                            (byte) (blockX + x1), (byte) (blockY - depth), (byte) (blockZ + z1), 0b01,
+                            (byte) (blockX + x2), (byte) (blockY - depth), (byte) (blockZ + z2), 0b10,
+                            (byte) (blockX + x2), (byte) (blockY - depth), (byte) (blockZ + z1), 0b11,
                             texture
                     };
                 }
             }
+            */
         }
 
         return null;
     }
 
-    public static int dir(Face face, short x, short y, short z) {
+    public static int dir(Face face, byte x, byte y, byte z) {
         switch (face) {
             case NORTH -> {
                 return z <= 0  ?

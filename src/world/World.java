@@ -3,9 +3,9 @@ package world;
 import util.OpenSimplexNoise;
 
 public class World {
-    public int chunkX = 8;
-    public int chunkY = 8;
-    public int chunkZ = 8;
+    public int chunkX = 1;
+    public int chunkY = 1;
+    public int chunkZ = 1;
     public OpenSimplexNoise noise = new OpenSimplexNoise();
     public Chunk[] chunks = new Chunk[4096];
 
@@ -45,7 +45,7 @@ public class World {
     }
 
     public void meshChunk(int x, int y, int z) {
-        this.chunks[(x << 8) | (y << 4) | (z)].buildMesh();
+        //this.chunks[(x << 8) | (y << 4) | (z)].buildMesh();
     }
 
     public void createChunk(int x, int y, int z) {

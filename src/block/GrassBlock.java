@@ -13,7 +13,7 @@ public class GrassBlock extends Block {
 
     @Override
     public BlockModel getModel(BlockState blockState) {
-        return new BlockModel(new short[][][] {
+        return new BlockModel(new byte[][][] {
                 {{0, 0, 0, 16, 16, 0}},
                 {{0, 0, 0, 16, 16, 0}},
                 {{0, 0, 0, 16, 16, 0}},
