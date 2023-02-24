@@ -5,6 +5,7 @@ import world.World;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL46C.*;
 import static util.FileHelper.readImage;
@@ -21,7 +22,7 @@ public class Main implements Runnable {
         this.camera = new Camera();
         this.window = new Window(this.camera, 600, 600);
         initGl();
-        this.world = new World(false);
+        this.world = new World(true);
     }
 
     public void run() {
@@ -33,9 +34,9 @@ public class Main implements Runnable {
     }
 
     private void initGl() throws IOException {
-        glEnable(GL_DEBUG_OUTPUT);
-        GLUtil.setupDebugMessageCallback();
-        glEnable(GL_PROGRAM_POINT_SIZE);
+//        glEnable(GL_DEBUG_OUTPUT);
+//        GLUtil.setupDebugMessageCallback();
+//        glPointSize(10);
 
         int vertShader = createShader(GL_VERTEX_SHADER, readText("src/shader/shader.vert"));
         int fragShader = createShader(GL_FRAGMENT_SHADER, readText("src/shader/shader.frag"));
@@ -47,13 +48,6 @@ public class Main implements Runnable {
         glEnable(GL_DEPTH_TEST);
 
         glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
-        int[] test = new int[5002];
-        for (int i = 4; i < 5002; i += 2) {
-            test[i] = ((int) (Math.random() * 0xffd) << 24) | ((int) (Math.random() * 0xffd) << 16) | ((int) (Math.random() * 0xffd) << 8) | ((int) (Math.random() * 6d));
-            test[i + 1] = ((int) (Math.random() * 0x8fd) << 24) | ((int) (Math.random() * 0x8fd) << 16) | 1;
-        }
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, glGenBuffers());
-        glBufferData(GL_SHADER_STORAGE_BUFFER, test, GL_STATIC_DRAW);
 
         int texture = glGenTextures();
         glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
@@ -67,10 +61,10 @@ public class Main implements Runnable {
 
         glEnable(GL_PRIMITIVE_RESTART);
         glPrimitiveRestartIndex(Integer.MAX_VALUE);
-        int[] elementArray = new int[100003];
-        for (int i = 0, j = 0; i <= 100002; i ++) {
+        int[] elementArray = new int[1024 * 1024 / 4];
+        for (int i = 0, j = 0; i <= 1024 * 1024 / 4 - 1; i ++) {
             if (i % 5 == 4) elementArray[i] = Integer.MAX_VALUE;
-            else elementArray[i] = j ++;
+            else elementArray[i] = (j ++);
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glGenBuffers());
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementArray, GL_STATIC_DRAW);
@@ -84,21 +78,19 @@ public class Main implements Runnable {
             FloatBuffer buffer = this.camera.getMatrix().get(stack.mallocFloat(16));
             glUniformMatrix4fv(0, false, buffer);
         }
-        glDrawElements(GL_TRIANGLE_STRIP, 100003, GL_UNSIGNED_INT, 0);
-//        for (int x = 0; x < this.world.chunkX; x++) {
-//            for (int y = 0; y < this.world.chunkY; y++) {
-//                for (int z = 0; z < this.world.chunkZ; z++) {
-//                    Chunk chunk = this.world.get(x, y, z);
-//                    if (chunk == null || !chunk.doneMeshing) return;
-//                    glUniform3i(1, x * 256, y * 256, z * 256);
-//                    glBindVertexBuffer(0, chunk.buffer, 0, Byte.BYTES * 4);
-//
-//                    glDrawElements(GL_TRIANGLE_STRIP, chunk.vertexCount * 5 / 4, GL_UNSIGNED_INT, 0);
-//                    glMultiDrawElements(GL_TRIANGLE_STRIP, chunk.countBuffer, GL_UNSIGNED_INT, chunk.offsetBuffer);
+        for (int x = 0; x < this.world.chunkX; x++) {
+            for (int y = 0; y < this.world.chunkY; y++) {
+                for (int z = 0; z < this.world.chunkZ; z++) {
+                    Chunk chunk = this.world.get(x, y, z);
+                    if (chunk == null || !chunk.doneMeshing) return;
+                    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, chunk.buffer);
+//                    glDrawArrays(GL_POINTS, window.counter, 1);
+//                    glDrawElements(GL_POINTS, 1, GL_UNSIGNED_INT, window.counter);
+                    glMultiDrawElements(GL_TRIANGLE_STRIP, chunk.countBuffer, GL_UNSIGNED_INT, chunk.offsetBuffer);
 //                    glMultiDrawElements(GL_TRIANGLE_STRIP, chunk.counts, GL_UNSIGNED_INT, chunk.offsetBuffer);
-//                }
-//            }
-//        }
+                }
+            }
+        }
     }
 
 

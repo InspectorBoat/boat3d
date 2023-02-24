@@ -15,7 +15,7 @@ public class BlockRegistry {
         final ArrayList<Block> blocks = new ArrayList<>();
         register(blocks, new AirBlock());
         register(blocks, new GrassBlock());
-        register(blocks, new WoolBlock());
+        register(blocks, new SlabBlock());
 
         registry = new BlockState[totalStates];
         int index = 0;

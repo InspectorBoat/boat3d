@@ -45,7 +45,7 @@ public class World {
     }
 
     public void meshChunk(int x, int y, int z) {
-        //this.chunks[(x << 8) | (y << 4) | (z)].buildMesh();
+        this.chunks[(x << 8) | (y << 4) | (z)].buildMesh();
     }
 
     public void createChunk(int x, int y, int z) {

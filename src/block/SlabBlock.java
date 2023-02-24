@@ -1,8 +1,8 @@
 package block;
 
 public class SlabBlock extends Block {
-    protected SlabBlock(String name, BlockAttribute... attributes) {
-        super(name, attributes);
+    protected SlabBlock() {
+        super("slab");
     }
 
     @Override
@@ -12,13 +12,13 @@ public class SlabBlock extends Block {
 
     @Override
     public BlockModel getModel(BlockState blockState) {
-        return new BlockModel(new byte[][][] {
-                {{0, 0, 0, 16, 8, 0}},
-                {{0, 0, 0, 16, 8, 0}},
-                {{0, 0, 0, 16, 8, 0}},
-                {{0, 0, 0, 16, 8, 0}},
-                {{0, 0, 0, 16, 16, 0}},
-                {{8, 0, 0, 16, 16, 0}},
+        return new BlockModel(new int[][] {
+                {0x00000000, 0x0f080f00},
+                {0x00000f01, 0x0f080f00},
+                {0x00000002, 0x0f080f00},
+                {0x0f000003, 0x0f080f00},
+                {0x00000004, 0x0f0f0f00},
+                {0x00080005, 0x0f0f0f00},
         });
     }
 }

@@ -2,8 +2,8 @@ package block;
 
 public class BlockModel {
     // depth, left, top, width, height, texture id
-    public byte[][][] faces;
-    public BlockModel(byte[][][] faces) {
+    public int[][] faces;
+    public BlockModel(int[][] faces) {
         this.faces = faces;
     }
 }
