@@ -11,7 +11,7 @@ public class World {
     public int totalArea = 0;
     public int totalFaces = 0;
     public Window window;
-    public OpenSimplexNoise noise = new OpenSimplexNoise((long) (10000));
+    public OpenSimplexNoise noise = new OpenSimplexNoise(1);
     public Chunk[] chunks = new Chunk[4096];
 
     public World(Window main, boolean generate) {
@@ -36,12 +36,27 @@ public class World {
         }
         System.out.printf("Generated %d chunks in %d ms\n", this.chunkX * this.chunkY * this.chunkZ, System.currentTimeMillis() - start);
 
+//        start = System.currentTimeMillis();
+//        try (MemoryStack stack = MemoryStack.create(16384 * Integer.BYTES).push()) {
+//            for (int i = 0; i < 50; i ++) {
+//               for (int x = 0; x < this.chunkX; x++) {
+//                   for (int y = 0; y < this.chunkY; y++) {
+//                       for (int z = 0; z < this.chunkZ; z++) {
+//                            this.chunks[(x << 8) | (y << 4) | (z)].buildMesh(stack);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        System.out.printf("Meshed %d chunks in %d ms\n", this.chunkX * this.chunkY * this.chunkZ, System.currentTimeMillis() - start);
+
+
         start = System.currentTimeMillis();
-        try (MemoryStack stack = MemoryStack.create().push()) {
+        try (MemoryStack stack = MemoryStack.create(16384 * Integer.BYTES).push()) {
             for (int x = 0; x < this.chunkX; x++) {
                 for (int y = 0; y < this.chunkY; y++) {
                     for (int z = 0; z < this.chunkZ; z++) {
-                        this.chunks[(x << 8) | (y << 4) | (z)].buildMesh();
+                        this.chunks[(x << 8) | (y << 4) | (z)].buildMesh(stack);
                     }
                 }
             }
@@ -54,7 +69,9 @@ public class World {
     }
 
     public void meshChunk(int x, int y, int z) {
-//        this.chunks[(x << 8) | (y << 4) | (z)].buildMesh();
+        try (MemoryStack stack = MemoryStack.create(16384 * Integer.BYTES).push()) {
+            this.chunks[(x << 8) | (y << 4) | (z)].buildMesh(stack);
+        }
     }
 
     public void createChunk(int x, int y, int z) {

@@ -65,7 +65,7 @@ public class Window {
                 this.mesh = !this.mesh;
             }
             else if (key == GLFW_KEY_F) {
-//                System.out.println(++this.counter);
+//                System.out.println(this.counter += 1);
 //                this.world.genChunk(0, 0, 0);
 //                this.world.meshChunk(0, 0, 0);
             }

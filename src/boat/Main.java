@@ -87,8 +87,8 @@ public class Main implements Runnable {
                     if (chunk == null || !chunk.doneMeshing) return;
                     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, chunk.buffer);
 //                    glDrawArrays(GL_TRIANGLE_STRIP, window.counter, 1);
-                    glDrawElements(GL_TRIANGLE_STRIP, chunk.faceCount * 5, GL_UNSIGNED_INT, 0);
-//                    glMultiDrawElements(GL_TRIANGLE_STRIP, chunk.countBuffer, GL_UNSIGNED_INT, chunk.offsetBuffer);
+//                    glDrawElements(GL_TRIANGLE_STRIP, chunk.faceCount * 5, GL_UNSIGNED_INT, 0);
+                    glMultiDrawElements(GL_TRIANGLE_STRIP, chunk.countBuffer, GL_UNSIGNED_INT, chunk.offsetBuffer);
 //                    glMultiDrawElements(GL_TRIANGLE_STRIP, chunk.counts, GL_UNSIGNED_INT, chunk.offsetBuffer);
                 }
             }
