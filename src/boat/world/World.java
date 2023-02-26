@@ -1,15 +1,21 @@
-package world;
+package boat.world;
 
-import util.OpenSimplexNoise;
+import boat.Window;
+import boat.util.OpenSimplexNoise;
+import org.lwjgl.system.MemoryStack;
 
 public class World {
-    public int chunkX = 1;
-    public int chunkY = 1;
-    public int chunkZ = 1;
-    public OpenSimplexNoise noise = new OpenSimplexNoise();
+    public int chunkX = 16;
+    public int chunkY = 16;
+    public int chunkZ = 16;
+    public int totalArea = 0;
+    public int totalFaces = 0;
+    public Window window;
+    public OpenSimplexNoise noise = new OpenSimplexNoise((long) (10000));
     public Chunk[] chunks = new Chunk[4096];
 
-    public World(boolean generate) {
+    public World(Window main, boolean generate) {
+        this.window = main;
         for (int x = 0; x < this.chunkX; x++) {
             for (int y = 0; y < this.chunkY; y++) {
                 for (int z = 0; z < this.chunkZ; z++) {
@@ -29,11 +35,14 @@ public class World {
             }
         }
         System.out.printf("Generated %d chunks in %d ms\n", this.chunkX * this.chunkY * this.chunkZ, System.currentTimeMillis() - start);
+
         start = System.currentTimeMillis();
-        for (int x = 0; x < this.chunkX; x++) {
-            for (int y = 0; y < this.chunkY; y++) {
-                for (int z = 0; z < this.chunkZ; z++) {
-                    this.meshChunk(x, y, z);
+        try (MemoryStack stack = MemoryStack.create().push()) {
+            for (int x = 0; x < this.chunkX; x++) {
+                for (int y = 0; y < this.chunkY; y++) {
+                    for (int z = 0; z < this.chunkZ; z++) {
+                        this.chunks[(x << 8) | (y << 4) | (z)].buildMesh();
+                    }
                 }
             }
         }
@@ -45,7 +54,7 @@ public class World {
     }
 
     public void meshChunk(int x, int y, int z) {
-        this.chunks[(x << 8) | (y << 4) | (z)].buildMesh();
+//        this.chunks[(x << 8) | (y << 4) | (z)].buildMesh();
     }
 
     public void createChunk(int x, int y, int z) {

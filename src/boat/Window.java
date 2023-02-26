@@ -1,7 +1,9 @@
-import block.BlockRegistry;
+package boat;
+
+import boat.block.BlockRegistry;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
-import world.World;
+import boat.world.World;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -10,6 +12,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
     public final long windowId;
+    public World world;
     public int counter;
     private boolean maximized;
     private double prevMouseX = Double.NEGATIVE_INFINITY;
@@ -61,7 +64,12 @@ public class Window {
                 glPolygonMode(GL_FRONT_AND_BACK, this.mesh ? GL_FILL : GL_LINE);
                 this.mesh = !this.mesh;
             }
-            else if (key == GLFW_KEY_F) System.out.println(++this.counter);
+            else if (key == GLFW_KEY_F) {
+//                System.out.println(++this.counter);
+//                this.world.genChunk(0, 0, 0);
+//                this.world.meshChunk(0, 0, 0);
+            }
+
         });
         glfwSetWindowMaximizeCallback(this.windowId, (window, maximized) -> this.maximized = maximized);
         glfwSetWindowSizeCallback(this.windowId, (window, width, height) -> {
@@ -108,14 +116,14 @@ public class Window {
             camera.fov = 20;
         } else camera.fov = 70;
         if (glfwGetKey(this.windowId, GLFW_KEY_R) == GLFW_PRESS) {
-//            int x = (int) (Math.random() * world.chunkX), y = (int) (Math.random() * world.chunkY), z = (int) (Math.random() * world.chunkZ);
+//            int x = (int) (Math.random() * boat.world.chunkX), y = (int) (Math.random() * boat.world.chunkY), z = (int) (Math.random() * boat.world.chunkZ);
             int x = (int) (camera.x / 16);
             int y = (int) (camera.y / 16);
             int z = (int) (camera.z / 16);
             for (int i = 0; i < 400; i ++) {
                 world.get(x, y, z).blocks[(int) (Math.random() * 4096)] = BlockRegistry.registry[Math.random() > 0.5 ? 1 : 0];
             }
-//            world.genChunk(x, y, z);
+//            boat.world.genChunk(x, y, z);
             world.meshChunk(x, y, z);
         }
     }
@@ -123,9 +131,13 @@ public class Window {
     public boolean update() {
         glfwSwapBuffers(this.windowId);
 
-        if (this.frameCounter >= 50) {
+        if (this.frameCounter >= 15) {
             long time = System.nanoTime();
-            System.out.println("FPS: " + 1000000000 / ((time - startTime) / frameCounter));
+//            System.out.println("FPS: " + 1000000000 / ((time - startTime) / frameCounter));
+            if (glfwGetKey(this.windowId, GLFW_KEY_F) == GLFW_PRESS) {
+                this.counter++;
+                world.meshChunk(0, 0, 0);
+            }
             this.startTime = time;
             frameCounter = 0;
         }

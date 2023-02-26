@@ -1,4 +1,4 @@
-package block;
+package boat.block;
 
 public abstract class Block {
     public final BlockAttribute[] attributes;

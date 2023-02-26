@@ -1,4 +1,4 @@
-package block;
+package boat.block;
 
 public class GrassBlock extends Block {
     public GrassBlock() {

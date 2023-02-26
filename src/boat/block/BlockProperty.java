@@ -1,4 +1,4 @@
-package block;
+package boat.block;
 
 public class BlockProperty {
     public final int count;

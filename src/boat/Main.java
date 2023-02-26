@@ -1,17 +1,18 @@
+package boat;
+
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.system.MemoryStack;
-import world.Chunk;
-import world.World;
+import boat.world.Chunk;
+import boat.world.World;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL46C.*;
-import static util.FileHelper.readImage;
-import static util.FileHelper.readText;
-import static util.GlHelper.createProgram;
-import static util.GlHelper.createShader;
+import static boat.util.FileHelper.readImage;
+import static boat.util.FileHelper.readText;
+import static boat.util.GlHelper.createProgram;
+import static boat.util.GlHelper.createShader;
 
 public class Main implements Runnable {
     public World world;
@@ -22,10 +23,11 @@ public class Main implements Runnable {
         this.camera = new Camera();
         this.window = new Window(this.camera, 600, 600);
         initGl();
-        this.world = new World(true);
+        this.world = new World(this.window, true);
     }
 
     public void run() {
+        this.window.world = this.world;
         do {
             this.window.processKeys(this.camera, this.world);
             this.draw();
@@ -36,10 +38,9 @@ public class Main implements Runnable {
     private void initGl() throws IOException {
 //        glEnable(GL_DEBUG_OUTPUT);
 //        GLUtil.setupDebugMessageCallback();
-//        glPointSize(10);
 
-        int vertShader = createShader(GL_VERTEX_SHADER, readText("src/shader/shader.vert"));
-        int fragShader = createShader(GL_FRAGMENT_SHADER, readText("src/shader/shader.frag"));
+        int vertShader = createShader(GL_VERTEX_SHADER, readText("src/boat/shader/shader.vert"));
+        int fragShader = createShader(GL_FRAGMENT_SHADER, readText("src/boat/shader/shader.frag"));
         int program = createProgram(vertShader, fragShader);
 
         glUseProgram(program);
@@ -74,19 +75,20 @@ public class Main implements Runnable {
         if (this.world == null) return;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        try (MemoryStack stack = MemoryStack.stackPush()) {
+        try (MemoryStack stack = MemoryStack.create(16 * Float.BYTES).push()) {
             FloatBuffer buffer = this.camera.getMatrix().get(stack.mallocFloat(16));
             glUniformMatrix4fv(0, false, buffer);
         }
+
         for (int x = 0; x < this.world.chunkX; x++) {
             for (int y = 0; y < this.world.chunkY; y++) {
                 for (int z = 0; z < this.world.chunkZ; z++) {
                     Chunk chunk = this.world.get(x, y, z);
                     if (chunk == null || !chunk.doneMeshing) return;
                     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, chunk.buffer);
-//                    glDrawArrays(GL_POINTS, window.counter, 1);
-//                    glDrawElements(GL_POINTS, 1, GL_UNSIGNED_INT, window.counter);
-                    glMultiDrawElements(GL_TRIANGLE_STRIP, chunk.countBuffer, GL_UNSIGNED_INT, chunk.offsetBuffer);
+//                    glDrawArrays(GL_TRIANGLE_STRIP, window.counter, 1);
+                    glDrawElements(GL_TRIANGLE_STRIP, chunk.faceCount * 5, GL_UNSIGNED_INT, 0);
+//                    glMultiDrawElements(GL_TRIANGLE_STRIP, chunk.countBuffer, GL_UNSIGNED_INT, chunk.offsetBuffer);
 //                    glMultiDrawElements(GL_TRIANGLE_STRIP, chunk.counts, GL_UNSIGNED_INT, chunk.offsetBuffer);
                 }
             }

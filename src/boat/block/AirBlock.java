@@ -1,4 +1,4 @@
-package block;
+package boat.block;
 
 public class AirBlock extends Block {
     protected AirBlock() {

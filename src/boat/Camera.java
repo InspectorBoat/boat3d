@@ -1,3 +1,5 @@
+package boat;
+
 import org.joml.Matrix4f;
 
 public class Camera {

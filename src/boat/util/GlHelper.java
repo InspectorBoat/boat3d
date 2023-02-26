@@ -1,9 +1,9 @@
-package util;
+package boat.util;
 
-import block.BlockState;
-import world.Chunk;
-import world.Chunk.Face;
-import world.World;
+import boat.block.BlockState;
+import boat.world.Chunk;
+import boat.world.Chunk.Face;
+import boat.world.World;
 
 import static org.lwjgl.opengl.GL46C.*;
 
@@ -38,8 +38,8 @@ public class GlHelper {
 //            }
 //        } else {
 //            int chunkOffset = dir(face, (byte) chunk.chunkPos.x, (byte) chunk.chunkPos.y, (byte) chunk.chunkPos.z);
-//            if (chunkOffset >= 0 && chunkOffset <= 4095 && world.chunks[chunkOffset] != null && world.chunks[chunkOffset].blocks != null) {
-//                if (world.chunks[chunkOffset].blocks[offset - 8192] != null && world.chunks[chunkOffset].blocks[offset - 8192].cullsFace(face)) {
+//            if (chunkOffset >= 0 && chunkOffset <= 4095 && boat.world.chunks[chunkOffset] != null && boat.world.chunks[chunkOffset].blocks != null) {
+//                if (boat.world.chunks[chunkOffset].blocks[offset - 8192] != null && boat.world.chunks[chunkOffset].blocks[offset - 8192].cullsFace(face)) {
 //                    faceCulled = true;
 //                }
 //            }

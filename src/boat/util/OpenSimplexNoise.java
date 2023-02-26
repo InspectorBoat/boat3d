@@ -1,4 +1,4 @@
-package util;
+package boat.util;
 /*
  * OpenSimplex (Simplectic) Noise for 3D in Java
  * (Preliminary Release)
@@ -28,7 +28,7 @@ public class OpenSimplexNoise {
 
     //Initializes the class using a permutation array generated from a 64-bit seed.
     //Generates a proper permutation (i.e. doesn't merely perform N successive pair swaps on a base array)
-    //Uses java.util.Random
+    //Uses java.boat.util.Random
     public OpenSimplexNoise(long seed) {
         perm = new short[256];
         permGradIndex3D = new short[256];
@@ -77,7 +77,7 @@ public class OpenSimplexNoise {
         double dy0 = y - yb;
         double dz0 = z - zb;
 
-        //We'll be defining these inside the next block and using them afterwards.
+        //We'll be defining these inside the next boat.block and using them afterwards.
         double dx_ext0, dy_ext0, dz_ext0;
         double dx_ext1, dy_ext1, dz_ext1;
         int xsv_ext0, ysv_ext0, zsv_ext0;

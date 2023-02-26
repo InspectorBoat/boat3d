@@ -1,8 +1,6 @@
-package block;
+package boat.block;
 
-import world.Chunk;
-
-import java.util.Arrays;
+import boat.world.Chunk;
 
 public final class BlockState {
     private final Block block;
