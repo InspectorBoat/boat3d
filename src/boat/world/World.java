@@ -5,9 +5,9 @@ import boat.util.OpenSimplexNoise;
 import org.lwjgl.system.MemoryStack;
 
 public class World {
-    public int chunkX = 1;
-    public int chunkY = 1;
-    public int chunkZ = 1;
+    public int chunkX = 16;
+    public int chunkY = 16;
+    public int chunkZ = 16;
     public int totalArea = 0;
     public int totalFaces = 0;
     public int byteCount = 0;

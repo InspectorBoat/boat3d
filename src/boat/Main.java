@@ -1,23 +1,18 @@
 package boat;
 
-import boat.util.GlHelper;
-import org.lwjgl.opengl.GLUtil;
-import org.lwjgl.system.MemoryStack;
 import boat.world.Chunk;
 import boat.world.World;
+import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.Arrays;
-import java.util.Random;
 
-import static org.lwjgl.opengl.GL46C.*;
 import static boat.util.FileHelper.readImage;
 import static boat.util.FileHelper.readText;
-import static boat.util.GlHelper.createProgram;
-import static boat.util.GlHelper.createShader;
+
+import static boat.util.GlHelperKt.createProgram;
+import static boat.util.GlHelperKt.createShader;
+import static org.lwjgl.opengl.GL46C.*;
 
 public class Main implements Runnable {
     public World world;
@@ -137,7 +132,7 @@ public class Main implements Runnable {
 //        for (int i = start; i < end; i ++) {
 //            counts[array[i] & 0xf] ++;
 //        }
-//        GlHelper.sortBuffer(buffer, array, counts, start, end);
+//        GlHelper.kt.sortBuffer(buffer, array, counts, start, end);
 //        System.out.println(Arrays.toString(array));
 //        buffer.position(0);
 //        int[] result = new int[256];
