@@ -1,12 +1,17 @@
 package boat;
 
+import boat.util.GlHelper;
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.system.MemoryStack;
 import boat.world.Chunk;
 import boat.world.World;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.Arrays;
+import java.util.Random;
 
 import static org.lwjgl.opengl.GL46C.*;
 import static boat.util.FileHelper.readImage;
@@ -52,12 +57,32 @@ public class Main implements Runnable {
 
         int texture = glGenTextures();
         glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
-        glTextureStorage3D(texture, 1, GL_RGB8, 16, 16, 2048);
+        glTextureStorage3D(texture, 1, GL_RGB8, 16, 16, 4);
 
+        int k = 0;
         int[] image = readImage("assets/grass_side.png");
-        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, 16, 16, 1, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, image);
-        glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, k ++, 16, 16, 1, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, image);
+
+        image = readImage("assets/clay.png");
+        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, k ++, 16, 16, 1, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, image);
+
+        image = readImage("assets/diamond_ore.png");
+        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, k ++, 16, 16, 1, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, image);
+
+        image = readImage("assets/furnace_side.png");
+        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, k ++, 16, 16, 1, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, image);
+
+        image = readImage("assets/cobblestone.png");
+        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, k ++, 16, 16, 1, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, image);
+
+        image = readImage("assets/crafting_table_side.png");
+        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, k ++, 16, 16, 1, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, image);
+
+
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_R, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         glEnable(GL_PRIMITIVE_RESTART);
@@ -97,7 +122,29 @@ public class Main implements Runnable {
 
 
     public static void main(String[] args) throws IOException {
+//        IntBuffer buffer = ByteBuffer.allocateDirect(256 * 4).asIntBuffer();
+//        int[] array = new int[256];
+//        int[] counts = new int[16];
+//        int start = 0;
+//        int end = 256;
+//        Random random = new Random();
+//        for (int i = 0; i < array.length; i ++) {
+//            int n = random.nextInt(0, 16);
+//            array[i] = n;
+//            buffer.put(n);
+//        }
+//
+//        for (int i = start; i < end; i ++) {
+//            counts[array[i] & 0xf] ++;
+//        }
+//        GlHelper.sortBuffer(buffer, array, counts, start, end);
+//        System.out.println(Arrays.toString(array));
+//        buffer.position(0);
+//        int[] result = new int[256];
+//        buffer.get(result);
+//        System.out.println(Arrays.toString(result));
         new Main().run();
+
     }
 
 

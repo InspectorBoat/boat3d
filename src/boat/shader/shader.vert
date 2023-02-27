@@ -205,6 +205,9 @@ vec4 getSize(int faceIndex) {
         return vec4(((faces[faceIndex].wht >> 24) & 0xff) + 1, ((faces[faceIndex].wht >> 16) & 0xff) + 1, 0, 1);
 }
 
+float getTexture(int faceIndex) {
+        return float(faces[faceIndex].wht & 0xff);
+}
 
 void main() {
         int cornerIndex = gl_VertexID % 4;
@@ -214,5 +217,6 @@ void main() {
 
         v_texCoord = (((vertexPos * normalTransforms[getNormal(faceIndex) * 4 + 3]).xy) + (getSize(faceIndex) * normalTransforms[cornerIndex]).xy) / vec2(16, -16);
         vertexPos += offset;
+        v_texId = getTexture(faceIndex);
         gl_Position = u_transform * (vertexPos + chunkPos * 256);
 }

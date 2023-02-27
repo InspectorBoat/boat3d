@@ -16,6 +16,7 @@ public class BlockRegistry {
         register(blocks, new AirBlock());
         register(blocks, new GrassBlock());
         register(blocks, new SlabBlock());
+        register(blocks, new VerticalSlabBlock());
 
         registry = new BlockState[totalStates];
         int index = 0;

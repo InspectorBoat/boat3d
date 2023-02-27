@@ -65,7 +65,7 @@ public class Window {
                 this.mesh = !this.mesh;
             }
             else if (key == GLFW_KEY_F) {
-//                System.out.println(this.counter += 1);
+                this.counter += 1;
 //                this.world.genChunk(0, 0, 0);
 //                this.world.meshChunk(0, 0, 0);
             }
@@ -116,22 +116,23 @@ public class Window {
             camera.fov = 20;
         } else camera.fov = 70;
         if (glfwGetKey(this.windowId, GLFW_KEY_R) == GLFW_PRESS) {
-//            int x = (int) (Math.random() * boat.world.chunkX), y = (int) (Math.random() * boat.world.chunkY), z = (int) (Math.random() * boat.world.chunkZ);
             int x = (int) (camera.x / 16);
             int y = (int) (camera.y / 16);
             int z = (int) (camera.z / 16);
             for (int i = 0; i < 400; i ++) {
                 world.get(x, y, z).blocks[(int) (Math.random() * 4096)] = BlockRegistry.registry[Math.random() > 0.5 ? 1 : 0];
             }
-//            boat.world.genChunk(x, y, z);
+            world.genChunk(x, y, z);
+//            long start = System.nanoTime();
             world.meshChunk(x, y, z);
+//            System.out.println((System.nanoTime() - start) / 1000000d);
         }
     }
 
     public boolean update() {
         glfwSwapBuffers(this.windowId);
 
-        if (this.frameCounter >= 15) {
+        if (this.frameCounter >= 50) {
             long time = System.nanoTime();
 //            System.out.println("FPS: " + 1000000000 / ((time - startTime) / frameCounter));
             if (glfwGetKey(this.windowId, GLFW_KEY_F) == GLFW_PRESS) {

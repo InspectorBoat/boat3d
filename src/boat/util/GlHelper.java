@@ -5,6 +5,9 @@ import boat.world.Chunk;
 import boat.world.Chunk.Face;
 import boat.world.World;
 
+import java.nio.IntBuffer;
+import java.util.Random;
+
 import static org.lwjgl.opengl.GL46C.*;
 
 public class GlHelper {
@@ -27,25 +30,6 @@ public class GlHelper {
         glGetProgramiv(program, GL_LINK_STATUS, status);
         if (status[0] == GL_TRUE) return program;
         throw new RuntimeException("Failed to link program");
-    }
-
-    public static byte[] genVertices(World world, Chunk chunk, BlockState block, Face face, byte x, byte y, byte z) {
-        int offset = dir(face, x, y, z);
-//        boolean faceCulled = false;
-//        if (offset >= 0 && offset <= 4095) {
-//            if (chunk.blocks[offset].cullsFace(face)) {
-//                faceCulled = true;
-//            }
-//        } else {
-//            int chunkOffset = dir(face, (byte) chunk.chunkPos.x, (byte) chunk.chunkPos.y, (byte) chunk.chunkPos.z);
-//            if (chunkOffset >= 0 && chunkOffset <= 4095 && boat.world.chunks[chunkOffset] != null && boat.world.chunks[chunkOffset].blocks != null) {
-//                if (boat.world.chunks[chunkOffset].blocks[offset - 8192] != null && boat.world.chunks[chunkOffset].blocks[offset - 8192].cullsFace(face)) {
-//                    faceCulled = true;
-//                }
-//            }
-//        }
-
-        return null;
     }
 
     public static int dir(Face face, byte x, byte y, byte z) {
@@ -82,5 +66,33 @@ public class GlHelper {
             }
         }
         throw new RuntimeException();
+    }
+
+    public static void sortBuffer(IntBuffer buffer, int[] array, int[] counts, int startIndex, int endIndex) {
+        for (int i = 0, sum = startIndex; i < counts.length; i++) {
+            int prev = counts[i];
+            counts[i] = sum;
+            sum += prev;
+        }
+        int pos = startIndex;
+        while (pos < endIndex) {
+            int n = array[pos];
+            int v = buffer.get(pos);
+            int dest = counts[n & 0xf];
+
+            if (dest <= pos) {
+                if (dest < pos) {
+                    buffer.put(pos, buffer.get(dest));
+                    buffer.put(dest, v);
+
+                    array[pos] = array[dest];
+                    array[dest] = n;
+                }
+                else ++pos;
+                counts[n & 0xf] = dest + 1;
+            }
+            else ++pos;
+        }
+
     }
 }
