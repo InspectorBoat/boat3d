@@ -1,167 +1,165 @@
 #version 460
 
 const mat4[] normalTransforms = {
-// south
-mat4(
-0, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-1, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-0, 0, 0, 0,
-0, 1, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-1, 0, 0, 0,
-0, 1, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 1
-),
+        // south
+        mat4(
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        1, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        0, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
 
-// west
-mat4(
-0, 0, 0, 0,
-0, 0, 0, 0,
-1, 0, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-0, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-0, 0, 0, 0,
-0, 1, 0, 0,
-1, 0, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-0, 0, 0, 0,
-0, 1, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 1
-),
+        // west
+        mat4(
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        1, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        0, 0, 0, 0,
+        0, 1, 0, 0,
+        1, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        0, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
 
+        // down
+        mat4(
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        1, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        1, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
 
-// down
-mat4(
-0, 0, 0, 0,
-0, 0, 0, 0,
-0, 1, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-1, 0, 0, 0,
-0, 0, 0, 0,
-0, 1, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-0, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-1, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 1
-),
+        // up
+        mat4(
+        0, 0, 0, 0,
+        0, 0, 0, 01,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        1, 0, 0, 0,
+        0, 0, 0, 01,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        0, 0, 0, 0,
+        0, 0, 0, 01,
+        0, 1, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        1, 0, 0, 0,
+        0, 0, 0, 01,
+        0, 1, 0, 0,
+        0, 0, 0, 1
+        ),
 
-// up
-mat4(
-0, 0, 0, 0,
-0, 0, 0, 01,
-0, 0, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-1, 0, 0, 0,
-0, 0, 0, 01,
-0, 0, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-0, 0, 0, 0,
-0, 0, 0, 01,
-0, 1, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-1, 0, 0, 0,
-0, 0, 0, 01,
-0, 1, 0, 0,
-0, 0, 0, 1
-),
+        // east
+        mat4(
+        0, 0, 0, 01,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        0, 0, 0, 01,
+        0, 0, 0, 0,
+        1, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        0, 0, 0, 01,
+        0, 1, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        0, 0, 0, 01,
+        0, 1, 0, 0,
+        1, 0, 0, 0,
+        0, 0, 0, 1
+        ),
 
-// east
-mat4(
-0, 0, 0, 01,
-0, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-0, 0, 0, 01,
-0, 0, 0, 0,
-1, 0, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-0, 0, 0, 01,
-0, 1, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 1
-),
-mat4(
-0, 0, 0, 01,
-0, 1, 0, 0,
-1, 0, 0, 0,
-0, 0, 0, 1
-),
-
-//north
-mat4(
-1, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 01,
-0, 0, 0, 1
-),
-mat4(
-0, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 01,
-0, 0, 0, 1
-),
-mat4(
-1, 0, 0, 0,
-0, 1, 0, 0,
-0, 0, 0, 01,
-0, 0, 0, 1
-),
-mat4(
-0, 0, 0, 0,
-0, 1, 0, 0,
-0, 0, 0, 01,
-0, 0, 0, 1
-),
-
+        //north
+        mat4(
+        1, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 01,
+        0, 0, 0, 1
+        ),
+        mat4(
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 01,
+        0, 0, 0, 1
+        ),
+        mat4(
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 0, 01,
+        0, 0, 0, 1
+        ),
+        mat4(
+        0, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 0, 01,
+        0, 0, 0, 1
+        ),
 };
 
 struct Face {
-        uint xyzn;
+        uint uvdn;
         uint wht;
 };
 
@@ -176,16 +174,16 @@ out float v_texId;
 
 vec4 getPosInfo(int faceIndex) {
         return vec4(
-                (faces[faceIndex].xyzn >> 0) & 0xff,
-                (faces[faceIndex].xyzn >> 8) & 0xff,
-                (faces[faceIndex].xyzn >> 16) & 0xff,
+                (faces[faceIndex].uvdn >> 0) & 0xff,
+                (faces[faceIndex].uvdn >> 8) & 0xff,
+                (faces[faceIndex].uvdn >> 16) & 0xff,
                 0
         );
 }
 
 uint getNormal(int faceIndex) {
         // return 0;
-        return (faces[faceIndex].xyzn >> 24) & 0xff;
+        return (faces[faceIndex].uvdn >> 24) & 0xff;
 }
 
 vec4 getSize(int faceIndex) {
@@ -193,7 +191,8 @@ vec4 getSize(int faceIndex) {
         return vec4(
                 ((faces[faceIndex].wht >> 0) & 0xff) + 1,
                 ((faces[faceIndex].wht >> 8) & 0xff) + 1,
-                0, 1
+                0,
+                1
         );
 }
 
@@ -204,9 +203,11 @@ float getTexture(int faceIndex) {
 void main() {
         int cornerIndex = gl_VertexID % 4;
         int faceIndex = gl_VertexID / 4;
-        vec4 vertexPos = getPosInfo(faceIndex);
-        vec4 offset = getSize(faceIndex) * normalTransforms[getNormal(faceIndex) * 4 + (cornerIndex)];
 
+        vec4 vertexPos = getPosInfo(faceIndex);
+        
+        vec4 offset = getSize(faceIndex) * normalTransforms[getNormal(faceIndex) * 4 + (cornerIndex)];
+        
         v_texCoord = (((vertexPos * normalTransforms[getNormal(faceIndex) * 4 + 3]).xy) + (getSize(faceIndex) * normalTransforms[cornerIndex]).xy) / vec2(16, -16);
         vertexPos += offset;
         v_texId = getTexture(faceIndex);

@@ -38,9 +38,9 @@ impl <'a> World<'a> {
         let mut faces = 0;
         for (chunk, x, y, z, _) in world.iter() {
             if x >= 4 || y >= 4 || z >= 4 { continue }
+            chunk.mesh_south(&mut buffer);
             // chunk.mesh_north(&mut buffer);
-            // chunk.mesh_south(&mut buffer);
-            chunk.mesh_west(&mut buffer);
+            // chunk.mesh_west(&mut buffer);
             // chunk.mesh_down(&mut buffer);
 
             chunk.face_count = (buffer.pos as u32) / 8;

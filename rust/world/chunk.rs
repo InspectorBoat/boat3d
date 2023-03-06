@@ -173,25 +173,6 @@ impl Chunk<'_> {
             }
             // print!(" | end face {z}");
         }
-
-        // self.face_count = (buffer.pos as u32) / 8;
-        
-        /*
-        if self.face_count == 0 { 
-            // gl_buffer.kill();
-            return;
-        }
-        let gl_buffer: Buffer;
-        unsafe {
-            gl_buffer = self.buffer.take().unwrap_unchecked();
-        }
-        
-        gl_buffer.storage((buffer.pos + 16) as isize, gl::DYNAMIC_STORAGE_BIT | gl::MAP_WRITE_BIT);
-        gl_buffer.upload_slice(&[self.chunk_pos.x, self.chunk_pos.y, self.chunk_pos.z, 0], 0, 16);
-        gl_buffer.upload_slice(&buffer.arr.as_slice(), 16, buffer.pos as isize);
-
-        self.buffer = Some(gl_buffer);
-        // */
     }
 
     pub fn mesh_north(&mut self, buffer: &mut ByteBuffer) {
@@ -298,25 +279,6 @@ impl Chunk<'_> {
             }
             // print!(" | end face {z}");
         }
-
-        // self.face_count = (buffer.pos as u32) / 8;
-        
-        /*
-        if self.face_count == 0 { 
-            // gl_buffer.kill();
-            return;
-        }
-        let gl_buffer: Buffer;
-        unsafe {
-            gl_buffer = self.buffer.take().unwrap_unchecked();
-        }
-        
-        gl_buffer.storage((buffer.pos + 16) as isize, gl::DYNAMIC_STORAGE_BIT | gl::MAP_WRITE_BIT);
-        gl_buffer.upload_slice(&[self.chunk_pos.x, self.chunk_pos.y, self.chunk_pos.z, 0], 0, 16);
-        gl_buffer.upload_slice(&buffer.arr.as_slice(), 16, buffer.pos as isize);
-
-        self.buffer = Some(gl_buffer);
-        // */
     }
 
     pub fn mesh_west(&mut self, buffer: &mut ByteBuffer) {
@@ -426,25 +388,6 @@ impl Chunk<'_> {
             }
             // print!(" | end face {z}");
         }
-
-        // self.face_count = (buffer.pos as u32) / 8;
-        
-        /*
-        if self.face_count == 0 { 
-            // gl_buffer.kill();
-            return;
-        }
-        let gl_buffer: Buffer;
-        unsafe {
-            gl_buffer = self.buffer.take().unwrap_unchecked();
-        }
-        
-        gl_buffer.storage((buffer.pos + 16) as isize, gl::DYNAMIC_STORAGE_BIT | gl::MAP_WRITE_BIT);
-        gl_buffer.upload_slice(&[self.chunk_pos.x, self.chunk_pos.y, self.chunk_pos.z, 0], 0, 16);
-        gl_buffer.upload_slice(&buffer.arr.as_slice(), 16, buffer.pos as isize);
-
-        self.buffer = Some(gl_buffer);
-        // */
     }
 
     pub fn mesh_down(&mut self, buffer: &mut ByteBuffer) {
@@ -554,25 +497,6 @@ impl Chunk<'_> {
             }
             // print!(" | end face {z}");
         }
-
-        // self.face_count = (buffer.pos as u32) / 8;
-        
-        /*
-        if self.face_count == 0 { 
-            // gl_buffer.kill();
-            return;
-        }
-        let gl_buffer: Buffer;
-        unsafe {
-            gl_buffer = self.buffer.take().unwrap_unchecked();
-        }
-        
-        gl_buffer.storage((buffer.pos + 16) as isize, gl::DYNAMIC_STORAGE_BIT | gl::MAP_WRITE_BIT);
-        gl_buffer.upload_slice(&[self.chunk_pos.x, self.chunk_pos.y, self.chunk_pos.z, 0], 0, 16);
-        gl_buffer.upload_slice(&buffer.arr.as_slice(), 16, buffer.pos as isize);
-
-        self.buffer = Some(gl_buffer);
-        // */
     }
 
     pub fn new<'a>() -> Chunk<'a> {

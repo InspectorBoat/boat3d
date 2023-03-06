@@ -80,7 +80,6 @@ fn main() {
     let fragment_shader = Shader::create(gl::FRAGMENT_SHADER, include_str!("shader/shader.frag"));
     let program = Program::create(vertex_shader, fragment_shader);
     Program::bind(program);
-    
     let index_buffer = Buffer::create();
     unsafe {
         gl::ClearColor(1.0, 1.0, 1.0, 1.0);
