@@ -1,16 +1,12 @@
-// #version 460
-// out vec4 f_color;
-// void main() {
-//      f_color = vec4(0, 0, 0, 1);
-// }
 #version 460
-out vec4 f_color;
+out vec4 color;
 
-in vec2 v_texCoord;
-in float v_texId;
+in vec2 tex_coord;
+in float tex_id;
 
-uniform sampler2DArray t_textures;
+uniform sampler2DArray textures;
 
 void main() {
-        f_color = texture(t_textures, vec3(v_texCoord, v_texId));
+        color = texture(textures, vec3(tex_coord, tex_id));
+        color = vec4(tex_id / 12, 0, 0, 1);
 }

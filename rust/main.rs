@@ -21,9 +21,9 @@ use glfw::{Context, Window, Action, Key};
 use util::gl_helper::*;
 use world::world::World;
 
-use crate::util::gl_helper;
+use crate::util::{gl_helper, buffer::ByteBuffer};
 
-static BLOCKS: [BlockState; 2] = [
+static BLOCKS: [BlockState; 4] = [
     BlockState {
         block: Block { name: "air" },
         model: BlockModel([
@@ -39,27 +39,85 @@ static BLOCKS: [BlockState; 2] = [
         block: Block { name: "grass" },
         model: BlockModel([
             BlockFace {
-                x: 0, y: 0, z: 0, n: Normal::SOUTH,
+                u: 0, v: 0, d: 0, n: Normal::SOUTH,
                 w: 15, h: 15, t: 0
             },
             BlockFace {
-                x: 0, y: 0, z: 0, n: Normal::WEST,
+                u: 0, v: 0, d: 0, n: Normal::WEST,
                 w: 15, h: 15, t: 0
             },
             BlockFace {
-                x: 0, y: 0, z: 0, n: Normal::DOWN,
+                u: 0, v: 0, d: 0, n: Normal::DOWN,
                 w: 15, h: 15, t: 0
             },
             BlockFace {
-                x: 0, y: 15, z: 0, n: Normal::UP,
+                u: 0, v: 15, d: 0, n: Normal::UP,
                 w: 15, h: 15, t: 0
             },
             BlockFace {
-                x: 15, y: 0, z: 0, n: Normal::EAST,
+                u: 15, v: 0, d: 0, n: Normal::EAST,
                 w: 15, h: 15, t: 0
             },
             BlockFace {
-                x: 0, y: 0, z: 15, n: Normal::NORTH,
+                u: 0, v: 0, d: 15, n: Normal::NORTH,
+                w: 15, h: 15, t: 0
+            },
+        ])
+    },
+    BlockState {
+        block: Block { name: "stone" },
+        model: BlockModel([
+            BlockFace {
+                u: 0, v: 0, d: 0, n: Normal::SOUTH,
+                w: 15, h: 15, t: 1
+            },
+            BlockFace {
+                u: 0, v: 0, d: 0, n: Normal::WEST,
+                w: 15, h: 15, t: 0
+            },
+            BlockFace {
+                u: 0, v: 0, d: 0, n: Normal::DOWN,
+                w: 15, h: 15, t: 0
+            },
+            BlockFace {
+                u: 0, v: 15, d: 0, n: Normal::UP,
+                w: 15, h: 15, t: 0
+            },
+            BlockFace {
+                u: 15, v: 0, d: 0, n: Normal::EAST,
+                w: 15, h: 15, t: 0
+            },
+            BlockFace {
+                u: 0, v: 0, d: 15, n: Normal::NORTH,
+                w: 15, h: 15, t: 0
+            },
+        ])
+    },
+    BlockState {
+        block: Block { name: "dirt" },
+        model: BlockModel([
+            BlockFace {
+                u: 0, v: 0, d: 0, n: Normal::SOUTH,
+                w: 15, h: 15, t: 2
+            },
+            BlockFace {
+                u: 0, v: 0, d: 0, n: Normal::WEST,
+                w: 15, h: 15, t: 0
+            },
+            BlockFace {
+                u: 0, v: 0, d: 0, n: Normal::DOWN,
+                w: 15, h: 15, t: 0
+            },
+            BlockFace {
+                u: 0, v: 0, d: 15, n: Normal::UP,
+                w: 15, h: 15, t: 0
+            },
+            BlockFace {
+                u: 0, v: 0, d: 15, n: Normal::EAST,
+                w: 15, h: 15, t: 0
+            },
+            BlockFace {
+                u: 0, v: 0, d: 15, n: Normal::NORTH,
                 w: 15, h: 15, t: 0
             },
         ])
@@ -80,11 +138,12 @@ fn main() {
     let fragment_shader = Shader::create(gl::FRAGMENT_SHADER, include_str!("shader/shader.frag"));
     let program = Program::create(vertex_shader, fragment_shader);
     Program::bind(program);
+    log_error();
     let index_buffer = Buffer::create();
     unsafe {
         gl::ClearColor(1.0, 1.0, 1.0, 1.0);
         gl::Enable(gl::DEPTH_TEST);
-        gl::Enable(gl::CULL_FACE);
+        // gl::Enable(gl::CULL_FACE);
         gl::Enable(gl::PRIMITIVE_RESTART);
         gl::PrimitiveRestartIndex(u32::MAX);
         let mut index_array = Vec::with_capacity(1024 * 1024 / 4);
@@ -125,24 +184,39 @@ fn main() {
         chunk.kill_buffer();
     }
     // */
+    // */
 
     // let mut arr: [u8; 8] = [0, 1, 2, 3, 4, 5, 6, 7];
-    // let face = &BLOCKS[1].model[Normal::SOUTH];
+    // let face = &BLOCKS[0].model[Normal::SOUTH];
     // println!("{:?}", arr);
     // unsafe {
     //     let loc = ptr::addr_of_mut!(arr) as *mut u64;
-    //     *loc = *(ptr::addr_of!(*face) as *const u64);
+    //     *loc = face.as_u64();
     // }
     // println!("{:?}", arr);
-    // arr[0] = face.x;
-    // arr[1] = face.y;
-    // arr[2] = face.z;
+    // arr[0] = face.u;
+    // arr[1] = face.v;
+    // arr[2] = face.d;
     // arr[3] = face.n.0;
     // arr[4] = face.w;
     // arr[5] = face.h;
     // arr[6] = 0;
     // arr[7] = face.t as u8;
     // println!("{:?}", arr);
+    // let mut buffer = ByteBuffer::new();
+    // buffer.put_u64(face.as_u64() + ((0x1 << 4) | (0x2 << 12) | (0x3 << 20)));
+    // println!("{:?}", &buffer.arr[0..8]);
+    // buffer.pos = 0;
+    // buffer.put(face.u);
+    // buffer.put(face.v);
+    // buffer.put(face.d);
+    // buffer.put(face.n.0);
+
+    // buffer.put(face.w);
+    // buffer.put(face.h);
+    // buffer.put(0);
+    // buffer.put(face.t as u8);
+    // println!("{:?}", &buffer.arr[0..8]);
 }
 
 #[allow(unused_variables)]
@@ -165,7 +239,7 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
         }
         glfw::WindowEvent::Key(key, scancode, action, modifiers) => {
             keys.insert(key, if action == Action::Release { false } else { true });
-
+            
             if action != Action::Press { return }
             match key {
                 Key::Escape => { window.set_should_close(true) }
@@ -239,7 +313,7 @@ fn draw(world: &mut World) {
         gl::UniformMatrix4fv(0, 1, gl::FALSE, matrix.as_array().as_ptr());
         
         for (chunk, x, y, z, _) in world.iter() {
-            if x >= 4 || y >= 4 || z >= 4 { continue }
+            // if x >= 1 || y >= 1 || z != 10 { continue }
             if let Some(buffer) = &chunk.buffer {
                 buffer.bind_indexed_target(gl::SHADER_STORAGE_BUFFER);
                 gl::DrawElements(gl::TRIANGLE_STRIP, (chunk.face_count * 5) as i32, gl::UNSIGNED_INT, ptr::null());

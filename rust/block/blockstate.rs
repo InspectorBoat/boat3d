@@ -5,4 +5,3 @@ pub struct BlockState {
     pub model: BlockModel,
     pub block: Block,
 }
-

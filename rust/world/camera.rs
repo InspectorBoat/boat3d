@@ -36,7 +36,7 @@ impl Camera {
     }
     pub fn new() -> Camera {
         Camera { 
-            pos: Vec3::default(),
+            pos: Vec3 { x: 0.0, y: 0.0, z: 16.0 * 11.0 * 0.0 },
             prev_mouse: (f64::MAX, f64::MAX),
             ratio: 1.0,
             rot: Rot { pitch: 0.0, yaw: 0.0 }

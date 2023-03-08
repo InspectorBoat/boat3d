@@ -1,159 +1,68 @@
 #version 460
 
-const mat4[] normalTransforms = {
-        // south
-        mat4(
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 1
-        ),
-        mat4(
-        1, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 1
-        ),
-        mat4(
-        0, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 1
-        ),
+const mat4[] pos_transforms = {
         mat4(
         1, 0, 0, 0,
         0, 1, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 1
-        ),
-
-        // west
-        mat4(
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        1, 0, 0, 0,
+        0, 0, 1, 0,
         0, 0, 0, 1
         ),
         mat4(
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 1
-        ),
-        mat4(
-        0, 0, 0, 0,
+        0, 0, 1, 0,
         0, 1, 0, 0,
         1, 0, 0, 0,
         0, 0, 0, 1
         ),
         mat4(
-        0, 0, 0, 0,
         0, 1, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 1
-        ),
-
-        // down
-        mat4(
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 0, 1
-        ),
-        mat4(
-        1, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 0, 1
-        ),
-        mat4(
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 1
-        ),
-        mat4(
-        1, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 1
-        ),
-
-        // up
-        mat4(
-        0, 0, 0, 0,
-        0, 0, 0, 01,
-        0, 0, 0, 0,
-        0, 0, 0, 1
-        ),
-        mat4(
-        1, 0, 0, 0,
-        0, 0, 0, 01,
-        0, 0, 0, 0,
-        0, 0, 0, 1
-        ),
-        mat4(
-        0, 0, 0, 0,
-        0, 0, 0, 01,
-        0, 1, 0, 0,
-        0, 0, 0, 1
-        ),
-        mat4(
-        1, 0, 0, 0,
-        0, 0, 0, 01,
-        0, 1, 0, 0,
-        0, 0, 0, 1
-        ),
-
-        // east
-        mat4(
-        0, 0, 0, 01,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 1
-        ),
-        mat4(
-        0, 0, 0, 01,
-        0, 0, 0, 0,
-        1, 0, 0, 0,
-        0, 0, 0, 1
-        ),
-        mat4(
-        0, 0, 0, 01,
-        0, 1, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 1
-        ),
-        mat4(
-        0, 0, 0, 01,
-        0, 1, 0, 0,
+        0, 0, 1, 0,
         1, 0, 0, 0,
         0, 0, 0, 1
         ),
 
-        //north
         mat4(
+        0, 1, 0, 0,
+        0, 0, 1, 0,
         1, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 01,
         0, 0, 0, 1
         ),
         mat4(
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 01,
+        0, 0, 1, 0,
+        0, 1, 0, 0,
+        1, 0, 0, 0,
         0, 0, 0, 1
         ),
         mat4(
         1, 0, 0, 0,
         0, 1, 0, 0,
-        0, 0, 0, 01,
+        0, 0, 1, 1,
+        0, 0, 0, 1
+        ),
+};
+
+const mat4[] corner_transforms = {
+        mat4(
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
         0, 0, 0, 1
         ),
         mat4(
         0, 0, 0, 0,
         0, 1, 0, 0,
-        0, 0, 0, 01,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        1, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        mat4(
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 0, 0,
         0, 0, 0, 1
         ),
 };
@@ -165,79 +74,54 @@ struct Face {
 
 layout(location = 0) uniform mat4 u_transform;
 layout(std430, binding = 0) readonly buffer Faces {
-        ivec4 chunkPos;
+        ivec4 chunk_pos;
         Face faces[];
 };
 
-out vec2 v_texCoord;
-out float v_texId;
+out vec2 tex_coord;
+out float tex_id;
 
-vec4 getPosInfo(int faceIndex) {
+vec4 get_relative_pos(int face_index) {
         return vec4(
-                (faces[faceIndex].uvdn >> 0) & 0xff,
-                (faces[faceIndex].uvdn >> 8) & 0xff,
-                (faces[faceIndex].uvdn >> 16) & 0xff,
+                (faces[face_index].uvdn >>  0) & 0xff,
+                (faces[face_index].uvdn >>  8) & 0xff,
+                (faces[face_index].uvdn >> 16) & 0xff,
                 0
         );
 }
 
-uint getNormal(int faceIndex) {
-        // return 0;
-        return (faces[faceIndex].uvdn >> 24) & 0xff;
+uint get_normal(int face_index) {
+        return (faces[face_index].uvdn >> 24) & 0xff;
 }
 
-vec4 getSize(int faceIndex) {
-        // return vec4(((faces[faceIndex].wht >> 24) & 0xff) + 1, ((faces[faceIndex].wht >> 16) & 0xff) + 1, 0, 1);
+vec4 get_size(int face_index) {
         return vec4(
-                ((faces[faceIndex].wht >> 0) & 0xff) + 1,
-                ((faces[faceIndex].wht >> 8) & 0xff) + 1,
+                ((faces[face_index].wht >> 0) & 0xff) + 1,
+                ((faces[face_index].wht >> 8) & 0xff) + 1,
                 0,
                 1
         );
 }
 
-float getTexture(int faceIndex) {
-        return float(faces[faceIndex].wht & 0xff);
+float get_texture(int face_index) {
+        return float(faces[face_index].wht & 0xff);
 }
 
 void main() {
-        int cornerIndex = gl_VertexID % 4;
-        int faceIndex = gl_VertexID / 4;
+        int corner_index = gl_VertexID % 4;
+        int face_index = gl_VertexID / 4;
+        uint normal = get_normal(face_index);
 
-        vec4 vertexPos = getPosInfo(faceIndex);
+        int z = 4;
+        bool x = bool(z);
+        int y = int(x);
+
+        vec4 vertex_pos = get_relative_pos(face_index);
+        vec4 offset = get_size(face_index) * corner_transforms[corner_index];
+        vertex_pos += offset;
         
-        vec4 offset = getSize(faceIndex) * normalTransforms[getNormal(faceIndex) * 4 + (cornerIndex)];
-        
-        v_texCoord = (((vertexPos * normalTransforms[getNormal(faceIndex) * 4 + 3]).xy) + (getSize(faceIndex) * normalTransforms[cornerIndex]).xy) / vec2(16, -16);
-        vertexPos += offset;
-        v_texId = getTexture(faceIndex);
-        gl_Position = u_transform * (vertexPos + chunkPos * 256);
+        gl_Position = u_transform * (vertex_pos * pos_transforms[normal] + chunk_pos * 256);
+
+        tex_coord = vec2(0, 0);
+        tex_id = normal;
 }
-
-// #version 460
-
-// struct Face {
-//         uint xyzn;
-//         uint wht;
-// };
-
-// layout(location = 0) uniform mat4 u_transform;
-
-// layout(std430, binding = 0) readonly buffer Faces {
-//         ivec4 chunkPos;
-//         Face faces[];
-// };
-
-
-// void main() {
-//         uint face = faces[gl_VertexID].xyzn;
-//         vec4 pos = vec4(
-//                 float((face >>  0) & 0xff) / 4,
-//                 float((face >>  8) & 0xff) / 4,
-//                 float((face >> 16) & 0xff) / 4,
-//                 1
-//         );
-//         gl_Position = u_transform * pos;
-//         // gl_Position = vec4(0, 0, 0, 1);
-//         // gl_Position = vec4(u_transform[0]);
-// }
