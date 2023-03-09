@@ -1,17 +1,18 @@
 use std::ptr;
 
 #[derive(Clone, Debug)]
-#[repr(C)]
 pub struct BlockFace {
     pub u: u8,
     pub v: u8,
-    pub d: u8,
-    pub n: Normal,
-
     pub w: u8,
     pub h: u8,
+
+    pub d: u8,
+
+    pub n: Normal,
     
     pub t: u16,
+
 }
 
 impl BlockFace {
@@ -20,7 +21,8 @@ impl BlockFace {
             return (true, second.is_none())
         } else if second.is_none() {
             return (false, true)
-        }
+        } return (false, false);
+        
         let x_overlap = (first.u + first.w).min(second.u + second.w) - first.u.min(second.u);
         let y_overlap = (first.v + first.h).min(second.v + second.h) - first.v.min(second.v);
         return (
@@ -28,6 +30,16 @@ impl BlockFace {
             (x_overlap == second.w - second.u && y_overlap == second.h - second.v)
         )
     }
+    
+    pub fn compare_(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+        let (left,  bottom) = (u8::max(a.u, b.u), u8::max(a.v, b.v));
+        let (right, top)    = (u8::max(a.w, b.w), u8::max(a.h, b.h));
+        return (
+            (a.u == left && a.v == bottom && a.w == right && a.h == top),
+            (b.u == left && b.v == bottom && b.w == right && b.h == top)
+        )
+    }
+
     pub fn not_culled_by(&self, other: &BlockFace) -> bool {
         return if other.is_none() { true } else {
             self.u < other.u ||
@@ -51,14 +63,14 @@ impl BlockFace {
     }
 
     pub fn is_none(&self) -> bool {
-        return self.t == u16::MAX;
+        return self.t == u16::MAX
     }
 
     pub fn is_some(&self) -> bool {
         return self.t != u16::MAX;
     }
     pub const NONE: BlockFace = BlockFace {
-        u: 1, v: 2, d: 3, n: Normal::NONE, w: 5, h: 6, t: u16::MAX
+        u: u8::MAX, v: u8::MAX, d: u8::MAX, n: Normal::NONE, w: u8::MAX, h: u8::MAX, t: u16::MAX
     };
 }
 
@@ -76,18 +88,18 @@ pub struct Normal(pub u8/* , pub isize */);
 #[allow(unused_parens)]
 impl Normal {
     fn reverse(&self) -> Normal {
-        return Normal(6 - self.0/* , -self.1 */);
+        return Normal(6 - self.0);
     }
-    pub const SOUTH: Normal = Normal(0/* , -0x001 */);
-    pub const NORTH: Normal = Normal(5/* ,  0x001 */);
+    pub const SOUTH: Normal = Normal(0);
+    pub const NORTH: Normal = Normal(5);
 
-    pub const WEST:  Normal = Normal(1/* , -0x100 */);
-    pub const EAST:  Normal = Normal(4/* ,  0x100 */);
+    pub const WEST:  Normal = Normal(1);
+    pub const EAST:  Normal = Normal(4);
 
-    pub const DOWN:  Normal = Normal(2/* , -0x010 */);
-    pub const UP:    Normal = Normal(3/* ,  0x010 */);
+    pub const DOWN:  Normal = Normal(2);
+    pub const UP:    Normal = Normal(3);
 
-    const NONE:      Normal = Normal(255/* ,    0 */);
+    pub const NONE:  Normal = Normal(u8::MAX);
 }
 
 impl Into<u8> for Normal {
@@ -148,6 +160,34 @@ impl N {
             N::EAST  =>  (0xf00, 15),
             N::DOWN  =>  (0x0f0, 0),
             N::UP    =>  (0x0f0, 15),
+        }
+    }
+}
+
+pub struct Face {
+    pub left: u8,
+    pub bottom: u8,
+    pub right: u8,
+    pub top: u8,
+    pub depth: u8,
+    pub normal: u8,
+    pub texture: u16,
+}
+
+impl Face {
+    fn as_u64(&self) -> u64 {
+        unsafe {
+            *(ptr::addr_of!(*self) as *const u64)
+        }
+    }
+    fn as_u32(&self) -> u32 {
+        unsafe {
+            *(ptr::addr_of!(*self) as *const u32)
+        }
+    }
+    fn as_u16(&self) -> u16 {
+        unsafe {
+            *(ptr::addr_of!(*self) as *const u16)
         }
     }
 }

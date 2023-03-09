@@ -1,4 +1,5 @@
 use core::panic;
+use std::hint::black_box;
 
 use crate::{block::{blockstate::BlockState, blockface::{Normal, BlockFace, N}}, util::{gl_helper::{Buffer, log_if_error, log_error}, buffer::ByteBuffer}, BLOCKS};
 
@@ -10,40 +11,43 @@ pub struct Chunk<'a> {
     pub buffer: Option<Buffer>
 }
 impl Chunk<'_> {
-    // fn opposing<const NORMAL: Normal>(&self, pos: usize) -> &BlockFace {
-    //     if pos & 0x00f == 0 { return &BlockFace::NONE }
-    //     let pos: usize = (pos as isize - NORMAL.1) as usize;
-    //     return unsafe { &self.blocks.get_unchecked(pos).model[Normal::NORTH] }
-    // }
-    fn get_face<const NORMAL: N>(&self, pos: usize) -> &BlockFace {
-        return unsafe { &self.blocks.get_unchecked(pos).model[NORMAL] }
+    fn get_face<const NORMAL: N>(&self, index: usize) -> &BlockFace {
+        return unsafe { &self.blocks.get_unchecked(index).model[NORMAL] }
     }
-    fn get_opposing_face<const NORMAL: N>(&self, pos: usize) -> &BlockFace {
-        if pos & NORMAL.offset_mask().0 == NORMAL.offset_mask().1 { return &BlockFace::NONE; }
-        let pos = pos as isize + NORMAL.offset();
-        return unsafe { &self.blocks.get_unchecked(pos as usize).model[NORMAL.opposite()] }
+    fn get_opposing_face<const NORMAL: N>(&self, index: usize) -> &BlockFace {
+        if index & NORMAL.offset_mask().0 == NORMAL.offset_mask().1 { return &BlockFace::NONE; }
+        let index = index as isize + NORMAL.offset();
+        return unsafe { &self.blocks.get_unchecked(index as usize).model[NORMAL.opposite()] }
     }
-    fn get_south(&self, pos: usize) -> &BlockFace {
-        return unsafe { &self.blocks.get_unchecked(pos).model[Normal::SOUTH] }
+    fn get_face_pair<const NORMAL: N>(&self, index: usize) -> (&BlockFace, &BlockFace) {
+        (self.get_face::<NORMAL>(index), self.get_opposing_face::<NORMAL>(index))
     }
-    fn opposing_south(&self, pos: usize) -> &BlockFace {
-        if pos & 0x00f == 0 { return &BlockFace::NONE }
-        let pos: usize = pos - 0x001;
+
+    fn get_index(x: u8, y: u8, z: u8) -> usize {
+        ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0)
+    }
+    
+    fn get_south(&self, index: usize) -> &BlockFace {
+        return unsafe { &self.blocks.get_unchecked(index).model[Normal::SOUTH] }
+    }
+    fn opposing_south(&self, index: usize) -> &BlockFace {
+        if index & 0x00f == 0 { return &BlockFace::NONE }
+        let pos: usize = index - 0x001;
         return unsafe { &self.blocks.get_unchecked(pos).model[Normal::NORTH] }
     }
-    fn opposing_north(&self, pos: usize) -> &BlockFace {
-        if pos & 0x00f == 0x00f { return &BlockFace::NONE }
-        let pos: usize = pos + 0x001;
+    fn opposing_north(&self, index: usize) -> &BlockFace {
+        if index & 0x00f == 0x00f { return &BlockFace::NONE }
+        let pos: usize = index + 0x001;
         return unsafe { &self.blocks.get_unchecked(pos).model[Normal::SOUTH] }
     }
-    fn opposing_west(&self, pos: usize) -> &BlockFace {
-        if pos & 0xf00 == 0 { return &BlockFace::NONE }
-        let pos: usize = pos - 0x100;
+    fn opposing_west(&self, index: usize) -> &BlockFace {
+        if index & 0xf00 == 0 { return &BlockFace::NONE }
+        let pos: usize = index - 0x100;
         return unsafe { &self.blocks.get_unchecked(pos).model[Normal::EAST] }
     }
-    fn opposing_down(&self, pos: usize) -> &BlockFace {
-        if pos & 0x0f0 == 0 { return &BlockFace::NONE }
-        let pos: usize = pos - 0x010;
+    fn opposing_down(&self, index: usize) -> &BlockFace {
+        if index & 0x0f0 == 0 { return &BlockFace::NONE }
+        let pos: usize = index - 0x010;
         return unsafe { &self.blocks.get_unchecked(pos).model[Normal::UP] }
     }
     
@@ -104,10 +108,10 @@ impl Chunk<'_> {
         
         let mut row_id: u16 = 0;
         for z in 0..16_u8 { for y in 0..16_u8 { for x in 0..16_u8 {
-            let pos = ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0);
+            let index = Chunk::get_index(x, y, z);
             
-            let face: &BlockFace = match self.get_face::<{N::SOUTH}>(pos) {
-                face if face.is_some() && face.not_culled_by(self.get_opposing_face::<{N::SOUTH}>(pos)) => {
+            let face: &BlockFace = match self.get_face::<{N::SOUTH}>(index) {
+                face if face.is_some() && face.not_culled_by(self.get_opposing_face::<{N::SOUTH}>(index)) => {
                     // print!("\n{x:0>2} {y:0>2} {z:0>2}");
                     face
                 },
@@ -159,7 +163,7 @@ impl Chunk<'_> {
                     }
                 }
                 else {
-                    let next_pos = pos + 0x100;
+                    let next_pos = index + 0x100;
                     let next_face = unsafe {
                         &self.blocks.get_unchecked(next_pos).model[Normal::SOUTH]
                     };
@@ -523,59 +527,19 @@ impl Chunk<'_> {
         let mut active_run_s: bool = false;
         let mut same_row_s: bool = false;
 
-        let mut row_o: [Run; 16] = Default::default();
-        let mut run_n: &mut Run = &mut row_o[0];
+        let mut row_n: [Run; 16] = Default::default();
+        let mut run_n: &mut Run = &mut row_n[0];
         let mut active_run_n: bool = false;
         let mut same_row_n: bool = false;
         
         let mut row_id: u16 = 0;
 
-        for z in 0..16_u8 { for y in 0..16_u8 { for x in 0..16_u8 {
+        for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
             let pos = ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0);
             
-            let face_s: &BlockFace = self.get_south(pos);
-            let face_n: &BlockFace = self.opposing_south(pos);
+            let (face_s, face_n) = self.get_face_pair::<{N::SOUTH}>(pos);
 
-            // let face: &BlockFace = match face {
-            //     face if face.is_some() && face.not_culled_by(face_o) => {
-            //         // print!("\n{x:0>2} {y:0>2} {z:0>2}");
-            //         face
-            //     },
-            //     _face => {
-            //         /*
-            //         if active_run {
-            //             print!("\n{x:0>2} {y:0>2} {z:0>2} | end run");
-            //             if _face.is_none() {print!("missing")}
-            //             else {print!("culled")}
-            //             print!("\n");
-            //         }
-            //         // */
-            //         active_run = false;
-            //         &BlockFace::NONE
-            //         // continue
-            //     }
-            // };
-            // let face_o: &BlockFace = match face_o {
-            //     face_o if face_o.is_some() && face_o.not_culled_by(face) => {
-            //         // print!("\n{x:0>2} {y:0>2} {z:0>2}");
-            //         face_o
-            //     },
-            //     _face_o => {
-            //         /*
-            //         if active_run {
-            //             print!("\n{x:0>2} {y:0>2} {z:0>2} | end run");
-            //             if _face_o.is_none() {print!("missing")}
-            //             else {print!("culled")}
-            //             print!("\n");
-            //         }
-            //         // */
-            //         active_run_o = false;
-            //         &BlockFace::NONE
-            //     }
-            // };
-            
-            let compare = BlockFace::compare(face_s, face_n);
-
+            let compare = BlockFace::compare_(face_s, face_n);
             'south: {
                 if compare.0 {
                     active_run_s = false;
@@ -583,22 +547,19 @@ impl Chunk<'_> {
                 }
                 if active_run_s && same_row_s {
                     if run_s.match_right(&face_s) {
-                        // print!(" | merge face");
                         run_s.merge_face(buffer, &face_s);
                         break 'south
                     } else {
-                        // print!(" | end run");
                         active_run_s = false;
+                        break 'south
                     }
                 }
-                // /*
-
+                // /* 
                 if !active_run_s {
                     run_s = &mut row_s[x as usize];
                     if run_s.row_id + 1 == row_id && run_s.match_top_left(&face_s) {
                         same_row_s = false;
                         active_run_s = true;
-                        // print!(" | begin merge {}-{}", run.start, run.end);
                     }
                 }
 
@@ -607,49 +568,28 @@ impl Chunk<'_> {
                         if run_s.match_top_right(&face_s) {
                             run_s.pull(buffer, &face_s, x, y, z);
                             active_run_s = false;
-                            // print!(" | do merge");
                         }
                         else {
                             run_s.pull_partial(buffer, &face_s, x, y, z);
                             same_row_s = true;
-                            // print!(" | fail merge");
                         }
                     }
                     else {
                         let next_pos = pos + 0x100;
-                        let next_face = unsafe {
-                            &self.blocks.get_unchecked(next_pos).model[Normal::SOUTH]
+                        let next_face_s = unsafe {
+                            &self.blocks.get_unchecked(next_pos).model[N::SOUTH]
                         };
                         
-                        if next_face.is_none() ||
-                            !Run::match_faces(face_s, next_face) ||
-                            next_face.culled_by(self.opposing_south(next_pos)) {
-                            /*
-                            print!(" | abort");
-                            if next_face.is_none() {
-                                print!(":missing {:?}", next_face)
-                            } else if !Run::match_faces(face, next_face) {
-                                print!(":mismatch")
-                            } if next_face.culled_by(self.opposing_south(next_pos)) {
-                                print!(":culled")
-                            }
-                            // */
+                        if next_face_s.is_none() ||
+                            !Run::match_faces(face_s, next_face_s) ||
+                            next_face_s.culled_by(self.opposing_south(next_pos)) {
                             run_s.pull_partial(buffer, &face_s, x, y, z);
                             active_run_s = false;
                         }
-                        /*
-                        else {
-                            print!(" | continue");
-                        }
-                        // */
                     }
                     break 'south
                 }
-                
-                // */
-                /*
-                print!(" | new run");
-                // */
+                //  */
                 run_s = &mut row_s[x as usize];
                 same_row_s = true;
                 active_run_s = true;
@@ -662,23 +602,19 @@ impl Chunk<'_> {
                 }
                 if active_run_n && same_row_n {
                     if run_n.match_right(&face_n) {
-                        // print!(" | merge face");
                         run_n.merge_face(buffer, &face_n);
                         break 'north
                     } else {
-                        // print!(" | end run");
                         active_run_n = false;
+                        break 'north
                     }
                 }
-                
-                // /*
-
+                // /* 
                 if !active_run_n {
-                    run_n = &mut row_o[x as usize];
+                    run_n = &mut row_n[x as usize];
                     if run_n.row_id + 1 == row_id && run_n.match_top_left(&face_n) {
                         same_row_n = false;
                         active_run_n = true;
-                        // print!(" | begin merge {}-{}", run.start, run.end);
                     }
                 }
 
@@ -687,55 +623,34 @@ impl Chunk<'_> {
                         if run_n.match_top_right(&face_n) {
                             run_n.pull(buffer, &face_n, x, y, z);
                             active_run_n = false;
-                            // print!(" | do merge");
                         }
                         else {
                             run_n.pull_partial(buffer, &face_n, x, y, z);
                             same_row_n = true;
-                            // print!(" | fail merge");
                         }
                     }
                     else {
                         let next_pos = pos + 0x100;
                         let next_face_o = unsafe {
-                            &self.blocks.get_unchecked(next_pos).model[Normal::SOUTH]
+                            &self.blocks.get_unchecked(next_pos).model[Normal::NORTH]
                         };
                         
                         if next_face_o.is_none() ||
                             !Run::match_faces(face_n, next_face_o) ||
                             next_face_o.culled_by(self.opposing_south(next_pos)) {
-                            /*
-                            print!(" | abort");
-                            if next_face.is_none() {
-                                print!(":missing {:?}", next_face)
-                            } else if !Run::match_faces(face, next_face) {
-                                print!(":mismatch")
-                            } if next_face.culled_by(self.opposing_south(next_pos)) {
-                                print!(":culled")
-                            }
-                            // */
                             run_n.pull_partial(buffer, &face_n, x, y, z);
                             active_run_n = false;
                         }
-                        /*
-                        else {
-                            print!(" | continue");
-                        }
-                        // */
                     }
                     break 'north
                 }
-                
-                // */
-                /*
-                print!(" | new run");
-                // */
-                run_n = &mut row_o[x as usize];
-                same_row_n = true;
+                //  */
+                run_n = &mut row_n[x as usize];
                 active_run_n = true;
+                same_row_n = true;
                 run_n.begin(buffer, &face_n, x, y, z, row_id);
             }
-        } active_run_s = false; row_id += 1; active_run_n = false; } row_id += 16; }
+        } (active_run_s, active_run_n) = (false, false); row_id += 1; } row_id += 16; }
     }
 
     pub fn new<'a>() -> Chunk<'a> {
@@ -830,7 +745,8 @@ impl Run {
      * End y is already guaranteed to match
      */
     fn merge_face(&mut self, buffer: &mut ByteBuffer, face: &BlockFace) {
-        buffer[self.pointer as usize + 4] += face.w + 1;
+        black_box(buffer);
+        // buffer[self.pointer as usize + 4] += face.w + 1;
         self.end += 1;
         self.max_u = face.u + face.w;
     }
@@ -870,7 +786,6 @@ impl Run {
     fn begin(&mut self, buffer: &mut ByteBuffer, face: &BlockFace, u: u8, v: u8, d: u8, row_id: u16) {
         self.pointer = buffer.pos as u16;
 
-        /*
         buffer.put(face.u + u * 16);
         buffer.put(face.v + v * 16);
         buffer.put(face.d + d * 16);
@@ -880,7 +795,6 @@ impl Run {
         buffer.put(face.h);
         buffer.put(0);
         buffer.put(face.t as u8);
-        */
 
         // Moving the entire face is more efficient
         let offset = ((u as u64) << 4) | ((v as u64) << 12) | ((d as u64) << 20);
@@ -910,7 +824,6 @@ impl Run {
             face.h                   == next.h
         }
     }
-
 
     fn new() -> Run {
         Run {

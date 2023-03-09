@@ -41,9 +41,9 @@ impl <'a> World<'a> {
                 // if x >= 1 || y >= 1 || z >= 1 { continue }
                 // chunk.mesh_west(&mut buffer);
                 // chunk.mesh_down(&mut buffer);
-                chunk.mesh_south(&mut buffer);
+                // chunk.mesh_south(&mut buffer);
                 // chunk.mesh_north(&mut buffer);
-                // chunk.mesh_north_south(&mut buffer);
+                chunk.mesh_north_south(&mut buffer);
 
                 chunk.face_count = (buffer.pos as u32) / 8;
 

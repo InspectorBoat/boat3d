@@ -40,27 +40,27 @@ static BLOCKS: [BlockState; 4] = [
         model: BlockModel([
             BlockFace {
                 u: 0, v: 0, d: 0, n: Normal::SOUTH,
-                w: 15, h: 15, t: 0
+                w: 0, h: 15, t: 0
             },
             BlockFace {
                 u: 0, v: 0, d: 0, n: Normal::WEST,
-                w: 15, h: 15, t: 0
+                w: 0, h: 0, t: 0
             },
             BlockFace {
                 u: 0, v: 0, d: 0, n: Normal::DOWN,
-                w: 15, h: 15, t: 0
+                w: 0, h: 0, t: 0
             },
             BlockFace {
-                u: 0, v: 15, d: 0, n: Normal::UP,
-                w: 15, h: 15, t: 0
+                u: 0, v: 0, d: 0, n: Normal::UP,
+                w: 0, h: 0, t: 0
             },
             BlockFace {
-                u: 15, v: 0, d: 0, n: Normal::EAST,
-                w: 15, h: 15, t: 0
+                u: 0, v: 0, d: 0, n: Normal::EAST,
+                w: 0, h: 0, t: 0
             },
             BlockFace {
                 u: 0, v: 0, d: 15, n: Normal::NORTH,
-                w: 15, h: 15, t: 0
+                w: 0, h: 0, t: 0
             },
         ])
     },
@@ -69,7 +69,7 @@ static BLOCKS: [BlockState; 4] = [
         model: BlockModel([
             BlockFace {
                 u: 0, v: 0, d: 0, n: Normal::SOUTH,
-                w: 15, h: 15, t: 1
+                w: 15, h: 15, t: 0
             },
             BlockFace {
                 u: 0, v: 0, d: 0, n: Normal::WEST,
@@ -98,27 +98,27 @@ static BLOCKS: [BlockState; 4] = [
         model: BlockModel([
             BlockFace {
                 u: 0, v: 0, d: 0, n: Normal::SOUTH,
-                w: 15, h: 15, t: 2
+                w: 0, h: 0, t: 2
             },
             BlockFace {
                 u: 0, v: 0, d: 0, n: Normal::WEST,
-                w: 15, h: 15, t: 0
+                w: 0, h: 0, t: 0
             },
             BlockFace {
                 u: 0, v: 0, d: 0, n: Normal::DOWN,
-                w: 15, h: 15, t: 0
+                w: 0, h: 0, t: 0
             },
             BlockFace {
                 u: 0, v: 0, d: 15, n: Normal::UP,
-                w: 15, h: 15, t: 0
+                w: 0, h: 0, t: 0
             },
             BlockFace {
                 u: 0, v: 0, d: 15, n: Normal::EAST,
-                w: 15, h: 15, t: 0
+                w: 0, h: 0, t: 0
             },
             BlockFace {
                 u: 0, v: 0, d: 15, n: Normal::NORTH,
-                w: 15, h: 15, t: 0
+                w: 0, h: 0, t: 0
             },
         ])
     }
