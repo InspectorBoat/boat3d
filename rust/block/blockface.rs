@@ -2,58 +2,42 @@ use std::ptr;
 
 #[derive(Clone, Debug)]
 pub struct BlockFace {
-    pub u: u8,
-    pub v: u8,
-    pub w: u8,
-    pub h: u8,
+    pub lef: u8,
+    pub bot: u8,
+    pub rig: u8,
+    pub top: u8,
 
-    pub d: u8,
+    pub dep: u8,
 
-    pub n: Normal,
+    pub nor: Normal,
     
-    pub t: u16,
-
+    pub tex: u16,
 }
 
 impl BlockFace {
-    pub fn compare(first: &BlockFace, second: &BlockFace) -> (bool, bool) {
-        if first.is_none() {
-            return (true, second.is_none())
-        } else if second.is_none() {
-            return (false, true)
-        } return (false, false);
-        
-        let x_overlap = (first.u + first.w).min(second.u + second.w) - first.u.min(second.u);
-        let y_overlap = (first.v + first.h).min(second.v + second.h) - first.v.min(second.v);
+    pub fn compare(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+        let (lef, bot) = (u8::max(a.lef, b.lef), u8::max(a.bot, b.bot));
+        let (rig, top) = (u8::max(a.rig, b.rig), u8::max(a.top, b.top));
         return (
-            (x_overlap == first.w - first.u && y_overlap == first.h - first.v),
-            (x_overlap == second.w - second.u && y_overlap == second.h - second.v)
-        )
-    }
-    
-    pub fn compare_(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
-        let (left,  bottom) = (u8::max(a.u, b.u), u8::max(a.v, b.v));
-        let (right, top)    = (u8::max(a.w, b.w), u8::max(a.h, b.h));
-        return (
-            (a.u == left && a.v == bottom && a.w == right && a.h == top),
-            (b.u == left && b.v == bottom && b.w == right && b.h == top)
+            (a.lef == lef && a.bot == bot && a.rig == rig && a.top == top),
+            (b.lef == lef && b.bot == bot && b.rig == rig && b.top == top)
         )
     }
 
     pub fn not_culled_by(&self, other: &BlockFace) -> bool {
         return if other.is_none() { true } else {
-            self.u < other.u ||
-            self.v < other.v ||
-            self.u + self.w > other.u + other.w ||
-            self.v + self.h > other.v + other.h
+            self.lef < other.lef ||
+            self.bot < other.bot ||
+            self.lef + self.rig > other.lef + other.rig ||
+            self.bot + self.top > other.bot + other.top
         }
     }
     pub fn culled_by(&self, other: &BlockFace) -> bool {
         return if other.is_none() { false } else {
-            self.u >= other.u &&
-            self.v >= other.v &&
-            self.u + self.w <= other.u + other.w &&
-            self.v + self.h <= other.v + other.h
+            self.lef >= other.lef &&
+            self.bot >= other.bot &&
+            self.lef + self.rig <= other.lef + other.rig &&
+            self.bot + self.top <= other.bot + other.top
         }
     }
     pub fn as_u64(&self) -> u64 {
@@ -63,20 +47,20 @@ impl BlockFace {
     }
 
     pub fn is_none(&self) -> bool {
-        return self.t == u16::MAX
+        return self.tex == u16::MAX
     }
 
     pub fn is_some(&self) -> bool {
-        return self.t != u16::MAX;
+        return self.tex != u16::MAX;
     }
     pub const NONE: BlockFace = BlockFace {
-        u: u8::MAX, v: u8::MAX, d: u8::MAX, n: Normal::NONE, w: u8::MAX, h: u8::MAX, t: u16::MAX
+        lef: u8::MAX, bot: u8::MAX, dep: u8::MAX, nor: Normal::NONE, rig: u8::MAX, top: u8::MAX, tex: u16::MAX
     };
 }
 
 impl PartialEq for BlockFace {
     fn eq(&self, other: &Self) -> bool {
-        return self.t == other.t && self.u == other.u && self.v == other.v && self.d == other.d && self.n == other.n && self.w == other.w && self.h == other.h;
+        return self.top == other.top && self.lef == other.lef && self.bot == other.bot && self.dep == other.dep && self.nor == other.nor && self.rig == other.rig && self.top == other.top;
     }
 }
 

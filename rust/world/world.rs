@@ -1,18 +1,19 @@
-use std::{time, hint::black_box};
-
-use crate::util::{buffer::ByteBuffer, gl_helper::{log_if_error, log_error, Buffer}};
+use std::{time, hint::black_box, alloc, mem};
+use std::alloc::{alloc, System};
+use crate::util::buffer::ByteBuffer;
+use crate::util::gl_helper::Buffer;
 use simdnoise::NoiseBuilder;
-
+extern crate libc;
 
 use super::{chunk::Chunk, camera::Camera};
 
-pub struct World<'a> {
-    pub chunks: Box<[Chunk<'a>; 4096]>,
+pub struct World {
+    pub chunks: Box<[Chunk; 4096]>,
     pub camera: Camera
 }
 
-impl <'a> World<'a> {
-    pub fn new() -> World<'a> {
+impl World {
+    pub fn new() -> World {
         let mut chunks: Vec<Chunk> = Vec::with_capacity(4096);
         unsafe { chunks.set_len(4096) }
         
@@ -38,16 +39,10 @@ impl <'a> World<'a> {
         let mut faces = 0;
         for _ in 0..100 {
             for (chunk, x, y, z, _) in world.iter() {
-                // if x >= 1 || y >= 1 || z >= 1 { continue }
-                // chunk.mesh_west(&mut buffer);
-                // chunk.mesh_down(&mut buffer);
-                // chunk.mesh_south(&mut buffer);
-                // chunk.mesh_north(&mut buffer);
+                // if x >= 8 || y >= 8 || z >= 8 { continue }
                 chunk.mesh_north_south(&mut buffer);
 
                 chunk.face_count = (buffer.pos as u32) / 8;
-
-                black_box(&buffer);
 
                 // if chunk.face_count == 0 {
                     // continue;
@@ -72,21 +67,21 @@ impl <'a> World<'a> {
         return world;
     }
 
-    pub fn iter(&mut self) -> WorldIterator<'a> {
+    pub fn iter(&mut self) -> WorldIterator {
         return WorldIterator {
-            chunks: self.chunks.as_mut_ptr() as *mut [Chunk; 4096],
+            chunks: &mut *self.chunks as *mut [Chunk; 4096],
             i: 0
         };
     }
 }
 
-pub struct WorldIterator<'a> {
-    chunks: *mut [Chunk<'a>; 4096],
+pub struct WorldIterator {
+    chunks: *mut [Chunk; 4096],
     i: usize
 }
 
-impl<'a> Iterator for WorldIterator<'a> {
-    type Item = (&'a mut Chunk<'a>, usize, usize, usize, usize);
+impl Iterator for WorldIterator {
+    type Item = (&'static mut Chunk, usize, usize, usize, usize);
 
     fn next(&mut self) -> Option<Self::Item> {
         return if self.i < 4096 { unsafe {
@@ -102,11 +97,3 @@ impl<'a> Iterator for WorldIterator<'a> {
         }
     }
 }
-
-#[derive(PartialEq, Eq, PartialOrd, Ord)]
-pub enum AxisOrder {
-    XYZ,
-    YXZ,
-    ZYX
-}
-

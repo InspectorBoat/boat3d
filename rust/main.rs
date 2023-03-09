@@ -10,18 +10,19 @@
 #![feature(exclusive_range_pattern)]
 #![feature(maybe_uninit_uninit_array)]
 #![feature(maybe_uninit_slice)]
+
 mod block;
 mod world;
 mod util;
 
-use std::{collections::HashMap, ptr};
+use std::{collections::HashMap, ptr, hint::unreachable_unchecked};
 
 use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
 use glfw::{Context, Window, Action, Key};
 use util::gl_helper::*;
 use world::world::World;
 
-use crate::util::{gl_helper, buffer::ByteBuffer};
+use crate::util::gl_helper;
 
 static BLOCKS: [BlockState; 4] = [
     BlockState {
@@ -39,28 +40,28 @@ static BLOCKS: [BlockState; 4] = [
         block: Block { name: "grass" },
         model: BlockModel([
             BlockFace {
-                u: 0, v: 0, d: 0, n: Normal::SOUTH,
-                w: 0, h: 15, t: 0
+                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
+                rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 0, n: Normal::WEST,
-                w: 0, h: 0, t: 0
+                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
+                rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 0, n: Normal::DOWN,
-                w: 0, h: 0, t: 0
+                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
+                rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 0, n: Normal::UP,
-                w: 0, h: 0, t: 0
+                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
+                rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 0, n: Normal::EAST,
-                w: 0, h: 0, t: 0
+                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
+                rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 15, n: Normal::NORTH,
-                w: 0, h: 0, t: 0
+                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
+                rig: 0, top: 0, tex: 0
             },
         ])
     },
@@ -68,28 +69,28 @@ static BLOCKS: [BlockState; 4] = [
         block: Block { name: "stone" },
         model: BlockModel([
             BlockFace {
-                u: 0, v: 0, d: 0, n: Normal::SOUTH,
-                w: 15, h: 15, t: 0
+                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
+                rig: 15, top: 15, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 0, n: Normal::WEST,
-                w: 15, h: 15, t: 0
+                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
+                rig: 15, top: 15, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 0, n: Normal::DOWN,
-                w: 15, h: 15, t: 0
+                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
+                rig: 15, top: 15, tex: 0
             },
             BlockFace {
-                u: 0, v: 15, d: 0, n: Normal::UP,
-                w: 15, h: 15, t: 0
+                lef: 0, bot: 15, dep: 0, nor: Normal::UP,
+                rig: 15, top: 15, tex: 0
             },
             BlockFace {
-                u: 15, v: 0, d: 0, n: Normal::EAST,
-                w: 15, h: 15, t: 0
+                lef: 15, bot: 0, dep: 0, nor: Normal::EAST,
+                rig: 15, top: 15, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 15, n: Normal::NORTH,
-                w: 15, h: 15, t: 0
+                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
+                rig: 15, top: 15, tex: 0
             },
         ])
     },
@@ -97,28 +98,28 @@ static BLOCKS: [BlockState; 4] = [
         block: Block { name: "dirt" },
         model: BlockModel([
             BlockFace {
-                u: 0, v: 0, d: 0, n: Normal::SOUTH,
-                w: 0, h: 0, t: 2
+                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
+                rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 0, n: Normal::WEST,
-                w: 0, h: 0, t: 0
+                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
+                rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 0, n: Normal::DOWN,
-                w: 0, h: 0, t: 0
+                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
+                rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 15, n: Normal::UP,
-                w: 0, h: 0, t: 0
+                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
+                rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 15, n: Normal::EAST,
-                w: 0, h: 0, t: 0
+                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
+                rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                u: 0, v: 0, d: 15, n: Normal::NORTH,
-                w: 0, h: 0, t: 0
+                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
+                rig: 0, top: 0, tex: 0
             },
         ])
     }
@@ -134,8 +135,8 @@ fn main() {
     window.set_all_polling(true);
     window.make_current();
     
-    let vertex_shader = Shader::create(gl::VERTEX_SHADER, include_str!("shader/shader.vert"));
-    let fragment_shader = Shader::create(gl::FRAGMENT_SHADER, include_str!("shader/shader.frag"));
+    let vertex_shader = Shader::create(gl::VERTEX_SHADER, include_str!("shader/shader.glsl.vert"));
+    let fragment_shader = Shader::create(gl::FRAGMENT_SHADER, include_str!("shader/shader.glsl.frag"));
     let program = Program::create(vertex_shader, fragment_shader);
     Program::bind(program);
     log_error();
