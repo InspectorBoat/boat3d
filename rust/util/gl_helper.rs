@@ -103,6 +103,11 @@ impl Buffer {
     }
 }
 
+enum Maybe<T> {
+    Yes(T),
+    No
+}
+
 impl Drop for Buffer {
     fn drop(&mut self) {
         // if self.valid() {

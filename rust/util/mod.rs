@@ -1,2 +1,2 @@
 pub mod gl_helper;
-pub mod buffer;
+pub mod byte_buffer;

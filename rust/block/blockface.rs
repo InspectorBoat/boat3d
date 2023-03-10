@@ -1,6 +1,7 @@
 use std::ptr;
 
 #[derive(Clone, Debug)]
+#[repr(C)]
 pub struct BlockFace {
     pub lef: u8,
     pub bot: u8,
@@ -9,7 +10,7 @@ pub struct BlockFace {
 
     pub dep: u8,
 
-    pub nor: Normal,
+    pub nor: Norm,
     
     pub tex: u16,
 }
@@ -54,7 +55,7 @@ impl BlockFace {
         return self.tex != u16::MAX;
     }
     pub const NONE: BlockFace = BlockFace {
-        lef: u8::MAX, bot: u8::MAX, dep: u8::MAX, nor: Normal::NONE, rig: u8::MAX, top: u8::MAX, tex: u16::MAX
+        lef: u8::MAX, bot: u8::MAX, dep: u8::MAX, nor: Norm::NONE, rig: u8::MAX, top: u8::MAX, tex: u16::MAX
     };
 }
 
@@ -66,27 +67,27 @@ impl PartialEq for BlockFace {
 
 #[derive(Clone, Copy, Debug)]
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
-pub struct Normal(pub u8/* , pub isize */);
+pub struct Norm(pub u8/* , pub isize */);
 
 #[allow(dead_code)]
 #[allow(unused_parens)]
-impl Normal {
-    fn reverse(&self) -> Normal {
-        return Normal(6 - self.0);
+impl Norm {
+    fn reverse(&self) -> Norm {
+        return Norm(6 - self.0);
     }
-    pub const SOUTH: Normal = Normal(0);
-    pub const NORTH: Normal = Normal(5);
+    pub const SOUTH: Norm = Norm(0);
+    pub const NORTH: Norm = Norm(5);
 
-    pub const WEST:  Normal = Normal(1);
-    pub const EAST:  Normal = Normal(4);
+    pub const WEST:  Norm = Norm(1);
+    pub const EAST:  Norm = Norm(4);
 
-    pub const DOWN:  Normal = Normal(2);
-    pub const UP:    Normal = Normal(3);
+    pub const DOWN:  Norm = Norm(2);
+    pub const UP:    Norm = Norm(3);
 
-    pub const NONE:  Normal = Normal(u8::MAX);
+    pub const NONE:  Norm = Norm(u8::MAX);
 }
 
-impl Into<u8> for Normal {
+impl Into<u8> for Norm {
     fn into(self) -> u8 {
         return self.0;
     }
@@ -144,34 +145,6 @@ impl N {
             N::EAST  =>  (0xf00, 15),
             N::DOWN  =>  (0x0f0, 0),
             N::UP    =>  (0x0f0, 15),
-        }
-    }
-}
-
-pub struct Face {
-    pub left: u8,
-    pub bottom: u8,
-    pub right: u8,
-    pub top: u8,
-    pub depth: u8,
-    pub normal: u8,
-    pub texture: u16,
-}
-
-impl Face {
-    fn as_u64(&self) -> u64 {
-        unsafe {
-            *(ptr::addr_of!(*self) as *const u64)
-        }
-    }
-    fn as_u32(&self) -> u32 {
-        unsafe {
-            *(ptr::addr_of!(*self) as *const u32)
-        }
-    }
-    fn as_u16(&self) -> u16 {
-        unsafe {
-            *(ptr::addr_of!(*self) as *const u16)
         }
     }
 }

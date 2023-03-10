@@ -22,12 +22,12 @@ const mat4[] pos_transforms = {
 
         mat4(
         0, 1, 0, 0,
-        0, 0, 1, 0,
+        0, 0, 1, -15,
         1, 0, 0, 0,
         0, 0, 0, 1
         ),
         mat4(
-        0, 0, 1, 0,
+        0, 0, 1, -15,
         0, 1, 0, 0,
         1, 0, 0, 0,
         0, 0, 0, 1
@@ -35,7 +35,7 @@ const mat4[] pos_transforms = {
         mat4(
         1, 0, 0, 0,
         0, 1, 0, 0,
-        0, 0, 1, 1,
+        0, 0, 1, -15,
         0, 0, 0, 1
         ),
 };
@@ -69,7 +69,7 @@ const mat4[] corner_transforms = {
 
 struct Face {
         uint uvdn;
-        uint wht;
+        uint whtt;
 };
 
 layout(location = 0) uniform mat4 u_transform;
@@ -91,20 +91,22 @@ vec4 get_relative_pos(int face_index) {
 }
 
 uint get_normal(int face_index) {
+        // return 0;
         return (faces[face_index].uvdn >> 24) & 0xff;
 }
 
 vec4 get_size(int face_index) {
+        // return vec4(15, 15, 0, 1);
         return vec4(
-                ((faces[face_index].wht >> 0) & 0xff) + 1,
-                ((faces[face_index].wht >> 8) & 0xff) + 1,
+                ((faces[face_index].whtt >> 0) & 0xff) + 1,
+                ((faces[face_index].whtt >> 8) & 0xff) + 1,
                 0,
                 1
         );
 }
 
 float get_texture(int face_index) {
-        return float(faces[face_index].wht & 0xff);
+        return float(faces[face_index].whtt & 0xff);
 }
 
 void main() {

@@ -2,12 +2,12 @@ use core::str;
 use std::f32::consts::PI;
 
 use ultraviolet::{Mat4, Vec3, projection::perspective_gl};
-
+#[derive(Debug)]
 pub struct Rot {
     pub yaw: f32,
     pub pitch: f32
 }
-
+#[derive(Debug)]
 pub struct Camera {
     pub prev_mouse: (f64, f64),
     pub ratio: f32,
@@ -36,7 +36,7 @@ impl Camera {
     }
     pub fn new() -> Camera {
         Camera { 
-            pos: Vec3 { x: 0.0, y: 0.0, z: 16.0 * 11.0 * 0.0 - 16.0 },
+            pos: Vec3 { x: 0.0, y: 0.0, z: 16.0 * 11.0 * 0.0 },
             prev_mouse: (f64::MAX, f64::MAX),
             ratio: 1.0,
             rot: Rot { pitch: 0.0, yaw: 0.0 }

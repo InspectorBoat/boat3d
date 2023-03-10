@@ -8,5 +8,5 @@ uniform sampler2DArray textures;
 
 void main() {
         color = texture(textures, vec3(tex_coord, tex_id));
-        color = vec4(tex_id / 12, 0, 0, 1);
+        color = vec4(0.4 - tex_id / 12, 0, 0, 1);
 }

@@ -8,23 +8,22 @@
 #![feature(print_internals)]
 #![feature(layout_for_ptr)]
 #![feature(exclusive_range_pattern)]
-#![feature(maybe_uninit_uninit_array)]
-#![feature(maybe_uninit_slice)]
-
+#![feature(core_intrinsics)]
+#![feature(new_uninit)]
 mod block;
 mod world;
 mod util;
 
-use std::{collections::HashMap, ptr, hint::unreachable_unchecked};
+use std::{collections::HashMap, ptr};
 
-use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
+use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Norm, blockmodel::BlockModel};
 use glfw::{Context, Window, Action, Key};
 use util::gl_helper::*;
 use world::world::World;
 
 use crate::util::gl_helper;
 
-static BLOCKS: [BlockState; 4] = [
+static BLOCKS: [BlockState; 6] = [
     BlockState {
         block: Block { name: "air" },
         model: BlockModel([
@@ -40,27 +39,28 @@ static BLOCKS: [BlockState; 4] = [
         block: Block { name: "grass" },
         model: BlockModel([
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
+                lef: 0, bot: 0, dep: 0, nor: Norm::SOUTH,
+                rig: 0, top: 0, tex: 0
+            },
+
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Norm::WEST,
                 rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
+                lef: 0, bot: 0, dep: 0, nor: Norm::DOWN,
                 rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
+                lef: 0, bot: 0, dep: 15, nor: Norm::UP,
                 rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
+                lef: 0, bot: 0, dep: 15, nor: Norm::EAST,
                 rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
-                rig: 0, top: 0, tex: 0
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
+                lef: 0, bot: 0, dep: 15, nor: Norm::NORTH,
                 rig: 0, top: 0, tex: 0
             },
         ])
@@ -69,28 +69,28 @@ static BLOCKS: [BlockState; 4] = [
         block: Block { name: "stone" },
         model: BlockModel([
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
-                rig: 15, top: 15, tex: 0
+                lef: 0, bot: 0, dep: 0, nor: Norm::SOUTH,
+                rig: 0, top: 0, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
-                rig: 15, top: 15, tex: 0
+                lef: 0, bot: 0, dep: 0, nor: Norm::WEST,
+                rig: 0, top: 0, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
-                rig: 15, top: 15, tex: 0
+                lef: 0, bot: 0, dep: 0, nor: Norm::DOWN,
+                rig: 0, top: 0, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 15, dep: 0, nor: Normal::UP,
-                rig: 15, top: 15, tex: 0
+                lef: 0, bot: 0, dep: 15, nor: Norm::UP,
+                rig: 0, top: 0, tex: 1
             },
             BlockFace {
-                lef: 15, bot: 0, dep: 0, nor: Normal::EAST,
-                rig: 15, top: 15, tex: 0
+                lef: 0, bot: 0, dep: 15, nor: Norm::EAST,
+                rig: 0, top: 0, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
-                rig: 15, top: 15, tex: 0
+                lef: 0, bot: 0, dep: 15, nor: Norm::NORTH,
+                rig: 0, top: 0, tex: 1
             },
         ])
     },
@@ -98,28 +98,86 @@ static BLOCKS: [BlockState; 4] = [
         block: Block { name: "dirt" },
         model: BlockModel([
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
-                rig: 0, top: 0, tex: 0
+                lef: 0, bot: 0, dep: 0, nor: Norm::SOUTH,
+                rig: 0, top: 0, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
-                rig: 0, top: 0, tex: 0
+                lef: 0, bot: 0, dep: 0, nor: Norm::WEST,
+                rig: 0, top: 0, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
-                rig: 0, top: 0, tex: 0
+                lef: 0, bot: 0, dep: 0, nor: Norm::DOWN,
+                rig: 0, top: 0, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
-                rig: 0, top: 0, tex: 0
+                lef: 0, bot: 0, dep: 15, nor: Norm::UP,
+                rig: 0, top: 0, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
-                rig: 0, top: 0, tex: 0
+                lef: 0, bot: 0, dep: 15, nor: Norm::EAST,
+                rig: 0, top: 0, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
-                rig: 0, top: 0, tex: 0
+                lef: 0, bot: 0, dep: 15, nor: Norm::NORTH,
+                rig: 0, top: 0, tex: 2
+            },
+        ])
+    },
+    BlockState {
+        block: Block { name: "wool" },
+        model: BlockModel([
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Norm::SOUTH,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Norm::WEST,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Norm::DOWN,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Norm::UP,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Norm::EAST,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Norm::NORTH,
+                rig: 0, top: 0, tex: 3
+            },
+        ])
+    },
+    BlockState {
+        block: Block { name: "bricks" },
+        model: BlockModel([
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Norm::SOUTH,
+                rig: 0, top: 0, tex: 4
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Norm::WEST,
+                rig: 0, top: 0, tex: 4
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Norm::DOWN,
+                rig: 0, top: 0, tex: 4
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Norm::UP,
+                rig: 0, top: 0, tex: 4
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Norm::EAST,
+                rig: 0, top: 0, tex: 4
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Norm::NORTH,
+                rig: 0, top: 0, tex: 4
             },
         ])
     }
@@ -181,43 +239,11 @@ fn main() {
         
         window.swap_buffers();
     }
-    for chunk in &mut world.chunks[..] {
-        chunk.kill_buffer();
-    }
-    // */
-    // */
-
-    // let mut arr: [u8; 8] = [0, 1, 2, 3, 4, 5, 6, 7];
-    // let face = &BLOCKS[0].model[Normal::SOUTH];
-    // println!("{:?}", arr);
-    // unsafe {
-    //     let loc = ptr::addr_of_mut!(arr) as *mut u64;
-    //     *loc = face.as_u64();
+    // for chunk in &mut world.chunks[..] {
+        // chunk.kill_buffer();
     // }
-    // println!("{:?}", arr);
-    // arr[0] = face.u;
-    // arr[1] = face.v;
-    // arr[2] = face.d;
-    // arr[3] = face.n.0;
-    // arr[4] = face.w;
-    // arr[5] = face.h;
-    // arr[6] = 0;
-    // arr[7] = face.t as u8;
-    // println!("{:?}", arr);
-    // let mut buffer = ByteBuffer::new();
-    // buffer.put_u64(face.as_u64() + ((0x1 << 4) | (0x2 << 12) | (0x3 << 20)));
-    // println!("{:?}", &buffer.arr[0..8]);
-    // buffer.pos = 0;
-    // buffer.put(face.u);
-    // buffer.put(face.v);
-    // buffer.put(face.d);
-    // buffer.put(face.n.0);
-
-    // buffer.put(face.w);
-    // buffer.put(face.h);
-    // buffer.put(0);
-    // buffer.put(face.t as u8);
-    // println!("{:?}", &buffer.arr[0..8]);
+    // */
+    // */
 }
 
 #[allow(unused_variables)]
@@ -314,7 +340,7 @@ fn draw(world: &mut World) {
         gl::UniformMatrix4fv(0, 1, gl::FALSE, matrix.as_array().as_ptr());
         
         for (chunk, x, y, z, _) in world.iter() {
-            // if x >= 1 || y >= 1 || z != 10 { continue }
+            // if x >= 1 || y >= 1 || z >= 2 { continue }
             if let Some(buffer) = &chunk.buffer {
                 buffer.bind_indexed_target(gl::SHADER_STORAGE_BUFFER);
                 gl::DrawElements(gl::TRIANGLE_STRIP, (chunk.face_count * 5) as i32, gl::UNSIGNED_INT, ptr::null());
