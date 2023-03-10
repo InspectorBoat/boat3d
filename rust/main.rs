@@ -1,15 +1,13 @@
-// #![allow(dead_code)]
-// #![allow(unused_variables)]
-#![feature(let_chains)]
+#![allow(incomplete_features)]
+#![allow(dead_code)]
+#![allow(unused_variables)]
+#![allow(unused_imports)]
 #![feature(unchecked_math)]
 #![feature(pointer_byte_offsets)]
 #![feature(adt_const_params)]
-#![feature(associated_type_bounds)] 
-#![feature(print_internals)]
-#![feature(layout_for_ptr)]
-#![feature(exclusive_range_pattern)]
 #![feature(core_intrinsics)]
 #![feature(new_uninit)]
+
 mod block;
 mod world;
 mod util;

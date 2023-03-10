@@ -28,6 +28,11 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-rust/target/*
+rust/target/debug/*
+rust/target/.rustc_info.json
+rust/target/CACHEDIR.TAG
+rust/target/release/*
+!rust/target/release/rust.exe
 rust/bench/*
 rust/lib/*
+boat3d
