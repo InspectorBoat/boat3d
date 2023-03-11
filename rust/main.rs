@@ -7,7 +7,7 @@
 #![feature(adt_const_params)]
 #![feature(core_intrinsics)]
 #![feature(new_uninit)]
-
+#![feature(portable_simd)]
 mod block;
 mod world;
 mod util;

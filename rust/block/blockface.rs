@@ -1,4 +1,4 @@
-use std::ptr;
+use std::{ptr, simd::{self, SimdFloat, Simd}};
 
 #[derive(Clone, Debug)]
 #[repr(C)]
@@ -16,34 +16,39 @@ pub struct BlockFace {
 }
 
 impl BlockFace {
-    pub fn compare(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
-        let (lef, bot) = (u8::max(a.lef, b.lef), u8::max(a.bot, b.bot));
-        let (rig, top) = (u8::max(a.rig, b.rig), u8::max(a.top, b.top));
-        return (
-            (a.lef == lef && a.bot == bot && a.rig == rig && a.top == top),
-            (b.lef == lef && b.bot == bot && b.rig == rig && b.top == top)
-        )
-    }
+    pub fn compare_is_culled(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+        // return (a.is_none() || b.is_some(), b.is_none() || a.is_some())
 
-    pub fn not_culled_by(&self, other: &BlockFace) -> bool {
-        return if other.is_none() { true } else {
-            self.lef < other.lef ||
-            self.bot < other.bot ||
-            self.lef + self.rig > other.lef + other.rig ||
-            self.bot + self.top > other.bot + other.top
-        }
+        // let (lef, bot) = (u8::max(a.lef, b.lef), u8::max(a.bot, b.bot));
+        // let (rig, top) = (u8::max(a.rig, b.rig), u8::max(a.top, b.top));
+
+        // return (
+            // (a.lef == lef && a.bot == bot && a.rig == rig && a.top == top),
+            // (b.lef == lef && b.bot == bot && b.rig == rig && b.top == top)
+        // )
+        // let a_dim = Simd::<u8, 4>::from_array(a.as_u32().to_ne_bytes());
+        // let b_dim = Simd::<u8, 4>::from_array(b.as_u32().to_ne_bytes());
+
+        // let max = a_dim.max(b_dim);
+        // (a_dim == max, b_dim == max)
+        if a.as_u32() == b.as_u32() { return (true, true) }
+        let diff = 0x10101010 + a.as_u32() - b.as_u32();
+        return (diff & 0x10101010 == 0x10101010, diff == 0x10101010 || diff == 0)
     }
-    pub fn culled_by(&self, other: &BlockFace) -> bool {
-        return if other.is_none() { false } else {
-            self.lef >= other.lef &&
-            self.bot >= other.bot &&
-            self.lef + self.rig <= other.lef + other.rig &&
-            self.bot + self.top <= other.bot + other.top
-        }
-    }
+    
     pub fn as_u64(&self) -> u64 {
         unsafe {
             *(ptr::addr_of!(*self) as *const u64)
+        }
+    }
+    pub fn as_u32(&self) -> u32 {
+        unsafe {
+            *(ptr::addr_of!(*self) as *const u32)
+        }
+    }
+    pub fn as_i32(&self) -> i32 {
+        unsafe {
+            *(ptr::addr_of!(*self) as *const i32)
         }
     }
 
@@ -55,7 +60,7 @@ impl BlockFace {
         return self.tex != u16::MAX;
     }
     pub const NONE: BlockFace = BlockFace {
-        lef: u8::MAX, bot: u8::MAX, dep: u8::MAX, nor: Norm::NONE, rig: u8::MAX, top: u8::MAX, tex: u16::MAX
+        lef: 15, bot: 15, dep: 15, nor: Norm::NONE, rig: 15, top: 15, tex: u16::MAX
     };
 }
 

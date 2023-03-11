@@ -39,15 +39,18 @@ impl World {
         let iter = 1;
         for _ in 0..iter {
             for (chunk, x, y, z, _) in world.iter() {
-                // if x >= 1 || y >= 1 || z >= 2 { continue }
+                // if x >= 1 || y >= 1 || z >= 1 { continue }
                 chunk.mesh_north_south(&mut buffer, &world);
                 chunk.mesh_west_east(&mut buffer, &world);
                 chunk.mesh_down_up(&mut buffer, &world);
+
+                // chunk.mesh_north_south_no_merge(&mut buffer, &world);
                 buffer.format_quads();
                 
                 chunk.face_count = (buffer.ind as u32) / 8;
                 faces += chunk.face_count;
                 
+                // black_box(&buffer);
                 // /*
                 if chunk.face_count == 0 { continue }
                 let gl_buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
