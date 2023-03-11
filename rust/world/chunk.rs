@@ -90,23 +90,36 @@ impl Chunk {
                         self.blocks.get_unchecked_mut((x << 8) | (y << 4) | (z << 0))
                     )};
                     *block = match *noise_val {
-                        val if val < 0.1 => {
-                            1
-                        },
-                        val if val < 0.2 => {
-                            2
-                        },
-                        val if val < 0.3 => {
-                            3
-                        },
-                        // val if val < 0.4 => {
-                            // &BLOCKS[4]
+                        // val if val < 0.05 => {
+                        //     1
                         // },
-                        // val if val < 0.5 => {
-                            // &BLOCKS[1]
+                        // val if val < 0.10 => {
+                        //     2
                         // },
+                        // val if val < 0.15 => {
+                        //     3
+                        // },
+                        // val if val < 0.20 => {
+                        //     4
+                        // },
+                        // val if val < 0.25 => {
+                            // 5
+                        // },
+                        // val if val < 0.30 => {
+                            // 0
+                        // },
+                        // val if val < 0.35 => {
+                        //     1
+                        // },
+                        // val if val < 0.40 => {
+                        //     2
+                        // },
+                        val if val < 0.45 => {
+                            5
+                        },
                         _ => 0
                     };
+                    // *block = 1;
                     // *block = if j % 2 == 0 { 0 } else { 1 };
                     // *block = if x % 2 == 0 { 0 } else { 1 };
                     j += 1;
@@ -137,7 +150,7 @@ impl Chunk {
             let compare = BlockFace::compare_is_culled(face_s, face_n);
             'south: {
                 if compare.0 {
-                    active_run_s = false;
+                        active_run_s = false;
                     break 'south
                 }
 
