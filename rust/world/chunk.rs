@@ -150,7 +150,7 @@ impl Chunk {
             let compare = BlockFace::compare_is_culled(face_s, face_n);
             'south: {
                 if compare.0 {
-                        active_run_s = false;
+                    active_run_s = false;
                     break 'south
                 }
 
@@ -518,24 +518,22 @@ impl Chunk {
     }
     
     pub fn mesh_north_south_no_merge(&mut self, buffer: &mut ByteBuffer, world: &World) {
-        for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
+        for z in 0..16_u8 { for y in 0..16_u8 { for x in 0..16_u8 {
             let pos = Chunk::get_index(x, y, z);
             let (face_s, face_n) = self.get_face_pair::<{N::SOUTH}>(pos, world);
 
             let compare = BlockFace::compare_is_culled(face_s, face_n);
             if !compare.0 {
-                let offset = ((x as u64) << 4) | ((y as u64) << 12) | ((z as u64) << 20);
+                // let offset = ((x as u64) << 4) | ((y as u64) << 12) | ((z as u64) << 20);
+                let offset = Chunk::INDICES[pos];
                 buffer.put_u64(face_s.as_u64() + offset);
             }
             if !compare.1 {
-                let offset = ((x as u64) << 4) | ((y as u64) << 12) | ((z as u64) << 20);
+                // let offset = ((x as u64) << 4) | ((y as u64) << 12) | ((z as u64) << 20);
+                let offset = Chunk::INDICES[pos];
                 buffer.put_u64(face_n.as_u64() + offset);
             }
         } } }
-
-        // for i in 0..buffer.ind {
-            // let width = buffer[i];
-        // }
     }
 
     pub fn new<'a>() -> Chunk {
@@ -559,6 +557,26 @@ impl Chunk {
             buffer.kill();
         }
     }
+
+    pub const INDICES: [u64; 4096] = {
+        let mut arr = [0; 4096];
+        let mut i = 0;
+        let mut x = 0;
+        while x < 16 {
+            let mut y = 0;
+            while y < 16 {
+                let mut z = 0;
+                while z < 16 {
+                    arr[i] = (x << 4) | (y << 12) | (z << 20);
+                    i += 1;
+                    z += 1;
+                }
+                y += 1;
+            }
+            x += 1;
+        }
+        arr
+    };
 }
 impl Default for Chunk {
     fn default() -> Self {
@@ -575,14 +593,14 @@ impl Drop for Chunk {
 
 #[derive(Clone, Debug)]
 #[allow(dead_code)]
+#[repr(C)]
 pub struct Run {
     lef: u8,
     bot: u8,
     rig: u8,
     top: u8,
-    
     dep: u8,
-
+    
     beg: u8,
     end: u8,
     
@@ -591,6 +609,7 @@ pub struct Run {
     ind: u16,
     
     row: u16,
+    pad: u16
 }
 
 impl Run {
@@ -655,7 +674,7 @@ impl Run {
     }
     /**
      * Pulls the run up after a complete merge
-     * Only possible change is max_y
+     * Only possible change is top
      */
     fn pull(&mut self, buffer: &mut ByteBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
         buffer[self.ind as usize + 4] += 0x10;
@@ -672,15 +691,17 @@ impl Run {
         let offset = ((u as u64) << 4) | ((v as u64) << 12) | ((d as u64) << 20);
         buffer.put_u64(face.as_u64() + offset);
 
-        self.beg = u;
-        self.end = u;
-        self.tex = face.tex;
-
+        // *self.as_u32() = face.as_u32();
         self.lef = face.lef;
         self.bot = face.bot;
 
         self.rig = face.rig;
         self.top = face.top;
+
+        self.beg = u;
+        self.end = u;
+        self.tex = face.tex;
+
 
         self.row = row;
     }
@@ -696,25 +717,27 @@ impl Run {
         }
     }
 
+    fn as_u32(&self) -> &mut u32 {
+        return unsafe { &mut *(ptr::addr_of!(self) as *mut u32) }
+    }
+
     fn new() -> Run {
         Run {
+            lef: 0,
+            bot: 0,
+            rig: 0,
+            top: 0,
             beg: 0,
-            end:   0,
-            
-            lef:   0,
-            bot:   0,
-            rig:   0,
-            top:   0,
-
-            dep:   0,
-            tex:   0,
-            
-            row:  u16::MAX - 1,
-
+            end: 0,
+            dep: 0,
+            tex: 0,
+            row: u16::MAX - 1,
             ind: 0,
+            pad: 0
         }
     }
 }
+
 impl Default for Run {
     fn default() -> Self {
         Run::new()

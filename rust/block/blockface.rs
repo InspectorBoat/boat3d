@@ -7,11 +7,8 @@ pub struct BlockFace {
     pub bot: u8,
     pub rig: u8,
     pub top: u8,
-
     pub dep: u8,
-
     pub nor: Norm,
-    
     pub tex: u16,
 }
 

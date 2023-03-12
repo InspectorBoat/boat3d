@@ -23,7 +23,6 @@ impl World {
             chunks,
             camera: Camera::new()
         };
-
         for (chunk, x, y, z, _) in world.iter() {
             // if x >= 1 || y >= 1 || z >= 2 { continue }
             chunk.make_terrain(&mut noise_vec, x, y, z);
