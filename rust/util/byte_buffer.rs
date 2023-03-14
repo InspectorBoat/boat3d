@@ -8,6 +8,7 @@ pub struct ByteBuffer {
 }
 impl ByteBuffer {
     pub fn put(&mut self, val: u8) {
+        // self.arr[self.ind] = val;
         unsafe {
             *self.arr.get_unchecked_mut(self.ind) = val;
         }
@@ -20,7 +21,6 @@ impl ByteBuffer {
         }
         self.ind += 4;
     }
-    // #[inline]
     pub fn put_u64(&mut self, val: u64) {
         unsafe {
             let loc = self.arr.as_mut_ptr().byte_add(self.ind) as *mut u64;
@@ -66,6 +66,9 @@ impl ByteBuffer {
      * 5 nor ~ nor
      * 6 tex ~ tex
      * 7 tex ~ tex
+     * 
+     * 
+     * Converts a quad from left-bottom-right-top format to u-v-d-w-h format
      */
     #[allow(unused_parens)]
     pub fn format_quads(&mut self) {
@@ -94,14 +97,14 @@ impl<T: Into<usize>> Index<T> for ByteBuffer {
     type Output = u8;
 
     fn index(&self, index: T) -> &Self::Output {
-        // return &self.arr[index];
+        // return &self.arr[index.into()];
         return unsafe { self.arr.get_unchecked(index.into()) }
     }
 }
 
 impl<T: Into<usize>> IndexMut<T> for ByteBuffer {
     fn index_mut(&mut self, index: T) -> &mut Self::Output {
-        // return &mut self.arr[index];
+        // return &mut self.arr[index.into()];
         return unsafe { self.arr.get_unchecked_mut(index.into()) }
     }
 }

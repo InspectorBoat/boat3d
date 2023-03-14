@@ -24,7 +24,7 @@ impl World {
             camera: Camera::new()
         };
         for (chunk, x, y, z, _) in world.iter() {
-            // if x >= 1 || y >= 1 || z >= 2 { continue }
+            // if x >= 1 || y >= 1 || z >= 1 { continue }
             chunk.make_terrain(&mut noise_vec, x, y, z);
             chunk.create_buffer();
             // let buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
@@ -38,7 +38,7 @@ impl World {
         let iter = 1;
         for _ in 0..iter {
             for (chunk, x, y, z, _) in world.iter() {
-                // if x >= 1 || y >= 1 || z >= 1 { continue }
+                // if x != 0 || y != 0 || z != 0 { continue }
                 chunk.mesh_north_south(&mut buffer, &world);
                 chunk.mesh_west_east(&mut buffer, &world);
                 chunk.mesh_down_up(&mut buffer, &world);

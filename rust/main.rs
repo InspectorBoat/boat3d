@@ -28,9 +28,9 @@ static BLOCKS: [BlockState; 6] = [
             BlockFace::NONE,
             BlockFace::NONE,
             BlockFace::NONE,
-            BlockFace::NONE,
-            BlockFace::NONE,
-            BlockFace::NONE
+            BlockFace::NONE2,
+            BlockFace::NONE2,
+            BlockFace::NONE2
         ])
     },
     BlockState {
@@ -155,27 +155,27 @@ static BLOCKS: [BlockState; 6] = [
         model: BlockModel([
             BlockFace {
                 lef: 0, bot: 0, dep: 0, nor: Norm::SOUTH,
-                rig: 0, top: 0, tex: 4
+                rig: 0, top: 0, tex: 3
             },
             BlockFace {
                 lef: 0, bot: 0, dep: 0, nor: Norm::WEST,
-                rig: 0, top: 0, tex: 4
+                rig: 0, top: 0, tex: 3
             },
             BlockFace {
                 lef: 0, bot: 0, dep: 0, nor: Norm::DOWN,
-                rig: 0, top: 0, tex: 4
+                rig: 0, top: 0, tex: 3
             },
             BlockFace {
                 lef: 0, bot: 0, dep: 15, nor: Norm::UP,
-                rig: 0, top: 0, tex: 4
+                rig: 0, top: 0, tex: 3
             },
             BlockFace {
                 lef: 0, bot: 0, dep: 15, nor: Norm::EAST,
-                rig: 0, top: 0, tex: 4
+                rig: 0, top: 0, tex: 3
             },
             BlockFace {
                 lef: 0, bot: 0, dep: 15, nor: Norm::NORTH,
-                rig: 0, top: 0, tex: 4
+                rig: 0, top: 0, tex: 3
             },
         ])
     }
@@ -216,7 +216,7 @@ fn main() {
             }
         }
         index_buffer.bind_target(gl::ELEMENT_ARRAY_BUFFER);
-        index_buffer.storage(1024 * 1024, gl::DYNAMIC_STORAGE_BIT);
+        index_buffer.storage(1024 * 1024 / 4, gl::DYNAMIC_STORAGE_BIT);
         index_buffer.upload_slice(&index_array.as_slice(), 0, index_array.len() as isize);
     }
     // */
@@ -338,7 +338,7 @@ fn draw(world: &mut World) {
         gl::UniformMatrix4fv(0, 1, gl::FALSE, matrix.as_array().as_ptr());
         
         for (chunk, x, y, z, _) in world.iter() {
-            // if x >= 1 || y >= 1 || z >= 2 { continue }
+            // if x >= 1 || y >= 1 || z >= 1 { continue }
             if let Some(buffer) = &chunk.buffer {
                 buffer.bind_indexed_target(gl::SHADER_STORAGE_BUFFER);
                 gl::DrawElements(gl::TRIANGLE_STRIP, (chunk.face_count * 5) as i32, gl::UNSIGNED_INT, ptr::null());

@@ -14,6 +14,7 @@ pub struct BlockFace {
 
 impl BlockFace {
     pub fn compare_is_culled(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+        if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX) }
         if a.as_u32() == b.as_u32() { return (true, true) }
         let diff = 0x10101010 + a.as_u32() - b.as_u32();
         return (diff >= 0x10101010, diff <= 0x10101010)
@@ -35,14 +36,10 @@ impl BlockFace {
         }
     }
 
-    pub fn is_none(&self) -> bool {
-        return self.tex == u16::MAX
-    }
-
-    pub fn is_some(&self) -> bool {
-        return self.tex != u16::MAX;
-    }
     pub const NONE: BlockFace = BlockFace {
+        lef: 15, bot: 15, dep: 0, nor: Norm::NONE, rig: 15, top: 15, tex: u16::MAX
+    };
+    pub const NONE2: BlockFace = BlockFace {
         lef: 15, bot: 15, dep: 15, nor: Norm::NONE, rig: 15, top: 15, tex: u16::MAX
     };
 }

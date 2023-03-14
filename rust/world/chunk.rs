@@ -37,7 +37,6 @@ impl Chunk {
                     if self.chunk_pos.x == 0 {
                         return &BlockFace::NONE;
                     }
-                    if (index | 0xf00) >= 4096 { println!("{index}") }
                     return &BLOCKS[world.chunks[((self.chunk_pos.x.sub(1) << 10) | (self.chunk_pos.y << 5) | (self.chunk_pos.z << 0)) as usize].blocks[index | 0xf00] as usize].model[N::EAST];
                 }
                 return &BLOCKS[self.blocks[index - 0x100] as usize].model[N::EAST];
@@ -58,7 +57,6 @@ impl Chunk {
         (self.get_face::<NORMAL>(index, world), self.get_opposing_face::<NORMAL>(index, world))
     }
 
-    // #[inline]
     const fn get_index(x: u8, y: u8, z: u8) -> usize {
         ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0)
     }
@@ -94,7 +92,7 @@ impl Chunk {
                         //     1
                         // },
                         // val if val < 0.10 => {
-                        //     2
+                            // 2
                         // },
                         // val if val < 0.15 => {
                         //     3
@@ -119,7 +117,7 @@ impl Chunk {
                         },
                         _ => 0
                     };
-                    // *block = 1;
+                    // *block = 5 - (y as u16 % 2);
                     // *block = if j % 2 == 0 { 0 } else { 1 };
                     // *block = if x % 2 == 0 { 0 } else { 1 };
                     j += 1;
@@ -214,10 +212,9 @@ impl Chunk {
                         break 'north
                     } else {
                         active_run_n = false;
-                        break 'north
                     }
                 }
-                // /* 
+                // /*
                 if !active_run_n {
                     run_n = &mut row_n[x as usize];
                     if run_n.row + 1 == row_id && run_n.match_top_left(&face_n) {
@@ -343,7 +340,6 @@ impl Chunk {
                         break 'east
                     } else {
                         active_run_e = false;
-                        break 'east
                     }
                 }
                 // /* 
@@ -472,7 +468,6 @@ impl Chunk {
                         break 'up
                     } else {
                         active_run_u = false;
-                        break 'up
                     }
                 }
                 // /* 
@@ -518,6 +513,7 @@ impl Chunk {
     }
     
     pub fn mesh_north_south_no_merge(&mut self, buffer: &mut ByteBuffer, world: &World) {
+        // /*
         for z in 0..16_u8 { for y in 0..16_u8 { for x in 0..16_u8 {
             let pos = Chunk::get_index(x, y, z);
             let (face_s, face_n) = self.get_face_pair::<{N::SOUTH}>(pos, world);
@@ -534,6 +530,43 @@ impl Chunk {
                 buffer.put_u64(face_n.as_u64() + offset);
             }
         } } }
+        // */
+        /*
+        for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
+            let pos = Chunk::get_index(x, y, z);
+            let (face_s, face_n) = self.get_face_pair::<{N::WEST}>(pos, world);
+
+            let compare = BlockFace::compare_is_culled(face_s, face_n);
+            if !compare.0 {
+                // let offset = ((x as u64) << 4) | ((y as u64) << 12) | ((z as u64) << 20);
+                let offset = Chunk::INDICES[pos];
+                buffer.put_u64(face_s.as_u64() + offset);
+            }
+            if !compare.1 {
+                // let offset = ((x as u64) << 4) | ((y as u64) << 12) | ((z as u64) << 20);
+                let offset = Chunk::INDICES[pos];
+                buffer.put_u64(face_n.as_u64() + offset);
+            }
+        } } }
+        // */
+        /*
+        for y in 0..16_u8 { for x in 0..16_u8 { for z in 0..16_u8 {
+            let pos = Chunk::get_index(x, y, z);
+            let (face_s, face_n) = self.get_face_pair::<{N::DOWN}>(pos, world);
+
+            let compare = BlockFace::compare_is_culled(face_s, face_n);
+            if !compare.0 {
+                // let offset = ((x as u64) << 4) | ((y as u64) << 12) | ((z as u64) << 20);
+                let offset = Chunk::INDICES[pos];
+                buffer.put_u64(face_s.as_u64() + offset);
+            }
+            if !compare.1 {
+                // let offset = ((x as u64) << 4) | ((y as u64) << 12) | ((z as u64) << 20);
+                let offset = Chunk::INDICES[pos];
+                buffer.put_u64(face_n.as_u64() + offset);
+            }
+        } } }
+        // */
     }
 
     pub fn new<'a>() -> Chunk {
@@ -620,7 +653,8 @@ impl Run {
     fn match_right(&self, face: &BlockFace) -> bool {
         return {
             self.tex == face.tex &&
-            self.rig == face.lef &&
+            self.rig == 0 &&
+            face.lef == 0 &&
             self.bot == face.bot &&
             self.top == face.top
         }
@@ -632,7 +666,8 @@ impl Run {
     fn match_top_left(&self, face: &BlockFace) -> bool {
         return {
             self.tex == face.tex &&
-            self.top == face.bot &&
+            self.top == 0 &&
+            face.bot == 0 &&
             self.lef == face.lef
         }
     }
@@ -652,7 +687,9 @@ impl Run {
      * End y is already guaranteed to match
      */
     fn merge_face(&mut self, buffer: &mut ByteBuffer, face: &BlockFace) {
-        buffer[self.ind + 3] = ((buffer[self.ind + 3] + 0x10) & 0xf0) | face.rig;
+        buffer[self.ind + 3] += 0x10;
+        buffer[self.ind + 2] &= 0xf0;
+        buffer[self.ind + 2] |= face.rig;
         self.end += 1;
         self.rig = face.rig;
     }
@@ -678,7 +715,8 @@ impl Run {
      */
     fn pull(&mut self, buffer: &mut ByteBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
         buffer[self.ind as usize + 4] += 0x10;
-
+        buffer[self.ind as usize + 3] &= 0xf0;        
+        buffer[self.ind as usize + 3] |= face.top;
         self.top = face.top;
         self.row += 1;
     }
