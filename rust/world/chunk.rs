@@ -6,54 +6,56 @@ use std::ops::Sub;
 use std::ops::Add;
 use std::ptr;
 use std::simd::Simd;
-use crate::{block::{blockstate::BlockState, blockface::{Norm, BlockFace, N}}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::ByteBuffer}, BLOCKS};
+use crate::{block::{blockstate::BlockState, blockface::{Normal, BlockFace}}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::ByteBuffer}, BLOCKS};
 
 use super::world::World;
 
 #[derive(Debug)]
 pub struct Chunk {
     pub blocks: [u16; 4096],
+    pub counts: [usize; 6],
+    pub offsets: [usize; 6],
     pub chunk_pos: Vec3i,
     pub face_count: u32,
     pub buffer: Option<Buffer>
 }
 impl Chunk {
-    fn get_face<const NORMAL: N>(&self, index: usize, world: &World) -> &BlockFace {
+    fn get_face<const NORMAL: Normal>(&self, index: usize, world: &World) -> &BlockFace {
         return unsafe { &BLOCKS[*self.blocks.get_unchecked(index) as usize].model[NORMAL] }
     }
-    fn get_opposing_face<const NORMAL: N>(&self, index: usize, world: &World) -> &BlockFace {
+    fn get_opposing_face<const NORMAL: Normal>(&self, index: usize, world: &World) -> &BlockFace {
         match NORMAL {
-            N::SOUTH => {
+            Normal::SOUTH => {
                 if index & 0x00f == 0 {
                     if self.chunk_pos.z == 0 {
                         return &BlockFace::NONE;
                     }
-                    return &BLOCKS[world.chunks[((self.chunk_pos.x << 10) | (self.chunk_pos.y << 5) | (self.chunk_pos.z.sub(1) << 0)) as usize].blocks[index | 0x00f] as usize].model[N::NORTH];
+                    return &BLOCKS[world.chunks[((self.chunk_pos.x << 10) | (self.chunk_pos.y << 5) | (self.chunk_pos.z.sub(1) << 0)) as usize].blocks[index | 0x00f] as usize].model[Normal::NORTH];
                 }
-                return &BLOCKS[self.blocks[index - 0x001] as usize].model[N::NORTH];
+                return &BLOCKS[self.blocks[index - 0x001] as usize].model[Normal::NORTH];
             }
-            N::WEST => {
+            Normal::WEST => {
                 if index & 0xf00 == 0 {
                     if self.chunk_pos.x == 0 {
                         return &BlockFace::NONE;
                     }
-                    return &BLOCKS[world.chunks[((self.chunk_pos.x.sub(1) << 10) | (self.chunk_pos.y << 5) | (self.chunk_pos.z << 0)) as usize].blocks[index | 0xf00] as usize].model[N::EAST];
+                    return &BLOCKS[world.chunks[((self.chunk_pos.x.sub(1) << 10) | (self.chunk_pos.y << 5) | (self.chunk_pos.z << 0)) as usize].blocks[index | 0xf00] as usize].model[Normal::EAST];
                 }
-                return &BLOCKS[self.blocks[index - 0x100] as usize].model[N::EAST];
+                return &BLOCKS[self.blocks[index - 0x100] as usize].model[Normal::EAST];
             }
-            N::DOWN => {
+            Normal::DOWN => {
                 if index & 0x0f0 == 0 {
                     if self.chunk_pos.y == 0 {
                         return &BlockFace::NONE;
                     }
-                    return &BLOCKS[world.chunks[(self.chunk_pos.x << 10 | self.chunk_pos.y.sub(1) << 5 | (self.chunk_pos.z) << 0) as usize].blocks[index | 0x0f0] as usize].model[N::UP];
+                    return &BLOCKS[world.chunks[(self.chunk_pos.x << 10 | self.chunk_pos.y.sub(1) << 5 | (self.chunk_pos.z) << 0) as usize].blocks[index | 0x0f0] as usize].model[Normal::UP];
                 }
-                return &BLOCKS[self.blocks[index - 0x010] as usize].model[N::UP];
+                return &BLOCKS[self.blocks[index - 0x010] as usize].model[Normal::UP];
             }
             _ => unsafe { std::hint::unreachable_unchecked() }
         }
     }
-    fn get_face_pair<const NORMAL: N>(&self, index: usize, world: &World) -> (&BlockFace, &BlockFace) {
+    fn get_face_pair<const NORMAL: Normal>(&self, index: usize, world: &World) -> (&BlockFace, &BlockFace) {
         return (self.get_face::<NORMAL>(index, world), self.get_opposing_face::<NORMAL>(index, world))
     }
 
@@ -144,14 +146,13 @@ impl Chunk {
         for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
             let pos = Chunk::get_index(u, v, d);
 
-            let (face_s, face_n) = self.get_face_pair::<{N::SOUTH}>(pos, world);
+            let (face_s, face_n) = self.get_face_pair::<{Normal::SOUTH}>(pos, world);
             let compare = BlockFace::compare_is_culled(face_s, face_n);
             'south: {
                 if compare.0 {
                     active_run_s = false;
                     break 'south
                 }
-
                 // /*
                 if active_run_s && same_row_s {
                     if run_s.match_right(&face_s) {
@@ -182,7 +183,7 @@ impl Chunk {
                     }
                     else {
                         let next_pos = pos + 0x100;
-                        let (next_face_s, next_face_n) = self.get_face_pair::<{N::SOUTH}>(next_pos, world);
+                        let (next_face_s, next_face_n) = self.get_face_pair::<{Normal::SOUTH}>(next_pos, world);
                         let compare = BlockFace::compare_is_culled(next_face_s, next_face_n);
 
                         if compare.0 || !Run::match_faces(face_s, next_face_s) {
@@ -200,7 +201,6 @@ impl Chunk {
                 run_s.begin(buffer, &face_s, u, v, d, row_id);
             }
             'north: {
-                // break 'north;
                 if compare.1 {
                     active_run_n = false;
                     break 'north
@@ -222,7 +222,6 @@ impl Chunk {
                         active_run_n = true;
                     }
                 }
-
                 if active_run_n {
                     if run_n.end == u {
                         if run_n.match_top_right(&face_n) {
@@ -236,7 +235,7 @@ impl Chunk {
                     }
                     else {
                         let next_pos = pos + 0x100;
-                        let (next_face_s, next_face_n) = self.get_face_pair::<{N::SOUTH}>(next_pos, world);
+                        let (next_face_s, next_face_n) = self.get_face_pair::<{Normal::SOUTH}>(next_pos, world);
                         let compare = BlockFace::compare_is_culled(next_face_s, next_face_n);
 
                         if compare.1 || !Run::match_faces(face_n, next_face_n) {
@@ -253,9 +252,10 @@ impl Chunk {
                 same_row_n = true;
                 run_n.begin(buffer, &face_n, u, v, d, row_id);
             }
-        } (active_run_s, active_run_n) = (false, false); row_id += 1; } row_id += 16; }
+        } (active_run_s, active_run_n) = (false, false); row_id += 1;
+        } row_id += 16;
+        }
     }
-    
     pub fn mesh_west_east(&mut self, buffer: &mut ByteBuffer, world: &World) {
         let mut row_w: [Run; 16] = Default::default();
         let mut run_w: &mut Run = &mut row_w[0];
@@ -272,7 +272,7 @@ impl Chunk {
         for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
             let pos = Chunk::get_index(d, v, u);
 
-            let (face_w, face_e) = self.get_face_pair::<{N::WEST}>(pos, world);
+            let (face_w, face_e) = self.get_face_pair::<{Normal::WEST}>(pos, world);
             let compare = BlockFace::compare_is_culled(face_w, face_e);
             'west: {
                 if compare.0 {
@@ -310,7 +310,7 @@ impl Chunk {
                     }
                     else {
                         let next_pos = pos + 0x001;
-                        let (next_face_w, next_face_e) = self.get_face_pair::<{N::WEST}>(next_pos, world);
+                        let (next_face_w, next_face_e) = self.get_face_pair::<{Normal::WEST}>(next_pos, world);
                         let compare = BlockFace::compare_is_culled(next_face_w, next_face_e);
 
                         if compare.0 || !Run::match_faces(face_w, next_face_w) {
@@ -364,7 +364,7 @@ impl Chunk {
                     }
                     else {
                         let next_pos = pos + 0x001;
-                        let (next_face_w, next_face_e) = self.get_face_pair::<{N::WEST}>(next_pos, world);
+                        let (next_face_w, next_face_e) = self.get_face_pair::<{Normal::WEST}>(next_pos, world);
                         let compare = BlockFace::compare_is_culled(next_face_w, next_face_e);
 
                         if compare.1 || !Run::match_faces(face_e, next_face_e) {
@@ -383,7 +383,6 @@ impl Chunk {
             }
         } (active_run_w, active_run_e) = (false, false); row_id += 1; } row_id += 16; }
     }
-    
     pub fn mesh_down_up(&mut self, buffer: &mut ByteBuffer, world: &World) {
         let mut row_d: [Run; 16] = Default::default();
         let mut run_d: &mut Run = &mut row_d[0];
@@ -400,7 +399,7 @@ impl Chunk {
         for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
             let pos = Chunk::get_index(v, d, u);
 
-            let (face_d, face_u) = self.get_face_pair::<{N::DOWN}>(pos, world);
+            let (face_d, face_u) = self.get_face_pair::<{Normal::DOWN}>(pos, world);
             let compare = BlockFace::compare_is_culled(face_d, face_u);
             'down: {
                 if compare.0 {
@@ -438,7 +437,7 @@ impl Chunk {
                     }
                     else {
                         let next_pos = pos + 0x001;
-                        let (next_face_d, next_face_u) = self.get_face_pair::<{N::DOWN}>(next_pos, world);
+                        let (next_face_d, next_face_u) = self.get_face_pair::<{Normal::DOWN}>(next_pos, world);
                         let compare = BlockFace::compare_is_culled(next_face_d, next_face_u);
 
                         if compare.0 || !Run::match_faces(face_d, next_face_d) {
@@ -492,7 +491,7 @@ impl Chunk {
                     }
                     else {
                         let next_pos = pos + 0x001;
-                        let (next_face_d, next_face_u) = self.get_face_pair::<{N::DOWN}>(next_pos, world);
+                        let (next_face_d, next_face_u) = self.get_face_pair::<{Normal::DOWN}>(next_pos, world);
                         let compare = BlockFace::compare_is_culled(next_face_d, next_face_u);
 
                         if compare.1 || !Run::match_faces(face_u, next_face_u) {
@@ -516,7 +515,7 @@ impl Chunk {
         // /*
         for z in 0..16_u8 { for y in 0..16_u8 { for x in 0..16_u8 {
             let pos = Chunk::get_index(x, y, z);
-            let (face_s, face_n) = self.get_face_pair::<{N::SOUTH}>(pos, world);
+            let (face_s, face_n) = self.get_face_pair::<{Normal::SOUTH}>(pos, world);
 
             let compare = BlockFace::compare_is_culled(face_s, face_n);
             if !compare.0 {
@@ -534,7 +533,7 @@ impl Chunk {
         /*
         for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
             let pos = Chunk::get_index(x, y, z);
-            let (face_s, face_n) = self.get_face_pair::<{N::WEST}>(pos, world);
+            let (face_s, face_n) = self.get_face_pair::<{Norm::WEST}>(pos, world);
 
             let compare = BlockFace::compare_is_culled(face_s, face_n);
             if !compare.0 {
@@ -552,7 +551,7 @@ impl Chunk {
         /*
         for y in 0..16_u8 { for x in 0..16_u8 { for z in 0..16_u8 {
             let pos = Chunk::get_index(x, y, z);
-            let (face_s, face_n) = self.get_face_pair::<{N::DOWN}>(pos, world);
+            let (face_s, face_n) = self.get_face_pair::<{Norm::DOWN}>(pos, world);
 
             let compare = BlockFace::compare_is_culled(face_s, face_n);
             if !compare.0 {
@@ -572,6 +571,8 @@ impl Chunk {
     pub fn new<'a>() -> Chunk {
         return Chunk {
             blocks: [0; 4096],
+            counts: [0; 6],
+            offsets: [0; 6],
             chunk_pos: Vec3i {x: 0, y: 0, z: 0},
             buffer: None,
             face_count: 0

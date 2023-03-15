@@ -4,7 +4,7 @@ use crate::block::blockface::BlockFace;
 
 pub struct ByteBuffer {
     pub ind: usize,
-    pub arr: /* Box< */[u8; 262144]/* > */
+    pub arr: Box<[u8; 262144]>
 }
 impl ByteBuffer {
     pub fn put(&mut self, val: u8) {
@@ -43,7 +43,7 @@ impl ByteBuffer {
     pub fn new() -> ByteBuffer {
         return ByteBuffer {
             ind: 0,
-            arr: /* Box::new( */[0; 262144]/* ) */
+            arr: Box::new([0; 262144])
         }
     }
     pub fn add_face(&mut self, face: &BlockFace, u: u8, v: u8, d: u8) {

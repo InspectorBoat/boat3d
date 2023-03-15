@@ -8,7 +8,7 @@ pub struct BlockFace {
     pub rig: u8,
     pub top: u8,
     pub dep: u8,
-    pub nor: Norm,
+    pub nor: Normal,
     pub tex: u16,
 }
 
@@ -37,10 +37,10 @@ impl BlockFace {
     }
 
     pub const NONE: BlockFace = BlockFace {
-        lef: 15, bot: 15, dep: 0, nor: Norm::NONE, rig: 15, top: 15, tex: u16::MAX
+        lef: 15, bot: 15, dep: 0, nor: Normal::NONE, rig: 15, top: 15, tex: u16::MAX
     };
     pub const NONE2: BlockFace = BlockFace {
-        lef: 15, bot: 15, dep: 15, nor: Norm::NONE, rig: 15, top: 15, tex: u16::MAX
+        lef: 15, bot: 15, dep: 15, nor: Normal::NONE, rig: 15, top: 15, tex: u16::MAX
     };
 }
 
@@ -52,84 +52,28 @@ impl PartialEq for BlockFace {
 
 #[derive(Clone, Copy, Debug)]
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
-pub struct Norm(pub u8/* , pub isize */);
+pub struct Normal(pub u8/* , pub isize */);
 
 #[allow(dead_code)]
 #[allow(unused_parens)]
-impl Norm {
-    fn reverse(&self) -> Norm {
-        return Norm(6 - self.0);
+impl Normal {
+    fn reverse(&self) -> Normal {
+        return Normal(6 - self.0);
     }
-    pub const SOUTH: Norm = Norm(0);
-    pub const NORTH: Norm = Norm(5);
+    pub const SOUTH: Normal = Normal(0);
+    pub const NORTH: Normal = Normal(5);
 
-    pub const WEST:  Norm = Norm(1);
-    pub const EAST:  Norm = Norm(4);
+    pub const WEST:  Normal = Normal(1);
+    pub const EAST:  Normal = Normal(4);
 
-    pub const DOWN:  Norm = Norm(2);
-    pub const UP:    Norm = Norm(3);
+    pub const DOWN:  Normal = Normal(2);
+    pub const UP:    Normal = Normal(3);
 
-    pub const NONE:  Norm = Norm(u8::MAX);
+    pub const NONE:  Normal = Normal(u8::MAX);
 }
 
-impl Into<u8> for Norm {
+impl Into<u8> for Normal {
     fn into(self) -> u8 {
         return self.0;
-    }
-}
-
-#[derive(PartialEq, Eq)]
-pub enum N {
-    SOUTH,
-    NORTH,
-    WEST,
-    EAST,
-    DOWN,
-    UP,
-}
-
-impl N {
-    pub const fn index(&self) -> i32 {
-        match self {
-            N::SOUTH => 0,
-            N::NORTH => 5,
-            N::WEST => 1,
-            N::EAST => 4,
-            N::DOWN => 2,
-            N::UP => 3,
-        }
-    }
-
-    pub const fn opposite(&self) -> N {
-        match self {
-            N::SOUTH => N::NORTH,
-            N::NORTH => N::SOUTH,
-            N::WEST => N::EAST,
-            N::EAST => N::WEST,
-            N::DOWN => N::UP,
-            N::UP => N::DOWN,
-        }
-    }
-
-    pub const fn offset(&self) -> isize {
-        match self {
-            N::SOUTH => -0x001,
-            N::NORTH =>  0x001,
-            N::WEST  => -0x100,
-            N::EAST  =>  0x100,
-            N::DOWN  => -0x010,
-            N::UP    =>  0x010,
-        }
-    }
-
-    pub const fn offset_mask(&self) -> (usize, usize) {
-        match self {
-            N::SOUTH =>  (0x00f, 0),
-            N::NORTH =>  (0x00f, 15),
-            N::WEST  =>  (0xf00, 0),
-            N::EAST  =>  (0xf00, 15),
-            N::DOWN  =>  (0x0f0, 0),
-            N::UP    =>  (0x0f0, 15),
-        }
     }
 }

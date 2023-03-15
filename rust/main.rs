@@ -2,6 +2,7 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
 #![allow(unused_imports)]
+#![allow(unused_must_use)]
 #![feature(unchecked_math)]
 #![feature(pointer_byte_offsets)]
 #![feature(adt_const_params)]
@@ -14,7 +15,7 @@ mod util;
 
 use std::{collections::HashMap, ptr};
 
-use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Norm, blockmodel::BlockModel};
+use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
 use glfw::{Context, Window, Action, Key};
 use util::gl_helper::*;
 use world::world::World;
@@ -37,28 +38,28 @@ static BLOCKS: [BlockState; 6] = [
         block: Block { name: "grass" },
         model: BlockModel([
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::SOUTH,
+                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
                 rig: 0, top: 0, tex: 0
             },
 
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::WEST,
+                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
                 rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::DOWN,
+                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
                 rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::UP,
+                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
                 rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::EAST,
+                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
                 rig: 0, top: 0, tex: 0
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::NORTH,
+                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
                 rig: 0, top: 0, tex: 0
             },
         ])
@@ -67,27 +68,27 @@ static BLOCKS: [BlockState; 6] = [
         block: Block { name: "stone" },
         model: BlockModel([
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::SOUTH,
+                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
                 rig: 0, top: 0, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::WEST,
+                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
                 rig: 0, top: 0, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::DOWN,
+                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
                 rig: 0, top: 0, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::UP,
+                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
                 rig: 0, top: 0, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::EAST,
+                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
                 rig: 0, top: 0, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::NORTH,
+                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
                 rig: 0, top: 0, tex: 1
             },
         ])
@@ -96,27 +97,27 @@ static BLOCKS: [BlockState; 6] = [
         block: Block { name: "dirt" },
         model: BlockModel([
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::SOUTH,
+                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
                 rig: 0, top: 0, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::WEST,
+                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
                 rig: 0, top: 0, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::DOWN,
+                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
                 rig: 0, top: 0, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::UP,
+                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
                 rig: 0, top: 0, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::EAST,
+                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
                 rig: 0, top: 0, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::NORTH,
+                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
                 rig: 0, top: 0, tex: 2
             },
         ])
@@ -125,27 +126,27 @@ static BLOCKS: [BlockState; 6] = [
         block: Block { name: "wool" },
         model: BlockModel([
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::SOUTH,
+                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::WEST,
+                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::DOWN,
+                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::UP,
+                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::EAST,
+                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::NORTH,
+                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
                 rig: 0, top: 0, tex: 3
             },
         ])
@@ -154,27 +155,27 @@ static BLOCKS: [BlockState; 6] = [
         block: Block { name: "bricks" },
         model: BlockModel([
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::SOUTH,
+                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::WEST,
+                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Norm::DOWN,
+                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::UP,
+                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::EAST,
+                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Norm::NORTH,
+                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
                 rig: 0, top: 0, tex: 3
             },
         ])
@@ -224,6 +225,8 @@ fn main() {
 
     // /*
     let mut keys: HashMap<glfw::Key, bool> = HashMap::new();
+    let mut start = std::time::Instant::now();
+    let mut frames = 0;
     while !window.should_close() {
         glfw.poll_events();
         
@@ -236,6 +239,13 @@ fn main() {
         draw(&mut world);
         
         window.swap_buffers();
+
+        if frames % 100 == 0 {
+            frames = 1;
+            
+            // println!("{}", start.elapsed().as_millis() as f64 / 100.0);
+            start = std::time::Instant::now();
+        } else { frames += 1; }
     }
     // for chunk in &mut world.chunks[..] {
         // chunk.kill_buffer();
