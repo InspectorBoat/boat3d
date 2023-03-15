@@ -54,11 +54,11 @@ impl Chunk {
         }
     }
     fn get_face_pair<const NORMAL: N>(&self, index: usize, world: &World) -> (&BlockFace, &BlockFace) {
-        (self.get_face::<NORMAL>(index, world), self.get_opposing_face::<NORMAL>(index, world))
+        return (self.get_face::<NORMAL>(index, world), self.get_opposing_face::<NORMAL>(index, world))
     }
 
     const fn get_index(x: u8, y: u8, z: u8) -> usize {
-        ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0)
+        return ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0)
     }
 
     pub fn make_terrain(&mut self, noise: &mut Vec<f32>, mut chunk_x: usize, mut chunk_y: usize, mut chunk_z: usize) {
@@ -141,8 +141,8 @@ impl Chunk {
         
         let mut row_id: u16 = 0;
 
-        for z in 0..16_u8 { for y in 0..16_u8 { for x in 0..16_u8 {
-            let pos = Chunk::get_index(x, y, z);
+        for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
+            let pos = Chunk::get_index(u, v, d);
 
             let (face_s, face_n) = self.get_face_pair::<{N::SOUTH}>(pos, world);
             let compare = BlockFace::compare_is_culled(face_s, face_n);
@@ -163,20 +163,20 @@ impl Chunk {
                 }
                 // /*
                 if !active_run_s {
-                    run_s = &mut row_s[x as usize];
+                    run_s = &mut row_s[u as usize];
                     if run_s.row + 1 == row_id && run_s.match_top_left(&face_s) {
                         same_row_s = false;
                         active_run_s = true;
                     }
                 }
                 if active_run_s {
-                    if run_s.end == x {
+                    if run_s.end == u {
                         if run_s.match_top_right(&face_s) {
-                            run_s.pull(buffer, &face_s, x, y, z);
+                            run_s.pull(buffer, &face_s, u, v, d);
                             active_run_s = false;
                         }
                         else {
-                            run_s.pull_partial(buffer, &face_s, x, y, z);
+                            run_s.pull_partial(buffer, &face_s, u, v, d);
                             same_row_s = true;
                         }
                     }
@@ -186,7 +186,7 @@ impl Chunk {
                         let compare = BlockFace::compare_is_culled(next_face_s, next_face_n);
 
                         if compare.0 || !Run::match_faces(face_s, next_face_s) {
-                            run_s.pull_partial(buffer, &face_s, x, y, z);
+                            run_s.pull_partial(buffer, &face_s, u, v, d);
                             active_run_s = false;
                         }
                     }
@@ -194,10 +194,10 @@ impl Chunk {
                 }
                 // */
                 // */
-                run_s = &mut row_s[x as usize];
+                run_s = &mut row_s[u as usize];
                 same_row_s = true;
                 active_run_s = true;
-                run_s.begin(buffer, &face_s, x, y, z, row_id);
+                run_s.begin(buffer, &face_s, u, v, d, row_id);
             }
             'north: {
                 // break 'north;
@@ -216,7 +216,7 @@ impl Chunk {
                 }
                 // /*
                 if !active_run_n {
-                    run_n = &mut row_n[x as usize];
+                    run_n = &mut row_n[u as usize];
                     if run_n.row + 1 == row_id && run_n.match_top_left(&face_n) {
                         same_row_n = false;
                         active_run_n = true;
@@ -224,13 +224,13 @@ impl Chunk {
                 }
 
                 if active_run_n {
-                    if run_n.end == x {
+                    if run_n.end == u {
                         if run_n.match_top_right(&face_n) {
-                            run_n.pull(buffer, &face_n, x, y, z);
+                            run_n.pull(buffer, &face_n, u, v, d);
                             active_run_n = false;
                         }
                         else {
-                            run_n.pull_partial(buffer, &face_n, x, y, z);
+                            run_n.pull_partial(buffer, &face_n, u, v, d);
                             same_row_n = true;
                         }
                     }
@@ -240,7 +240,7 @@ impl Chunk {
                         let compare = BlockFace::compare_is_culled(next_face_s, next_face_n);
 
                         if compare.1 || !Run::match_faces(face_n, next_face_n) {
-                            run_n.pull_partial(buffer, &face_n, x, y, z);
+                            run_n.pull_partial(buffer, &face_n, u, v, d);
                             active_run_n = false;
                         }
                     }
@@ -248,10 +248,10 @@ impl Chunk {
                 }
                 // */
                 // */
-                run_n = &mut row_n[x as usize];
+                run_n = &mut row_n[u as usize];
                 active_run_n = true;
                 same_row_n = true;
-                run_n.begin(buffer, &face_n, x, y, z, row_id);
+                run_n.begin(buffer, &face_n, u, v, d, row_id);
             }
         } (active_run_s, active_run_n) = (false, false); row_id += 1; } row_id += 16; }
     }
@@ -269,8 +269,8 @@ impl Chunk {
         
         let mut row_id: u16 = 0;
         
-        for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
-            let pos = Chunk::get_index(x, y, z);
+        for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
+            let pos = Chunk::get_index(d, v, u);
 
             let (face_w, face_e) = self.get_face_pair::<{N::WEST}>(pos, world);
             let compare = BlockFace::compare_is_culled(face_w, face_e);
@@ -291,20 +291,20 @@ impl Chunk {
                 }
                 // /*
                 if !active_run_w {
-                    run_w = &mut row_w[z as usize];
+                    run_w = &mut row_w[u as usize];
                     if run_w.row + 1 == row_id && run_w.match_top_left(&face_w) {
                         same_row_w = false;
                         active_run_w = true;
                     }
                 }
                 if active_run_w {
-                    if run_w.end == z {
+                    if run_w.end == u {
                         if run_w.match_top_right(&face_w) {
-                            run_w.pull(buffer, &face_w, z, y, x);
+                            run_w.pull(buffer, &face_w, u, v, d);
                             active_run_w = false;
                         }
                         else {
-                            run_w.pull_partial(buffer, &face_w, z, y, x);
+                            run_w.pull_partial(buffer, &face_w, u, v, d);
                             same_row_w = true;
                         }
                     }
@@ -314,7 +314,7 @@ impl Chunk {
                         let compare = BlockFace::compare_is_culled(next_face_w, next_face_e);
 
                         if compare.0 || !Run::match_faces(face_w, next_face_w) {
-                            run_w.pull_partial(buffer, &face_w, z, y, x);
+                            run_w.pull_partial(buffer, &face_w, u, v, d);
                             active_run_w = false;
                         }
                     }
@@ -322,10 +322,10 @@ impl Chunk {
                 }
                 // */
                 // */
-                run_w = &mut row_w[z as usize];
+                run_w = &mut row_w[u as usize];
                 same_row_w = true;
                 active_run_w = true;
-                run_w.begin(buffer, &face_w, z, y, x, row_id);
+                run_w.begin(buffer, &face_w, u, v, d, row_id);
             }
             'east: {
                 // break 'east;
@@ -344,7 +344,7 @@ impl Chunk {
                 }
                 // /* 
                 if !active_run_e {
-                    run_e = &mut row_e[z as usize];
+                    run_e = &mut row_e[u as usize];
                     if run_e.row + 1 == row_id && run_e.match_top_left(&face_e) {
                         same_row_e = false;
                         active_run_e = true;
@@ -352,13 +352,13 @@ impl Chunk {
                 }
 
                 if active_run_e {
-                    if run_e.end == z {
+                    if run_e.end == u {
                         if run_e.match_top_right(&face_e) {
-                            run_e.pull(buffer, &face_e, z, y, x);
+                            run_e.pull(buffer, &face_e, u, v, d);
                             active_run_e = false;
                         }
                         else {
-                            run_e.pull_partial(buffer, &face_e, z, y, x);
+                            run_e.pull_partial(buffer, &face_e, u, v, d);
                             same_row_e = true;
                         }
                     }
@@ -368,7 +368,7 @@ impl Chunk {
                         let compare = BlockFace::compare_is_culled(next_face_w, next_face_e);
 
                         if compare.1 || !Run::match_faces(face_e, next_face_e) {
-                            run_e.pull_partial(buffer, &face_e, z, y, x);
+                            run_e.pull_partial(buffer, &face_e, u, v, d);
                             active_run_e = false;
                         }
                     }
@@ -376,14 +376,14 @@ impl Chunk {
                 }
                 // */
                 // */
-                run_e = &mut row_e[z as usize];
+                run_e = &mut row_e[u as usize];
                 active_run_e = true;
                 same_row_e = true;
-                run_e.begin(buffer, &face_e, z, y, x, row_id);
+                run_e.begin(buffer, &face_e, u, v, d, row_id);
             }
         } (active_run_w, active_run_e) = (false, false); row_id += 1; } row_id += 16; }
     }
-
+    
     pub fn mesh_down_up(&mut self, buffer: &mut ByteBuffer, world: &World) {
         let mut row_d: [Run; 16] = Default::default();
         let mut run_d: &mut Run = &mut row_d[0];
@@ -397,8 +397,8 @@ impl Chunk {
         
         let mut row_id: u16 = 0;
         
-        for y in 0..16_u8 { for x in 0..16_u8 { for z in 0..16_u8 {
-            let pos = Chunk::get_index(x, y, z);
+        for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
+            let pos = Chunk::get_index(v, d, u);
 
             let (face_d, face_u) = self.get_face_pair::<{N::DOWN}>(pos, world);
             let compare = BlockFace::compare_is_culled(face_d, face_u);
@@ -419,20 +419,20 @@ impl Chunk {
                 }
                 // /*
                 if !active_run_d {
-                    run_d = &mut row_d[z as usize];
+                    run_d = &mut row_d[u as usize];
                     if run_d.row + 1 == row_id && run_d.match_top_left(&face_d) {
                         same_row_d = false;
                         active_run_d = true;
                     }
                 }
                 if active_run_d {
-                    if run_d.end == z {
+                    if run_d.end == u {
                         if run_d.match_top_right(&face_d) {
-                            run_d.pull(buffer, &face_d, z, x, y);
+                            run_d.pull(buffer, &face_d, u, v, d);
                             active_run_d = false;
                         }
                         else {
-                            run_d.pull_partial(buffer, &face_d, z, x, y);
+                            run_d.pull_partial(buffer, &face_d, u, v, d);
                             same_row_d = true;
                         }
                     }
@@ -442,7 +442,7 @@ impl Chunk {
                         let compare = BlockFace::compare_is_culled(next_face_d, next_face_u);
 
                         if compare.0 || !Run::match_faces(face_d, next_face_d) {
-                            run_d.pull_partial(buffer, &face_d, z, x, y);
+                            run_d.pull_partial(buffer, &face_d, u, v, d);
                             active_run_d = false;
                         }
                     }
@@ -450,10 +450,10 @@ impl Chunk {
                 }
                 // */
                 // */
-                run_d = &mut row_d[z as usize];
+                run_d = &mut row_d[u as usize];
                 same_row_d = true;
                 active_run_d = true;
-                run_d.begin(buffer, &face_d, z, x, y, row_id);
+                run_d.begin(buffer, &face_d, u, v, d, row_id);
             }
             'up: {
                 // break 'up;
@@ -472,7 +472,7 @@ impl Chunk {
                 }
                 // /* 
                 if !active_run_u {
-                    run_u = &mut row_u[z as usize];
+                    run_u = &mut row_u[u as usize];
                     if run_u.row + 1 == row_id && run_u.match_top_left(&face_u) {
                         same_row_u = false;
                         active_run_u = true;
@@ -480,13 +480,13 @@ impl Chunk {
                 }
 
                 if active_run_u {
-                    if run_u.end == z {
+                    if run_u.end == u {
                         if run_u.match_top_right(&face_u) {
-                            run_u.pull(buffer, &face_u, z, x, y);
+                            run_u.pull(buffer, &face_u, u, v, d);
                             active_run_u = false;
                         }
                         else {
-                            run_u.pull_partial(buffer, &face_u, z, x, y);
+                            run_u.pull_partial(buffer, &face_u, u, v, d);
                             same_row_u = true;
                         }
                     }
@@ -496,7 +496,7 @@ impl Chunk {
                         let compare = BlockFace::compare_is_culled(next_face_d, next_face_u);
 
                         if compare.1 || !Run::match_faces(face_u, next_face_u) {
-                            run_u.pull_partial(buffer, &face_u, z, x, y);
+                            run_u.pull_partial(buffer, &face_u, u, v, d);
                             active_run_u = false;
                         }
                     }
@@ -504,10 +504,10 @@ impl Chunk {
                 }
                 // */
                 // */
-                run_u = &mut row_u[z as usize];
+                run_u = &mut row_u[u as usize];
                 active_run_u = true;
                 same_row_u = true;
-                run_u.begin(buffer, &face_u, z, x, y, row_id);
+                run_u.begin(buffer, &face_u, u, v, d, row_id);
             }
         } (active_run_d, active_run_u) = (false, false); row_id += 1; } row_id += 16; }
     }
@@ -594,20 +594,16 @@ impl Chunk {
     pub const INDICES: [u64; 4096] = {
         let mut arr = [0; 4096];
         let mut i = 0;
-        let mut x = 0;
-        while x < 16 {
-            let mut y = 0;
-            while y < 16 {
-                let mut z = 0;
-                while z < 16 {
+        let mut x = 0; while x < 16 {
+            let mut y = 0; while y < 16 {
+                let mut z = 0; while z < 16 {
+                    
                     arr[i] = (x << 4) | (y << 12) | (z << 20);
                     i += 1;
-                    z += 1;
-                }
-                y += 1;
-            }
-            x += 1;
-        }
+
+                    z += 1; }
+                y += 1; }
+            x += 1; }
         arr
     };
 }

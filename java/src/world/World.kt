@@ -37,7 +37,7 @@ class World(var window: Window) {
         }
 
         println(start - System.currentTimeMillis())
-        val warmupRuns = 0
+        val warmupRuns = 1
         if (warmupRuns > 0) {
             MemoryStack.create(65536 * Integer.BYTES).push().use { stack ->
                 start = System.currentTimeMillis()
