@@ -1,4 +1,4 @@
-use std::{ptr, simd::{self, SimdFloat, Simd, SimdOrd}};
+use std::ptr;
 
 #[derive(Clone, Debug)]
 #[repr(C)]
@@ -61,13 +61,11 @@ impl Normal {
         return Normal(6 - self.0);
     }
     pub const SOUTH: Normal = Normal(0);
-    pub const NORTH: Normal = Normal(5);
-
     pub const WEST:  Normal = Normal(1);
-    pub const EAST:  Normal = Normal(4);
-
     pub const DOWN:  Normal = Normal(2);
-    pub const UP:    Normal = Normal(3);
+    pub const NORTH: Normal = Normal(3);
+    pub const EAST:  Normal = Normal(4);
+    pub const UP:    Normal = Normal(5);
 
     pub const NONE:  Normal = Normal(u8::MAX);
 }
@@ -77,3 +75,13 @@ impl Into<u8> for Normal {
         return self.0;
     }
 }
+impl Into<usize> for Normal {
+    fn into(self) -> usize {
+        return self.0 as usize;
+    }
+}
+// impl<T: Into<u8>> From<T> for Normal {
+    // fn from(val: T) -> Normal {
+        // return Normal(val.into());
+    // }
+// }

@@ -9,11 +9,13 @@
 #![feature(core_intrinsics)]
 #![feature(new_uninit)]
 #![feature(portable_simd)]
+#![feature(raw_ref_op)]
+#![allow(overflowing_literals)]
 mod block;
 mod world;
 mod util;
 
-use std::{collections::HashMap, ptr};
+use std::{collections::HashMap, ptr, os::raw::c_void};
 
 use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
 use glfw::{Context, Window, Action, Key};
@@ -35,95 +37,7 @@ static BLOCKS: [BlockState; 6] = [
         ])
     },
     BlockState {
-        block: Block { name: "grass" },
-        model: BlockModel([
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
-                rig: 0, top: 0, tex: 0
-            },
-
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
-                rig: 0, top: 0, tex: 0
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
-                rig: 0, top: 0, tex: 0
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
-                rig: 0, top: 0, tex: 0
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
-                rig: 0, top: 0, tex: 0
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
-                rig: 0, top: 0, tex: 0
-            },
-        ])
-    },
-    BlockState {
-        block: Block { name: "stone" },
-        model: BlockModel([
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
-                rig: 0, top: 0, tex: 1
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
-                rig: 0, top: 0, tex: 1
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
-                rig: 0, top: 0, tex: 1
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
-                rig: 0, top: 0, tex: 1
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
-                rig: 0, top: 0, tex: 1
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
-                rig: 0, top: 0, tex: 1
-            },
-        ])
-    },
-    BlockState {
-        block: Block { name: "dirt" },
-        model: BlockModel([
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
-                rig: 0, top: 0, tex: 2
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
-                rig: 0, top: 0, tex: 2
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
-                rig: 0, top: 0, tex: 2
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
-                rig: 0, top: 0, tex: 2
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
-                rig: 0, top: 0, tex: 2
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
-                rig: 0, top: 0, tex: 2
-            },
-        ])
-    },
-    BlockState {
-        block: Block { name: "wool" },
+        block: Block { name: "bricks" },
         model: BlockModel([
             BlockFace {
                 lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
@@ -138,7 +52,7 @@ static BLOCKS: [BlockState; 6] = [
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
+                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
@@ -146,7 +60,7 @@ static BLOCKS: [BlockState; 6] = [
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
+                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
                 rig: 0, top: 0, tex: 3
             },
         ])
@@ -167,7 +81,7 @@ static BLOCKS: [BlockState; 6] = [
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
+                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
@@ -175,7 +89,94 @@ static BLOCKS: [BlockState; 6] = [
                 rig: 0, top: 0, tex: 3
             },
             BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
+                rig: 0, top: 0, tex: 3
+            },
+        ])
+    },
+    BlockState {
+        block: Block { name: "bricks" },
+        model: BlockModel([
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
                 lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
+                rig: 0, top: 0, tex: 3
+            },
+        ])
+    },
+    BlockState {
+        block: Block { name: "bricks" },
+        model: BlockModel([
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
+                rig: 0, top: 0, tex: 3
+            },
+        ])
+    },
+    BlockState {
+        block: Block { name: "bricks" },
+        model: BlockModel([
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
+                rig: 0, top: 0, tex: 3
+            },
+            BlockFace {
+                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
                 rig: 0, top: 0, tex: 3
             },
         ])
@@ -243,7 +244,7 @@ fn main() {
         if frames % 100 == 0 {
             frames = 1;
             
-            // println!("{}", start.elapsed().as_millis() as f64 / 100.0);
+            println!("{}", start.elapsed().as_millis() as f64 / 100.0);
             start = std::time::Instant::now();
         } else { frames += 1; }
     }
@@ -348,10 +349,19 @@ fn draw(world: &mut World) {
         gl::UniformMatrix4fv(0, 1, gl::FALSE, matrix.as_array().as_ptr());
         
         for (chunk, x, y, z, _) in world.iter() {
-            // if x >= 1 || y >= 1 || z >= 1 { continue }
+            // if x != 0 || y != 0 || z != 0 { continue }
             if let Some(buffer) = &chunk.buffer {
                 buffer.bind_indexed_target(gl::SHADER_STORAGE_BUFFER);
-                gl::DrawElements(gl::TRIANGLE_STRIP, (chunk.face_count * 5) as i32, gl::UNSIGNED_INT, ptr::null());
+                gl::MultiDrawElements(
+                    gl::TRIANGLE_STRIP,
+                    &raw const chunk.counts as *const i32,
+                    gl::UNSIGNED_INT,
+                    &raw const chunk.offsets as *const *const c_void,
+                    12
+                );
+                // if chunk.offsets[0] < 40960 { chunk.offsets[0] += 32 }
+                // else { chunk.offsets[0] = 40960 }
+                // gl::DrawElements(gl::TRIANGLE_STRIP, (chunk.face_count * 5) as i32, gl::UNSIGNED_INT, ptr::null());
             }
         }
     }

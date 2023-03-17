@@ -91,6 +91,9 @@ impl ByteBuffer {
             // arr[7] = tex.1;
         }
     }
+    pub fn reset(&mut self) {
+        self.ind = 0;
+    }
 }
 
 impl<T: Into<usize>> Index<T> for ByteBuffer {

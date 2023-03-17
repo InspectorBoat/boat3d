@@ -4,6 +4,7 @@ use std::hint::black_box;
 use std::intrinsics::prefetch_read_data;
 use std::ops::Sub;
 use std::ops::Add;
+use std::os::raw::c_void;
 use std::ptr;
 use std::simd::Simd;
 use crate::{block::{blockstate::BlockState, blockface::{Normal, BlockFace}}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::ByteBuffer}, BLOCKS};
@@ -13,11 +14,11 @@ use super::world::World;
 #[derive(Debug)]
 pub struct Chunk {
     pub blocks: [u16; 4096],
-    pub counts: [usize; 6],
-    pub offsets: [usize; 6],
+    pub counts: [isize; 12],
+    pub offsets: [isize; 12],
     pub chunk_pos: Vec3i,
     pub face_count: u32,
-    pub buffer: Option<Buffer>
+    pub buffer: Option<Buffer>,
 }
 impl Chunk {
     fn get_face<const NORMAL: Normal>(&self, index: usize, world: &World) -> &BlockFace {
@@ -119,6 +120,7 @@ impl Chunk {
                         },
                         _ => 0
                     };
+                    // *block = 1;
                     // *block = 5 - (y as u16 % 2);
                     // *block = if j % 2 == 0 { 0 } else { 1 };
                     // *block = if x % 2 == 0 { 0 } else { 1 };
@@ -130,7 +132,7 @@ impl Chunk {
         }
     }
 
-    pub fn mesh_north_south(&mut self, buffer: &mut ByteBuffer, world: &World) {
+    pub fn mesh_north_south(&mut self, buffer: &mut ByteBuffer, buffer2: &mut ByteBuffer, world: &World) {
         let mut row_s: [Run; 16] = Default::default();
         let mut run_s: &mut Run = &mut row_s[0];
         let mut active_run_s: bool = false;
@@ -201,6 +203,7 @@ impl Chunk {
                 run_s.begin(buffer, &face_s, u, v, d, row_id);
             }
             'north: {
+                // break 'north;
                 if compare.1 {
                     active_run_n = false;
                     break 'north
@@ -208,7 +211,7 @@ impl Chunk {
                 // /*
                 if active_run_n && same_row_n {
                     if run_n.match_right(&face_n) {
-                        run_n.merge_face(buffer, &face_n);
+                        run_n.merge_face(buffer2, &face_n);
                         break 'north
                     } else {
                         active_run_n = false;
@@ -225,11 +228,11 @@ impl Chunk {
                 if active_run_n {
                     if run_n.end == u {
                         if run_n.match_top_right(&face_n) {
-                            run_n.pull(buffer, &face_n, u, v, d);
+                            run_n.pull(buffer2, &face_n, u, v, d);
                             active_run_n = false;
                         }
                         else {
-                            run_n.pull_partial(buffer, &face_n, u, v, d);
+                            run_n.pull_partial(buffer2, &face_n, u, v, d);
                             same_row_n = true;
                         }
                     }
@@ -239,7 +242,7 @@ impl Chunk {
                         let compare = BlockFace::compare_is_culled(next_face_s, next_face_n);
 
                         if compare.1 || !Run::match_faces(face_n, next_face_n) {
-                            run_n.pull_partial(buffer, &face_n, u, v, d);
+                            run_n.pull_partial(buffer2, &face_n, u, v, d);
                             active_run_n = false;
                         }
                     }
@@ -250,13 +253,13 @@ impl Chunk {
                 run_n = &mut row_n[u as usize];
                 active_run_n = true;
                 same_row_n = true;
-                run_n.begin(buffer, &face_n, u, v, d, row_id);
+                run_n.begin(buffer2, &face_n, u, v, d, row_id);
             }
         } (active_run_s, active_run_n) = (false, false); row_id += 1;
         } row_id += 16;
         }
     }
-    pub fn mesh_west_east(&mut self, buffer: &mut ByteBuffer, world: &World) {
+    pub fn mesh_west_east(&mut self, buffer: &mut ByteBuffer, buffer2: &mut ByteBuffer, world: &World) {
         let mut row_w: [Run; 16] = Default::default();
         let mut run_w: &mut Run = &mut row_w[0];
         let mut active_run_w: bool = false;
@@ -336,7 +339,7 @@ impl Chunk {
                 // /*
                 if active_run_e && same_row_e {
                     if run_e.match_right(&face_e) {
-                        run_e.merge_face(buffer, &face_e);
+                        run_e.merge_face(buffer2, &face_e);
                         break 'east
                     } else {
                         active_run_e = false;
@@ -354,11 +357,11 @@ impl Chunk {
                 if active_run_e {
                     if run_e.end == u {
                         if run_e.match_top_right(&face_e) {
-                            run_e.pull(buffer, &face_e, u, v, d);
+                            run_e.pull(buffer2, &face_e, u, v, d);
                             active_run_e = false;
                         }
                         else {
-                            run_e.pull_partial(buffer, &face_e, u, v, d);
+                            run_e.pull_partial(buffer2, &face_e, u, v, d);
                             same_row_e = true;
                         }
                     }
@@ -368,7 +371,7 @@ impl Chunk {
                         let compare = BlockFace::compare_is_culled(next_face_w, next_face_e);
 
                         if compare.1 || !Run::match_faces(face_e, next_face_e) {
-                            run_e.pull_partial(buffer, &face_e, u, v, d);
+                            run_e.pull_partial(buffer2, &face_e, u, v, d);
                             active_run_e = false;
                         }
                     }
@@ -379,11 +382,11 @@ impl Chunk {
                 run_e = &mut row_e[u as usize];
                 active_run_e = true;
                 same_row_e = true;
-                run_e.begin(buffer, &face_e, u, v, d, row_id);
+                run_e.begin(buffer2, &face_e, u, v, d, row_id);
             }
         } (active_run_w, active_run_e) = (false, false); row_id += 1; } row_id += 16; }
     }
-    pub fn mesh_down_up(&mut self, buffer: &mut ByteBuffer, world: &World) {
+    pub fn mesh_down_up(&mut self, buffer: &mut ByteBuffer, buffer2: &mut ByteBuffer, world: &World) {
         let mut row_d: [Run; 16] = Default::default();
         let mut run_d: &mut Run = &mut row_d[0];
         let mut active_run_d: bool = false;
@@ -463,7 +466,7 @@ impl Chunk {
                 // /*
                 if active_run_u && same_row_u {
                     if run_u.match_right(&face_u) {
-                        run_u.merge_face(buffer, &face_u);
+                        run_u.merge_face(buffer2, &face_u);
                         break 'up
                     } else {
                         active_run_u = false;
@@ -481,11 +484,11 @@ impl Chunk {
                 if active_run_u {
                     if run_u.end == u {
                         if run_u.match_top_right(&face_u) {
-                            run_u.pull(buffer, &face_u, u, v, d);
+                            run_u.pull(buffer2, &face_u, u, v, d);
                             active_run_u = false;
                         }
                         else {
-                            run_u.pull_partial(buffer, &face_u, u, v, d);
+                            run_u.pull_partial(buffer2, &face_u, u, v, d);
                             same_row_u = true;
                         }
                     }
@@ -495,7 +498,7 @@ impl Chunk {
                         let compare = BlockFace::compare_is_culled(next_face_d, next_face_u);
 
                         if compare.1 || !Run::match_faces(face_u, next_face_u) {
-                            run_u.pull_partial(buffer, &face_u, u, v, d);
+                            run_u.pull_partial(buffer2, &face_u, u, v, d);
                             active_run_u = false;
                         }
                     }
@@ -506,7 +509,7 @@ impl Chunk {
                 run_u = &mut row_u[u as usize];
                 active_run_u = true;
                 same_row_u = true;
-                run_u.begin(buffer, &face_u, u, v, d, row_id);
+                run_u.begin(buffer2, &face_u, u, v, d, row_id);
             }
         } (active_run_d, active_run_u) = (false, false); row_id += 1; } row_id += 16; }
     }
@@ -568,17 +571,6 @@ impl Chunk {
         // */
     }
 
-    pub fn new<'a>() -> Chunk {
-        return Chunk {
-            blocks: [0; 4096],
-            counts: [0; 6],
-            offsets: [0; 6],
-            chunk_pos: Vec3i {x: 0, y: 0, z: 0},
-            buffer: None,
-            face_count: 0
-        };
-    }
-    
     pub fn create_buffer(&mut self) {
         if let Some(_) = &self.buffer {
             panic!();
@@ -607,11 +599,6 @@ impl Chunk {
             x += 1; }
         arr
     };
-}
-impl Default for Chunk {
-    fn default() -> Self {
-        Self::new()
-    }
 }
 impl Drop for Chunk {
     fn drop(&mut self) {
@@ -751,7 +738,6 @@ impl Run {
             face.top == next.top
         }
     }
-
     fn as_u32(&self) -> &mut u32 {
         return unsafe { &mut *(ptr::addr_of!(self) as *mut u32) }
     }
