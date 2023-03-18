@@ -1,6 +1,6 @@
 use std::ops::{IndexMut, Index};
 
-use crate::block::blockface::BlockFace;
+use crate::{block::blockface::BlockFace, world::chunk::Chunk};
 
 pub struct ByteBuffer {
     pub ind: usize,
@@ -46,11 +46,10 @@ impl ByteBuffer {
             arr: Box::new([0; 262144])
         }
     }
-    pub fn add_face(&mut self, face: &BlockFace, u: u8, v: u8, d: u8) {
-        let offset = ((u as u64) << 4) | ((v as u64) << 12) | ((d as u64) << 20);
+    pub fn put_face(&mut self, face: &BlockFace, pos: usize) {
         unsafe {
             let loc = self.arr.as_mut_ptr().byte_add(self.ind) as *mut u64;
-            *loc = face.as_u64() + offset;
+            *loc = face.as_u64() + Chunk::INDICES[pos];
         }
         self.ind += 8;
     }

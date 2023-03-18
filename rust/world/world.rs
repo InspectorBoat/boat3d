@@ -46,34 +46,30 @@ impl World {
                 let prev_ind = buffer.ind;
                 let prev_ind2 = buffer2.ind;
                 chunk.mesh_north_south(&mut buffer, &mut buffer2, &world);
-                chunk.counts[0] = ((buffer.ind - prev_ind) / 8 * 5) as isize;
-                chunk.counts[3] = ((buffer2.ind - prev_ind2) / 8 * 5) as isize;
+                chunk.counts[0] = ((buffer.ind - prev_ind) / 8 * 5) as i32;
+                chunk.counts[3] = ((buffer2.ind - prev_ind2) / 8 * 5) as i32;
 
                 let prev_ind = buffer.ind;
                 let prev_ind2 = buffer2.ind;
                 chunk.mesh_west_east(&mut buffer, &mut buffer2, &world);
-                chunk.counts[1] = ((buffer.ind - prev_ind) / 8 * 5) as isize;
-                chunk.counts[4] = ((buffer2.ind - prev_ind2) / 8 * 5) as isize;
+                chunk.counts[1] = ((buffer.ind - prev_ind) / 8 * 5) as i32;
+                chunk.counts[4] = ((buffer2.ind - prev_ind2) / 8 * 5) as i32;
 
                 let p_ind = buffer.ind;
                 let p_ind2 = buffer2.ind;
                 chunk.mesh_down_up(&mut buffer, &mut buffer2, &world);
-                chunk.counts[2] = ((buffer.ind - p_ind) / 8 * 5) as isize;
-                chunk.counts[5] = ((buffer2.ind - p_ind2) / 8 * 5) as isize;
+                chunk.counts[2] = ((buffer.ind - p_ind) / 8 * 5) as i32;
+                chunk.counts[5] = ((buffer2.ind - p_ind2) / 8 * 5) as i32;
 
-                // TODO:
-                // This is REALLY BAD, but for some reason using a i32/u32 causes a crash
-                // Since OpenGL can only read 8/16/32 bit ints, half the indices aren't reached
-                // I worked around this in a really terrible way by giving each element twice as much padding and reading twice the elements
-                // This is killing framerate
-                // FIX THIS LATER
-                chunk.offsets[0] = 0;
-                chunk.offsets[1 * 2] = chunk.offsets[0 * 2] + (chunk.counts[0] * 4) as isize;
-                chunk.offsets[2 * 2] = chunk.offsets[1 * 2] + (chunk.counts[1] * 4) as isize;
-                chunk.offsets[3 * 2] = chunk.offsets[2 * 2] + (chunk.counts[2] * 4) as isize;
-                chunk.offsets[4 * 2] = chunk.offsets[3 * 2] + (chunk.counts[3] * 4) as isize;
-                chunk.offsets[5 * 2] = chunk.offsets[4 * 2] + (chunk.counts[4] * 4) as isize;
+                chunk.offsets[0] = 0 as *const c_void;
+                chunk.offsets[1] = (chunk.offsets[0] as i32 + (chunk.counts[0] * 4)) as *const c_void;
+                chunk.offsets[2] = (chunk.offsets[1] as i32 + (chunk.counts[1] * 4)) as *const c_void;
+                chunk.offsets[3] = (chunk.offsets[2] as i32 + (chunk.counts[2] * 4)) as *const c_void;
+                chunk.offsets[4] = (chunk.offsets[3] as i32 + (chunk.counts[3] * 4)) as *const c_void;
+                chunk.offsets[5] = (chunk.offsets[4] as i32 + (chunk.counts[4] * 4)) as *const c_void;
                 
+                // chunk.mesh_north_south_no_merge(&mut buffer, &world);
+
                 buffer.format_quads();
                 buffer2.format_quads();
 
@@ -82,11 +78,11 @@ impl World {
                 
                 // black_box(&buffer);
                 // /*
-                if chunk.face_count == 0 { continue }
+                if chunk.face_count == 0 { chunk.kill_buffer(); continue }
                 let gl_buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
 
                 gl_buffer.storage((buffer.ind + buffer2.ind + 16) as isize, gl::DYNAMIC_STORAGE_BIT);
-                gl_buffer.upload_slice(&[chunk.chunk_pos.x, chunk.chunk_pos.y, chunk.chunk_pos.z, 0], 0, 16);
+                gl_buffer.upload_slice(&[chunk.pos.x, chunk.pos.y, chunk.pos.z, 0], 0, 16);
                 gl_buffer.upload_slice(&buffer.arr.as_slice(), 16, buffer.ind as isize);
                 gl_buffer.upload_slice(&buffer2.arr.as_slice(), 16 + buffer.ind as isize, buffer2.ind as isize);
                 

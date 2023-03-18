@@ -14,9 +14,9 @@ use super::world::World;
 #[derive(Debug)]
 pub struct Chunk {
     pub blocks: [u16; 4096],
-    pub counts: [isize; 12],
-    pub offsets: [isize; 12],
-    pub chunk_pos: Vec3i,
+    pub counts: [i32; 6],
+    pub offsets: [*const c_void; 6],
+    pub pos: Vec3i,
     pub face_count: u32,
     pub buffer: Option<Buffer>,
 }
@@ -28,28 +28,28 @@ impl Chunk {
         match NORMAL {
             Normal::SOUTH => {
                 if index & 0x00f == 0 {
-                    if self.chunk_pos.z == 0 {
+                    if self.pos.z == 0 {
                         return &BlockFace::NONE;
                     }
-                    return &BLOCKS[world.chunks[((self.chunk_pos.x << 10) | (self.chunk_pos.y << 5) | (self.chunk_pos.z.sub(1) << 0)) as usize].blocks[index | 0x00f] as usize].model[Normal::NORTH];
+                    return &BLOCKS[world.chunks[((self.pos.x << 10) | (self.pos.y << 5) | (self.pos.z.sub(1) << 0)) as usize].blocks[index | 0x00f] as usize].model[Normal::NORTH];
                 }
                 return &BLOCKS[self.blocks[index - 0x001] as usize].model[Normal::NORTH];
             }
             Normal::WEST => {
                 if index & 0xf00 == 0 {
-                    if self.chunk_pos.x == 0 {
+                    if self.pos.x == 0 {
                         return &BlockFace::NONE;
                     }
-                    return &BLOCKS[world.chunks[((self.chunk_pos.x.sub(1) << 10) | (self.chunk_pos.y << 5) | (self.chunk_pos.z << 0)) as usize].blocks[index | 0xf00] as usize].model[Normal::EAST];
+                    return &BLOCKS[world.chunks[((self.pos.x.sub(1) << 10) | (self.pos.y << 5) | (self.pos.z << 0)) as usize].blocks[index | 0xf00] as usize].model[Normal::EAST];
                 }
                 return &BLOCKS[self.blocks[index - 0x100] as usize].model[Normal::EAST];
             }
             Normal::DOWN => {
                 if index & 0x0f0 == 0 {
-                    if self.chunk_pos.y == 0 {
+                    if self.pos.y == 0 {
                         return &BlockFace::NONE;
                     }
-                    return &BLOCKS[world.chunks[(self.chunk_pos.x << 10 | self.chunk_pos.y.sub(1) << 5 | (self.chunk_pos.z) << 0) as usize].blocks[index | 0x0f0] as usize].model[Normal::UP];
+                    return &BLOCKS[world.chunks[(self.pos.x << 10 | self.pos.y.sub(1) << 5 | (self.pos.z) << 0) as usize].blocks[index | 0x0f0] as usize].model[Normal::UP];
                 }
                 return &BLOCKS[self.blocks[index - 0x010] as usize].model[Normal::UP];
             }
@@ -65,7 +65,7 @@ impl Chunk {
     }
 
     pub fn make_terrain(&mut self, noise: &mut Vec<f32>, mut chunk_x: usize, mut chunk_y: usize, mut chunk_z: usize) {
-        self.chunk_pos = Vec3i {
+        self.pos = Vec3i {
             x: chunk_x as i32,
             y: chunk_y as i32,
             z: chunk_z as i32
@@ -91,31 +91,19 @@ impl Chunk {
                         self.blocks.get_unchecked_mut((x << 8) | (y << 4) | (z << 0))
                     )};
                     *block = match *noise_val {
-                        // val if val < 0.05 => {
+                        // val if val < 0.1 => {
                         //     1
                         // },
-                        // val if val < 0.10 => {
-                            // 2
-                        // },
-                        // val if val < 0.15 => {
-                        //     3
-                        // },
-                        // val if val < 0.20 => {
-                        //     4
-                        // },
-                        // val if val < 0.25 => {
-                            // 5
-                        // },
-                        // val if val < 0.30 => {
-                            // 0
-                        // },
-                        // val if val < 0.35 => {
-                        //     1
-                        // },
-                        // val if val < 0.40 => {
+                        // val if val < 0.2 => {
                         //     2
                         // },
-                        val if val < 0.45 => {
+                        // val if val < 0.3 => {
+                        //     3
+                        // },
+                        // val if val < 0.4 => {
+                        //     4
+                        // },
+                        val if val < 0.5 => {
                             5
                         },
                         _ => 0
@@ -524,7 +512,8 @@ impl Chunk {
             if !compare.0 {
                 // let offset = ((x as u64) << 4) | ((y as u64) << 12) | ((z as u64) << 20);
                 let offset = Chunk::INDICES[pos];
-                buffer.put_u64(face_s.as_u64() + offset);
+                buffer.put_u64(face_n.as_u64() + offset);
+
             }
             if !compare.1 {
                 // let offset = ((x as u64) << 4) | ((y as u64) << 12) | ((z as u64) << 20);
@@ -533,10 +522,10 @@ impl Chunk {
             }
         } } }
         // */
-        /*
+        // /*
         for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
             let pos = Chunk::get_index(x, y, z);
-            let (face_s, face_n) = self.get_face_pair::<{Norm::WEST}>(pos, world);
+            let (face_s, face_n) = self.get_face_pair::<{Normal::WEST}>(pos, world);
 
             let compare = BlockFace::compare_is_culled(face_s, face_n);
             if !compare.0 {
@@ -551,10 +540,10 @@ impl Chunk {
             }
         } } }
         // */
-        /*
+        // /*
         for y in 0..16_u8 { for x in 0..16_u8 { for z in 0..16_u8 {
             let pos = Chunk::get_index(x, y, z);
-            let (face_s, face_n) = self.get_face_pair::<{Norm::DOWN}>(pos, world);
+            let (face_s, face_n) = self.get_face_pair::<{Normal::DOWN}>(pos, world);
 
             let compare = BlockFace::compare_is_culled(face_s, face_n);
             if !compare.0 {
