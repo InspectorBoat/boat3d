@@ -21,7 +21,7 @@ ultraviolet = "0.9.0"
 [profile.release]
 _lto = true
 _codegen-units = 1
-_strip = true
+strip = false
 
 [profile.bench]
 debug = true

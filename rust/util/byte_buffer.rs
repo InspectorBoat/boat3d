@@ -49,7 +49,7 @@ impl ByteBuffer {
     pub fn put_face(&mut self, face: &BlockFace, pos: usize) {
         unsafe {
             let loc = self.arr.as_mut_ptr().byte_add(self.ind) as *mut u64;
-            *loc = face.as_u64() + Chunk::INDICES[pos];
+            *loc = face.as_u64() + Chunk::INDICES_ZYX[pos] as u64;
         }
         self.ind += 8;
     }

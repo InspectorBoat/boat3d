@@ -28,7 +28,7 @@ impl World {
         for (chunk, x, y, z, _) in world.iter() {
             // if x != 0 || y != 0 || z != 0 { continue }
             chunk.make_terrain(&mut noise_vec, x, y, z);
-            chunk.create_buffer();
+            // chunk.create_buffer();
             // let buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
             // buffer.storage(4096, gl::DYNAMIC_STORAGE_BIT);
             // chunk.buffer = Some(buffer);
@@ -38,37 +38,37 @@ impl World {
         let mut buffer2 = ByteBuffer::new();
         let start = time::Instant::now();
         let mut faces = 0;
-        let iter = 1;
-        for _ in 0..iter {
+        let mesh_passes = 1;
+        for _ in 0..mesh_passes {
             for (chunk, x, y, z, _) in world.iter() {
                 // if x != 0 || y != 0 || z != 0 { continue }
 
-                let prev_ind = buffer.ind;
-                let prev_ind2 = buffer2.ind;
-                chunk.mesh_north_south(&mut buffer, &mut buffer2, &world);
-                chunk.counts[0] = ((buffer.ind - prev_ind) / 8 * 5) as i32;
-                chunk.counts[3] = ((buffer2.ind - prev_ind2) / 8 * 5) as i32;
+                // let prev_ind = buffer.ind;
+                // let prev_ind2 = buffer2.ind;
+                // chunk.mesh_north_south(&mut buffer, &mut buffer2, &world);
+                // chunk.counts[0] = ((buffer.ind - prev_ind) / 8 * 5) as i32;
+                // chunk.counts[3] = ((buffer2.ind - prev_ind2) / 8 * 5) as i32;
 
-                let prev_ind = buffer.ind;
-                let prev_ind2 = buffer2.ind;
-                chunk.mesh_west_east(&mut buffer, &mut buffer2, &world);
-                chunk.counts[1] = ((buffer.ind - prev_ind) / 8 * 5) as i32;
-                chunk.counts[4] = ((buffer2.ind - prev_ind2) / 8 * 5) as i32;
+                // let prev_ind = buffer.ind;
+                // let prev_ind2 = buffer2.ind;
+                // chunk.mesh_west_east(&mut buffer, &mut buffer2, &world);
+                // chunk.counts[1] = ((buffer.ind - prev_ind) / 8 * 5) as i32;
+                // chunk.counts[4] = ((buffer2.ind - prev_ind2) / 8 * 5) as i32;
 
-                let p_ind = buffer.ind;
-                let p_ind2 = buffer2.ind;
-                chunk.mesh_down_up(&mut buffer, &mut buffer2, &world);
-                chunk.counts[2] = ((buffer.ind - p_ind) / 8 * 5) as i32;
-                chunk.counts[5] = ((buffer2.ind - p_ind2) / 8 * 5) as i32;
+                // let p_ind = buffer.ind;
+                // let p_ind2 = buffer2.ind;
+                // chunk.mesh_down_up(&mut buffer, &mut buffer2, &world);
+                // chunk.counts[2] = ((buffer.ind - p_ind) / 8 * 5) as i32;
+                // chunk.counts[5] = ((buffer2.ind - p_ind2) / 8 * 5) as i32;
 
-                chunk.offsets[0] = 0 as *const c_void;
-                chunk.offsets[1] = (chunk.offsets[0] as i32 + (chunk.counts[0] * 4)) as *const c_void;
-                chunk.offsets[2] = (chunk.offsets[1] as i32 + (chunk.counts[1] * 4)) as *const c_void;
-                chunk.offsets[3] = (chunk.offsets[2] as i32 + (chunk.counts[2] * 4)) as *const c_void;
-                chunk.offsets[4] = (chunk.offsets[3] as i32 + (chunk.counts[3] * 4)) as *const c_void;
-                chunk.offsets[5] = (chunk.offsets[4] as i32 + (chunk.counts[4] * 4)) as *const c_void;
+                // chunk.offsets[0] = 0 as *const c_void;
+                // chunk.offsets[1] = (chunk.offsets[0] as i32 + (chunk.counts[0] * 4)) as *const c_void;
+                // chunk.offsets[2] = (chunk.offsets[1] as i32 + (chunk.counts[1] * 4)) as *const c_void;
+                // chunk.offsets[3] = (chunk.offsets[2] as i32 + (chunk.counts[2] * 4)) as *const c_void;
+                // chunk.offsets[4] = (chunk.offsets[3] as i32 + (chunk.counts[3] * 4)) as *const c_void;
+                // chunk.offsets[5] = (chunk.offsets[4] as i32 + (chunk.counts[4] * 4)) as *const c_void;
                 
-                // chunk.mesh_north_south_no_merge(&mut buffer, &world);
+                chunk.mesh_no_merge(&mut buffer, &mut buffer2, &world);
 
                 buffer.format_quads();
                 buffer2.format_quads();
@@ -76,11 +76,11 @@ impl World {
                 chunk.face_count = (buffer.ind as u32 + buffer2.ind as u32) / 8;
                 faces += chunk.face_count;
                 
-                // black_box(&buffer);
-                // /*
+                black_box(&buffer);
+                black_box(&buffer2);
+                /*
                 if chunk.face_count == 0 { chunk.kill_buffer(); continue }
                 let gl_buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
-
                 gl_buffer.storage((buffer.ind + buffer2.ind + 16) as isize, gl::DYNAMIC_STORAGE_BIT);
                 gl_buffer.upload_slice(&[chunk.pos.x, chunk.pos.y, chunk.pos.z, 0], 0, 16);
                 gl_buffer.upload_slice(&buffer.arr.as_slice(), 16, buffer.ind as isize);
@@ -92,9 +92,9 @@ impl World {
                 buffer2.reset();
             }
         }
-        let count = world.chunks.len() * iter;
+        let count = world.chunks.len() * mesh_passes;
         let elapsed = start.elapsed().as_millis();
-        println!("[6/6 axes] {count} chunks | {}ms | {}ms/chunk | {} faces | {} faces/chunk", elapsed, elapsed as f64 / count as f64, faces, faces as u64 / count as u64);
+        println!("[6/6 axes] [No merge] {count} chunks | {}ms | {} chunks/s | {}ms/chunk | {} faces | {} faces/chunk", elapsed, 1000.0 / elapsed as f64 * count as f64, elapsed as f64 / count as f64, faces, faces as u64 / count as u64);
         return world;
     }
 

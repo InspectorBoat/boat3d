@@ -37,10 +37,13 @@ impl BlockFace {
     }
 
     pub const NONE: BlockFace = BlockFace {
-        lef: 15, bot: 15, dep: 0, nor: Normal::NONE, rig: 15, top: 15, tex: u16::MAX
+        lef: 0x1f, bot: 0x1f, dep: 0, nor: Normal::NONE,
+        rig: 0x1f, top: 0x1f, tex: u16::MAX
     };
+
     pub const NONE2: BlockFace = BlockFace {
-        lef: 15, bot: 15, dep: 15, nor: Normal::NONE, rig: 15, top: 15, tex: u16::MAX
+        lef: 0x0f, bot: 0x0f, dep: 0, nor: Normal::NONE,
+        rig: 0x0f, top: 0x0f, tex: u16::MAX
     };
 }
 
@@ -52,7 +55,7 @@ impl PartialEq for BlockFace {
 
 #[derive(Clone, Copy, Debug)]
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
-pub struct Normal(pub u8/* , pub isize */);
+pub struct Normal(pub u8);
 
 #[allow(dead_code)]
 #[allow(unused_parens)]

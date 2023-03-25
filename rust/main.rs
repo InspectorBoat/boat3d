@@ -11,6 +11,7 @@
 #![feature(portable_simd)]
 #![feature(raw_ref_op)]
 #![allow(overflowing_literals)]
+#![allow(unused_unsafe)]
 mod block;
 mod world;
 mod util;
@@ -156,35 +157,35 @@ static BLOCKS: [BlockState; 6] = [
         block: Block { name: "bricks" },
         model: BlockModel([
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
-                rig: 0, top: 0, tex: 4
+                lef: 0x10, bot: 0x10, dep: 0, nor: Normal::SOUTH,
+                rig: 0x10, top: 0x10, tex: 4
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
-                rig: 0, top: 0, tex: 4
+                lef: 0x10, bot: 0x10, dep: 0, nor: Normal::WEST,
+                rig: 0x10, top: 0x10, tex: 4
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
-                rig: 0, top: 0, tex: 4
+                lef: 0x10, bot: 0x10, dep: 0, nor: Normal::DOWN,
+                rig: 0x10, top: 0x10, tex: 4
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
-                rig: 0, top: 0, tex: 4
+                lef: 0x00, bot: 0x00, dep: 15, nor: Normal::NORTH,
+                rig: 0x00, top: 0x00, tex: 4
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
-                rig: 0, top: 0, tex: 4
+                lef: 0x00, bot: 0x00, dep: 15, nor: Normal::EAST,
+                rig: 0x00, top: 0x00, tex: 4
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
-                rig: 0, top: 0, tex: 4
+                lef: 0x00, bot: 0x00, dep: 15, nor: Normal::UP,
+                rig: 0x00, top: 0x00, tex: 4
             },
         ])
     }
 ];
 
 fn main() {
-    // /*
+    /*
     let mut glfw = gl_helper::init_glfw();
     let (mut window, events) = gl_helper::create_window();
     gl_helper::init_gl(&mut window);
@@ -222,7 +223,7 @@ fn main() {
     
     let mut world = World::new();
 
-    // /*
+    /*
     let mut keys: HashMap<glfw::Key, bool> = HashMap::new();
     let mut start = std::time::Instant::now();
     let mut frames = 0;
@@ -344,7 +345,7 @@ fn draw(world: &mut World) {
             if let Some(buffer) = &chunk.buffer {
                 buffer.bind_indexed_target(gl::SHADER_STORAGE_BUFFER);
                 
-                // /*
+                /*
                 let south = chunk.counts[0];
                 let north = chunk.counts[3];
                 if world.camera.pos.z > chunk.pos.z as f32 * 16.0 + 16.0 { chunk.counts[0] = 0 }
@@ -374,7 +375,7 @@ fn draw(world: &mut World) {
                 chunk.counts[4] = east;
                 chunk.counts[5] = up;
                 // */
-                // gl::DrawElements(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null());
+                gl::DrawElements(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null());
             }
         }
     }
