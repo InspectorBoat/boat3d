@@ -5,7 +5,7 @@ use glfw::{Window, WindowEvent, Glfw};
 use log::debug;
 
 
-
+// /*
 pub fn init_gl(window: &mut Window) {
     return gl::load_with(|s| window.get_proc_address(s) as *const _);
 }
@@ -16,6 +16,8 @@ pub fn create_window() -> (Window, std::sync::mpsc::Receiver<(f64, WindowEvent)>
     return glfw::init(glfw::FAIL_ON_ERRORS).unwrap().create_window(600, 600, "boat3d", glfw::WindowMode::Windowed)
             .expect("Failed to create GLFW window.");
 }
+// */
+
 pub fn log_error() {
     match unsafe { gl::GetError() } {
         gl::INVALID_ENUM => println!("INVALID_ENUM"),

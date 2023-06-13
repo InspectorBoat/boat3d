@@ -3,6 +3,7 @@
 #![allow(unused_variables)]
 #![allow(unused_imports)]
 #![allow(unused_must_use)]
+#![allow(non_snake_case)]
 #![feature(unchecked_math)]
 #![feature(pointer_byte_offsets)]
 #![feature(adt_const_params)]
@@ -185,7 +186,7 @@ static BLOCKS: [BlockState; 6] = [
 ];
 
 fn main() {
-    /*
+    // /*
     let mut glfw = gl_helper::init_glfw();
     let (mut window, events) = gl_helper::create_window();
     gl_helper::init_gl(&mut window);
@@ -197,13 +198,12 @@ fn main() {
     let fragment_shader = Shader::create(gl::FRAGMENT_SHADER, include_str!("shader/shader.glsl.frag"));
     let program = Program::create(vertex_shader, fragment_shader);
     Program::bind(program);
-    let index_buffer = Buffer::create();
     unsafe {
         gl::ClearColor(1.0, 1.0, 1.0, 1.0);
         gl::Enable(gl::DEPTH_TEST);
         gl::Enable(gl::PRIMITIVE_RESTART);
         gl::PrimitiveRestartIndex(u32::MAX);
-        let mut index_array = Vec::with_capacity(1024 * 1024 / 4);
+        let mut index_array = Vec::<u32>::with_capacity(1024 * 1024 / 4);
 
         let mut j = 0;
         for i in 0..(1024 * 1024 / 4) {
@@ -215,6 +215,8 @@ fn main() {
                 j += 1;
             }
         }
+        let index_buffer = Buffer::create();
+
         index_buffer.bind_target(gl::ELEMENT_ARRAY_BUFFER);
         index_buffer.storage(1024 * 1024 / 4, gl::DYNAMIC_STORAGE_BIT);
         index_buffer.upload_slice(&index_array.as_slice(), 0, index_array.len() as isize);
@@ -222,8 +224,9 @@ fn main() {
     // */
     
     let mut world = World::new();
+    
 
-    /*
+    // /*
     let mut keys: HashMap<glfw::Key, bool> = HashMap::new();
     let mut start = std::time::Instant::now();
     let mut frames = 0;
@@ -249,6 +252,7 @@ fn main() {
     // */
 }
 
+// /* 
 #[allow(unused_variables)]
 fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::WindowEvent, keys: &mut HashMap<Key, bool>, status: &mut WindowStatus) {
     match event {
@@ -347,7 +351,7 @@ fn draw(world: &mut World) {
                 
                 /*
                 let south = chunk.counts[0];
-                let north = chunk.counts[3];
+                let north = chunk.counts[3];    
                 if world.camera.pos.z > chunk.pos.z as f32 * 16.0 + 16.0 { chunk.counts[0] = 0 }
                 if world.camera.pos.z < chunk.pos.z as f32 * 16.0 { chunk.counts[3] = 0 }
 
@@ -380,7 +384,7 @@ fn draw(world: &mut World) {
         }
     }
 }
-
+// */
 /*
  *              X Y Z        U V D
  *              -----        -----

@@ -34,6 +34,7 @@ impl Camera {
         self.pos.x += ((self.rot.yaw.cos() as f64) * x - (self.rot.yaw.sin() as f64) * z) as f32;
         self.pos.z -= ((self.rot.yaw.sin() as f64) * x + (self.rot.yaw.cos() as f64) * z) as f32;
     }
+    
     pub fn new() -> Camera {
         Camera { 
             pos: Vec3 { x: 0.0, y: 0.0, z: 16.0 * 11.0 * 0.0 },

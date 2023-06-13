@@ -1,7 +1,6 @@
-use std::ops::{IndexMut, Index};
-
+use std::ops::{IndexMut, Index, Add};
 use crate::{block::blockface::BlockFace, world::chunk::Chunk};
-
+#[repr(C, align(8))]
 pub struct ByteBuffer {
     pub ind: usize,
     pub arr: Box<[u8; 262144]>

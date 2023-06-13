@@ -1,4 +1,4 @@
-use std::ptr;
+use std::mem;
 
 #[derive(Clone, Debug)]
 #[repr(C)]
@@ -22,20 +22,22 @@ impl BlockFace {
     
     pub fn as_u64(&self) -> u64 {
         unsafe {
-            *(ptr::addr_of!(*self) as *const u64)
+            *(&raw const *self as *const u64)
         }
     }
     pub fn as_u32(&self) -> u32 {
         unsafe {
-            *(ptr::addr_of!(*self) as *const u32)
+            *(&raw const *self as *const u32)
         }
     }
     pub fn as_i32(&self) -> i32 {
         unsafe {
-            *(ptr::addr_of!(*self) as *const i32)
+            *(&raw const *self as *const i32)
         }
     }
-
+    pub fn copy(&self) -> BlockFace {
+        return unsafe { mem::transmute_copy(self) };
+    }
     pub const NONE: BlockFace = BlockFace {
         lef: 0x1f, bot: 0x1f, dep: 0, nor: Normal::NONE,
         rig: 0x1f, top: 0x1f, tex: u16::MAX
