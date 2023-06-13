@@ -21,29 +21,34 @@ use super::world::World;
 
 #[derive(Debug)]
 pub struct Chunk {
-    pub blocks: [&'static BlockState; 4096],
+    // pub blocks: [&'static BlockState; 4096],
+    pub blocks: [u8; 4096],
     pub counts: [i32; 6],
     pub offsets: [*const c_void; 6],
     pub pos: Vec3i,
     pub face_count: u32,
     pub buffer: Option<Buffer>,
+    pub padding: [u8; 4000]
 }
 impl Chunk {
     pub fn get_face<const NORMAL: Normal>(&self, index: usize, world: &World) -> &BlockFace {
+        return &self[index].model[NORMAL];
         // return unsafe { &BLOCKS[*self.blocks.get_unchecked(index) as usize].model[NORMAL] }
-        return unsafe { &self.blocks.get_unchecked(index).model[NORMAL] }
+        // return unsafe { &self.blocks.get_unchecked(index).model[NORMAL] }
     }
-    pub fn get_opposing_face<const NORMAL: Normal>(&self, index: usize, world: &World) -> &BlockFace {
+    pub fn get_opposing_face<'a, const NORMAL: Normal>(&'a self, index: usize, world: &'a World) -> &BlockFace {
         match NORMAL {
             Normal::SOUTH => {
                 if index & 0x00f == 0 {
                     if self.pos.z == 0 {
                         return &BlockFace::NONE2;
                     }
-                    return &world.chunks[((self.pos.x << 10) | (self.pos.y << 5) | (self.pos.z.sub(1) << 0)) as usize].blocks[index | 0x00f].model[Normal::NORTH]
+                    return &world.chunks[((self.pos.x << 10) | (self.pos.y << 5) | (self.pos.z.sub(1) << 0)) as usize][index | 0x00f].model[Normal::NORTH]
+                    // return &world.chunks[((self.pos.x << 10) | (self.pos.y << 5) | (self.pos.z.sub(1) << 0)) as usize].blocks[index | 0x00f].model[Normal::NORTH]
                     // return &BLOCKS[world.chunks[((self.pos.x << 10) | (self.pos.y << 5) | (self.pos.z.sub(1) << 0)) as usize].blocks[index | 0x00f] as usize].model[Normal::NORTH];
                 }
-                return &self.blocks[index - 0x001].model[Normal::NORTH];
+                return &self[index - 0x001].model[Normal::NORTH];
+                // return &self.blocks[index - 0x001].model[Normal::NORTH];
                 // return &BLOCKS[self.blocks[index - 0x001] as usize].model[Normal::NORTH];
             }
             Normal::WEST => {
@@ -51,10 +56,11 @@ impl Chunk {
                     if self.pos.x == 0 {
                         return &BlockFace::NONE2;
                     }
-                    return &world.chunks[((self.pos.x.sub(1) << 10) | (self.pos.y << 5) | (self.pos.z << 0)) as usize].blocks[index | 0xf00].model[Normal::EAST];
+                    return &world.chunks[((self.pos.x.sub(1) << 10) | (self.pos.y << 5) | (self.pos.z << 0)) as usize][index | 0xf00].model[Normal::EAST];
                     // return &BLOCKS[world.chunks[((self.pos.x.sub(1) << 10) | (self.pos.y << 5) | (self.pos.z << 0)) as usize].blocks[index | 0xf00] as usize].model[Normal::EAST];
                 }
-                return &self.blocks[index - 0x100].model[Normal::EAST];
+                return &self[index - 0x100].model[Normal::EAST];
+                // return &self.blocks[index - 0x100].model[Normal::EAST];
                 // return &BLOCKS[self.blocks[index - 0x100] as usize].model[Normal::EAST];
             }
             Normal::DOWN => {
@@ -62,16 +68,17 @@ impl Chunk {
                     if self.pos.y == 0 {
                         return &BlockFace::NONE2;
                     }
-                    return &world.chunks[((self.pos.x << 10) | (self.pos.y.sub(1) << 5) | (self.pos.z << 0)) as usize].blocks[index | 0x0f0].model[Normal::UP];
+                    return &world.chunks[((self.pos.x << 10) | (self.pos.y.sub(1) << 5) | (self.pos.z << 0)) as usize][index | 0x0f0].model[Normal::UP];
                     // return &BLOCKS[world.chunks[(self.pos.x << 10 | self.pos.y.sub(1) << 5 | (self.pos.z) << 0) as usize].blocks[index | 0x0f0] as usize].model[Normal::UP];
                 }
-                return &self.blocks[index - 0x010].model[Normal::UP];
+                return &self[index - 0x010].model[Normal::UP];
+                // return &self.blocks[index - 0x010].model[Normal::UP];
                 // return &BLOCKS[self.blocks[index - 0x010] as usize].model[Normal::UP];
             }
             _ => unsafe { std::hint::unreachable_unchecked() }
         }
     }
-    pub fn get_face_pair<const NORMAL: Normal>(&self, index: usize, world: &World) -> (&BlockFace, &BlockFace) {
+    pub fn get_face_pair<'a, const NORMAL: Normal>(&'a self, index: usize, world: &'a World) -> (&BlockFace, &BlockFace) {
         return (self.get_face::<NORMAL>(index, world), self.get_opposing_face::<NORMAL>(index, world))
     }
 
@@ -92,7 +99,6 @@ impl Chunk {
         let mut j = 0;
         for x in 0..16 {
             for y in 0..16 {
-                
                 for z in 0..16 {
                     let pos = {
                         (chunk_x) |
@@ -120,9 +126,13 @@ impl Chunk {
                         //     4
                         // },
                         val if val < 0.5 => {
-                            &BLOCKS[5]
+                            5
+                            // &BLOCKS[5]
                         },
-                        _ => &BLOCKS[0]
+                        _ => {
+                            0
+                            // &BLOCKS[0]
+                        }
                     };
                     // *block = 1;
                     // *block = 5 - (y as u16 % 2);
@@ -605,35 +615,34 @@ impl Chunk {
         // */
         
         // /*
-        // let mut p = self.blocks.as_ptr();
-        // for i in (0..4096).step_by(8) {
-            // p = p.byte_add(8 * 8);
-            // prefetch_read_data(p, 3);
+        let mut p = self.blocks.as_ptr();
+        for i in (0..4096).step_by(64) {
+            p = p.byte_add(64);
+            prefetch_read_data(p, 3);
+        }
+        // if self.pos.z > 0 {
+            // let mut p = world.chunks[((self.pos.x << 10) | (self.pos.y << 5) | (self.pos.z.sub(1) << 0)) as usize].blocks.as_ptr();
+            // for i in (0..4096).step_by(64) {
+                // p = p.byte_add(64);
+                // prefetch_read_data(p, 3);
+            // }
         // }
+        // */
+        // /*
         for z in 0..16_u8 { for y in 0..16_u8 { for x in 0..16_u8 {
             let pos = Chunk::get_index(x, y, z);
             let (face_s, face_n) = self.get_face_pair::<{Normal::SOUTH}>(pos, world);
 
-            // let face_s = self.get_face::<{Normal::SOUTH}>(pos, world);
-            // let face_n = self.get_opposing_face::<{Normal::SOUTH}>(pos, world);
+            let compare = face_s.as_u32() - face_n.as_u32();
+            if compare == 0x10101010 { continue }
             
-            black_box(face_s);
-            black_box(face_n);
+            let offset = Chunk::INDICES_ZYX[pos] as u64;
 
-            // let compare = face_s.as_u32() - face_n.as_u32();
-            // if compare == 0x10101010 { continue }
-            
-            // let offset = Chunk::INDICES_ZYX[pos] as u64;
-
-            // if compare < 0x10101010 {
-            //     buffer.put_u64(face_s.as_u64() - 0x10101010 + offset);
-            // }
-            // if compare > 0x10101010 {
-            //     buffer2.put_u64(face_n.as_u64() + offset);
-            // }
+            if compare < 0x10101010 { buffer.put_u64(face_s.as_u64() - 0x10101010 + offset); }
+            if compare > 0x10101010 { buffer2.put_u64(face_n.as_u64() + offset); }
         } } }
         // */
-        /*
+        // /*
         for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
             let pos = Chunk::get_index(x, y, z);
             let (face_w, face_e) = self.get_face_pair::<{Normal::WEST}>(pos, world);
@@ -643,14 +652,12 @@ impl Chunk {
             if compare == 0x10101010 { continue }
             
             let offset = Chunk::INDICES_XYZ[pos] as u64;
-            // let offset = ((z as u64) << 4) | ((y as u64) << 12) | ((x as u64) << 20);
-            let loc = buffer.arr.as_mut_ptr().byte_add(buffer.ind) as *mut u64;
 
-            if compare < 0x10101010 { *loc = face_w.as_u64() - 0x10101010 + offset; buffer.ind += 8; }
-            if compare > 0x10101010 { *loc = face_e.as_u64() + offset; buffer.ind += 8; }
+            if compare < 0x10101010 { buffer.put_u64(face_w.as_u64() - 0x10101010 + offset); }
+            if compare > 0x10101010 { buffer2.put_u64(face_e.as_u64() + offset); }
         } } }
         // */
-        /*
+        // /*
         for y in 0..16_u8 { for x in 0..16_u8 { for z in 0..16_u8 {
             let pos = Chunk::get_index(x, y, z);
             let (face_d, face_u) = self.get_face_pair::<{Normal::DOWN}>(pos, world);
@@ -659,11 +666,9 @@ impl Chunk {
             if compare == 0x10101010 { continue }
             
             let offset = Chunk::INDICES_YXZ[pos] as u64;
-            // let offset = ((z as u64) << 4) | ((x as u64) << 12) | ((y as u64) << 20);
-            let loc = buffer.arr.as_mut_ptr().byte_add(buffer.ind) as *mut u64;
             
-            if compare < 0x10101010 { *loc = face_d.as_u64() - 0x10101010 + offset; buffer.ind += 8; }
-            if compare > 0x10101010 { *loc = face_u.as_u64() + offset; buffer.ind += 8; }
+            if compare < 0x10101010 { buffer.put_u64(face_d.as_u64() - 0x10101010 + offset); }
+            if compare > 0x10101010 { buffer2.put_u64(face_u.as_u64() + offset); }
         } } }
         // */
     } }
@@ -738,11 +743,12 @@ impl Drop for Chunk {
 }
 
 impl Index<usize> for Chunk {
-    type Output = &'static BlockState;
+    type Output = BlockState;
 
     fn index(&self, index: usize) -> &Self::Output {
         return unsafe {
-            self.blocks.get_unchecked(index)
+            &BLOCKS[*self.blocks.get_unchecked(index) as usize]
+            // &self.blocks.get_unchecked(index)
         }
     }
 }
