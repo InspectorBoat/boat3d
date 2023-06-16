@@ -22,8 +22,8 @@ use std::{collections::HashMap, ptr, os::raw::c_void, hint::black_box};
 
 use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
 use glfw::{Context, Window, Action, Key};
-use util::gl_helper::*;
-use world::world::World;
+use util::{gl_helper::*, byte_buffer::ByteBuffer};
+use world::{world::{World, Lcg}, chunk::{Vec3i, Chunk}};
 
 use crate::util::gl_helper;
 
@@ -168,6 +168,7 @@ fn main() {
     let mut keys: HashMap<glfw::Key, bool> = HashMap::new();
     let mut start = std::time::Instant::now();
     let mut frames = 0;
+
     while !window.should_close() {
         glfw.poll_events();
         
@@ -176,7 +177,7 @@ fn main() {
         update(&mut world, &mut keys);
         
         draw(&mut world);
-        
+
         window.swap_buffers();
 
         if frames % 100 == 0 {

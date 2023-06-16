@@ -32,8 +32,8 @@ impl World<'_> {
                     let mut chunk = unsafe { Box::<Chunk>::new_zeroed().assume_init() };
                     chunk.make_terrain(&noise, x, y, z);
                     chunk.create_buffer();
-                    // world.add_chunk(chunk);
-                    world.chunks.insert(chunk.pos, chunk);
+                    world.add_chunk(chunk);
+                    // world.chunks.insert(chunk.pos, chunk);
                 }
             }
         }
@@ -48,26 +48,22 @@ impl World<'_> {
                 for y in 0..32 {
                     for z in 0..32 {
                         // if x > 0 || y > 0 || z > 0 { continue }
-                        let chunk = match world.chunks.get(&Vec3i { x, y, z }) {
+                        let chunk = match world.chunks.get_mut(&Vec3i { x, y, z }) {
                             Some(chunk) => chunk,
                             None => continue,
                         };
                         // I'm going to bomb an orphanage
-                        let chunk = &mut *(&raw const chunk as *mut &mut Box<Chunk<'_>>);
+                        // let chunk = &mut *(&raw const chunk as *mut &mut Box<Chunk<'_>>);
 
-                        // let chunk = &mut *(&raw mut world.chunks[(x << 10) | (y << 5) | (z << 0)]);
-
-                        chunk.mesh_north_south_no_merge(&mut buffer, &world);
-                        chunk.mesh_west_east_no_merge(&mut buffer, &world);
-                        chunk.mesh_down_up_no_merge(&mut buffer, &world);
+                        chunk.mesh_north_south_no_merge(&mut buffer);
+                        chunk.mesh_west_east_no_merge(&mut buffer);
+                        chunk.mesh_down_up_no_merge(&mut buffer);
 
                         buffer.format_quads();
 
                         chunk.face_count = (buffer.ind as u32) / 8;
                         faces += chunk.face_count as usize;
                         
-                        black_box(&buffer);
-
                         // /*
                         if chunk.face_count == 0 { chunk.kill_buffer(); continue }
                         let gl_buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
@@ -89,54 +85,72 @@ impl World<'_> {
         let count = world.chunks.len() * mesh_passes;
         let elapsed = start.elapsed().as_millis();
         
-        println!("[2/6 axes] [No merge] {count} chunks | {}ms | {} chunks/s | {}ms/chunk | {} faces | {} faces/chunk", elapsed, 1000.0 / elapsed as f64 * count as f64, elapsed as f64 / count as f64, faces, faces as u64 / count as u64);
+        println!("[6/6 axes] [No merge] {count} chunks | {}ms | {} chunks/s | {}ms/chunk | {} faces | {} faces/chunk", elapsed, 1000.0 / elapsed as f64 * count as f64, elapsed as f64 / count as f64, faces, faces as u64 / count as u64);
         return world;
     } }
 
-    pub fn add_chunk(&mut self, chunk: Box<Chunk<'_>>) { unsafe {
-        // let (x, y, z) = (chunk.pos.x, chunk.pos.y, chunk.pos.z);
-        // if let Some(south) = self.chunks.get_mut(&Vec3i { x, y, z: z - 1 }) {
-        //     south.neighbors.north = Some(chunk);
-        //     chunk.neighbors.south = Some(south);
-        // }
-        // if let Some(west) = self.chunks.get_mut(&Vec3i { x: x - 1, y, z }) {
-        //     west.neighbors.east = Some(chunk);
-        //     let west = &raw const west as *mut *mut *mut Chunk;
-        //     let chunk = &raw const chunk as *mut *mut Chunk;
-        //     chunk.neighbors.west = Some(west);
-        // }
-        // if let Some(down) = self.chunks.get_mut(&Vec3i { x, y: y - 1, z }) {
-        //     down.neighbors.up = Some(chunk);
-        //     let down = &raw const down as *mut *mut *mut Chunk;
-        //     let chunk = &raw const chunk as *mut *mut Chunk;
-        //     chunk.neighbors.down = Some(down);
-        // }
-        // if let Some(north) = self.chunks.get_mut(&Vec3i { x, y, z: z + 1 }) {
-        //     north.neighbors.south = Some(chunk);
-        //     let north = &raw const north as *mut *mut *mut Chunk;
-        //     let chunk = &raw const chunk as *mut *mut Chunk;
-        //     chunk.neighbors.north = Some(north);
-        // }
-        // if let Some(east) = self.chunks.get_mut(&Vec3i { x: x + 1, y, z }) {
-        //     east.neighbors.west = Some(chunk);
-        //     let east = &raw const east as *mut *mut *mut Chunk;
-        //     let chunk = &raw const chunk as *mut *mut Chunk;
-        //     (**chunk).neighbors.east = Some(east);
-        // }
-        // if let Some(up) = self.chunks.get_mut(&Vec3i { x, y: y + 1, z }) {
-        //     up.neighbors.down = Some(chunk);
-        //     let up = &raw const up as *mut *mut *mut Chunk;
-        //     let chunk = &raw const chunk as *mut *mut Chunk;
-        //     (**chunk).neighbors.up = Some(up);
-        // }
-        // self.chunks.insert((*chunk).pos, chunk);
-    } }
-}
+    pub fn mesh_chunk() {}
 
-impl Default for World<'_> {
-    fn default() -> Self {
-        Self::new()
-    }
+    // Orphans are yummy
+    pub fn add_chunk(&mut self, chunk: Box<Chunk<'_>>) { unsafe {
+
+        let (x, y, z) = (chunk.pos.x, chunk.pos.y, chunk.pos.z);
+        
+        // into_raw must be called to prevent rust from dropping the chunk
+        // Cast into usize and back to prevent rust from realizing chunk is in fact the same chunk that was passed in
+
+        let chunk = Box::<Chunk<'_>>::into_raw(chunk) as usize as *mut Chunk;
+        if let Some(south) = self.chunks.get_mut(&Vec3i { x, y, z: z - 1 }) {
+            south.neighbors.north = Some(chunk);
+            (*chunk).neighbors.south = Some(**(&raw const south as *const *const *mut Chunk));
+        }
+        if let Some(west) = self.chunks.get_mut(&Vec3i { x: x - 1, y, z }) {
+            west.neighbors.east = Some(chunk);
+            (*chunk).neighbors.west = Some(**(&raw const west as *const *const *mut Chunk));
+        }
+        if let Some(down) = self.chunks.get_mut(&Vec3i { x, y: y - 1, z }) {
+            down.neighbors.up = Some(chunk);
+            (*chunk).neighbors.down = Some(**(&raw const down as *const *const *mut Chunk));
+        }
+        if let Some(north) = self.chunks.get_mut(&Vec3i { x, y, z: z + 1 }) {
+            north.neighbors.south = Some(chunk);
+            (*chunk).neighbors.north = Some(**(&raw const north as *const *const *mut Chunk));
+        }
+        if let Some(east) = self.chunks.get_mut(&Vec3i { x: x + 1, y, z }) {
+            east.neighbors.west = Some(chunk);
+            (*chunk).neighbors.east = Some(**(&raw const east as *const *const *mut Chunk));
+        }
+        if let Some(up) = self.chunks.get_mut(&Vec3i { x, y: y + 1, z }) {
+            up.neighbors.down = Some(chunk);
+            (*chunk).neighbors.up = Some(**(&raw const up as *const *const *mut Chunk));
+        }
+
+        let chunk = Box::from_raw(*(&raw const chunk as *mut *mut Chunk));
+        self.chunks.insert(chunk.pos, chunk);
+    } }
+
+    // pub fn remove_chunk(&mut self, mut chunk: Box<Chunk<'_>>) { unsafe {
+    //     self.chunks.remove(&chunk.pos);
+    //     chunk.neighbors.south.inspect(|south| (**south).neighbors.north = None);
+    //     chunk.neighbors.west.inspect(|west| (**west).neighbors.east = None);
+    //     chunk.neighbors.down.inspect(|down| (**down).neighbors.up = None);
+    //     chunk.neighbors.north.inspect(|north| (**north).neighbors.south = None);
+    //     chunk.neighbors.east.inspect(|east| (**east).neighbors.west = None);
+    //     chunk.neighbors.up.inspect(|up| (**up).neighbors.down = None);
+    //     chunk.kill_buffer();
+    // } }
+    pub fn remove_chunk(&mut self, mut pos: Vec3i) { unsafe {
+        if let Some(mut chunk) = self.chunks.remove(&pos) {
+            println!("removing chunk at {} {} {}", pos.x, pos.y, pos.z);
+            chunk.neighbors.south.inspect(|south| (**south).neighbors.north = None);
+            chunk.neighbors.west.inspect(|west| (**west).neighbors.east = None);
+            chunk.neighbors.down.inspect(|down| (**down).neighbors.up = None);
+            chunk.neighbors.north.inspect(|north| (**north).neighbors.south = None);
+            chunk.neighbors.east.inspect(|east| (**east).neighbors.west = None);
+            chunk.neighbors.up.inspect(|up| (**up).neighbors.down = None);
+            chunk.kill_buffer();
+        }
+    } }
 }
 
 pub struct Lcg {

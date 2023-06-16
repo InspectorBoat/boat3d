@@ -82,13 +82,13 @@ out vec2 tex_coord;
 out float tex_id;
 
 vec4 get_relative_pos(int face_index) {
-        // return (uvec4(faces[face_index].uvdn) >> uvec4(0, 8, 16, 24)) & uvec4(0xff, 0xff, 0xff, 0x00);
-        return vec4(
-                (faces[face_index].uvdn >>  0) & 0xff,
-                (faces[face_index].uvdn >>  8) & 0xff,
-                (faces[face_index].uvdn >> 16) & 0xff,
-                0
-        );
+        return (uvec4(faces[face_index].uvdn) >> uvec4(0, 8, 16, 24)) & uvec4(0xff, 0xff, 0xff, 0x00);
+        // return vec4(
+        //         (faces[face_index].uvdn >>  0) & 0xff,
+        //         (faces[face_index].uvdn >>  8) & 0xff,
+        //         (faces[face_index].uvdn >> 16) & 0xff,
+        //         0
+        // );
 }
 
 uint get_normal(int face_index) {
@@ -96,13 +96,13 @@ uint get_normal(int face_index) {
 }
 
 vec4 get_size(int face_index) {
-        // return (uvec4(faces[face_index].whtt) >> uvec4(0, 8, 16, 24) & uvec4(0xff, 0xff, 0x00, 0x00)) + uvec4(1, 1, 0, 1);
-        return vec4(
-                ((faces[face_index].whtt >> 0) & 0xff) + 1,
-                ((faces[face_index].whtt >> 8) & 0xff) + 1,
-                0,
-                1
-        );
+        return (uvec4(faces[face_index].whtt) >> uvec4(0, 8, 16, 24) & uvec4(0xff, 0xff, 0x00, 0x00)) + uvec4(1, 1, 0, 1);
+        // return vec4(
+        //         ((faces[face_index].whtt >> 0) & 0xff) + 1,
+        //         ((faces[face_index].whtt >> 8) & 0xff) + 1,
+        //         0,
+        //         1
+        // );
 }
 
 float get_texture(int face_index) {
