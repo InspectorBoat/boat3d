@@ -182,8 +182,10 @@ impl WindowStatus {
     }
 }
 
+#[derive(Debug)]
 pub struct BufferArena {
     pub buffer: Buffer,
+    pub staging_buffer: Buffer,
     pub pages: Box<[bool; 1048576]>,
 
     // page size of 1024
@@ -191,9 +193,21 @@ pub struct BufferArena {
 
 impl BufferArena {
     pub fn new() -> BufferArena {
-        return BufferArena { buffer: Buffer { id: 0 }, pages: unsafe { Box::<[bool; 1048576]>::new_zeroed().assume_init() } }
+        let buffer = Buffer::create();
+        buffer.storage(1048576 * 1024, gl::DYNAMIC_STORAGE_BIT);
+        let staging_buffer = Buffer::create();
+        staging_buffer.storage(1048576, gl::DYNAMIC_STORAGE_BIT);
+        return BufferArena {
+            buffer: buffer,
+            staging_buffer: staging_buffer,
+            pages: unsafe { Box::<[bool; 1048576]>::new_zeroed().assume_init() }
+        }
     }
+    // Size in bytes
     pub fn allocate(&mut self, size: usize) -> Option<Page> {
+        if size == 0 { return None; }
+        let size = size.div_ceil(1024);
+
         let mut run = 0;
         let mut start = 0;
         for i in 0..1048576 {
@@ -218,10 +232,20 @@ impl BufferArena {
             self.pages[i] = false;
         }
     }
+
+    pub fn upload_slice<T>(&mut self, page: Page, data: &[T], start: isize, length: isize) {
+        self.buffer.upload_slice(data, (page.start * 1024 + start as usize) as isize, length);
+    }
+    pub fn upload<T>(&mut self, page: &Page, data: &[T], length: isize) {
+        // self.staging_buffer.upload_slice(data, 0, length);
+
+        // unsafe { gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * 1024) as isize, length as isize); }
+        self.buffer.upload_slice(data, (page.start * 1024) as isize, length);
+    }
 }
 
 #[derive(Debug)]
 pub struct Page {
     pub start: usize,
-    pub size: usize
+    pub size: usize,
 }

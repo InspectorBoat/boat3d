@@ -6,7 +6,7 @@ use std::{ptr, hint};
 use std::{time, hint::black_box, alloc, mem};
 use crate::block::blockface::{Normal, BlockFace};
 use crate::util::byte_buffer::ByteBuffer;
-use crate::util::gl_helper::Buffer;
+use crate::util::gl_helper::{Buffer, BufferArena, log_if_error};
 use crate::world::chunk::{self, Vec3i};
 use simdnoise::NoiseBuilder;
 
@@ -14,7 +14,8 @@ use super::{chunk::Chunk, camera::Camera};
 #[derive(Debug)]
 pub struct World<'a> {
     pub chunks: HashMap::<Vec3i, Box::<Chunk<'a>>>,
-    pub camera: Camera
+    pub camera: Camera,
+    pub buffer: BufferArena
 }
 
 impl World<'_> {
@@ -23,7 +24,8 @@ impl World<'_> {
         
         let mut world = World {
             chunks: HashMap::<Vec3i, Box::<Chunk>>::new(),
-            camera: Camera::new()
+            camera: Camera::new(),
+            buffer: BufferArena::new()
         };
 
         for x in 0..32 {
@@ -58,17 +60,22 @@ impl World<'_> {
                             faces += chunk.face_count as usize;
                             
                             // /*
-                            if chunk.face_count == 0 { chunk.kill_buffer(); continue }
-                            let gl_buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
+                            // if chunk.face_count == 0 { chunk.kill_buffer(); continue }
+                            // let gl_buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
                             
                             // gl_buffer.upload_slice(&[chunk.pos.x, chunk.pos.y, chunk.pos.z, 0], 0, 16);
                             // gl_buffer.upload_slice(&buffer.arr.as_slice(), 16, buffer.ind as isize);
                             // gl_buffer.storage((buffer.ind + 16) as isize, gl::DYNAMIC_STORAGE_BIT);
                             
-                            gl_buffer.storage(buffer.ind as isize, gl::DYNAMIC_STORAGE_BIT);
-                            gl_buffer.upload_slice(&buffer.arr.as_slice(), 0, buffer.ind as isize);
+                            // gl_buffer.storage(buffer.ind as isize, gl::DYNAMIC_STORAGE_BIT);
+                            // gl_buffer.upload_slice(&buffer.arr.as_slice(), 0, buffer.ind as isize);
                             
-                            chunk.buffer = Some(gl_buffer);
+                            chunk.page = world.buffer.allocate(buffer.ind);
+                            if let Some(page) = &chunk.page {
+                                world.buffer.upload(page, &buffer.arr.as_slice(), buffer.ind as isize);
+                            }
+
+                            // chunk.buffer = Some(gl_buffer);
                             // */
     
                             buffer.reset();

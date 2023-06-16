@@ -23,6 +23,7 @@ use std::simd;
 use std::simd::Simd;
 use std::simd::SimdPartialOrd;
 use crate::OTHER_FACES;
+use crate::util::gl_helper::Page;
 use crate::{block::{blockstate::BlockState, blockface::{Normal, BlockFace}}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::ByteBuffer}, BLOCKS};
 
 use super::world::{World, Lcg};
@@ -42,6 +43,8 @@ pub struct Chunk<'a> {
     pub face_count: u32,
     // OpenGl buffer
     pub buffer: Option<Buffer>,
+
+    pub page: Option<Page>
 }
 #[derive(Debug)]
 pub struct Neighbors<'a> {

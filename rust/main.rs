@@ -14,6 +14,7 @@
 #![allow(overflowing_literals)]
 #![allow(unused_unsafe)]
 #![feature(result_option_inspect)]
+#![feature(int_roundings)]
 mod block;
 mod world;
 mod util;
@@ -169,6 +170,8 @@ fn main() {
     let mut start = std::time::Instant::now();
     let mut frames = 0;
 
+    world.buffer.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
+
     while !window.should_close() {
         glfw.poll_events();
         
@@ -284,14 +287,13 @@ fn draw(world: &mut World) {
         let camera_matrix = world.camera.get_matrix();
         gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_array().as_ptr());
         for chunk in world.chunks.values() {
-            if let Some(buffer) = &chunk.buffer {
-                if chunk.pos != (Vec3i { x: 0, y: 0, z: 0 }) { continue; }
-                buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
+            if let Some(page) = &chunk.page {
+                // if chunk.pos.x >= 2 || chunk.pos.y >= 1 || chunk.pos.z >= 1 { continue; }
                 gl::Uniform4iv(1, 1, &raw const chunk.pos as *const i32);
-                // gl::DrawElements(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null());
-                gl::DrawElementsBaseVertex(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5 - 4, gl::UNSIGNED_INT, ptr::null(), 4);
+                gl::DrawElementsBaseVertex(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null(), (page.start * 1024 / 2) as i32);
             }
         }
+
     }
 }
 // */
