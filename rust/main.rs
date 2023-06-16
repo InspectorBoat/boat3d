@@ -18,7 +18,7 @@ mod block;
 mod world;
 mod util;
 
-use std::{collections::HashMap, ptr, os::raw::c_void, hint::black_box};
+use std::{collections::HashMap, ptr, os::raw::c_void, hint::black_box, time::SystemTime};
 
 use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
 use glfw::{Context, Window, Action, Key};
@@ -285,8 +285,11 @@ fn draw(world: &mut World) {
         gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_array().as_ptr());
         for chunk in world.chunks.values() {
             if let Some(buffer) = &chunk.buffer {
-                buffer.bind_indexed_target(gl::SHADER_STORAGE_BUFFER);
-                gl::DrawElements(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null());
+                if chunk.pos != (Vec3i { x: 0, y: 0, z: 0 }) { continue; }
+                buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
+                gl::Uniform4iv(1, 1, &raw const chunk.pos as *const i32);
+                // gl::DrawElements(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null());
+                gl::DrawElementsBaseVertex(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5 - 4, gl::UNSIGNED_INT, ptr::null(), 4);
             }
         }
     }

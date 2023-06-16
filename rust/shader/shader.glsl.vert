@@ -73,8 +73,9 @@ struct Face {
 };
 
 layout(location = 0) uniform mat4 u_transform;
+layout(location = 1) uniform ivec4 chunk_pos;
 layout(std430, binding = 0) readonly buffer Faces {
-        ivec4 chunk_pos;
+        // ivec4 chunk_pos;
         Face faces[];
 };
 
@@ -113,10 +114,6 @@ void main() {
         int corner_index = gl_VertexID % 4;
         int face_index = gl_VertexID / 4;
         uint normal = get_normal(face_index);
-
-        int z = 4;
-        bool x = bool(z);
-        int y = int(x);
 
         vec4 vertex_pos = get_relative_pos(face_index);
         vec4 offset = get_size(face_index) * corner_transforms[corner_index];

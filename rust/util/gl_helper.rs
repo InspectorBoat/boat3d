@@ -1,5 +1,6 @@
-use std::{ffi::{c_void, CString}, ptr};
+use std::{ffi::{c_void, CString}, ptr, ops::Deref};
 
+use gl::types::GLuint;
 use glfw::{Window, WindowEvent, Glfw};
 
 use log::debug;
@@ -58,9 +59,14 @@ impl Buffer {
     pub fn bind_target(&self, target: u32) {
         unsafe { gl::BindBuffer(target, self.id) }
     }
-    pub fn bind_indexed_target(&self, target: u32) {
+    pub fn bind_indexed_target_base(&self, target: u32, index: u32) {
         unsafe {
-            gl::BindBufferBase(target, 0, self.id);
+            gl::BindBufferBase(target, index, self.id);
+        }
+    }
+    pub fn bind_indexed_target(&self, target: u32, index: u32, offset: isize, length: isize) {
+        unsafe {
+            gl::BindBufferRange(target, index, self.id, offset, length);
         }
     }
     pub fn valid(&self) -> bool {
@@ -69,9 +75,9 @@ impl Buffer {
     pub fn kill(self) {
         unsafe { gl::DeleteBuffers(1, &self.id) }
     }
-    pub fn storage(&self, bytes: isize, flags: u32) {
+    pub fn storage(&self, length: isize, flags: u32) {
         unsafe {
-            gl::NamedBufferStorage(self.id, bytes, ptr::null(), flags);
+            gl::NamedBufferStorage(self.id, length, ptr::null(), flags);
         }
     }
     pub fn upload<T>(&self, data: &[T], length: isize, usage: gl::types::GLenum) {
@@ -103,11 +109,6 @@ impl Buffer {
     pub fn unbind(target: u32) {
         unsafe { gl::BindBuffer(gl::NONE, target) }
     }
-}
-
-enum Maybe<T> {
-    Yes(T),
-    No
 }
 
 impl Drop for Buffer {
@@ -179,4 +180,48 @@ impl WindowStatus {
     pub fn new() -> WindowStatus {
         return WindowStatus { fill_mode: gl::FILL, maximized: false, mouse_captured: false}
     }
+}
+
+pub struct BufferArena {
+    pub buffer: Buffer,
+    pub pages: Box<[bool; 1048576]>,
+
+    // page size of 1024
+}
+
+impl BufferArena {
+    pub fn new() -> BufferArena {
+        return BufferArena { buffer: Buffer { id: 0 }, pages: unsafe { Box::<[bool; 1048576]>::new_zeroed().assume_init() } }
+    }
+    pub fn allocate(&mut self, size: usize) -> Option<Page> {
+        let mut run = 0;
+        let mut start = 0;
+        for i in 0..1048576 {
+            if !self.pages[i] {
+                if run == 0 { start = i; }
+                run += 1;
+            }
+            if run == size {
+                for j in start..(start + size) {
+                    self.pages[j] = true;
+                }
+                return Some(Page {
+                    start: start,
+                    size: size
+                });
+            }
+        }
+        return None;
+    }
+    pub fn deallocate(&mut self, page: Page) {
+        for i in page.start..(page.start + page.size) {
+            self.pages[i] = false;
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct Page {
+    pub start: usize,
+    pub size: usize
 }

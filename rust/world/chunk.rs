@@ -18,6 +18,7 @@ use std::ops::Sub;
 // use std::ops::SubAssign;
 use std::os::raw::c_void;
 // use std::ptr;
+use std::hash::Hash;
 use std::simd;
 use std::simd::Simd;
 use std::simd::SimdPartialOrd;
@@ -27,12 +28,19 @@ use crate::{block::{blockstate::BlockState, blockface::{Normal, BlockFace}}, uti
 use super::world::{World, Lcg};
 #[derive(Debug)]
 pub struct Chunk<'a> {
-    // pub blocks: [&'static BlockState; 4096],
+    // Block IDs
     pub blocks: [u8; 4096],
+    // Offsets of each axis
     pub counts: [i32; 6],
+    // Chunk position
     pub pos: Vec3i,
+    // Padding for pos struct
+    pub dummy: i32,
+    // Adjacent chunka
     pub neighbors: Neighbors<'a>,
+    // Number of rectangular block faces in a chunk
     pub face_count: u32,
+    // OpenGl buffer
     pub buffer: Option<Buffer>,
 }
 #[derive(Debug)]
@@ -643,6 +651,7 @@ impl Chunk<'_> {
         //     &raw const self.offsets as *const *const c_void,
         //     6
         // ) };
+
         // self.counts[0] = south;
         // self.counts[1] = west;
         // self.counts[2] = down;
@@ -878,7 +887,7 @@ impl Default for Run {
 
 #[derive(Debug)]
 #[derive(Clone, Copy)]
-#[derive(Eq, Hash, PartialEq)]
+#[derive(Eq, PartialEq, Hash)]
 pub struct Vec3i {
     pub x: i32, pub y: i32, pub z: i32
 }

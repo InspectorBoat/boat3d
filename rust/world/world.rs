@@ -46,7 +46,6 @@ impl World<'_> {
             for x in 0..32 {
                 for y in 0..32 {
                     for z in 0..32 {
-                        // if x > 0 || y > 0 || z > 0 { continue }
                         if let Some(chunk) = world.chunks.get_mut(&Vec3i { x, y, z }) {
 
                             chunk.mesh_north_south_no_merge(&mut buffer);
@@ -61,9 +60,13 @@ impl World<'_> {
                             // /*
                             if chunk.face_count == 0 { chunk.kill_buffer(); continue }
                             let gl_buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
-                            gl_buffer.storage((buffer.ind + 16) as isize, gl::DYNAMIC_STORAGE_BIT);
-                            gl_buffer.upload_slice(&[chunk.pos.x, chunk.pos.y, chunk.pos.z, 0], 0, 16);
-                            gl_buffer.upload_slice(&buffer.arr.as_slice(), 16, buffer.ind as isize);
+                            
+                            // gl_buffer.upload_slice(&[chunk.pos.x, chunk.pos.y, chunk.pos.z, 0], 0, 16);
+                            // gl_buffer.upload_slice(&buffer.arr.as_slice(), 16, buffer.ind as isize);
+                            // gl_buffer.storage((buffer.ind + 16) as isize, gl::DYNAMIC_STORAGE_BIT);
+                            
+                            gl_buffer.storage(buffer.ind as isize, gl::DYNAMIC_STORAGE_BIT);
+                            gl_buffer.upload_slice(&buffer.arr.as_slice(), 0, buffer.ind as isize);
                             
                             chunk.buffer = Some(gl_buffer);
                             // */
@@ -125,17 +128,7 @@ impl World<'_> {
         self.chunks.insert(chunk.pos, chunk);
     } }
 
-    // pub fn remove_chunk(&mut self, mut chunk: Box<Chunk<'_>>) { unsafe {
-    //     self.chunks.remove(&chunk.pos);
-    //     chunk.neighbors.south.inspect(|south| (**south).neighbors.north = None);
-    //     chunk.neighbors.west.inspect(|west| (**west).neighbors.east = None);
-    //     chunk.neighbors.down.inspect(|down| (**down).neighbors.up = None);
-    //     chunk.neighbors.north.inspect(|north| (**north).neighbors.south = None);
-    //     chunk.neighbors.east.inspect(|east| (**east).neighbors.west = None);
-    //     chunk.neighbors.up.inspect(|up| (**up).neighbors.down = None);
-    //     chunk.kill_buffer();
-    // } }
-    pub fn remove_chunk(&mut self, mut pos: Vec3i) { unsafe {
+    pub fn remove_chunk(&mut self, pos: Vec3i) { unsafe {
         if let Some(mut chunk) = self.chunks.remove(&pos) {
             println!("removing chunk at {} {} {}", pos.x, pos.y, pos.z);
             chunk.neighbors.south.inspect(|south| (**south).neighbors.north = None);
