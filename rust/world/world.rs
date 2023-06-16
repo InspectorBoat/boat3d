@@ -6,7 +6,7 @@ use std::{ptr, hint};
 use std::{time, hint::black_box, alloc, mem};
 use crate::block::blockface::{Normal, BlockFace};
 use crate::util::byte_buffer::ByteBuffer;
-use crate::util::gl_helper::{Buffer, BufferArena, log_if_error};
+use crate::util::gl_helper::{Buffer, BufferArena, log_if_error, Page};
 use crate::world::chunk::{self, Vec3i};
 use simdnoise::NoiseBuilder;
 
@@ -33,7 +33,6 @@ impl World<'_> {
                 for z in 0..32 {
                     let mut chunk = unsafe { Box::<Chunk>::new_zeroed().assume_init() };
                     chunk.make_terrain(&noise, x, y, z);
-                    chunk.create_buffer();
                     world.add_chunk(chunk);
                 }
             }
@@ -51,13 +50,13 @@ impl World<'_> {
                     for z in 0..32 {
                         if let Some(chunk) = world.chunks.get_mut(&Vec3i { x, y, z }) {
 
-                            chunk.mesh_south_north(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
-                            chunk.mesh_west_east(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
-                            chunk.mesh_down_up(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
+                            // chunk.mesh_south_north(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
+                            // chunk.mesh_west_east(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
+                            // chunk.mesh_down_up(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
 
-                            // chunk.mesh_south_north_no_merge(&mut buffer);
-                            // chunk.mesh_west_east_no_merge(&mut buffer);
-                            // chunk.mesh_down_up_no_merge(&mut buffer);
+                            chunk.mesh_south_north_no_merge(&mut buffer);
+                            chunk.mesh_west_east_no_merge(&mut buffer);
+                            chunk.mesh_down_up_no_merge(&mut buffer);
     
                             buffer.format_quads();
     
@@ -70,6 +69,7 @@ impl World<'_> {
                             }
 
                             buffer.reset();
+
                             // buffer2.reset();
                         }
 
@@ -136,7 +136,7 @@ impl World<'_> {
             chunk.neighbors.north.inspect(|north| (**north).neighbors.south = None);
             chunk.neighbors.east.inspect(|east| (**east).neighbors.west = None);
             chunk.neighbors.up.inspect(|up| (**up).neighbors.down = None);
-            chunk.kill_buffer();
+            self.buffer.deallocate(&chunk.page.take());
         }
     } }
 }

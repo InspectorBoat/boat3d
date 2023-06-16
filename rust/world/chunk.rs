@@ -32,8 +32,9 @@ use super::world::{World, Lcg};
 pub struct Chunk<'a> {
     // Block IDs
     pub blocks: [u8; 4096],
-    // Offsets of each axis
-    pub counts: [i32; 6],
+    // Light levels 0-15
+    pub light: [u8; 4096],
+
     // Chunk position
     pub pos: Vec3i,
     // Padding for pos struct
@@ -42,8 +43,6 @@ pub struct Chunk<'a> {
     pub neighbors: Neighbors<'a>,
     // Number of rectangular block faces in a chunk
     pub face_count: u32,
-    // OpenGl buffer
-    pub buffer: Option<Buffer>,
 
     pub page: Option<Page>
 }
@@ -142,18 +141,20 @@ impl Chunk<'_> {
                         (chunk_z << 4) |
                         (z << 0 )
                     };
-                    let (noise_val, block) = unsafe {(
+                    let (noise_val, block, light) = unsafe {(
                         noise.get_unchecked(pos),
-                        self.blocks.get_unchecked_mut((x << 8) | (y << 4) | (z << 0))
+                        self.blocks.get_unchecked_mut((x << 8) | (y << 4) | (z << 0)),
+                        self.light.get_unchecked_mut((x << 8) | (y << 4) | (z << 0)),
                     )};
                     *block = match *noise_val {
                         val if val < 0.5 => {
-                            2
+                            1
                         },
                         _ => {
                             0
                         }
                     };
+                    *light = (*noise_val * 16.0) as u8;
                 }
             }
         }
@@ -646,19 +647,6 @@ impl Chunk<'_> {
         } } }
     } }
 
-    pub fn create_buffer(&mut self) {
-        if let Some(_) = &self.buffer {
-            panic!();
-        }
-        self.buffer = Some(Buffer::create());
-    }
-    pub fn kill_buffer(&mut self) {
-        let buffer = self.buffer.take();
-        if let Some(buffer) = buffer {
-            buffer.kill();
-        }
-    }
-
     pub fn cull_backfaces(&mut self, world: &mut World) {
         // let south = self.counts[0];
         // let north = self.counts[3];    
@@ -918,6 +906,7 @@ impl Run {
             face.top == next.top
         }
     }
+    
     fn as_u32(&self) -> &u32 {
         return unsafe { &*(&raw const self as *mut u32) }
     }

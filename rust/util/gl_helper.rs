@@ -194,9 +194,9 @@ pub struct BufferArena {
 impl BufferArena {
     pub fn new() -> BufferArena {
         let buffer = Buffer::create();
-        buffer.storage(1048576 * 1024, gl::DYNAMIC_STORAGE_BIT);
+        buffer.storage(1024 * 1048576, gl::DYNAMIC_STORAGE_BIT);
         let staging_buffer = Buffer::create();
-        staging_buffer.storage(1048576, gl::DYNAMIC_STORAGE_BIT);
+        staging_buffer.storage(1024 * 1024, gl::DYNAMIC_STORAGE_BIT);
         return BufferArena {
             buffer: buffer,
             staging_buffer: staging_buffer,
@@ -227,9 +227,11 @@ impl BufferArena {
         }
         return None;
     }
-    pub fn deallocate(&mut self, page: Page) {
-        for i in page.start..(page.start + page.size) {
-            self.pages[i] = false;
+    pub fn deallocate(&mut self, page: &Option<Page>) {
+        if let Some(page) = page {
+            for i in page.start..(page.start + page.size) {
+                self.pages[i] = false;
+            }
         }
     }
 
