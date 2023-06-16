@@ -26,7 +26,7 @@ use world::world::World;
 
 use crate::util::gl_helper;
 
-static BLOCKS: [BlockState; 6] = [
+static BLOCKS: [BlockState; 3] = [
     BlockState {
         block: Block { name: "air" },
         model: BlockModel([
@@ -36,153 +36,90 @@ static BLOCKS: [BlockState; 6] = [
             BlockFace::NONE2,
             BlockFace::NONE2,
             BlockFace::NONE2
-        ])
+        ]),
+        otherFaces: BlockState::NONE
     },
     BlockState {
         block: Block { name: "bricks" },
         model: BlockModel([
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
-                rig: 0, top: 0, tex: 0
+                lef: 0x10, bot: 0x10, dep: 0x0, nor: Normal::SOUTH,
+                rig: 0x10, top: 0x10, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
-                rig: 0, top: 0, tex: 0
+                lef: 0x10, bot: 0x10, dep: 0x0, nor: Normal::WEST,
+                rig: 0x10, top: 0x10, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
-                rig: 0, top: 0, tex: 0
+                lef: 0x10, bot: 0x10, dep: 0x0, nor: Normal::DOWN,
+                rig: 0x10, top: 0x10, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
-                rig: 0, top: 0, tex: 0
+                lef: 0x00, bot: 0x00, dep: 0xf, nor: Normal::NORTH,
+                rig: 0x00, top: 0x00, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
-                rig: 0, top: 0, tex: 0
+                lef: 0x00, bot: 0x00, dep: 0xf, nor: Normal::EAST,
+                rig: 0x00, top: 0x00, tex: 1
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
-                rig: 0, top: 0, tex: 0
+                lef: 0x00, bot: 0x00, dep: 0xf, nor: Normal::UP,
+                rig: 0x00, top: 0x00, tex: 1
             },
-        ])
+        ]),
+        otherFaces: BlockState::NONE
     },
     BlockState {
-        block: Block { name: "bricks" },
+        block: Block { name: "brick_stairs" },
         model: BlockModel([
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
-                rig: 0, top: 0, tex: 1
+                lef: 0x10, bot: 0x10, dep: 0x0, nor: Normal::SOUTH,
+                rig: 0x10, top: 0x18, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
-                rig: 0, top: 0, tex: 1
+                lef: 0x10, bot: 0x10, dep: 0x0, nor: Normal::WEST,
+                rig: 0x10, top: 0x18, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
-                rig: 0, top: 0, tex: 1
+                lef: 0x10, bot: 0x10, dep: 0x0, nor: Normal::DOWN,
+                rig: 0x10, top: 0x10, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
-                rig: 0, top: 0, tex: 1
+                lef: 0x00, bot: 0x00, dep: 0xf, nor: Normal::NORTH,
+                rig: 0x00, top: 0x00, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
-                rig: 0, top: 0, tex: 1
+                lef: 0x00, bot: 0x00, dep: 0xf, nor: Normal::EAST,
+                rig: 0x00, top: 0x08, tex: 2
             },
             BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
-                rig: 0, top: 0, tex: 1
+                lef: 0x08, bot: 0x00, dep: 0xf, nor: Normal::UP,
+                rig: 0x00, top: 0x00, tex: 2
             },
-        ])
-    },
-    BlockState {
-        block: Block { name: "bricks" },
-        model: BlockModel([
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
-                rig: 0, top: 0, tex: 2
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
-                rig: 0, top: 0, tex: 2
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
-                rig: 0, top: 0, tex: 2
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
-                rig: 0, top: 0, tex: 2
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
-                rig: 0, top: 0, tex: 2
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
-                rig: 0, top: 0, tex: 2
-            },
-        ])
-    },
-    BlockState {
-        block: Block { name: "bricks" },
-        model: BlockModel([
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::SOUTH,
-                rig: 0, top: 0, tex: 3
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::WEST,
-                rig: 0, top: 0, tex: 3
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 0, nor: Normal::DOWN,
-                rig: 0, top: 0, tex: 3
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::NORTH,
-                rig: 0, top: 0, tex: 3
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::EAST,
-                rig: 0, top: 0, tex: 3
-            },
-            BlockFace {
-                lef: 0, bot: 0, dep: 15, nor: Normal::UP,
-                rig: 0, top: 0, tex: 3
-            },
-        ])
-    },
-    BlockState {
-        block: Block { name: "bricks" },
-        model: BlockModel([
-            BlockFace {
-                lef: 0x10, bot: 0x10, dep: 0, nor: Normal::SOUTH,
-                rig: 0x10, top: 0x10, tex: 4
-            },
-            BlockFace {
-                lef: 0x10, bot: 0x10, dep: 0, nor: Normal::WEST,
-                rig: 0x10, top: 0x10, tex: 4
-            },
-            BlockFace {
-                lef: 0x10, bot: 0x10, dep: 0, nor: Normal::DOWN,
-                rig: 0x10, top: 0x10, tex: 4
-            },
-            BlockFace {
-                lef: 0x00, bot: 0x00, dep: 15, nor: Normal::NORTH,
-                rig: 0x00, top: 0x00, tex: 4
-            },
-            BlockFace {
-                lef: 0x00, bot: 0x00, dep: 15, nor: Normal::EAST,
-                rig: 0x00, top: 0x00, tex: 4
-            },
-            BlockFace {
-                lef: 0x00, bot: 0x00, dep: 15, nor: Normal::UP,
-                rig: 0x00, top: 0x00, tex: 4
-            },
-        ])
+        ]),
+        otherFaces: [
+            0, 1, 0xffff, 0xffff, 2, 3
+        ]
     }
+];
+
+static OTHER_FACES: [(BlockFace, bool); 4] = [
+    (BlockFace {
+        lef: 0x10, bot: 0x18, dep: 0x8, nor: Normal::SOUTH,
+        rig: 0x10, top: 0x10, tex: 1
+    }, false),
+    (BlockFace {
+        lef: 0x18, bot: 0x18, dep: 0x0, nor: Normal::WEST,
+        rig: 0x10, top: 0x10, tex: 1
+    }, false),
+    (BlockFace {
+        lef: 0x08, bot: 0x08, dep: 0xf, nor: Normal::EAST,
+        rig: 0x00, top: 0x00, tex: 1
+    }, false),
+    (BlockFace {
+        lef: 0x00, bot: 0x00, dep: 0x7, nor: Normal::UP,
+        rig: 0x08, top: 0x00, tex: 1
+    }, false),
 ];
 
 fn main() {
@@ -344,7 +281,7 @@ fn draw(world: &mut World) {
         gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         let matrix = world.camera.get_matrix();
         gl::UniformMatrix4fv(0, 1, gl::FALSE, matrix.as_array().as_ptr());
-        for (chunk, x, y, z, _) in world.iter() {
+        for chunk in &*world.chunks {
             // if x != 0 || y != 0 || z != 0 { continue }
             if let Some(buffer) = &chunk.buffer {
                 buffer.bind_indexed_target(gl::SHADER_STORAGE_BUFFER);

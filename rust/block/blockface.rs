@@ -1,4 +1,4 @@
-use std::mem;
+use std::{mem, hint::unreachable_unchecked};
 
 #[derive(Clone, Debug)]
 #[repr(C)]
@@ -62,8 +62,16 @@ pub struct Normal(pub u8);
 #[allow(dead_code)]
 #[allow(unused_parens)]
 impl Normal {
-    fn reverse(&self) -> Normal {
-        return Normal(6 - self.0);
+    pub fn reverse(&self) -> Normal {
+        match *self {
+            Normal::SOUTH => { return Normal::NORTH; }
+            Normal::WEST => { return Normal::EAST; }
+            Normal::DOWN => { return Normal::UP; }
+            Normal::NORTH => { return Normal::SOUTH; }
+            Normal::EAST => { return Normal::WEST; }
+            Normal::UP => { return Normal::DOWN; }
+            _ => unsafe { unreachable_unchecked(); }
+        }
     }
     pub const SOUTH: Normal = Normal(0);
     pub const WEST:  Normal = Normal(1);
