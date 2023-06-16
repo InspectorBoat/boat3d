@@ -33,7 +33,6 @@ impl World<'_> {
                     chunk.make_terrain(&noise, x, y, z);
                     chunk.create_buffer();
                     world.add_chunk(chunk);
-                    // world.chunks.insert(chunk.pos, chunk);
                 }
             }
         }
@@ -48,33 +47,30 @@ impl World<'_> {
                 for y in 0..32 {
                     for z in 0..32 {
                         // if x > 0 || y > 0 || z > 0 { continue }
-                        let chunk = match world.chunks.get_mut(&Vec3i { x, y, z }) {
-                            Some(chunk) => chunk,
-                            None => continue,
-                        };
-                        // I'm going to bomb an orphanage
-                        // let chunk = &mut *(&raw const chunk as *mut &mut Box<Chunk<'_>>);
+                        if let Some(chunk) = world.chunks.get_mut(&Vec3i { x, y, z }) {
 
-                        chunk.mesh_north_south_no_merge(&mut buffer);
-                        chunk.mesh_west_east_no_merge(&mut buffer);
-                        chunk.mesh_down_up_no_merge(&mut buffer);
+                            chunk.mesh_north_south_no_merge(&mut buffer);
+                            chunk.mesh_west_east_no_merge(&mut buffer);
+                            chunk.mesh_down_up_no_merge(&mut buffer);
+    
+                            buffer.format_quads();
+    
+                            chunk.face_count = (buffer.ind as u32) / 8;
+                            faces += chunk.face_count as usize;
+                            
+                            // /*
+                            if chunk.face_count == 0 { chunk.kill_buffer(); continue }
+                            let gl_buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
+                            gl_buffer.storage((buffer.ind + 16) as isize, gl::DYNAMIC_STORAGE_BIT);
+                            gl_buffer.upload_slice(&[chunk.pos.x, chunk.pos.y, chunk.pos.z, 0], 0, 16);
+                            gl_buffer.upload_slice(&buffer.arr.as_slice(), 16, buffer.ind as isize);
+                            
+                            chunk.buffer = Some(gl_buffer);
+                            // */
+    
+                            buffer.reset();
+                        }
 
-                        buffer.format_quads();
-
-                        chunk.face_count = (buffer.ind as u32) / 8;
-                        faces += chunk.face_count as usize;
-                        
-                        // /*
-                        if chunk.face_count == 0 { chunk.kill_buffer(); continue }
-                        let gl_buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
-                        gl_buffer.storage((buffer.ind + 16) as isize, gl::DYNAMIC_STORAGE_BIT);
-                        gl_buffer.upload_slice(&[chunk.pos.x, chunk.pos.y, chunk.pos.z, 0], 0, 16);
-                        gl_buffer.upload_slice(&buffer.arr.as_slice(), 16, buffer.ind as isize);
-                        
-                        chunk.buffer = Some(gl_buffer);
-                        // */
-
-                        buffer.reset();
                     }
                 }
             }

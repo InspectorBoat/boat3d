@@ -281,43 +281,11 @@ fn update(world: &mut World, keys: &mut HashMap<Key, bool>) {
 fn draw(world: &mut World) {
     unsafe {
         gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
-        let matrix = world.camera.get_matrix();
-        gl::UniformMatrix4fv(0, 1, gl::FALSE, matrix.as_array().as_ptr());
+        let camera_matrix = world.camera.get_matrix();
+        gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_array().as_ptr());
         for chunk in world.chunks.values() {
-            // if x != 0 || y != 0 || z != 0 { continue }
             if let Some(buffer) = &chunk.buffer {
                 buffer.bind_indexed_target(gl::SHADER_STORAGE_BUFFER);
-                
-                /*
-                let south = chunk.counts[0];
-                let north = chunk.counts[3];    
-                if world.camera.pos.z > chunk.pos.z as f32 * 16.0 + 16.0 { chunk.counts[0] = 0 }
-                if world.camera.pos.z < chunk.pos.z as f32 * 16.0 { chunk.counts[3] = 0 }
-
-                let west = chunk.counts[1];
-                let east = chunk.counts[4];
-                if world.camera.pos.x > chunk.pos.x as f32 * 16.0 + 16.0 { chunk.counts[1] = 0 }
-                if world.camera.pos.x < chunk.pos.x as f32 * 16.0 { chunk.counts[4] = 0 }
-
-                let down = chunk.counts[2];
-                let up = chunk.counts[5];
-                if world.camera.pos.y > chunk.pos.y as f32 * 16.0 + 16.0 { chunk.counts[2] = 0 }
-                if world.camera.pos.y < chunk.pos.y as f32 * 16.0 { chunk.counts[5] = 0 }
-
-                gl::MultiDrawElements(
-                    gl::TRIANGLE_STRIP,
-                    &raw const chunk.counts as *const i32,
-                    gl::UNSIGNED_INT,
-                    &raw const chunk.offsets as *const *const c_void,
-                    6
-                );
-                chunk.counts[0] = south;
-                chunk.counts[1] = west;
-                chunk.counts[2] = down;
-                chunk.counts[3] = north;
-                chunk.counts[4] = east;
-                chunk.counts[5] = up;
-                // */
                 gl::DrawElements(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null());
             }
         }
