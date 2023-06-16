@@ -29,8 +29,8 @@ impl World<'_> {
         for x in 0..32 {
             for y in 0..32 {
                 for z in 0..32 {
-                    world.chunks[(x << 10) | (y << 5) | (z << 0)].make_terrain(&mut noise_vec, x, y, z);
                     // world.chunks[(x << 10) | (y << 5) | (z << 0)].make_terrain_alt(&mut random, &mut counter);
+                    world.chunks[(x << 10) | (y << 5) | (z << 0)].make_terrain(&mut noise_vec, x, y, z);
                     world.chunks[(x << 10) | (y << 5) | (z << 0)].create_buffer();
                 }
             }

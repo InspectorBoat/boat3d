@@ -33,8 +33,12 @@ pub struct Chunk<'a> {
 }
 #[derive(Debug)]
 pub struct Neighbors<'a> {
-    north: Option<&'a Chunk<'a>>,
-
+    pub south: Option<&'a Chunk<'a>>,
+    pub west: Option<&'a Chunk<'a>>,
+    pub down: Option<&'a Chunk<'a>>,
+    pub north: Option<&'a Chunk<'a>>,
+    pub east: Option<&'a Chunk<'a>>,
+    pub up: Option<&'a Chunk<'a>>,
 }
 impl Chunk<'_> {
     pub fn get_block(&self, index: usize) -> &BlockState {
