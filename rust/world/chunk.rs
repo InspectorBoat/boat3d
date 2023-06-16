@@ -49,27 +49,39 @@ impl Chunk<'_> {
             Normal::SOUTH => {
                 if index & 0x00f == 0 {
                     // if self.pos.z == 0 {
-                        return &BLOCKS[0];
+                        // return &BLOCKS[0];
                     // }
                     // return &world.chunks[((self.pos.x << 10) | (self.pos.y << 5) | (self.pos.z.sub(1) << 0)) as usize][index | 0x00f];
+                    return match self.neighbors.south {
+                        Some(chunk) => &chunk[index | 0x00f],
+                        None => &BLOCKS[0],
+                    }
                 }
                 return &self[index - 0x001];
             }
             Normal::WEST => {
                 if index & 0xf00 == 0 {
                     // if self.pos.x == 0 {
-                        return &BLOCKS[0];
+                        // return &BLOCKS[0];
                     // }
                     // return &world.chunks[((self.pos.x.sub(1) << 10) | (self.pos.y << 5) | (self.pos.z << 0)) as usize][index | 0xf00];
+                    return match self.neighbors.west {
+                        Some(chunk) => &chunk[index | 0xf00],
+                        None => &BLOCKS[0],
+                    }
                 }
                 return &self[index - 0x100];
             }
             Normal::DOWN => {
                 if index & 0x0f0 == 0 {
                     // if self.pos.y == 0 {
-                        return &BLOCKS[0];
+                        // return &BLOCKS[0];
                     // }
                     // return &world.chunks[((self.pos.x << 10) | (self.pos.y.sub(1) << 5) | (self.pos.z << 0)) as usize][index | 0x0f0];
+                    return match self.neighbors.down {
+                        Some(chunk) => &chunk[index | 0x0f0],
+                        None => &BLOCKS[0],
+                    }
                 }
                 return &self[index - 0x010];
             }
@@ -107,7 +119,7 @@ impl Chunk<'_> {
         return ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0)
     }
 
-    pub fn make_terrain(&mut self, noise: &mut Vec<f32>, mut chunk_x: usize, mut chunk_y: usize, mut chunk_z: usize) {
+    pub fn make_terrain(&mut self, noise: &Vec<f32>, mut chunk_x: usize, mut chunk_y: usize, mut chunk_z: usize) {
         self.pos = Vec3i {
             x: chunk_x as i32,
             y: chunk_y as i32,
@@ -803,7 +815,7 @@ impl Run {
      */
     fn pull(&mut self, buffer: &mut ByteBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
         buffer[self.ind as usize + 4] += 0x10;
-        buffer[self.ind as usize + 3] &= 0xf0;        
+        buffer[self.ind as usize + 3] &= 0xf0;
         buffer[self.ind as usize + 3] |= face.top;
         self.top = face.top;
         self.row += 1;

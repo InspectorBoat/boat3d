@@ -13,6 +13,7 @@
 #![feature(raw_ref_op)]
 #![allow(overflowing_literals)]
 #![allow(unused_unsafe)]
+#![feature(result_option_inspect)]
 mod block;
 mod world;
 mod util;

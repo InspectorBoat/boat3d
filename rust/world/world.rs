@@ -1,3 +1,4 @@
+use std::cell::{Ref, RefCell, UnsafeCell};
 use std::collections::HashMap;
 use std::ops::{Deref, Add};
 use std::os::raw::c_void;
@@ -18,35 +19,24 @@ pub struct World<'a> {
 
 impl World<'_> {
     pub fn new() -> World<'static> { unsafe {
-        let chunks = HashMap::<Vec3i, Box::<Chunk>>::new();
-        let noise = NoiseBuilder::gradient_3d(512, 512, 512);
-        let mut noise_vec = noise.generate_scaled(0.0, 1.0);
+        let noise = NoiseBuilder::gradient_3d(512, 512, 512).generate_scaled(0.0, 1.0);
         
         let mut world = World {
-            chunks,
+            chunks: HashMap::<Vec3i, Box::<Chunk>>::new(),
             camera: Camera::new()
         };
 
         for x in 0..32 {
             for y in 0..32 {
                 for z in 0..32 {
-                    // world.chunks[(x << 10) | (y << 5) | (z << 0)].make_terrain_alt(&mut random, &mut counter);
                     let mut chunk = unsafe { Box::<Chunk>::new_zeroed().assume_init() };
-                    chunk.make_terrain(&mut noise_vec, x, y, z);
+                    chunk.make_terrain(&noise, x, y, z);
                     chunk.create_buffer();
+                    // world.add_chunk(chunk);
                     world.chunks.insert(chunk.pos, chunk);
                 }
             }
         }
-        // for (chunk, x, y, z, _) in world.iter() {
-            // if x != 0 || y != 0 || z != 0 { continue }
-            // chunk.make_terrain_alt(&mut random);
-            // chunk.make_terrain(&mut noise_vec, x, y, z);
-            // chunk.create_buffer();
-            // let buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
-            // buffer.storage(4096, gl::DYNAMIC_STORAGE_BIT);
-            // chunk.buffer = Some(buffer);
-        // }
         
         let mut buffer = ByteBuffer::new();
         let start = time::Instant::now();
@@ -103,6 +93,44 @@ impl World<'_> {
         return world;
     } }
 
+    pub fn add_chunk(&mut self, chunk: Box<Chunk<'_>>) { unsafe {
+        // let (x, y, z) = (chunk.pos.x, chunk.pos.y, chunk.pos.z);
+        // if let Some(south) = self.chunks.get_mut(&Vec3i { x, y, z: z - 1 }) {
+        //     south.neighbors.north = Some(chunk);
+        //     chunk.neighbors.south = Some(south);
+        // }
+        // if let Some(west) = self.chunks.get_mut(&Vec3i { x: x - 1, y, z }) {
+        //     west.neighbors.east = Some(chunk);
+        //     let west = &raw const west as *mut *mut *mut Chunk;
+        //     let chunk = &raw const chunk as *mut *mut Chunk;
+        //     chunk.neighbors.west = Some(west);
+        // }
+        // if let Some(down) = self.chunks.get_mut(&Vec3i { x, y: y - 1, z }) {
+        //     down.neighbors.up = Some(chunk);
+        //     let down = &raw const down as *mut *mut *mut Chunk;
+        //     let chunk = &raw const chunk as *mut *mut Chunk;
+        //     chunk.neighbors.down = Some(down);
+        // }
+        // if let Some(north) = self.chunks.get_mut(&Vec3i { x, y, z: z + 1 }) {
+        //     north.neighbors.south = Some(chunk);
+        //     let north = &raw const north as *mut *mut *mut Chunk;
+        //     let chunk = &raw const chunk as *mut *mut Chunk;
+        //     chunk.neighbors.north = Some(north);
+        // }
+        // if let Some(east) = self.chunks.get_mut(&Vec3i { x: x + 1, y, z }) {
+        //     east.neighbors.west = Some(chunk);
+        //     let east = &raw const east as *mut *mut *mut Chunk;
+        //     let chunk = &raw const chunk as *mut *mut Chunk;
+        //     (**chunk).neighbors.east = Some(east);
+        // }
+        // if let Some(up) = self.chunks.get_mut(&Vec3i { x, y: y + 1, z }) {
+        //     up.neighbors.down = Some(chunk);
+        //     let up = &raw const up as *mut *mut *mut Chunk;
+        //     let chunk = &raw const chunk as *mut *mut Chunk;
+        //     (**chunk).neighbors.up = Some(up);
+        // }
+        // self.chunks.insert((*chunk).pos, chunk);
+    } }
 }
 
 impl Default for World<'_> {
