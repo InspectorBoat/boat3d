@@ -281,7 +281,7 @@ fn draw(world: &mut World) {
         gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         let matrix = world.camera.get_matrix();
         gl::UniformMatrix4fv(0, 1, gl::FALSE, matrix.as_array().as_ptr());
-        for chunk in &*world.chunks {
+        for chunk in world.chunks.values() {
             // if x != 0 || y != 0 || z != 0 { continue }
             if let Some(buffer) = &chunk.buffer {
                 buffer.bind_indexed_target(gl::SHADER_STORAGE_BUFFER);

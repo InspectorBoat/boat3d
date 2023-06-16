@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::ops::{Deref, Add};
 use std::os::raw::c_void;
 use std::{ptr, hint};
@@ -5,19 +6,19 @@ use std::{time, hint::black_box, alloc, mem};
 use crate::block::blockface::{Normal, BlockFace};
 use crate::util::byte_buffer::ByteBuffer;
 use crate::util::gl_helper::Buffer;
-use crate::world::chunk;
+use crate::world::chunk::{self, Vec3i};
 use simdnoise::NoiseBuilder;
 
 use super::{chunk::Chunk, camera::Camera};
 #[derive(Debug)]
 pub struct World<'a> {
-    pub chunks: Box<[Chunk<'a>; 32768]>,
+    pub chunks: HashMap::<Vec3i, Box::<Chunk<'a>>>,
     pub camera: Camera
 }
 
 impl World<'_> {
     pub fn new() -> World<'static> { unsafe {
-        let chunks = unsafe { Box::<[Chunk; 32768]>::new_zeroed().assume_init() };
+        let chunks = HashMap::<Vec3i, Box::<Chunk>>::new();
         let noise = NoiseBuilder::gradient_3d(512, 512, 512);
         let mut noise_vec = noise.generate_scaled(0.0, 1.0);
         
@@ -30,8 +31,10 @@ impl World<'_> {
             for y in 0..32 {
                 for z in 0..32 {
                     // world.chunks[(x << 10) | (y << 5) | (z << 0)].make_terrain_alt(&mut random, &mut counter);
-                    world.chunks[(x << 10) | (y << 5) | (z << 0)].make_terrain(&mut noise_vec, x, y, z);
-                    world.chunks[(x << 10) | (y << 5) | (z << 0)].create_buffer();
+                    let mut chunk = unsafe { Box::<Chunk>::new_zeroed().assume_init() };
+                    chunk.make_terrain(&mut noise_vec, x, y, z);
+                    chunk.create_buffer();
+                    world.chunks.insert(chunk.pos, chunk);
                 }
             }
         }
@@ -55,14 +58,21 @@ impl World<'_> {
                 for y in 0..32 {
                     for z in 0..32 {
                         // if x > 0 || y > 0 || z > 0 { continue }
-                        let chunk = &mut *(&raw mut world.chunks[(x << 10) | (y << 5) | (z << 0)]);
+                        let chunk = match world.chunks.get(&Vec3i { x, y, z }) {
+                            Some(chunk) => chunk,
+                            None => continue,
+                        };
+                        // I'm going to bomb an orphanage
+                        let chunk = &mut *(&raw const chunk as *mut &mut Box<Chunk<'_>>);
+
+                        // let chunk = &mut *(&raw mut world.chunks[(x << 10) | (y << 5) | (z << 0)]);
 
                         chunk.mesh_north_south_no_merge(&mut buffer, &world);
                         chunk.mesh_west_east_no_merge(&mut buffer, &world);
                         chunk.mesh_down_up_no_merge(&mut buffer, &world);
 
                         buffer.format_quads();
-                        
+
                         chunk.face_count = (buffer.ind as u32) / 8;
                         faces += chunk.face_count as usize;
                         
@@ -93,6 +103,12 @@ impl World<'_> {
         return world;
     } }
 
+}
+
+impl Default for World<'_> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 pub struct Lcg {

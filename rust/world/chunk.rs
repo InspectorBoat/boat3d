@@ -48,28 +48,28 @@ impl Chunk<'_> {
         match NORMAL {
             Normal::SOUTH => {
                 if index & 0x00f == 0 {
-                    if self.pos.z == 0 {
+                    // if self.pos.z == 0 {
                         return &BLOCKS[0];
-                    }
-                    return &world.chunks[((self.pos.x << 10) | (self.pos.y << 5) | (self.pos.z.sub(1) << 0)) as usize][index | 0x00f];
+                    // }
+                    // return &world.chunks[((self.pos.x << 10) | (self.pos.y << 5) | (self.pos.z.sub(1) << 0)) as usize][index | 0x00f];
                 }
                 return &self[index - 0x001];
             }
             Normal::WEST => {
                 if index & 0xf00 == 0 {
-                    if self.pos.x == 0 {
+                    // if self.pos.x == 0 {
                         return &BLOCKS[0];
-                    }
-                    return &world.chunks[((self.pos.x.sub(1) << 10) | (self.pos.y << 5) | (self.pos.z << 0)) as usize][index | 0xf00];
+                    // }
+                    // return &world.chunks[((self.pos.x.sub(1) << 10) | (self.pos.y << 5) | (self.pos.z << 0)) as usize][index | 0xf00];
                 }
                 return &self[index - 0x100];
             }
             Normal::DOWN => {
                 if index & 0x0f0 == 0 {
-                    if self.pos.y == 0 {
+                    // if self.pos.y == 0 {
                         return &BLOCKS[0];
-                    }
-                    return &world.chunks[((self.pos.x << 10) | (self.pos.y.sub(1) << 5) | (self.pos.z << 0)) as usize][index | 0x0f0];
+                    // }
+                    // return &world.chunks[((self.pos.x << 10) | (self.pos.y.sub(1) << 5) | (self.pos.z << 0)) as usize][index | 0x0f0];
                 }
                 return &self[index - 0x010];
             }
@@ -871,6 +871,8 @@ impl Default for Run {
 }
 
 #[derive(Debug)]
+#[derive(Clone, Copy)]
+#[derive(Eq, Hash, PartialEq)]
 pub struct Vec3i {
     pub x: i32, pub y: i32, pub z: i32
 }
