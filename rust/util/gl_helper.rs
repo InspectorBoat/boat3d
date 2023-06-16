@@ -237,10 +237,10 @@ impl BufferArena {
         self.buffer.upload_slice(data, (page.start * 1024 + start as usize) as isize, length);
     }
     pub fn upload<T>(&mut self, page: &Page, data: &[T], length: isize) {
-        // self.staging_buffer.upload_slice(data, 0, length);
+        self.staging_buffer.upload_slice(data, 0, length);
 
-        // unsafe { gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * 1024) as isize, length as isize); }
-        self.buffer.upload_slice(data, (page.start * 1024) as isize, length);
+        unsafe { gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * 1024) as isize, length as isize); }
+        // self.buffer.upload_slice(data, (page.start * 1024) as isize, length);
     }
 }
 

@@ -35,9 +35,9 @@ static BLOCKS: [BlockState; 3] = [
             BlockFace::NONE,
             BlockFace::NONE,
             BlockFace::NONE,
-            BlockFace::NONE2,
-            BlockFace::NONE2,
-            BlockFace::NONE2
+            BlockFace::NONE,
+            BlockFace::NONE,
+            BlockFace::NONE
         ]),
         otherFaces: BlockState::NONE
     },
@@ -45,16 +45,16 @@ static BLOCKS: [BlockState; 3] = [
         block: Block { name: "bricks" },
         model: BlockModel([
             BlockFace {
-                lef: 0x10, bot: 0x10, dep: 0x0, nor: Normal::SOUTH,
-                rig: 0x10, top: 0x10, tex: 1
+                lef: 0x00, bot: 0x00, dep: 0x0, nor: Normal::SOUTH,
+                rig: 0x00, top: 0x00, tex: 1
             },
             BlockFace {
-                lef: 0x10, bot: 0x10, dep: 0x0, nor: Normal::WEST,
-                rig: 0x10, top: 0x10, tex: 1
+                lef: 0x00, bot: 0x00, dep: 0x0, nor: Normal::WEST,
+                rig: 0x00, top: 0x00, tex: 1
             },
             BlockFace {
-                lef: 0x10, bot: 0x10, dep: 0x0, nor: Normal::DOWN,
-                rig: 0x10, top: 0x10, tex: 1
+                lef: 0x00, bot: 0x00, dep: 0x0, nor: Normal::DOWN,
+                rig: 0x00, top: 0x00, tex: 1
             },
             BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0xf, nor: Normal::NORTH,
@@ -75,16 +75,16 @@ static BLOCKS: [BlockState; 3] = [
         block: Block { name: "brick_stairs" },
         model: BlockModel([
             BlockFace {
-                lef: 0x10, bot: 0x10, dep: 0x0, nor: Normal::SOUTH,
-                rig: 0x10, top: 0x18, tex: 2
+                lef: 0x00, bot: 0x00, dep: 0x0, nor: Normal::SOUTH,
+                rig: 0x00, top: 0x08, tex: 2
             },
             BlockFace {
-                lef: 0x10, bot: 0x10, dep: 0x0, nor: Normal::WEST,
-                rig: 0x10, top: 0x18, tex: 2
+                lef: 0x00, bot: 0x00, dep: 0x0, nor: Normal::WEST,
+                rig: 0x00, top: 0x08, tex: 2
             },
             BlockFace {
-                lef: 0x10, bot: 0x10, dep: 0x0, nor: Normal::DOWN,
-                rig: 0x10, top: 0x10, tex: 2
+                lef: 0x00, bot: 0x00, dep: 0x0, nor: Normal::DOWN,
+                rig: 0x00, top: 0x00, tex: 2
             },
             BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0xf, nor: Normal::NORTH,
@@ -107,12 +107,12 @@ static BLOCKS: [BlockState; 3] = [
 
 static OTHER_FACES: [(BlockFace, bool); 4] = [
     (BlockFace {
-        lef: 0x10, bot: 0x18, dep: 0x8, nor: Normal::SOUTH,
-        rig: 0x10, top: 0x10, tex: 1
+        lef: 0x00, bot: 0x08, dep: 0x8, nor: Normal::SOUTH,
+        rig: 0x00, top: 0x00, tex: 1
     }, false),
     (BlockFace {
-        lef: 0x18, bot: 0x18, dep: 0x0, nor: Normal::WEST,
-        rig: 0x10, top: 0x10, tex: 1
+        lef: 0x08, bot: 0x08, dep: 0x0, nor: Normal::WEST,
+        rig: 0x00, top: 0x00, tex: 1
     }, false),
     (BlockFace {
         lef: 0x08, bot: 0x08, dep: 0xf, nor: Normal::EAST,

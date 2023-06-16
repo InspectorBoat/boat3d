@@ -15,8 +15,8 @@ pub struct BlockFace {
 impl BlockFace {
     pub fn compare_is_culled(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX) }
-        if a.as_u32() == b.as_u32() { return (true, true) }
-        let diff = 0x10101010 + a.as_u32() - b.as_u32();
+        // if a.as_u32() == b.as_u32() { return (true, true) }
+        let diff = a.as_u32() + 0x10101010 - b.as_u32();
         return (diff >= 0x10101010, diff <= 0x10101010)
     }
     
@@ -39,11 +39,6 @@ impl BlockFace {
         return unsafe { mem::transmute_copy(self) };
     }
     pub const NONE: BlockFace = BlockFace {
-        lef: 0x1f, bot: 0x1f, dep: 0, nor: Normal::NONE,
-        rig: 0x1f, top: 0x1f, tex: u16::MAX
-    };
-
-    pub const NONE2: BlockFace = BlockFace {
         lef: 0x0f, bot: 0x0f, dep: 0, nor: Normal::NONE,
         rig: 0x0f, top: 0x0f, tex: u16::MAX
     };

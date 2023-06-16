@@ -5,6 +5,7 @@ use std::cell::UnsafeCell;
 use std::fmt::DebugStruct;
 use std::hint;
 use std::hint::black_box;
+use std::hint::unreachable_unchecked;
 use std::intrinsics::prefetch_read_data;
 use std::marker::PhantomData;
 use std::ops::Add;
@@ -147,7 +148,7 @@ impl Chunk<'_> {
                     )};
                     *block = match *noise_val {
                         val if val < 0.5 => {
-                            1
+                            2
                         },
                         _ => {
                             0
@@ -183,6 +184,10 @@ impl Chunk<'_> {
             let (face_s, face_n) = self.get_face_pair::<{Normal::SOUTH}>(pos);
             let compare = BlockFace::compare_is_culled(face_s, face_n);
             'south: {
+                if self.has_other_face::<{ Normal::SOUTH }>(pos) {
+                    Run::add_face::<{ Normal::SOUTH }>(buffer, &self.get_other_face::<{Normal::SOUTH}>(pos).0, pos);
+                }
+    
                 if compare.0 {
                     active_run_s = false;
                     break 'south
@@ -232,10 +237,15 @@ impl Chunk<'_> {
                 run_s = &mut row_s[u as usize];
                 same_row_s = true;
                 active_run_s = true;
-                run_s.begin(buffer, &face_s, pos, u, row_id);
+                run_s.begin::<{ Normal::SOUTH }>(buffer, &face_s, pos, u, row_id);
             }
             'north: {
                 // break 'north;
+
+                if self.has_opposing_other_face::<{ Normal::SOUTH }>(pos) {
+                    Run::add_face::<{ Normal::SOUTH }>(buffer2, &self.get_opposing_other_face::<{Normal::SOUTH}>(pos).0, pos);
+                }
+
                 if compare.1 {
                     active_run_n = false;
                     break 'north
@@ -285,7 +295,7 @@ impl Chunk<'_> {
                 run_n = &mut row_n[u as usize];
                 active_run_n = true;
                 same_row_n = true;
-                run_n.begin(buffer2, &face_n, pos, u, row_id);
+                run_n.begin::<{ Normal::NORTH }>(buffer2, &face_n, pos, u, row_id);
             }
         } (active_run_s, active_run_n) = (false, false); row_id += 1;
         } row_id += 16;
@@ -310,6 +320,10 @@ impl Chunk<'_> {
             let (face_w, face_e) = self.get_face_pair::<{Normal::WEST}>(pos);
             let compare = BlockFace::compare_is_culled(face_w, face_e);
             'west: {
+                if self.has_other_face::<{ Normal::WEST }>(pos) {
+                    Run::add_face::<{ Normal::WEST }>(buffer, &self.get_other_face::<{Normal::WEST}>(pos).0, pos);
+                }
+
                 if compare.0 {
                     active_run_w = false;
                     break 'west
@@ -360,10 +374,15 @@ impl Chunk<'_> {
                 run_w = &mut row_w[u as usize];
                 same_row_w = true;
                 active_run_w = true;
-                run_w.begin(buffer, &face_w, pos, u, row_id);
+                run_w.begin::<{ Normal::WEST }>(buffer, &face_w, pos, u, row_id);
             }
             'east: {
                 // break 'east;
+
+                if self.has_opposing_other_face::<{ Normal::WEST }>(pos) {
+                    Run::add_face::<{ Normal::WEST }>(buffer, &self.get_opposing_other_face::<{Normal::WEST}>(pos).0, pos);
+                }
+
                 if compare.1 {
                     active_run_e = false;
                     break 'east
@@ -414,7 +433,7 @@ impl Chunk<'_> {
                 run_e = &mut row_e[u as usize];
                 active_run_e = true;
                 same_row_e = true;
-                run_e.begin(buffer2, &face_e, pos, u, row_id);
+                run_e.begin::<{ Normal::EAST }>(buffer2, &face_e, pos, u, row_id);
             }
         } (active_run_w, active_run_e) = (false, false); row_id += 1; } row_id += 16; }
     }
@@ -437,6 +456,10 @@ impl Chunk<'_> {
             let (face_d, face_u) = self.get_face_pair::<{Normal::DOWN}>(pos);
             let compare = BlockFace::compare_is_culled(face_d, face_u);
             'down: {
+                if self.has_other_face::<{ Normal::DOWN }>(pos) {
+                    Run::add_face::<{ Normal::DOWN }>(buffer, &self.get_other_face::<{Normal::DOWN}>(pos).0, pos);
+                }
+
                 if compare.0 {
                     active_run_d = false;
                     break 'down
@@ -487,10 +510,15 @@ impl Chunk<'_> {
                 run_d = &mut row_d[u as usize];
                 same_row_d = true;
                 active_run_d = true;
-                run_d.begin(buffer, &face_d, pos, u, row_id);
+                run_d.begin::<{ Normal::DOWN }>(buffer, &face_d, pos, u, row_id);
             }
             'up: {
                 // break 'up;
+
+                if self.has_opposing_other_face::<{ Normal::DOWN }>(pos) {
+                    Run::add_face::<{ Normal::DOWN }>(buffer, &self.get_opposing_other_face::<{Normal::DOWN}>(pos).0, pos);
+                }
+
                 if compare.1 {
                     active_run_u = false;
                     break 'up
@@ -541,28 +569,28 @@ impl Chunk<'_> {
                 run_u = &mut row_u[u as usize];
                 active_run_u = true;
                 same_row_u = true;
-                run_u.begin(buffer2, &face_u, pos, u, row_id);
+                run_u.begin::<{ Normal::UP }>(buffer2, &face_u, pos, u, row_id);
             }
         } (active_run_d, active_run_u) = (false, false); row_id += 1; } row_id += 16; }
     }
     
-    pub fn mesh_north_south_no_merge(&mut self, buffer: &mut ByteBuffer) { unsafe {
+    pub fn mesh_south_north_no_merge(&mut self, buffer: &mut ByteBuffer) { unsafe {
         for z in 0..16_u8 { for y in 0..16_u8 { for x in 0..16_u8 {
             let pos = ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0);
             
             let face_s = self.get_face::<{Normal::SOUTH}>(pos);
             let face_n = self.get_opposing_face::<{Normal::SOUTH}>(pos);
 
-            let compare = face_s.as_u32() - face_n.as_u32();
+            let compare = face_s.as_u32() + 0x10101010 - face_n.as_u32();
             if compare == 0x10101010 { continue; }
             
             let offset = Chunk::INDICES_ZYX[pos] as u64;
             
-            if compare < 0x10101010 { buffer.put_u64(face_s.as_u64() - 0x10101010 + offset); }
+            if compare < 0x10101010 { buffer.put_u64(face_s.as_u64() + offset); }
             if compare > 0x10101010 { buffer.put_u64(face_n.as_u64() + offset); }
 
             if self.has_other_face::<{Normal::SOUTH}>(pos) {
-                buffer.put_u64(self.get_other_face::<{Normal::SOUTH}>(pos).0.as_u64() - 0x10101010 + offset);
+                buffer.put_u64(self.get_other_face::<{Normal::SOUTH}>(pos).0.as_u64() + offset);
             }
             if self.has_opposing_other_face::<{Normal::SOUTH}>(pos) {
                 buffer.put_u64(self.get_opposing_other_face::<{Normal::SOUTH}>(pos).0.as_u64() + offset);
@@ -576,16 +604,16 @@ impl Chunk<'_> {
             let face_w = self.get_face::<{Normal::WEST}>(pos);
             let face_e = self.get_opposing_face::<{Normal::WEST}>(pos);
 
-            let compare = face_w.as_u32() - face_e.as_u32();
+            let compare = face_w.as_u32() + 0x10101010 - face_e.as_u32();
             if compare == 0x10101010 { continue; }
             
             let offset = Chunk::INDICES_XYZ[pos] as u64;
             
-            if compare < 0x10101010 { buffer.put_u64(face_w.as_u64() - 0x10101010 + offset); }
+            if compare < 0x10101010 { buffer.put_u64(face_w.as_u64() + offset); }
             if compare > 0x10101010 { buffer.put_u64(face_e.as_u64() + offset); }
 
             if self.has_other_face::<{Normal::WEST}>(pos) {
-                buffer.put_u64(self.get_other_face::<{Normal::WEST}>(pos).0.as_u64() - 0x10101010 + offset);
+                buffer.put_u64(self.get_other_face::<{Normal::WEST}>(pos).0.as_u64() + offset);
             }
             if self.has_opposing_other_face::<{Normal::WEST}>(pos) {
                 buffer.put_u64(self.get_opposing_other_face::<{Normal::WEST}>(pos).0.as_u64() + offset);
@@ -600,16 +628,16 @@ impl Chunk<'_> {
             let face_d = self.get_face::<{Normal::DOWN}>(pos);
             let face_u = self.get_opposing_face::<{Normal::DOWN}>(pos);
 
-            let compare = face_d.as_u32() - face_u.as_u32();
+            let compare = face_d.as_u32() + 0x10101010 - face_u.as_u32();
             if compare == 0x10101010 { continue; }
             
             let offset = Chunk::INDICES_YXZ[pos] as u64;
             
-            if compare < 0x10101010 { buffer.put_u64(face_d.as_u64() - 0x10101010 + offset); }
+            if compare < 0x10101010 { buffer.put_u64(face_d.as_u64() + offset); }
             if compare > 0x10101010 { buffer.put_u64(face_u.as_u64() + offset); }
 
             if self.has_other_face::<{Normal::DOWN}>(pos) {
-                buffer.put_u64(self.get_other_face::<{Normal::DOWN}>(pos).0.as_u64() - 0x10101010 + offset);
+                buffer.put_u64(self.get_other_face::<{Normal::DOWN}>(pos).0.as_u64() + offset);
             }
             if self.has_opposing_other_face::<{Normal::DOWN}>(pos) {
                 buffer.put_u64(self.get_opposing_other_face::<{Normal::DOWN}>(pos).0.as_u64() + offset);
@@ -829,14 +857,25 @@ impl Run {
     /**
      * Begins a new run
      */
-    fn begin(&mut self, buffer: &mut ByteBuffer, face: &BlockFace, pos: usize, u: u8, row: u16) {
+    fn begin<const NORMAL: Normal>(&mut self, buffer: &mut ByteBuffer, face: &BlockFace, pos: usize, u: u8, row: u16) {
         self.ind = buffer.ind as u16;
-        // Moving the entire face is more efficient
-        // let offset = ((u as u64) << 4) | ((v as u64) << 12) | ((d as u64) << 20);
-        let offset = Chunk::INDICES_ZYX[pos];
+        let offset: u32;
+        match NORMAL {
+            Normal::SOUTH | Normal::NORTH => {
+                offset = Chunk::INDICES_ZYX[pos];
+            }
+            Normal::WEST | Normal::EAST => {
+                offset = Chunk::INDICES_XYZ[pos];
+            }
+            Normal::DOWN | Normal::UP => {
+                offset = Chunk::INDICES_YXZ[pos];
+            }
+            _ => {
+                unsafe { unreachable_unchecked(); }
+            }
+        }
         buffer.put_u64(face.as_u64() + offset as u64);
 
-        // *self.as_u32() = face.as_u32();
         self.lef = face.lef;
         self.bot = face.bot;
 
@@ -849,6 +888,24 @@ impl Run {
 
 
         self.row = row;
+    }
+    fn add_face<const NORMAL: Normal>(buffer: &mut ByteBuffer, face: &BlockFace, pos: usize) {
+        let offset: u32;
+        match NORMAL {
+            Normal::SOUTH | Normal::NORTH => {
+                offset = Chunk::INDICES_ZYX[pos];
+            }
+            Normal::WEST | Normal::EAST => {
+                offset = Chunk::INDICES_XYZ[pos];
+            }
+            Normal::DOWN | Normal::UP => {
+                offset = Chunk::INDICES_YXZ[pos];
+            }
+            _ => {
+                unsafe { unreachable_unchecked(); }
+            }
+        }
+        buffer.put_u64(face.as_u64() + offset as u64);
     }
     /**
      * Matches the top and bottom right corners of the first face with the top and bottom left corners of the next face

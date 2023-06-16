@@ -40,6 +40,7 @@ impl World<'_> {
         }
         
         let mut buffer = ByteBuffer::new();
+        // let mut buffer2 = ByteBuffer::new();
         let start = time::Instant::now();
         let mut faces: usize = 0;
         let mesh_passes = 1;
@@ -50,35 +51,26 @@ impl World<'_> {
                     for z in 0..32 {
                         if let Some(chunk) = world.chunks.get_mut(&Vec3i { x, y, z }) {
 
-                            chunk.mesh_north_south_no_merge(&mut buffer);
-                            chunk.mesh_west_east_no_merge(&mut buffer);
-                            chunk.mesh_down_up_no_merge(&mut buffer);
+                            chunk.mesh_south_north(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
+                            chunk.mesh_west_east(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
+                            chunk.mesh_down_up(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
+
+                            // chunk.mesh_south_north_no_merge(&mut buffer);
+                            // chunk.mesh_west_east_no_merge(&mut buffer);
+                            // chunk.mesh_down_up_no_merge(&mut buffer);
     
                             buffer.format_quads();
     
                             chunk.face_count = (buffer.ind as u32) / 8;
                             faces += chunk.face_count as usize;
                             
-                            // /*
-                            // if chunk.face_count == 0 { chunk.kill_buffer(); continue }
-                            // let gl_buffer = unsafe { chunk.buffer.take().unwrap_unchecked() };
-                            
-                            // gl_buffer.upload_slice(&[chunk.pos.x, chunk.pos.y, chunk.pos.z, 0], 0, 16);
-                            // gl_buffer.upload_slice(&buffer.arr.as_slice(), 16, buffer.ind as isize);
-                            // gl_buffer.storage((buffer.ind + 16) as isize, gl::DYNAMIC_STORAGE_BIT);
-                            
-                            // gl_buffer.storage(buffer.ind as isize, gl::DYNAMIC_STORAGE_BIT);
-                            // gl_buffer.upload_slice(&buffer.arr.as_slice(), 0, buffer.ind as isize);
-                            
                             chunk.page = world.buffer.allocate(buffer.ind);
                             if let Some(page) = &chunk.page {
                                 world.buffer.upload(page, &buffer.arr.as_slice(), buffer.ind as isize);
                             }
 
-                            // chunk.buffer = Some(gl_buffer);
-                            // */
-    
                             buffer.reset();
+                            // buffer2.reset();
                         }
 
                     }
