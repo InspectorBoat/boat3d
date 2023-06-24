@@ -136,7 +136,7 @@ impl World<'_> {
             chunk.neighbors.north.inspect(|north| (**north).neighbors.south = None);
             chunk.neighbors.east.inspect(|east| (**east).neighbors.west = None);
             chunk.neighbors.up.inspect(|up| (**up).neighbors.down = None);
-            self.buffer.deallocate(&chunk.page.take());
+            self.buffer.deallocate(chunk.page.take());
         }
     } }
 }

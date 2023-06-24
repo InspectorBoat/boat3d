@@ -13,10 +13,32 @@ pub fn init_gl(window: &mut Window) {
 pub fn init_glfw() -> Glfw {
     return glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
 }
-pub fn create_window() -> (Window, std::sync::mpsc::Receiver<(f64, WindowEvent)>) {
-    return glfw::init(glfw::FAIL_ON_ERRORS).unwrap().create_window(600, 600, "boat3d", glfw::WindowMode::Windowed)
+pub fn create_window(status: &WindowStatus) -> (Window, std::sync::mpsc::Receiver<(f64, WindowEvent)>) {
+    return glfw::init(glfw::FAIL_ON_ERRORS).unwrap().create_window(status.width as u32, status.height as u32, "boat3d", glfw::WindowMode::Windowed)
             .expect("Failed to create GLFW window.");
 }
+pub fn setup_element_array() { unsafe {
+    gl::ClearColor(1.0, 1.0, 1.0, 1.0);
+    gl::Enable(gl::DEPTH_TEST);
+    gl::Enable(gl::PRIMITIVE_RESTART);
+    gl::PrimitiveRestartIndex(u32::MAX);
+    let mut index_array = Vec::<u32>::with_capacity(1024 * 1024 / 4);
+    let mut j = 0;
+    for i in 0..(1024 * 1024 / 4) {
+        if i % 5 == 4 {
+            index_array.push(u32::MAX);
+        }
+        else {
+            index_array.push(j);
+            j += 1;
+        }
+    }
+    let index_buffer = Buffer::create();
+    index_buffer.bind_target(gl::ELEMENT_ARRAY_BUFFER);
+    index_buffer.storage(1024 * 1024 / 4, gl::DYNAMIC_STORAGE_BIT);
+    index_buffer.upload_slice(&index_array.as_slice(), 0, index_array.len() as isize);
+} }
+
 // */
 
 pub fn log_error() {
@@ -173,12 +195,14 @@ impl Program {
 pub struct WindowStatus {
     pub fill_mode: gl::types::GLenum,
     pub maximized: bool,
+    pub width: i32,
+    pub height: i32,
     pub mouse_captured: bool
 }
 
 impl WindowStatus {
     pub fn new() -> WindowStatus {
-        return WindowStatus { fill_mode: gl::FILL, maximized: false, mouse_captured: false}
+        return WindowStatus { fill_mode: gl::FILL, maximized: false, mouse_captured: false, width: 600, height: 600 }
     }
 }
 
@@ -227,7 +251,7 @@ impl BufferArena {
         }
         return None;
     }
-    pub fn deallocate(&mut self, page: &Option<Page>) {
+    pub fn deallocate(&mut self, page: Option<Page>) {
         if let Some(page) = page {
             for i in page.start..(page.start + page.size) {
                 self.pages[i] = false;

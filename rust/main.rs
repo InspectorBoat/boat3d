@@ -124,12 +124,12 @@ static OTHER_FACES: [(BlockFace, bool); 4] = [
     }, false),
 ];
 
-fn main() {
+fn main() { unsafe {
     // /*
     let mut glfw = gl_helper::init_glfw();
-    let (mut window, events) = gl_helper::create_window();
-    gl_helper::init_gl(&mut window);
     let mut status = WindowStatus::new();
+    let (mut window, events) = gl_helper::create_window(&status);
+    gl_helper::init_gl(&mut window);
 
     window.set_all_polling(true);
     window.make_current();
@@ -137,34 +137,25 @@ fn main() {
     let fragment_shader = Shader::create(gl::FRAGMENT_SHADER, include_str!("shader/shader.glsl.frag"));
     let program = Program::create(vertex_shader, fragment_shader);
     Program::bind(program);
-    unsafe {
-        gl::ClearColor(1.0, 1.0, 1.0, 1.0);
-        gl::Enable(gl::DEPTH_TEST);
-        gl::Enable(gl::PRIMITIVE_RESTART);
-        gl::PrimitiveRestartIndex(u32::MAX);
-        let mut index_array = Vec::<u32>::with_capacity(1024 * 1024 / 4);
+    gl_helper::setup_element_array();
 
-        let mut j = 0;
-        for i in 0..(1024 * 1024 / 4) {
-            if i % 5 == 4 {
-                index_array.push(u32::MAX);
-            }
-            else {
-                index_array.push(j);
-                j += 1;
-            }
-        }
-        let index_buffer = Buffer::create();
+    let mut g_buffer: u32 = 0;
+    gl::GenFramebuffers(1, &mut g_buffer);
+    gl::BindFramebuffer(gl::FRAMEBUFFER, g_buffer);
 
-        index_buffer.bind_target(gl::ELEMENT_ARRAY_BUFFER);
-        index_buffer.storage(1024 * 1024 / 4, gl::DYNAMIC_STORAGE_BIT);
-        index_buffer.upload_slice(&index_array.as_slice(), 0, index_array.len() as isize);
-    }
-    // */
-    
+    let mut g_pos_light: u32 = 0;
+    gl::GenTextures(1, &mut g_pos_light);
+    gl::BindTexture(gl::TEXTURE_2D, g_pos_light);
+    gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA16F as i32, status.width as i32, status.height as i32, 0, gl::RGBA, gl::FLOAT, ptr::null());
+    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
+    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+    gl::FramebufferTexture2D(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT0, gl::TEXTURE_2D, g_pos_light, 0);
+
+    let attachments = [gl::COLOR_ATTACHMENT0];
+    gl::DrawBuffers(1, &raw const attachments as *const u32);
+
     let mut world = World::new();
     
-
     // /*
     let mut keys: HashMap<glfw::Key, bool> = HashMap::new();
     let mut start = std::time::Instant::now();
@@ -192,7 +183,7 @@ fn main() {
     }
     // */
     // */
-}
+} }
 
 // /* 
 #[allow(unused_variables)]
@@ -202,6 +193,8 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
             unsafe {
                 gl::Viewport(0, 0, width, height);
             }
+            (status.width, status.height) = (width, height);
+            
             world.camera.ratio = width as f32 / height as f32;
         }
         glfw::WindowEvent::CursorPos(x, y) => {
@@ -293,7 +286,6 @@ fn draw(world: &mut World) {
                 gl::DrawElementsBaseVertex(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null(), (page.start * 1024 / 2) as i32);
             }
         }
-
     }
 }
 // */

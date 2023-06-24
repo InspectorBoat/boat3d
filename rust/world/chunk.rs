@@ -589,7 +589,7 @@ impl Chunk<'_> {
             
             if compare < 0x10101010 { buffer.put_u64(face_s.as_u64() + offset); }
             if compare > 0x10101010 { buffer.put_u64(face_n.as_u64() + offset); }
-
+            
             if self.has_other_face::<{Normal::SOUTH}>(pos) {
                 buffer.put_u64(self.get_other_face::<{Normal::SOUTH}>(pos).0.as_u64() + offset);
             }

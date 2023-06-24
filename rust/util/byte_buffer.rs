@@ -27,12 +27,6 @@ impl ByteBuffer {
         }
         self.ind += 8;
     }
-    pub fn get_u32<T: Into<usize>>(&self, pos: T) -> u32 {
-        unsafe {
-            let loc = self.arr.as_ptr().byte_add(pos.into()) as *mut u32;
-            return *loc
-        }
-    }
     pub fn get_u64<T: Into<usize>>(&self, pos: T) -> u64 {
         unsafe {
             let loc = self.arr.as_ptr().byte_add(pos.into()) as *mut u64;
