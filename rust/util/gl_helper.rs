@@ -1,14 +1,16 @@
 use std::{ffi::{c_void, CString}, ptr, ops::Deref};
 
 use gl::types::GLuint;
-use glfw::{Window, WindowEvent, Glfw};
+use glfw::{Window, WindowEvent, Glfw, Context};
 
 use log::debug;
 
 
 // /*
 pub fn init_gl(window: &mut Window) {
-    return gl::load_with(|s| window.get_proc_address(s) as *const _);
+    gl::load_with(|s| window.get_proc_address(s) as *const _);
+    window.set_all_polling(true);
+    window.make_current();
 }
 pub fn init_glfw() -> Glfw {
     return glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
@@ -94,43 +96,45 @@ impl Buffer {
     pub fn valid(&self) -> bool {
         return unsafe { gl::IsBuffer(self.id) } == gl::TRUE
     }
-    pub fn kill(self) {
-        unsafe { gl::DeleteBuffers(1, &self.id) }
-    }
-    pub fn storage(&self, length: isize, flags: u32) {
-        unsafe {
-            gl::NamedBufferStorage(self.id, length, ptr::null(), flags);
-        }
-    }
-    pub fn upload<T>(&self, data: &[T], length: isize, usage: gl::types::GLenum) {
-        unsafe {
-            gl::NamedBufferData(
-                self.id,
-                length,
-                data.as_ptr() as *const c_void, usage
-            )
-        }
-    }
-    pub fn upload_slice<T>(&self, data: &[T], buffer_start: isize, length: isize) {
-        unsafe {
-            gl::NamedBufferSubData(
-                self.id,
-                buffer_start,
-                length,
-                data.as_ptr() as *const c_void
-            )
-        }
-    }
-    pub fn get_sub_data<T: Sized + Clone + Default>(&self, offset: isize, length: isize) -> Vec<T> {
+    pub fn kill(self) { unsafe {
+        gl::DeleteBuffers(1, &self.id);
+    } }
+    pub fn storage(&self, length: isize, flags: u32) { unsafe {
+        gl::NamedBufferStorage(
+            self.id,
+            length,
+            ptr::null(),
+            flags
+        );
+    } }
+    pub fn upload<T>(&self, data: &[T], length: isize, usage: gl::types::GLenum) { unsafe {
+        gl::NamedBufferData(
+            self.id,
+            length,
+            data.as_ptr() as *const c_void, usage
+        );
+    } }
+    pub fn upload_slice<T>(&self, data: &[T], buffer_start: isize, length: isize) { unsafe {
+        gl::NamedBufferSubData(
+            self.id,
+            buffer_start,
+            length,
+            data.as_ptr() as *const c_void
+        );
+    } }
+    pub fn get_sub_data<T: Sized + Clone + Default>(&self, offset: isize, length: isize) -> Vec<T> { unsafe {
         let mut data = vec![Default::default(); (length as usize) * std::mem::size_of::<T>()];
-        unsafe {
-            gl::GetNamedBufferSubData(self.id, offset, length, data.as_mut_ptr() as *mut c_void);
-        }
+        gl::GetNamedBufferSubData(
+            self.id,
+            offset,
+            length,
+            data.as_mut_ptr() as *mut c_void
+        );
         return data;
-    }
-    pub fn unbind(target: u32) {
-        unsafe { gl::BindBuffer(gl::NONE, target) }
-    }
+    } }
+    pub fn unbind(target: u32) { unsafe {
+        gl::BindBuffer(gl::NONE, target);
+    } }
 }
 
 impl Drop for Buffer {
@@ -170,26 +174,25 @@ pub struct Program {
 }
 
 impl Program {
-    pub fn create(vertex_shader: Shader, fragment_shader: Shader) -> Program {
-        let id = unsafe { gl::CreateProgram() };
-        unsafe {
-            gl::AttachShader(id, vertex_shader.id);
-            gl::AttachShader(id, fragment_shader.id);
-            gl::LinkProgram(id);
+    pub fn create(vertex_shader: Shader, fragment_shader: Shader) -> Program { unsafe {
+        let id = gl::CreateProgram();
 
-            let mut status = 0;
-            gl::GetProgramiv(id, gl::LINK_STATUS, &mut status);
-            if status != gl::TRUE as i32 { panic!() }
-        }
+        gl::AttachShader(id, vertex_shader.id);
+        gl::AttachShader(id, fragment_shader.id);
+        gl::LinkProgram(id);
+
+        let mut status = 0;
+        gl::GetProgramiv(id, gl::LINK_STATUS, &mut status);
+        if status != gl::TRUE as i32 { panic!(); }
 
         return Program {
             id
         }
-    }
+    } }
 
-    pub fn bind(program: Program) {
-        unsafe { gl::UseProgram(program.id) }
-    }
+    pub fn bind(program: &Program) { unsafe {
+        gl::UseProgram(program.id);
+    } }
 }
 
 pub struct WindowStatus {
@@ -207,26 +210,26 @@ impl WindowStatus {
 }
 
 #[derive(Debug)]
-pub struct BufferArena {
+pub struct PoolAllocator {
     pub buffer: Buffer,
     pub staging_buffer: Buffer,
     pub pages: Box<[bool; 1048576]>,
 
-    // page size of 1024
+    // very lazy
 }
 
-impl BufferArena {
-    pub fn new() -> BufferArena {
+impl PoolAllocator {
+    pub fn new() -> PoolAllocator { unsafe {
         let buffer = Buffer::create();
         buffer.storage(1024 * 1048576, gl::DYNAMIC_STORAGE_BIT);
         let staging_buffer = Buffer::create();
         staging_buffer.storage(1024 * 1024, gl::DYNAMIC_STORAGE_BIT);
-        return BufferArena {
+        return PoolAllocator {
             buffer: buffer,
             staging_buffer: staging_buffer,
-            pages: unsafe { Box::<[bool; 1048576]>::new_zeroed().assume_init() }
+            pages: Box::<[bool; 1048576]>::new_zeroed().assume_init()
         }
-    }
+    } }
     // Size in bytes
     pub fn allocate(&mut self, size: usize) -> Option<Page> {
         if size == 0 { return None; }
@@ -262,12 +265,12 @@ impl BufferArena {
     pub fn upload_slice<T>(&mut self, page: Page, data: &[T], start: isize, length: isize) {
         self.buffer.upload_slice(data, (page.start * 1024 + start as usize) as isize, length);
     }
-    pub fn upload<T>(&mut self, page: &Page, data: &[T], length: isize) {
+    pub fn upload<T>(&mut self, page: &Page, data: &[T], length: isize) { unsafe {
         self.staging_buffer.upload_slice(data, 0, length);
 
-        unsafe { gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * 1024) as isize, length as isize); }
+        gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * 1024) as isize, length as isize);
         // self.buffer.upload_slice(data, (page.start * 1024) as isize, length);
-    }
+    } }
 }
 
 #[derive(Debug)]

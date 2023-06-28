@@ -4,6 +4,7 @@
 #![allow(unused_imports)]
 #![allow(unused_must_use)]
 #![allow(non_snake_case)]
+#![allow(unused_parens)]
 #![feature(unchecked_math)]
 #![feature(pointer_byte_offsets)]
 #![feature(adt_const_params)]
@@ -19,7 +20,7 @@ mod block;
 mod world;
 mod util;
 
-use std::{collections::HashMap, ptr, os::raw::c_void, hint::black_box, time::SystemTime};
+use std::{collections::HashMap, ptr, os::raw::c_void, hint::black_box, time::SystemTime, mem};
 
 use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
 use glfw::{Context, Window, Action, Key};
@@ -129,39 +130,68 @@ fn main() { unsafe {
     let mut glfw = gl_helper::init_glfw();
     let mut status = WindowStatus::new();
     let (mut window, events) = gl_helper::create_window(&status);
+
     gl_helper::init_gl(&mut window);
 
-    window.set_all_polling(true);
-    window.make_current();
-    let vertex_shader = Shader::create(gl::VERTEX_SHADER, include_str!("shader/shader.glsl.vert"));
-    let fragment_shader = Shader::create(gl::FRAGMENT_SHADER, include_str!("shader/shader.glsl.frag"));
-    let program = Program::create(vertex_shader, fragment_shader);
-    Program::bind(program);
+    let geometry_program = Program::create(
+        Shader::create(gl::VERTEX_SHADER, include_str!("shader/geometry.glsl.vert")),
+        Shader::create(gl::FRAGMENT_SHADER, include_str!("shader/geometry.glsl.frag"))
+    );
+    Program::bind(&geometry_program);
+
+    let post_program = Program::create(
+        Shader::create(gl::VERTEX_SHADER, include_str!("shader/post.glsl.vert")),
+        Shader::create(gl::FRAGMENT_SHADER, include_str!("shader/post.glsl.frag"))
+    );
+
     gl_helper::setup_element_array();
 
-    let mut g_buffer: u32 = 0;
-    gl::GenFramebuffers(1, &mut g_buffer);
-    gl::BindFramebuffer(gl::FRAMEBUFFER, g_buffer);
+    
+    //screen quad buffer
+    let quad_vertices: [f32; 24] = [
+        -1.0,  1.0,  0.0, 1.0,
+        -1.0, -1.0,  0.0, 0.0,
+         1.0, -1.0,  1.0, 0.0,
 
-    let mut g_pos_light: u32 = 0;
-    gl::GenTextures(1, &mut g_pos_light);
-    gl::BindTexture(gl::TEXTURE_2D, g_pos_light);
-    gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA16F as i32, status.width as i32, status.height as i32, 0, gl::RGBA, gl::FLOAT, ptr::null());
+        -1.0,  1.0,  0.0, 1.0,
+         1.0, -1.0,  1.0, 0.0,
+         1.0,  1.0,  1.0, 1.0
+    ];
+
+    let quad_buffer = Buffer::create();
+    quad_buffer.upload(&quad_vertices, mem::size_of::<[f32; 24]>() as isize, gl::STATIC_DRAW);
+    quad_buffer.bind_target(gl::ARRAY_BUFFER);
+    gl::EnableVertexAttribArray(0);
+    gl::VertexAttribPointer(0, 2, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, ptr::null());
+    gl::EnableVertexAttribArray(1);
+    gl::VertexAttribPointer(1, 2, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, (2 * mem::size_of::<f32>()) as *const c_void);
+
+    //framebuffer
+    let mut framebuffer: u32 = 0;
+    gl::GenFramebuffers(1, &mut framebuffer);
+    gl::BindFramebuffer(gl::FRAMEBUFFER, framebuffer);
+
+    let mut texture_buffer: u32 = 0;
+    gl::GenTextures(1, &mut texture_buffer);
+    gl::BindTexture(gl::TEXTURE_2D, texture_buffer);
+    gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32F as i32, status.width as i32, status.height as i32, 0, gl::RGBA, gl::UNSIGNED_BYTE, ptr::null());
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
-    gl::FramebufferTexture2D(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT0, gl::TEXTURE_2D, g_pos_light, 0);
+    gl::FramebufferTexture2D(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT0, gl::TEXTURE_2D, texture_buffer, 0);
 
-    let attachments = [gl::COLOR_ATTACHMENT0];
-    gl::DrawBuffers(1, &raw const attachments as *const u32);
-
+    let mut rbo: u32 = 0;
+    gl::GenRenderbuffers(1, &mut rbo);
+    gl::BindRenderbuffer(gl::RENDERBUFFER, rbo); 
+    gl::RenderbufferStorage(gl::RENDERBUFFER, gl::DEPTH24_STENCIL8, status.width as i32, status.height as i32);  
+    gl::FramebufferRenderbuffer(gl::FRAMEBUFFER, gl::DEPTH_STENCIL_ATTACHMENT, gl::RENDERBUFFER, rbo);
     let mut world = World::new();
     
     // /*
     let mut keys: HashMap<glfw::Key, bool> = HashMap::new();
     let mut start = std::time::Instant::now();
-    let mut frames = 0;
+    let mut frames = 1;
 
-    world.buffer.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
+    world.pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
 
     while !window.should_close() {
         glfw.poll_events();
@@ -170,14 +200,14 @@ fn main() { unsafe {
         
         update(&mut world, &mut keys);
         
-        draw(&mut world);
+        draw(&mut world, framebuffer, &geometry_program, &post_program, texture_buffer);
 
         window.swap_buffers();
 
         if frames % 100 == 0 {
             frames = 1;
             
-            println!("{}", start.elapsed().as_millis() as f64 / 100.0);
+            println!("fps: {}", 1000.0 / (start.elapsed().as_millis() as f64 / 100.0));
             start = std::time::Instant::now();
         } else { frames += 1; }
     }
@@ -187,14 +217,13 @@ fn main() { unsafe {
 
 // /* 
 #[allow(unused_variables)]
-fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::WindowEvent, keys: &mut HashMap<Key, bool>, status: &mut WindowStatus) {
+fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::WindowEvent, keys: &mut HashMap<Key, bool>, status: &mut WindowStatus) { unsafe {
     match event {
         glfw::WindowEvent::Size(width, height) => {
             unsafe {
                 gl::Viewport(0, 0, width, height);
             }
             (status.width, status.height) = (width, height);
-            
             world.camera.ratio = width as f32 / height as f32;
         }
         glfw::WindowEvent::CursorPos(x, y) => {
@@ -244,7 +273,7 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
         }
         _ => {}
     }
-}
+} }
 
 fn update(world: &mut World, keys: &mut HashMap<Key, bool>) {
     let speed = 0.1 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
@@ -274,20 +303,30 @@ fn update(world: &mut World, keys: &mut HashMap<Key, bool>) {
     }
 }
 
-fn draw(world: &mut World) {
-    unsafe {
-        gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
-        let camera_matrix = world.camera.get_matrix();
-        gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_array().as_ptr());
-        for chunk in world.chunks.values() {
-            if let Some(page) = &chunk.page {
-                // if chunk.pos.x >= 2 || chunk.pos.y >= 1 || chunk.pos.z >= 1 { continue; }
-                gl::Uniform4iv(1, 1, &raw const chunk.pos as *const i32);
-                gl::DrawElementsBaseVertex(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null(), (page.start * 1024 / 2) as i32);
-            }
+fn draw(world: &mut World, framebuffer: u32, geometry_program: &Program, post_program: &Program, texture_buffer: u32) { unsafe {
+    Program::bind(geometry_program);
+    gl::BindFramebuffer(gl::FRAMEBUFFER, framebuffer);
+    gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+    gl::Enable(gl::DEPTH_TEST);
+    
+    let camera_matrix = world.camera.get_matrix();
+    gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_array().as_ptr());
+    for chunk in world.chunks.values() {
+        if let Some(page) = &chunk.page {
+            if chunk.pos.x >= 2 || chunk.pos.y >= 1 || chunk.pos.z >= 1 { continue; }
+            gl::Uniform4iv(1, 1, &raw const chunk.pos as *const i32);
+            gl::DrawElementsBaseVertex(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null(), (page.start * 1024 / 2) as i32);
         }
     }
-}
+    
+    Program::bind(post_program);
+    gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+    gl::ClearColor(1.0, 1.0, 1.0, 1.0);
+    gl::Clear(gl::COLOR_BUFFER_BIT);
+    gl::Disable(gl::DEPTH_TEST);
+    gl::BindTexture(gl::TEXTURE_2D, texture_buffer);
+    gl::DrawArrays(gl::TRIANGLES, 0, 6);
+} }
 // */
 /*
  *              X Y Z        U V D

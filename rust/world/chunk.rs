@@ -772,49 +772,49 @@ impl Run {
      * Matches the top and bottom right corners of the run with the top and bottom left corners of the face
      * Used to immediately merge a face
      */
-    fn match_right(&self, face: &BlockFace) -> bool {
-        return {
+    fn match_right(&self, face: &BlockFace) -> bool { unsafe {
+        return (
             self.tex == face.tex &&
             self.rig == 0 &&
             face.lef == 0 &&
             self.bot == face.bot &&
             self.top == face.top
-        }
-    }
+        );
+    } }
     /**
      * Matches the top left corner of the run with the bottom left corner of the face
      * Used to begin a merge
      */
-    fn match_top_left(&self, face: &BlockFace) -> bool {
-        return {
+    fn match_top_left(&self, face: &BlockFace) -> bool { unsafe {
+        return (
             self.tex == face.tex &&
             self.top == 0 &&
             face.bot == 0 &&
             self.lef == face.lef
-        }
-    }
+        );
+    } }
     /**
      * Matches the top right corner of the run with the bottom right corner of the face
      * Used to finalize a merge
      */
-    fn match_top_right(&self, face: &BlockFace) -> bool {
-        return {
+    fn match_top_right(&self, face: &BlockFace) -> bool { unsafe {
+        return (
             face.bot == 0 &&
             self.rig == face.rig
-        }
-    }
+        );
+    } }
     /**
      * Merges a face into the run horizontally
      * Extends the run's end position and updates the end x
      * End y is already guaranteed to match
      */
-    fn merge_face(&mut self, buffer: &mut ByteBuffer, face: &BlockFace) {
+    fn merge_face(&mut self, buffer: &mut ByteBuffer, face: &BlockFace) { unsafe {
         buffer[self.ind + 3] += 0x10;
         buffer[self.ind + 2] &= 0xf0;
         buffer[self.ind + 2] |= face.rig;
         self.end += 1;
         self.rig = face.rig;
-    }
+    } }
     /**
      * Pulls the run up after an incomplete merge
      * min_x, min_y, min_z, and texture are already guaranteed to match
@@ -899,17 +899,17 @@ impl Run {
      * Matches the top and bottom right corners of the first face with the top and bottom left corners of the next face
      */
     fn match_faces(face: &BlockFace, next: &BlockFace) -> bool {
-        return {
+        return (
             face.tex == next.tex &&
             face.rig == next.lef &&
             face.bot == next.bot &&
             face.top == next.top
-        }
+        );
     }
     
-    fn as_u32(&self) -> &u32 {
-        return unsafe { &*(&raw const self as *mut u32) }
-    }
+    fn as_u32(&self) -> &u32 { unsafe {
+        return &*(&raw const self as *mut u32);
+    } }
 
     fn new() -> Run {
         Run {
@@ -930,7 +930,7 @@ impl Run {
 
 impl Default for Run {
     fn default() -> Self {
-        Run::new()
+        return Run::new();
     }
 }
 

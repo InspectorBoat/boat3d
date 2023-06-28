@@ -6,7 +6,7 @@ use std::{ptr, hint};
 use std::{time, hint::black_box, alloc, mem};
 use crate::block::blockface::{Normal, BlockFace};
 use crate::util::byte_buffer::ByteBuffer;
-use crate::util::gl_helper::{Buffer, BufferArena, log_if_error, Page};
+use crate::util::gl_helper::{Buffer, PoolAllocator, log_if_error, Page};
 use crate::world::chunk::{self, Vec3i};
 use simdnoise::NoiseBuilder;
 
@@ -15,7 +15,7 @@ use super::{chunk::Chunk, camera::Camera};
 pub struct World<'a> {
     pub chunks: HashMap::<Vec3i, Box::<Chunk<'a>>>,
     pub camera: Camera,
-    pub buffer: BufferArena
+    pub pool: PoolAllocator
 }
 
 impl World<'_> {
@@ -25,7 +25,7 @@ impl World<'_> {
         let mut world = World {
             chunks: HashMap::<Vec3i, Box::<Chunk>>::new(),
             camera: Camera::new(),
-            buffer: BufferArena::new()
+            pool: PoolAllocator::new()
         };
 
         for x in 0..32 {
@@ -50,22 +50,22 @@ impl World<'_> {
                     for z in 0..32 {
                         if let Some(chunk) = world.chunks.get_mut(&Vec3i { x, y, z }) {
 
-                            // chunk.mesh_south_north(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
-                            // chunk.mesh_west_east(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
-                            // chunk.mesh_down_up(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
+                            chunk.mesh_south_north(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
+                            chunk.mesh_west_east(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
+                            chunk.mesh_down_up(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
 
-                            chunk.mesh_south_north_no_merge(&mut buffer);
-                            chunk.mesh_west_east_no_merge(&mut buffer);
-                            chunk.mesh_down_up_no_merge(&mut buffer);
+                            // chunk.mesh_south_north_no_merge(&mut buffer);
+                            // chunk.mesh_west_east_no_merge(&mut buffer);
+                            // chunk.mesh_down_up_no_merge(&mut buffer);
     
                             buffer.format_quads();
     
                             chunk.face_count = (buffer.ind as u32) / 8;
                             faces += chunk.face_count as usize;
                             
-                            chunk.page = world.buffer.allocate(buffer.ind);
+                            chunk.page = world.pool.allocate(buffer.ind);
                             if let Some(page) = &chunk.page {
-                                world.buffer.upload(page, &buffer.arr.as_slice(), buffer.ind as isize);
+                                world.pool.upload(page, &buffer.arr.as_slice(), buffer.ind as isize);
                             }
 
                             buffer.reset();
@@ -83,19 +83,19 @@ impl World<'_> {
         let count = world.chunks.len() * mesh_passes;
         let elapsed = start.elapsed().as_millis();
         
-        println!("[6/6 axes] [No merge] {count} chunks | {}ms | {} chunks/s | {}ms/chunk | {} faces | {} faces/chunk", elapsed, 1000.0 / elapsed as f64 * count as f64, elapsed as f64 / count as f64, faces, faces as u64 / count as u64);
+        println!("[6/6 axes] [merged] {count} chunks | {}ms | {} chunks/s | {}ms/chunk | {} faces | {} faces/chunk", elapsed, (1000.0 / elapsed as f64 * count as f64) as u64, elapsed as f64 / count as f64, faces, faces as u64 / count as u64);
         return world;
     } }
 
     pub fn mesh_chunk() {}
 
-    // Orphans are yummy
+    // avert your eyes
     pub fn add_chunk(&mut self, chunk: Box<Chunk<'_>>) { unsafe {
 
         let (x, y, z) = (chunk.pos.x, chunk.pos.y, chunk.pos.z);
         
         // into_raw must be called to prevent rust from dropping the chunk
-        // Cast into usize and back to prevent rust from realizing chunk is in fact the same chunk that was passed in
+        // Cast into usize and back to prevent rust from realizing the unboxed chunk is in fact the same chunk that was passed in
 
         let chunk = Box::<Chunk<'_>>::into_raw(chunk) as usize as *mut Chunk;
         if let Some(south) = self.chunks.get_mut(&Vec3i { x, y, z: z - 1 }) {
@@ -136,7 +136,7 @@ impl World<'_> {
             chunk.neighbors.north.inspect(|north| (**north).neighbors.south = None);
             chunk.neighbors.east.inspect(|east| (**east).neighbors.west = None);
             chunk.neighbors.up.inspect(|up| (**up).neighbors.down = None);
-            self.buffer.deallocate(chunk.page.take());
+            self.pool.deallocate(chunk.page.take());
         }
     } }
 }
