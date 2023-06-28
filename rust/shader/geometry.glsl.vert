@@ -79,8 +79,10 @@ layout(std430, binding = 0) readonly buffer Faces {
         Face faces[];
 };
 
-out vec2 tex_coord;
-out float tex_id;
+out ivec4 chunk_pos_out;
+out vec4 relative_pos;
+out vec2 texture_pos;
+out float texture_id;
 
 vec4 get_relative_pos(int face_index) {
         return (uvec4(faces[face_index].uvdn) >> uvec4(0, 8, 16, 24)) & uvec4(0xff, 0xff, 0xff, 0x00);
@@ -121,6 +123,8 @@ void main() {
         
         gl_Position = u_transform * (vertex_pos * pos_transforms[normal] + chunk_pos * 256);
 
-        tex_coord = vec2(0, 0);
-        tex_id = normal;
+        relative_pos = (vertex_pos * pos_transforms[normal]);
+        texture_pos = offset.xy / 16;
+        texture_id = normal;
+        chunk_pos_out = chunk_pos;
 }

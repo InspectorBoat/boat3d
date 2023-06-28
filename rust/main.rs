@@ -23,6 +23,7 @@ mod util;
 use std::{collections::HashMap, ptr, os::raw::c_void, hint::black_box, time::SystemTime, mem};
 
 use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
+use gl::types;
 use glfw::{Context, Window, Action, Key};
 use util::{gl_helper::*, byte_buffer::ByteBuffer};
 use world::{world::{World, Lcg}, chunk::{Vec3i, Chunk}};
@@ -171,13 +172,21 @@ fn main() { unsafe {
     gl::GenFramebuffers(1, &mut framebuffer);
     gl::BindFramebuffer(gl::FRAMEBUFFER, framebuffer);
 
+    let mut pos_light_buffer: u32 = 0;
+    gl::GenTextures(1, &mut pos_light_buffer);
+    gl::BindTexture(gl::TEXTURE_2D, pos_light_buffer);
+    gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32F as i32, status.width as i32, status.height as i32, 0, gl::RGBA, gl::UNSIGNED_BYTE, ptr::null());
+    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
+    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+    gl::FramebufferTexture2D(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT0, gl::TEXTURE_2D, pos_light_buffer, 0);
+
     let mut texture_buffer: u32 = 0;
     gl::GenTextures(1, &mut texture_buffer);
     gl::BindTexture(gl::TEXTURE_2D, texture_buffer);
     gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32F as i32, status.width as i32, status.height as i32, 0, gl::RGBA, gl::UNSIGNED_BYTE, ptr::null());
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
-    gl::FramebufferTexture2D(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT0, gl::TEXTURE_2D, texture_buffer, 0);
+    gl::FramebufferTexture2D(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT1, gl::TEXTURE_2D, texture_buffer, 0);
 
     let mut rbo: u32 = 0;
     gl::GenRenderbuffers(1, &mut rbo);
@@ -186,6 +195,9 @@ fn main() { unsafe {
     gl::FramebufferRenderbuffer(gl::FRAMEBUFFER, gl::DEPTH_STENCIL_ATTACHMENT, gl::RENDERBUFFER, rbo);
     let mut world = World::new();
     
+    let attachments: [u32; 2] = [gl::COLOR_ATTACHMENT0, gl::COLOR_ATTACHMENT1];
+    gl::DrawBuffers(2, &raw const attachments as *const u32);
+
     // /*
     let mut keys: HashMap<glfw::Key, bool> = HashMap::new();
     let mut start = std::time::Instant::now();
@@ -200,7 +212,8 @@ fn main() { unsafe {
         
         update(&mut world, &mut keys);
         
-        draw(&mut world, framebuffer, &geometry_program, &post_program, texture_buffer);
+        gl::PolygonMode(gl::FRONT_AND_BACK, status.fill_mode);
+        draw(&mut world, framebuffer, &geometry_program, &post_program, pos_light_buffer);
 
         window.swap_buffers();
 
@@ -220,9 +233,7 @@ fn main() { unsafe {
 fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::WindowEvent, keys: &mut HashMap<Key, bool>, status: &mut WindowStatus) { unsafe {
     match event {
         glfw::WindowEvent::Size(width, height) => {
-            unsafe {
-                gl::Viewport(0, 0, width, height);
-            }
+            gl::Viewport(0, 0, width, height);
             (status.width, status.height) = (width, height);
             world.camera.ratio = width as f32 / height as f32;
         }
@@ -242,10 +253,7 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
             match key {
                 Key::Escape => { window.set_should_close(true) }
                 Key::X => {
-                    unsafe {
-                        status.fill_mode = if status.fill_mode == gl::LINE { gl::FILL } else { gl::LINE };
-                        gl::PolygonMode(gl::FRONT_AND_BACK, status.fill_mode)
-                    }
+                    status.fill_mode = if status.fill_mode == gl::LINE { gl::FILL } else { gl::LINE };
                 }
                 Key::Tab => {
                     if status.maximized { window.restore() }
@@ -278,7 +286,7 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
 fn update(world: &mut World, keys: &mut HashMap<Key, bool>) {
     let speed = 0.1 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
     for (key, pressed) in keys.iter() {
-        if *pressed == false { continue }
+        if *pressed == false { continue; }
         match key {
             Key::W => {
                 world.camera.step(0.0, -speed as f64);
@@ -308,18 +316,17 @@ fn draw(world: &mut World, framebuffer: u32, geometry_program: &Program, post_pr
     gl::BindFramebuffer(gl::FRAMEBUFFER, framebuffer);
     gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
     gl::Enable(gl::DEPTH_TEST);
-    
     let camera_matrix = world.camera.get_matrix();
     gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_array().as_ptr());
     for chunk in world.chunks.values() {
         if let Some(page) = &chunk.page {
-            if chunk.pos.x >= 2 || chunk.pos.y >= 1 || chunk.pos.z >= 1 { continue; }
+            // if chunk.pos.x >= 2 || chunk.pos.y >= 1 || chunk.pos.z >= 1 { continue; }
             gl::Uniform4iv(1, 1, &raw const chunk.pos as *const i32);
             gl::DrawElementsBaseVertex(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null(), (page.start * 1024 / 2) as i32);
         }
     }
-    
     Program::bind(post_program);
+    gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
     gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
     gl::ClearColor(1.0, 1.0, 1.0, 1.0);
     gl::Clear(gl::COLOR_BUFFER_BIT);

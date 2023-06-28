@@ -183,7 +183,7 @@ impl Program {
 
         let mut status = 0;
         gl::GetProgramiv(id, gl::LINK_STATUS, &mut status);
-        if status != gl::TRUE as i32 { panic!(); }
+        if status != gl::TRUE as i32 { panic!("Failed to link programs"); }
 
         return Program {
             id
