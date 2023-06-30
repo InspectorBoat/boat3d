@@ -1,5 +1,17 @@
 use std::{mem, hint::unreachable_unchecked};
 
+
+/*
+ * |---------------|
+ * |         top   |
+ * |    |-----|rig |
+ * |    |     |    |
+ * | lef|-----|    |
+ * |   bot         |
+ * |---------------|
+ * 
+ */
+
 #[derive(Clone, Debug)]
 #[repr(C)]
 pub struct BlockFace {

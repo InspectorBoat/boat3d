@@ -74,12 +74,11 @@ struct Face {
 
 layout(location = 0) uniform mat4 u_transform;
 layout(location = 1) uniform ivec4 chunk_pos;
-layout(std430, binding = 0) readonly buffer Faces {
-        // ivec4 chunk_pos;
+layout(std430, binding = 0) readonly restrict buffer Faces {
         Face faces[];
 };
 
-out ivec4 chunk_pos_out;
+flat out int chunk_id_out;
 out vec4 relative_pos;
 out vec2 texture_pos;
 out float texture_id;
@@ -87,10 +86,10 @@ out float texture_id;
 vec4 get_relative_pos(int face_index) {
         return (uvec4(faces[face_index].uvdn) >> uvec4(0, 8, 16, 24)) & uvec4(0xff, 0xff, 0xff, 0x00);
         // return vec4(
-                // (faces[face_index].uvdn >>  0) & 0xff,
-                // (faces[face_index].uvdn >>  8) & 0xff,
-                // (faces[face_index].uvdn >> 16) & 0xff,
-                // 0
+        //         (faces[face_index].uvdn >>  0) & 0xff,
+        //         (faces[face_index].uvdn >>  8) & 0xff,
+        //         (faces[face_index].uvdn >> 16) & 0xff,
+        //         0
         // );
 }
 
@@ -101,10 +100,10 @@ uint get_normal(int face_index) {
 vec4 get_size(int face_index) {
         return (uvec4(faces[face_index].whtt) >> uvec4(0, 8, 16, 24) & uvec4(0xff, 0xff, 0x00, 0x00)) + uvec4(1, 1, 0, 1);
         // return vec4(
-                // ((faces[face_index].whtt >> 0) & 0xff) + 1,
-                // ((faces[face_index].whtt >> 8) & 0xff) + 1,
-                // 0,
-                // 1
+        //         ((faces[face_index].whtt >> 0) & 0xff) + 1,
+        //         ((faces[face_index].whtt >> 8) & 0xff) + 1,
+        //         0,
+        //         1
         // );
 }
 
@@ -123,8 +122,8 @@ void main() {
         
         gl_Position = u_transform * (vertex_pos * pos_transforms[normal] + chunk_pos * 256);
 
-        relative_pos = (vertex_pos * pos_transforms[normal]);
+        relative_pos = vertex_pos * pos_transforms[normal];
         texture_pos = offset.xy / 16;
         texture_id = normal;
-        chunk_pos_out = chunk_pos;
+        chunk_id_out = chunk_pos.w;
 }

@@ -138,7 +138,7 @@ fn main() { unsafe {
         Shader::create(gl::VERTEX_SHADER, include_str!("shader/geometry.glsl.vert")),
         Shader::create(gl::FRAGMENT_SHADER, include_str!("shader/geometry.glsl.frag"))
     );
-    Program::bind(&geometry_program);
+    geometry_program.bind();
 
     let post_program = Program::create(
         Shader::create(gl::VERTEX_SHADER, include_str!("shader/post.glsl.vert")),
@@ -167,26 +167,31 @@ fn main() { unsafe {
     gl::EnableVertexAttribArray(1);
     gl::VertexAttribPointer(1, 2, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, (2 * mem::size_of::<f32>()) as *const c_void);
 
-    //framebuffer
+    //framebuffers
     let mut framebuffer: u32 = 0;
     gl::GenFramebuffers(1, &mut framebuffer);
     gl::BindFramebuffer(gl::FRAMEBUFFER, framebuffer);
 
-    let mut pos_light_buffer: u32 = 0;
-    gl::GenTextures(1, &mut pos_light_buffer);
-    gl::BindTexture(gl::TEXTURE_2D, pos_light_buffer);
+    let mut relative_pos_chunk_id_buffer: u32 = 0;
+    gl::GenTextures(1, &mut relative_pos_chunk_id_buffer);
+    gl::ActiveTexture(0);
+    gl::BindTexture(gl::TEXTURE_2D, relative_pos_chunk_id_buffer);
     gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32F as i32, status.width as i32, status.height as i32, 0, gl::RGBA, gl::UNSIGNED_BYTE, ptr::null());
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
-    gl::FramebufferTexture2D(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT0, gl::TEXTURE_2D, pos_light_buffer, 0);
+    gl::FramebufferTexture2D(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT0, gl::TEXTURE_2D, relative_pos_chunk_id_buffer, 0);
 
-    let mut texture_buffer: u32 = 0;
-    gl::GenTextures(1, &mut texture_buffer);
-    gl::BindTexture(gl::TEXTURE_2D, texture_buffer);
+    let mut texture_pos_id_buffer: u32 = 0;
+    gl::GenTextures(1, &mut texture_pos_id_buffer);
+    gl::ActiveTexture(1);
+    gl::BindTexture(gl::TEXTURE_2D, texture_pos_id_buffer);
     gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32F as i32, status.width as i32, status.height as i32, 0, gl::RGBA, gl::UNSIGNED_BYTE, ptr::null());
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
-    gl::FramebufferTexture2D(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT1, gl::TEXTURE_2D, texture_buffer, 0);
+    gl::FramebufferTexture2D(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT1, gl::TEXTURE_2D, texture_pos_id_buffer, 0);
+    
+    post_program.uniform1i(0, 0);
+    post_program.uniform1i(1, 1);
 
     let mut rbo: u32 = 0;
     gl::GenRenderbuffers(1, &mut rbo);
@@ -203,8 +208,8 @@ fn main() { unsafe {
     let mut start = std::time::Instant::now();
     let mut frames = 1;
 
-    world.pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
-
+    world.geometry_pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
+    world.light_pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
     while !window.should_close() {
         glfw.poll_events();
         
@@ -213,7 +218,7 @@ fn main() { unsafe {
         update(&mut world, &mut keys);
         
         gl::PolygonMode(gl::FRONT_AND_BACK, status.fill_mode);
-        draw(&mut world, framebuffer, &geometry_program, &post_program, pos_light_buffer);
+        draw(&mut world, framebuffer, &geometry_program, &post_program, relative_pos_chunk_id_buffer, texture_pos_id_buffer);
 
         window.swap_buffers();
 
@@ -311,27 +316,37 @@ fn update(world: &mut World, keys: &mut HashMap<Key, bool>) {
     }
 }
 
-fn draw(world: &mut World, framebuffer: u32, geometry_program: &Program, post_program: &Program, texture_buffer: u32) { unsafe {
-    Program::bind(geometry_program);
+fn draw(world: &mut World, framebuffer: u32, geometry_program: &Program, post_program: &Program, relative_pos_chunk_id_buffer: u32, texture_pos_id_buffer: u32) { unsafe {
+    geometry_program.bind();
     gl::BindFramebuffer(gl::FRAMEBUFFER, framebuffer);
+    gl::ClearColor(16.0, 16.0, 16.0, 16.0);
+    // gl::ClearColor(1.0, 1.0, 1.0, 1.0);
     gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
     gl::Enable(gl::DEPTH_TEST);
     let camera_matrix = world.camera.get_matrix();
     gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_array().as_ptr());
     for chunk in world.chunks.values() {
-        if let Some(page) = &chunk.page {
-            // if chunk.pos.x >= 2 || chunk.pos.y >= 1 || chunk.pos.z >= 1 { continue; }
+        if let Some(page) = &chunk.geometry_page {
+            // if chunk.pos.x >= 16 || chunk.pos.y >= 32 || chunk.pos.z >= 32 { continue; }
+            let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z, chunk.light_page.as_ref().unwrap().start as i32];
             gl::Uniform4iv(1, 1, &raw const chunk.pos as *const i32);
+            
             gl::DrawElementsBaseVertex(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null(), (page.start * 1024 / 2) as i32);
         }
     }
-    Program::bind(post_program);
+    post_program.bind();
     gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
     gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
     gl::ClearColor(1.0, 1.0, 1.0, 1.0);
     gl::Clear(gl::COLOR_BUFFER_BIT);
     gl::Disable(gl::DEPTH_TEST);
-    gl::BindTexture(gl::TEXTURE_2D, texture_buffer);
+
+    gl::ActiveTexture(gl::TEXTURE0);
+    gl::BindTexture(gl::TEXTURE_2D, relative_pos_chunk_id_buffer);
+    
+    gl::ActiveTexture(gl::TEXTURE1);
+    gl::BindTexture(gl::TEXTURE_2D, texture_pos_id_buffer);
+    
     gl::DrawArrays(gl::TRIANGLES, 0, 6);
 } }
 // */

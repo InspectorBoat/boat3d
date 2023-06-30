@@ -1,5 +1,5 @@
-use std::ops::{IndexMut, Index, Add};
-use crate::{block::blockface::BlockFace, world::chunk::Chunk};
+use std::{ops::{IndexMut, Index, Add}, hint::{unreachable_unchecked, black_box}, mem};
+use crate::{block::blockface::{BlockFace, Normal}, world::chunk::Chunk};
 #[repr(C, align(8))]
 pub struct ByteBuffer {
     pub ind: usize,
@@ -63,26 +63,66 @@ impl ByteBuffer {
      * Converts a quad from left-bottom-right-top format to u-v-d-w-h format
      */
     #[allow(unused_parens)]
-    pub fn format_quads(&mut self) {
+    pub fn format_quads(&mut self, chunk: &Chunk) { unsafe {
         for i in (0..self.ind).step_by(8) {
             let face = &mut self.arr[i..i+8];
-         // let ure = (arr[0]);
-         // let ven = (arr[1]);
+            let ure = (face[0]);
+            let ven = (face[1]);
             let dep = (face[2] & 0xf0) | (0x0 + (face[4] & 0x0f));
             let nor = (face[5]);
             let wid = (face[3] & 0xf0) | (0xf - (face[2] & 0x0f) - (face[0] & 0x0f));
             let hei = (face[4] & 0xf0) | (0xf - (face[3] & 0x0f) - (face[1] & 0x0f));
-         // let tex = (arr[6], arr[7]);
-         // arr[0] = ure;
-         // arr[1] = ven;
+            let tex = (face[6], face[7]);
+            // face[0] = ure;
+            // face[1] = ven;
             face[2] = dep;
             face[3] = nor;
             face[4] = wid;
             face[5] = hei;
             // arr[6] = tex.0;
             // arr[7] = tex.1;
+
+            let nor = mem::transmute::<u8, Normal>(nor);
+            let (x, y, z) = match nor {
+                Normal::SOUTH | Normal::NORTH => {
+                    (ure / 16, ven / 16, dep / 16)
+                }
+                Normal::WEST | Normal::EAST => {
+                    (dep / 16, ven / 16, ure / 16)
+                }
+                Normal::DOWN | Normal::UP => {
+                    (ven / 16, dep / 16, ure / 16)
+                }
+                _ => unreachable_unchecked()
+            };
+
+            let (w, h) = (wid / 16, hei / 16);
+            match nor {
+                Normal::SOUTH | Normal::NORTH => {
+                    for x in x..x + w {
+                        for y in y..y + h {
+                            black_box(chunk.light[(((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0))]);
+                        }
+                    }
+                }
+                Normal::WEST | Normal::EAST => {
+                    for z in z..x + w {
+                        for y in y..y + h {
+                            black_box(chunk.light[(((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0))]);
+                        }
+                    }
+                }
+                Normal::DOWN | Normal::UP => {
+                    for y in y..y + w {
+                        for x in x..x + h {
+                            black_box(chunk.light[(((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0))]);
+                        }
+                    }
+                }
+                _ => unreachable_unchecked()
+            }
         }
-    }
+    } }
     pub fn reset(&mut self) {
         self.ind = 0;
     }

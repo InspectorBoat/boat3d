@@ -15,7 +15,8 @@ use super::{chunk::Chunk, camera::Camera};
 pub struct World<'a> {
     pub chunks: HashMap::<Vec3i, Box::<Chunk<'a>>>,
     pub camera: Camera,
-    pub pool: PoolAllocator
+    pub geometry_pool: PoolAllocator<1048576, 1024>,
+    pub light_pool: PoolAllocator<32768, 4096>,
 }
 
 impl World<'_> {
@@ -25,7 +26,8 @@ impl World<'_> {
         let mut world = World {
             chunks: HashMap::<Vec3i, Box::<Chunk>>::new(),
             camera: Camera::new(),
-            pool: PoolAllocator::new()
+            geometry_pool: PoolAllocator::new(),
+            light_pool: PoolAllocator::new()
         };
 
         for x in 0..32 {
@@ -58,14 +60,16 @@ impl World<'_> {
                             // chunk.mesh_west_east_no_merge(&mut buffer);
                             // chunk.mesh_down_up_no_merge(&mut buffer);
     
-                            buffer.format_quads();
+                            buffer.format_quads(&chunk);
     
                             chunk.face_count = (buffer.ind as u32) / 8;
                             faces += chunk.face_count as usize;
                             
-                            chunk.page = world.pool.allocate(buffer.ind);
-                            if let Some(page) = &chunk.page {
-                                world.pool.upload(page, &buffer.arr.as_slice(), buffer.ind as isize);
+                            chunk.geometry_page = world.geometry_pool.allocate(buffer.ind);
+                            if let Some(page) = &chunk.geometry_page {
+                                world.geometry_pool.upload(page, &buffer.arr.as_slice(), buffer.ind as isize);
+                                chunk.light_page = world.light_pool.allocate(1);
+                                world.light_pool.upload(page, &chunk.light, 4096);
                             }
 
                             buffer.reset();
@@ -136,7 +140,7 @@ impl World<'_> {
             chunk.neighbors.north.inspect(|north| (**north).neighbors.south = None);
             chunk.neighbors.east.inspect(|east| (**east).neighbors.west = None);
             chunk.neighbors.up.inspect(|up| (**up).neighbors.down = None);
-            self.pool.deallocate(chunk.page.take());
+            self.geometry_pool.deallocate(chunk.geometry_page.take());
         }
     } }
 }

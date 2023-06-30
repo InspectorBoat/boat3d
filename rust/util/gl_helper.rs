@@ -160,7 +160,11 @@ impl Shader {
             let mut status = 0;
             gl::GetShaderiv(id, gl::COMPILE_STATUS, &mut status);
             if status != gl::TRUE as i32 {
-                panic!("Failed to compile {} shader", if r#type == gl::VERTEX_SHADER { "vertex" } else { "fragment" })
+                let mut length: i32 = 4096;
+                let mut log: Vec<u8> = vec![0; length as usize];
+                gl::GetShaderInfoLog(id, length, &mut length, log.as_mut_ptr() as *mut i8);
+    
+                panic!("Failed to compile {} shader: {}", if r#type == gl::VERTEX_SHADER { "vertex" } else { "fragment" }, std::str::from_utf8(&log).unwrap())
             }
         }
         return Shader {
@@ -183,15 +187,23 @@ impl Program {
 
         let mut status = 0;
         gl::GetProgramiv(id, gl::LINK_STATUS, &mut status);
-        if status != gl::TRUE as i32 { panic!("Failed to link programs"); }
-
+        if status != gl::TRUE as i32 {
+            let mut length: i32 = 4096;
+            let mut log: Vec<u8> = vec![0; length as usize];
+            gl::GetProgramInfoLog(id, length, &mut length, log.as_mut_ptr() as *mut i8);
+            panic!("Failed to link programs: {}", std::str::from_utf8(&log).unwrap());
+        }
         return Program {
             id
         }
     } }
 
-    pub fn bind(program: &Program) { unsafe {
-        gl::UseProgram(program.id);
+    pub fn bind(&self) { unsafe {
+        gl::UseProgram(self.id);
+    } }
+
+    pub fn uniform1i(&self, location: i32, v0: i32) { unsafe {
+        gl::ProgramUniform1i(self.id, location, v0);
     } }
 }
 
@@ -210,34 +222,35 @@ impl WindowStatus {
 }
 
 #[derive(Debug)]
-pub struct PoolAllocator {
+pub struct PoolAllocator<const S: usize, const P: usize> {
     pub buffer: Buffer,
     pub staging_buffer: Buffer,
-    pub pages: Box<[bool; 1048576]>,
-
+    pub pages: Box<[bool; S]>,
+    pub furthest: usize
     // very lazy
 }
 
-impl PoolAllocator {
-    pub fn new() -> PoolAllocator { unsafe {
+impl <const S: usize, const P: usize> PoolAllocator<S, P> {
+    pub fn new() -> PoolAllocator<S, P> { unsafe {
         let buffer = Buffer::create();
-        buffer.storage(1024 * 1048576, gl::DYNAMIC_STORAGE_BIT);
+        buffer.storage((P * S) as isize, gl::DYNAMIC_STORAGE_BIT);
         let staging_buffer = Buffer::create();
         staging_buffer.storage(1024 * 1024, gl::DYNAMIC_STORAGE_BIT);
         return PoolAllocator {
             buffer: buffer,
             staging_buffer: staging_buffer,
-            pages: Box::<[bool; 1048576]>::new_zeroed().assume_init()
+            pages: Box::<[bool; S]>::new_zeroed().assume_init(),
+            furthest: 0
         }
     } }
     // Size in bytes
     pub fn allocate(&mut self, size: usize) -> Option<Page> {
         if size == 0 { return None; }
-        let size = size.div_ceil(1024);
+        let size = size.div_ceil(P);
 
         let mut run = 0;
         let mut start = 0;
-        for i in 0..1048576 {
+        for i in 0..S {
             if !self.pages[i] {
                 if run == 0 { start = i; }
                 run += 1;
@@ -245,6 +258,9 @@ impl PoolAllocator {
             if run == size {
                 for j in start..(start + size) {
                     self.pages[j] = true;
+                }
+                if start + size > self.furthest {
+                    self.furthest = start + size;
                 }
                 return Some(Page {
                     start: start,
@@ -263,13 +279,16 @@ impl PoolAllocator {
     }
 
     pub fn upload_slice<T>(&mut self, page: Page, data: &[T], start: isize, length: isize) {
-        self.buffer.upload_slice(data, (page.start * 1024 + start as usize) as isize, length);
+        self.buffer.upload_slice(data, (page.start * P + start as usize) as isize, length);
     }
     pub fn upload<T>(&mut self, page: &Page, data: &[T], length: isize) { unsafe {
+        if length > (page.size * P) as isize {
+            panic!("exceeded allocation size");
+        }
         self.staging_buffer.upload_slice(data, 0, length);
 
-        gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * 1024) as isize, length as isize);
-        // self.buffer.upload_slice(data, (page.start * 1024) as isize, length);
+        gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * P) as isize, length as isize);
+        // self.buffer.upload_slice (data, (page.start * 1024) as isize, length);
     } }
 }
 

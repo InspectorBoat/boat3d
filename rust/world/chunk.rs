@@ -37,14 +37,15 @@ pub struct Chunk<'a> {
 
     // Chunk position
     pub pos: Vec3i,
-    // Padding for pos struct
+    // Padding for page id
     pub dummy: i32,
     // Adjacent chunka
     pub neighbors: Neighbors<'a>,
     // Number of rectangular block faces in a chunk
     pub face_count: u32,
 
-    pub page: Option<Page>
+    pub geometry_page: Option<Page>,
+    pub light_page: Option<Page>
 }
 #[derive(Debug)]
 pub struct Neighbors<'a> {
