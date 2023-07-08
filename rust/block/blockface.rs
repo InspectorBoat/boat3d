@@ -1,4 +1,4 @@
-use std::{mem, hint::unreachable_unchecked};
+use std::{mem, hint::unreachable_unchecked, marker::ConstParamTy};
 
 
 /*
@@ -63,7 +63,7 @@ impl PartialEq for BlockFace {
 }
 
 #[derive(Clone, Copy, Debug)]
-#[derive(PartialEq, Eq, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, ConstParamTy)]
 pub struct Normal(pub u8);
 
 #[allow(dead_code)]

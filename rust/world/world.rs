@@ -5,7 +5,7 @@ use std::os::raw::c_void;
 use std::{ptr, hint};
 use std::{time, hint::black_box, alloc, mem};
 use crate::block::blockface::{Normal, BlockFace};
-use crate::util::byte_buffer::ByteBuffer;
+use crate::util::byte_buffer::ChunkBuffer;
 use crate::util::gl_helper::{Buffer, PoolAllocator, log_if_error, Page};
 use crate::world::chunk::{self, Vec3i};
 use simdnoise::NoiseBuilder;
@@ -16,7 +16,7 @@ pub struct World<'a> {
     pub chunks: HashMap::<Vec3i, Box::<Chunk<'a>>>,
     pub camera: Camera,
     pub geometry_pool: PoolAllocator<1048576, 1024>,
-    pub light_pool: PoolAllocator<32768, 4096>,
+    pub light_pool: PoolAllocator<32768, { 18 * 18 * 18 / 2 }>,
 }
 
 impl World<'_> {
@@ -40,7 +40,7 @@ impl World<'_> {
             }
         }
         
-        let mut buffer = ByteBuffer::new();
+        let mut buffer = ChunkBuffer::new();
         // let mut buffer2 = ByteBuffer::new();
         let start = time::Instant::now();
         let mut faces: usize = 0;
@@ -50,24 +50,24 @@ impl World<'_> {
             for x in 0..32 {
                 for y in 0..32 {
                     for z in 0..32 {
-                        if let Some(chunk) = world.chunks.get_mut(&Vec3i { x, y, z }) {
+                        if let Some(mut chunk) = world.chunks.get_mut(&Vec3i { x, y, z }) {
 
-                            chunk.mesh_south_north(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
-                            chunk.mesh_west_east(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
-                            chunk.mesh_down_up(&mut *(&raw const buffer as *mut ByteBuffer), &mut *(&raw const buffer as *mut ByteBuffer));
+                            chunk.mesh_south_north(&mut *(&raw const buffer as *mut ChunkBuffer), &mut *(&raw const buffer as *mut ChunkBuffer));
+                            chunk.mesh_west_east(&mut *(&raw const buffer as *mut ChunkBuffer), &mut *(&raw const buffer as *mut ChunkBuffer));
+                            chunk.mesh_down_up(&mut *(&raw const buffer as *mut ChunkBuffer), &mut *(&raw const buffer as *mut ChunkBuffer));
 
                             // chunk.mesh_south_north_no_merge(&mut buffer);
                             // chunk.mesh_west_east_no_merge(&mut buffer);
                             // chunk.mesh_down_up_no_merge(&mut buffer);
     
-                            buffer.format_quads(&chunk);
+                            buffer.format_quads(&mut chunk);
     
-                            chunk.face_count = (buffer.ind as u32) / 8;
+                            chunk.face_count = (buffer.geometry_index as u32) / 8;
                             faces += chunk.face_count as usize;
                             
-                            chunk.geometry_page = world.geometry_pool.allocate(buffer.ind);
+                            chunk.geometry_page = world.geometry_pool.allocate(buffer.geometry_index);
                             if let Some(page) = &chunk.geometry_page {
-                                world.geometry_pool.upload(page, &buffer.arr.as_slice(), buffer.ind as isize);
+                                world.geometry_pool.upload(page, &buffer.geometry.as_slice(), buffer.geometry_index as isize);
                                 chunk.light_page = world.light_pool.allocate(1);
                                 world.light_pool.upload(page, &chunk.light, 4096);
                             }

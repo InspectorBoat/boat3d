@@ -25,7 +25,7 @@ use std::simd::Simd;
 use std::simd::SimdPartialOrd;
 use crate::OTHER_FACES;
 use crate::util::gl_helper::Page;
-use crate::{block::{blockstate::BlockState, blockface::{Normal, BlockFace}}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::ByteBuffer}, BLOCKS};
+use crate::{block::{blockstate::BlockState, blockface::{Normal, BlockFace}}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::ChunkBuffer}, BLOCKS};
 
 use super::world::{World, Lcg};
 #[derive(Debug)]
@@ -167,7 +167,12 @@ impl Chunk<'_> {
         }
     }
     
-    pub fn mesh_south_north(&mut self, buffer: &mut ByteBuffer, buffer2: &mut ByteBuffer) {
+
+
+    // U = X
+    // V = Y
+    // D = Z
+    pub fn mesh_south_north(&mut self, buffer: &mut ChunkBuffer, buffer2: &mut ChunkBuffer) {
         let mut row_s: [Run; 16] = Default::default();
         let mut run_s: &mut Run = &mut row_s[0];
         let mut active_run_s: bool = false;
@@ -303,7 +308,11 @@ impl Chunk<'_> {
         } row_id += 16;
         }
     }
-    pub fn mesh_west_east(&mut self, buffer: &mut ByteBuffer, buffer2: &mut ByteBuffer) {
+    
+    // U = Z
+    // V = Y
+    // D = X
+    pub fn mesh_west_east(&mut self, buffer: &mut ChunkBuffer, buffer2: &mut ChunkBuffer) {
         let mut row_w: [Run; 16] = Default::default();
         let mut run_w: &mut Run = &mut row_w[0];
         let mut active_run_w: bool = false;
@@ -439,7 +448,11 @@ impl Chunk<'_> {
             }
         } (active_run_w, active_run_e) = (false, false); row_id += 1; } row_id += 16; }
     }
-    pub fn mesh_down_up(&mut self, buffer: &mut ByteBuffer, buffer2: &mut ByteBuffer) {
+    
+    // U = Z
+    // V = X
+    // D = Y
+    pub fn mesh_down_up(&mut self, buffer: &mut ChunkBuffer, buffer2: &mut ChunkBuffer) {
         let mut row_d: [Run; 16] = Default::default();
         let mut run_d: &mut Run = &mut row_d[0];
         let mut active_run_d: bool = false;
@@ -576,7 +589,7 @@ impl Chunk<'_> {
         } (active_run_d, active_run_u) = (false, false); row_id += 1; } row_id += 16; }
     }
     
-    pub fn mesh_south_north_no_merge(&mut self, buffer: &mut ByteBuffer) { unsafe {
+    pub fn mesh_south_north_no_merge(&mut self, buffer: &mut ChunkBuffer) { unsafe {
         for z in 0..16_u8 { for y in 0..16_u8 { for x in 0..16_u8 {
             let pos = ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0);
             
@@ -599,7 +612,7 @@ impl Chunk<'_> {
             }
         } } }
     } }
-    pub fn mesh_west_east_no_merge(&mut self, buffer: &mut ByteBuffer) { unsafe {
+    pub fn mesh_west_east_no_merge(&mut self, buffer: &mut ChunkBuffer) { unsafe {
         for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
             let pos = ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0);
 
@@ -623,7 +636,7 @@ impl Chunk<'_> {
 
         } } }
     } }
-    pub fn mesh_down_up_no_merge(&mut self, buffer: &mut ByteBuffer) { unsafe {
+    pub fn mesh_down_up_no_merge(&mut self, buffer: &mut ChunkBuffer) { unsafe {
         for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
             let pos = ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0);
 
@@ -809,7 +822,7 @@ impl Run {
      * Extends the run's end position and updates the end x
      * End y is already guaranteed to match
      */
-    fn merge_face(&mut self, buffer: &mut ByteBuffer, face: &BlockFace) { unsafe {
+    fn merge_face(&mut self, buffer: &mut ChunkBuffer, face: &BlockFace) { unsafe {
         buffer[self.ind + 3] += 0x10;
         buffer[self.ind + 2] &= 0xf0;
         buffer[self.ind + 2] |= face.rig;
@@ -820,8 +833,8 @@ impl Run {
      * Pulls the run up after an incomplete merge
      * min_x, min_y, min_z, and texture are already guaranteed to match
      */
-    fn pull_partial(&mut self, buffer: &mut ByteBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
-        let ind = buffer.ind as u16;
+    fn pull_partial(&mut self, buffer: &mut ChunkBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
+        let ind = buffer.geometry_index as u16;
         buffer.put_u64(buffer.get_u64(self.ind));
         
         buffer[ind + 1] = v << 4;
@@ -836,7 +849,7 @@ impl Run {
      * Pulls the run up after a complete merge
      * Only possible change is top
      */
-    fn pull(&mut self, buffer: &mut ByteBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
+    fn pull(&mut self, buffer: &mut ChunkBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
         buffer[self.ind as usize + 4] += 0x10;
         buffer[self.ind as usize + 3] &= 0xf0;
         buffer[self.ind as usize + 3] |= face.top;
@@ -846,8 +859,8 @@ impl Run {
     /**
      * Begins a new run
      */
-    fn begin<const NORMAL: Normal>(&mut self, buffer: &mut ByteBuffer, face: &BlockFace, pos: usize, u: u8, row: u16) {
-        self.ind = buffer.ind as u16;
+    fn begin<const NORMAL: Normal>(&mut self, buffer: &mut ChunkBuffer, face: &BlockFace, pos: usize, u: u8, row: u16) {
+        self.ind = buffer.geometry_index as u16;
         let offset: u32;
         match NORMAL {
             Normal::SOUTH | Normal::NORTH => {
@@ -878,7 +891,7 @@ impl Run {
 
         self.row = row;
     }
-    fn add_face<const NORMAL: Normal>(buffer: &mut ByteBuffer, face: &BlockFace, pos: usize) {
+    fn add_face<const NORMAL: Normal>(buffer: &mut ChunkBuffer, face: &BlockFace, pos: usize) {
         let offset: u32;
         match NORMAL {
             Normal::SOUTH | Normal::NORTH => {

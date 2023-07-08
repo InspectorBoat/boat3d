@@ -25,7 +25,7 @@ use std::{collections::HashMap, ptr, os::raw::c_void, hint::black_box, time::Sys
 use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
 use gl::types;
 use glfw::{Context, Window, Action, Key};
-use util::{gl_helper::*, byte_buffer::ByteBuffer};
+use util::{gl_helper::*, byte_buffer::ChunkBuffer};
 use world::{world::{World, Lcg}, chunk::{Vec3i, Chunk}};
 
 use crate::util::gl_helper;
