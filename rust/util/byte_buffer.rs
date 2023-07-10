@@ -1,54 +1,54 @@
 use std::{ops::{IndexMut, Index, Add}, hint::{unreachable_unchecked, black_box}, mem};
 use crate::{block::blockface::{BlockFace, Normal}, world::chunk::Chunk};
 #[repr(C, align(8))]
-pub struct ChunkBuffer {
-    pub geometry_index: usize,
-    pub light_index: usize,
-    pub geometry: Box<[u8; 262144]>,
-    pub light: Box<[u8; 98304]>,
+pub struct StagingBuffer {
+    pub index: usize,
+    pub buffer: Box<Buffer>,
 }
-impl ChunkBuffer {
+
+#[repr(C, align(8))]
+pub struct Buffer(pub [u8; 262144]);
+
+impl StagingBuffer {
     pub fn put(&mut self, val: u8) {
         // self.arr[self.ind] = val;
         unsafe {
-            *self.geometry.get_unchecked_mut(self.geometry_index) = val;
+            *self.buffer.0.get_unchecked_mut(self.index) = val;
         }
-        self.geometry_index += 1;
+        self.index += 1;
     }
     pub fn put_u32(&mut self, val: u32) {
         unsafe {
-            let loc = self.geometry.as_mut_ptr().byte_add(self.geometry_index) as *mut u32;
+            let loc = self.buffer.0.as_mut_ptr().byte_add(self.index) as *mut u32;
             *loc = val;
         }
-        self.geometry_index += 4;
+        self.index += 4;
     }
     pub fn put_u64(&mut self, val: u64) {
         unsafe {
-            let loc = self.geometry.as_mut_ptr().byte_add(self.geometry_index) as *mut u64;
+            let loc = self.buffer.0.as_mut_ptr().byte_add(self.index) as *mut u64;
             *loc = val;
         }
-        self.geometry_index += 8;
+        self.index += 8;
     }
     pub fn get_u64<T: Into<usize>>(&self, pos: T) -> u64 {
         unsafe {
-            let loc = self.geometry.as_ptr().byte_add(pos.into()) as *mut u64;
+            let loc = self.buffer.0.as_ptr().byte_add(pos.into()) as *mut u64;
             return *loc
         }
     }
-    pub fn new() -> ChunkBuffer {
-        return ChunkBuffer {
-            geometry_index: 0,
-            light_index: 0,
-            geometry: Box::new([0; 262144]),
-            light: Box::new([0; 98304]),
+    pub fn new() -> StagingBuffer {
+        return StagingBuffer {
+            index: 0,
+            buffer: Box::new(Buffer([0; 262144])),
         }
     }
     pub fn put_face(&mut self, face: &BlockFace, pos: usize) {
         unsafe {
-            let loc = self.geometry.as_mut_ptr().byte_add(self.geometry_index) as *mut u64;
+            let loc = self.buffer.0.as_mut_ptr().byte_add(self.index) as *mut u64;
             *loc = face.as_u64() + Chunk::INDICES_ZYX[pos] as u64;
         }
-        self.geometry_index += 8;
+        self.index += 8;
     }
     
     /** 
@@ -67,9 +67,9 @@ impl ChunkBuffer {
      * Converts a quad from left-bottom-right-top format to u-v-d-w-h format
      */
     #[allow(unused_parens)]
-    pub fn format_quads(&mut self, chunk: &Chunk) { unsafe {
-        for i in (0..self.geometry_index).step_by(8) {
-            let face = &mut self.geometry[i..i+8];
+    pub fn format_quads(&mut self) { unsafe {
+        for i in (0..self.index).step_by(8) {
+            let face = &mut self.buffer.0[i..i+8];
             let ure = (face[0]);
             let ven = (face[1]);
             let dep = (face[2] & 0xf0) | (0x0 + (face[4] & 0x0f));
@@ -85,7 +85,7 @@ impl ChunkBuffer {
             face[5] = hei;
             // arr[6] = tex.0;
             // arr[7] = tex.1;
-            // /*
+            /*
             let nor = mem::transmute::<u8, Normal>(nor);
             match nor {
                 Normal::SOUTH => {
@@ -188,23 +188,22 @@ impl ChunkBuffer {
         }
     } }
     pub fn reset(&mut self) {
-        self.geometry_index = 0;
-        self.light_index = 0;
+        self.index = 0;
     }
 }
 
-impl<T: Into<usize>> Index<T> for ChunkBuffer {
+impl<T: Into<usize>> Index<T> for StagingBuffer {
     type Output = u8;
 
     fn index(&self, index: T) -> &Self::Output {
         // return &self.arr[index.into()];
-        return unsafe { self.geometry.get_unchecked(index.into()) }
+        return unsafe { self.buffer.0.get_unchecked(index.into()) }
     }
 }
 
-impl<T: Into<usize>> IndexMut<T> for ChunkBuffer {
+impl<T: Into<usize>> IndexMut<T> for StagingBuffer {
     fn index_mut(&mut self, index: T) -> &mut Self::Output {
         // return &mut self.arr[index.into()];
-        return unsafe { self.geometry.get_unchecked_mut(index.into()) }
+        return unsafe { self.buffer.0.get_unchecked_mut(index.into()) }
     }
 }

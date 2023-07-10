@@ -1,4 +1,4 @@
-use std::{ffi::{c_void, CString}, ptr, ops::Deref};
+use std::{ffi::{c_void, CString}, ptr, ops::Deref, num::NonZeroUsize};
 
 use gl::types::GLuint;
 use glfw::{Window, WindowEvent, Glfw, Context};
@@ -70,32 +70,28 @@ pub struct Buffer {
 
 #[allow(dead_code)]
 impl Buffer {
-    pub fn create() -> Buffer {
+    pub fn create() -> Buffer { unsafe {
         let mut id: u32 = 0;
-        unsafe { gl::CreateBuffers(1, &mut id); }
+        gl::CreateBuffers(1, &mut id);
         return Buffer { id };
-    }
-    pub fn generate() -> Buffer {
+    } }
+    pub fn generate() -> Buffer { unsafe {
         let mut id: u32 = 0;
-        unsafe { gl::GenBuffers(1, &mut id); }
+        gl::GenBuffers(1, &mut id);
         return Buffer { id };
-    }
-    pub fn bind_target(&self, target: u32) {
-        unsafe { gl::BindBuffer(target, self.id) }
-    }
-    pub fn bind_indexed_target_base(&self, target: u32, index: u32) {
-        unsafe {
+    } }
+    pub fn bind_target(&self, target: u32) { unsafe {
+        gl::BindBuffer(target, self.id);
+    } }
+    pub fn bind_indexed_target_base(&self, target: u32, index: u32) { unsafe {
             gl::BindBufferBase(target, index, self.id);
-        }
-    }
-    pub fn bind_indexed_target(&self, target: u32, index: u32, offset: isize, length: isize) {
-        unsafe {
+    } }   
+    pub fn bind_indexed_target(&self, target: u32, index: u32, offset: isize, length: isize) { unsafe {
             gl::BindBufferRange(target, index, self.id, offset, length);
-        }
-    }
-    pub fn valid(&self) -> bool {
-        return unsafe { gl::IsBuffer(self.id) } == gl::TRUE
-    }
+    } }
+    pub fn valid(&self) -> bool { unsafe {
+        return gl::IsBuffer(self.id) == gl::TRUE;
+    } }
     pub fn kill(self) { unsafe {
         gl::DeleteBuffers(1, &self.id);
     } }
@@ -135,6 +131,9 @@ impl Buffer {
     pub fn unbind(target: u32) { unsafe {
         gl::BindBuffer(gl::NONE, target);
     } }
+    pub fn fake() -> Buffer {
+        return Buffer { id: u32::MAX };
+    }
 }
 
 impl Drop for Buffer {
@@ -222,21 +221,20 @@ impl WindowStatus {
 }
 
 #[derive(Debug)]
-pub struct PoolAllocator<const S: usize, const P: usize> {
+pub struct BufferPoolAllocator<const S: usize, const P: usize> {
     pub buffer: Buffer,
     pub staging_buffer: Buffer,
     pub pages: Box<[bool; S]>,
-    pub furthest: usize
-    // very lazy
+    pub furthest: usize,
 }
 
-impl <const S: usize, const P: usize> PoolAllocator<S, P> {
-    pub fn new() -> PoolAllocator<S, P> { unsafe {
+impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
+    pub fn new() -> BufferPoolAllocator<S, P> { unsafe {
         let buffer = Buffer::create();
         buffer.storage((P * S) as isize, gl::DYNAMIC_STORAGE_BIT);
         let staging_buffer = Buffer::create();
         staging_buffer.storage(1024 * 1024, gl::DYNAMIC_STORAGE_BIT);
-        return PoolAllocator {
+        return BufferPoolAllocator {
             buffer: buffer,
             staging_buffer: staging_buffer,
             pages: Box::<[bool; S]>::new_zeroed().assume_init(),
@@ -244,7 +242,7 @@ impl <const S: usize, const P: usize> PoolAllocator<S, P> {
         }
     } }
     // Size in bytes
-    pub fn allocate(&mut self, size: usize) -> Option<Page> {
+    pub fn allocate(&mut self, size: usize) -> Option<Page> { unsafe {
         if size == 0 { return None; }
         let size = size.div_ceil(P);
 
@@ -264,15 +262,15 @@ impl <const S: usize, const P: usize> PoolAllocator<S, P> {
                 }
                 return Some(Page {
                     start: start,
-                    size: size
+                    size: NonZeroUsize::new_unchecked(size),
                 });
             }
         }
         return None;
-    }
+    } }
     pub fn deallocate(&mut self, page: Option<Page>) {
         if let Some(page) = page {
-            for i in page.start..(page.start + page.size) {
+            for i in page.start..(page.start + page.size.get()) {
                 self.pages[i] = false;
             }
         }
@@ -282,7 +280,7 @@ impl <const S: usize, const P: usize> PoolAllocator<S, P> {
         self.buffer.upload_slice(data, (page.start * P + start as usize) as isize, length);
     }
     pub fn upload<T>(&mut self, page: &Page, data: &[T], length: isize) { unsafe {
-        if length > (page.size * P) as isize {
+        if length > (page.size.get() * P) as isize {
             panic!("exceeded allocation size");
         }
         self.staging_buffer.upload_slice(data, 0, length);
@@ -295,5 +293,5 @@ impl <const S: usize, const P: usize> PoolAllocator<S, P> {
 #[derive(Debug)]
 pub struct Page {
     pub start: usize,
-    pub size: usize,
+    pub size: NonZeroUsize,
 }

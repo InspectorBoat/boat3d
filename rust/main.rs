@@ -5,15 +5,12 @@
 #![allow(unused_must_use)]
 #![allow(non_snake_case)]
 #![allow(unused_parens)]
-#![feature(unchecked_math)]
+#![allow(unused_unsafe)]
 #![feature(pointer_byte_offsets)]
 #![feature(adt_const_params)]
 #![feature(core_intrinsics)]
 #![feature(new_uninit)]
-#![feature(portable_simd)]
 #![feature(raw_ref_op)]
-#![allow(overflowing_literals)]
-#![allow(unused_unsafe)]
 #![feature(result_option_inspect)]
 #![feature(int_roundings)]
 mod block;
@@ -25,7 +22,7 @@ use std::{collections::HashMap, ptr, os::raw::c_void, hint::black_box, time::Sys
 use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
 use gl::types;
 use glfw::{Context, Window, Action, Key};
-use util::{gl_helper::*, byte_buffer::ChunkBuffer};
+use util::{gl_helper::*, byte_buffer::StagingBuffer};
 use world::{world::{World, Lcg}, chunk::{Vec3i, Chunk}};
 
 use crate::util::gl_helper;
@@ -149,7 +146,7 @@ fn main() { unsafe {
 
     
     //screen quad buffer
-    let quad_vertices: [f32; 24] = [
+    let screen_quad_vertices: [f32; 24] = [
         -1.0,  1.0,  0.0, 1.0,
         -1.0, -1.0,  0.0, 0.0,
          1.0, -1.0,  1.0, 0.0,
@@ -160,7 +157,7 @@ fn main() { unsafe {
     ];
 
     let quad_buffer = Buffer::create();
-    quad_buffer.upload(&quad_vertices, mem::size_of::<[f32; 24]>() as isize, gl::STATIC_DRAW);
+    quad_buffer.upload(&screen_quad_vertices, mem::size_of::<[f32; 24]>() as isize, gl::STATIC_DRAW);
     quad_buffer.bind_target(gl::ARRAY_BUFFER);
     gl::EnableVertexAttribArray(0);
     gl::VertexAttribPointer(0, 2, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, ptr::null());
@@ -328,7 +325,8 @@ fn draw(world: &mut World, framebuffer: u32, geometry_program: &Program, post_pr
     for chunk in world.chunks.values() {
         if let Some(page) = &chunk.geometry_page {
             // if chunk.pos.x >= 16 || chunk.pos.y >= 32 || chunk.pos.z >= 32 { continue; }
-            let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z, chunk.light_page.as_ref().unwrap().start as i32];
+            // let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z, chunk.light_page.as_ref().unwrap().start as i32];
+            let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z, 0];
             gl::Uniform4iv(1, 1, &raw const chunk.pos as *const i32);
             
             gl::DrawElementsBaseVertex(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null(), (page.start * 1024 / 2) as i32);
@@ -349,6 +347,7 @@ fn draw(world: &mut World, framebuffer: u32, geometry_program: &Program, post_pr
     
     gl::DrawArrays(gl::TRIANGLES, 0, 6);
 } }
+
 // */
 /*
  *              X Y Z        U V D

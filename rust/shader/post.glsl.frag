@@ -14,6 +14,6 @@ layout(std430, binding = 1) readonly restrict buffer Light {
 void main() {
     // uint chunk_id = floatBitsToInt(texture(rel_pos_chunk_id, TexCoords).w);
     
-    FragColor = vec4(texture(rel_pos_chunk_id, TexCoords).xyz, 32);
+    FragColor = vec4(texture(texture_pos_id, TexCoords).xyz, 32);
     // FragColor = vec4(texture(texture_pos_id, TexCoords).xyz, 1.0);
 }

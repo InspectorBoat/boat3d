@@ -13,7 +13,7 @@ use std::{mem, hint::unreachable_unchecked, marker::ConstParamTy};
  */
 
 #[derive(Clone, Debug)]
-#[repr(C)]
+#[repr(C, align(4))]
 pub struct BlockFace {
     pub lef: u8,
     pub bot: u8,
@@ -27,7 +27,6 @@ pub struct BlockFace {
 impl BlockFace {
     pub fn compare_is_culled(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX) }
-        // if a.as_u32() == b.as_u32() { return (true, true) }
         let diff = a.as_u32() + 0x10101010 - b.as_u32();
         return (diff >= 0x10101010, diff <= 0x10101010)
     }

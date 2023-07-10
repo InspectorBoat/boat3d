@@ -5,8 +5,8 @@ use std::os::raw::c_void;
 use std::{ptr, hint};
 use std::{time, hint::black_box, alloc, mem};
 use crate::block::blockface::{Normal, BlockFace};
-use crate::util::byte_buffer::ChunkBuffer;
-use crate::util::gl_helper::{Buffer, PoolAllocator, log_if_error, Page};
+use crate::util::byte_buffer::StagingBuffer;
+use crate::util::gl_helper::{Buffer, BufferPoolAllocator, log_if_error, Page};
 use crate::world::chunk::{self, Vec3i};
 use simdnoise::NoiseBuilder;
 
@@ -15,8 +15,8 @@ use super::{chunk::Chunk, camera::Camera};
 pub struct World<'a> {
     pub chunks: HashMap::<Vec3i, Box::<Chunk<'a>>>,
     pub camera: Camera,
-    pub geometry_pool: PoolAllocator<1048576, 1024>,
-    pub light_pool: PoolAllocator<32768, { 18 * 18 * 18 / 2 }>,
+    pub geometry_pool: BufferPoolAllocator<1048576, 1024>,
+    pub light_pool: BufferPoolAllocator<32768, { 17 * 17 * 17 }>,
 }
 
 impl World<'_> {
@@ -26,59 +26,29 @@ impl World<'_> {
         let mut world = World {
             chunks: HashMap::<Vec3i, Box::<Chunk>>::new(),
             camera: Camera::new(),
-            geometry_pool: PoolAllocator::new(),
-            light_pool: PoolAllocator::new()
+            geometry_pool: BufferPoolAllocator::new(),
+            light_pool: BufferPoolAllocator::new()
         };
 
         for x in 0..32 {
             for y in 0..32 {
                 for z in 0..32 {
-                    let mut chunk = unsafe { Box::<Chunk>::new_zeroed().assume_init() };
+                    let mut chunk = Box::<Chunk>::new_zeroed().assume_init();
                     chunk.make_terrain(&noise, x, y, z);
                     world.add_chunk(chunk);
                 }
             }
         }
         
-        let mut buffer = ChunkBuffer::new();
-        // let mut buffer2 = ByteBuffer::new();
+        let mut staging_buffer = StagingBuffer::new();
         let start = time::Instant::now();
         let mut faces: usize = 0;
         let mesh_passes = 1;
         
         for _ in 0..mesh_passes {
-            for x in 0..32 {
-                for y in 0..32 {
-                    for z in 0..32 {
-                        if let Some(mut chunk) = world.chunks.get_mut(&Vec3i { x, y, z }) {
-
-                            chunk.mesh_south_north(&mut *(&raw const buffer as *mut ChunkBuffer), &mut *(&raw const buffer as *mut ChunkBuffer));
-                            chunk.mesh_west_east(&mut *(&raw const buffer as *mut ChunkBuffer), &mut *(&raw const buffer as *mut ChunkBuffer));
-                            chunk.mesh_down_up(&mut *(&raw const buffer as *mut ChunkBuffer), &mut *(&raw const buffer as *mut ChunkBuffer));
-
-                            // chunk.mesh_south_north_no_merge(&mut buffer);
-                            // chunk.mesh_west_east_no_merge(&mut buffer);
-                            // chunk.mesh_down_up_no_merge(&mut buffer);
-    
-                            buffer.format_quads(&mut chunk);
-    
-                            chunk.face_count = (buffer.geometry_index as u32) / 8;
-                            faces += chunk.face_count as usize;
-                            
-                            chunk.geometry_page = world.geometry_pool.allocate(buffer.geometry_index);
-                            if let Some(page) = &chunk.geometry_page {
-                                world.geometry_pool.upload(page, &buffer.geometry.as_slice(), buffer.geometry_index as isize);
-                                chunk.light_page = world.light_pool.allocate(1);
-                                world.light_pool.upload(page, &chunk.light, 4096);
-                            }
-
-                            buffer.reset();
-
-                            // buffer2.reset();
-                        }
-
-                    }
-                }
+            for chunk in world.chunks.values_mut() {
+                chunk.generate_geometry_buffer(&mut staging_buffer, &mut world.geometry_pool);
+                faces += chunk.face_count as usize;
             }
         }
         
@@ -91,11 +61,7 @@ impl World<'_> {
         return world;
     } }
 
-    pub fn mesh_chunk() {}
-
-    // avert your eyes
     pub fn add_chunk(&mut self, chunk: Box<Chunk<'_>>) { unsafe {
-
         let (x, y, z) = (chunk.pos.x, chunk.pos.y, chunk.pos.z);
         
         // into_raw must be called to prevent rust from dropping the chunk

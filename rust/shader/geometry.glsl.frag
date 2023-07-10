@@ -12,5 +12,5 @@ in float texture_id;
 
 void main() {
         relative_pos_chunk_id = vec4(relative_pos.xyz, intBitsToFloat(chunk_id_out));
-        texture_pos_id = vec4(1, 0, 0, texture_id);
+        texture_pos_id = vec4(texture_pos, 0, texture_id);
 }
