@@ -12,15 +12,15 @@ use simdnoise::NoiseBuilder;
 
 use super::{chunk::Chunk, camera::Camera};
 #[derive(Debug)]
-pub struct World<'a> {
-    pub chunks: HashMap::<Vec3i, Box::<Chunk<'a>>>,
+pub struct World {
+    pub chunks: HashMap::<Vec3i, Box::<Chunk>>,
     pub camera: Camera,
     pub geometry_pool: BufferPoolAllocator<1048576, 1024>,
     pub light_pool: BufferPoolAllocator<32768, { 17 * 17 * 17 }>,
 }
 
-impl World<'_> {
-    pub fn new() -> World<'static> { unsafe {
+impl World {
+    pub fn new() -> World { unsafe {
         let noise = NoiseBuilder::gradient_3d(512, 512, 512).generate_scaled(0.0, 1.0);
         
         let mut world = World {
@@ -40,14 +40,17 @@ impl World<'_> {
             }
         }
         
-        let mut staging_buffer = StagingBuffer::new();
+        let mut geometry_staging_buffer = StagingBuffer::new();
+        let mut light_staging_buffer = StagingBuffer::new();
         let start = time::Instant::now();
         let mut faces: usize = 0;
         let mesh_passes = 1;
         
         for _ in 0..mesh_passes {
             for chunk in world.chunks.values_mut() {
-                chunk.generate_geometry_buffer(&mut staging_buffer, &mut world.geometry_pool);
+                chunk.generate_geometry_buffer(&mut geometry_staging_buffer, &mut world.geometry_pool);
+                chunk.generate_light_buffer(&mut geometry_staging_buffer, &mut light_staging_buffer, &mut world.geometry_pool);
+                geometry_staging_buffer.reset();
                 faces += chunk.face_count as usize;
             }
         }
@@ -61,36 +64,36 @@ impl World<'_> {
         return world;
     } }
 
-    pub fn add_chunk(&mut self, chunk: Box<Chunk<'_>>) { unsafe {
+    pub fn add_chunk(&mut self, chunk: Box<Chunk>) { unsafe {
         let (x, y, z) = (chunk.pos.x, chunk.pos.y, chunk.pos.z);
         
         // into_raw must be called to prevent rust from dropping the chunk
         // Cast into usize and back to prevent rust from realizing the unboxed chunk is in fact the same chunk that was passed in
-
-        let chunk = Box::<Chunk<'_>>::into_raw(chunk) as usize as *mut Chunk;
+        
+        let chunk = Box::<Chunk>::into_raw(chunk) as usize as *mut Chunk;
         if let Some(south) = self.chunks.get_mut(&Vec3i { x, y, z: z - 1 }) {
             south.neighbors.north = Some(chunk);
-            (*chunk).neighbors.south = Some(**(&raw const south as *const *const *mut Chunk));
+            (*chunk).neighbors.south = Some(&raw mut **south);
         }
         if let Some(west) = self.chunks.get_mut(&Vec3i { x: x - 1, y, z }) {
             west.neighbors.east = Some(chunk);
-            (*chunk).neighbors.west = Some(**(&raw const west as *const *const *mut Chunk));
+            (*chunk).neighbors.west = Some(&raw mut **west);
         }
         if let Some(down) = self.chunks.get_mut(&Vec3i { x, y: y - 1, z }) {
             down.neighbors.up = Some(chunk);
-            (*chunk).neighbors.down = Some(**(&raw const down as *const *const *mut Chunk));
+            (*chunk).neighbors.down = Some(&raw mut **down);
         }
         if let Some(north) = self.chunks.get_mut(&Vec3i { x, y, z: z + 1 }) {
             north.neighbors.south = Some(chunk);
-            (*chunk).neighbors.north = Some(**(&raw const north as *const *const *mut Chunk));
+            (*chunk).neighbors.north = Some(&raw mut **north);
         }
         if let Some(east) = self.chunks.get_mut(&Vec3i { x: x + 1, y, z }) {
             east.neighbors.west = Some(chunk);
-            (*chunk).neighbors.east = Some(**(&raw const east as *const *const *mut Chunk));
+            (*chunk).neighbors.east = Some(&raw mut **east);
         }
         if let Some(up) = self.chunks.get_mut(&Vec3i { x, y: y + 1, z }) {
             up.neighbors.down = Some(chunk);
-            (*chunk).neighbors.up = Some(**(&raw const up as *const *const *mut Chunk));
+            (*chunk).neighbors.up = Some(&raw mut **up);
         }
 
         let chunk = Box::from_raw(*(&raw const chunk as *mut *mut Chunk));

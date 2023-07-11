@@ -13,7 +13,7 @@ use std::{mem, hint::unreachable_unchecked, marker::ConstParamTy};
  */
 
 #[derive(Clone, Debug)]
-#[repr(C, align(4))]
+#[repr(C, align(8))]
 pub struct BlockFace {
     pub lef: u8,
     pub bot: u8,
@@ -25,35 +25,35 @@ pub struct BlockFace {
 }
 
 impl BlockFace {
-    pub fn compare_is_culled(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+    pub fn should_cull(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX) }
         let diff = a.as_u32() + 0x10101010 - b.as_u32();
         return (diff >= 0x10101010, diff <= 0x10101010)
     }
     
-    pub fn as_u64(&self) -> u64 {
-        unsafe {
-            *(&raw const *self as *const u64)
-        }
-    }
-    pub fn as_u32(&self) -> u32 {
-        unsafe {
-            *(&raw const *self as *const u32)
-        }
-    }
-    pub fn as_i32(&self) -> i32 {
-        unsafe {
-            *(&raw const *self as *const i32)
-        }
-    }
-    pub fn copy(&self) -> BlockFace {
-        return unsafe { mem::transmute_copy(self) };
-    }
+    pub fn as_u64(&self) -> u64 { unsafe {
+        return *(&raw const *self as *const u64);
+    } }
+    pub fn as_u32(&self) -> u32 { unsafe {
+        return *(&raw const *self as *const u32);
+    } }
     pub const NONE: BlockFace = BlockFace {
         lef: 0x0f, bot: 0x0f, dep: 0, nor: Normal::NONE,
         rig: 0x0f, top: 0x0f, tex: u16::MAX
     };
 }
+
+#[repr(C, align(8))]
+pub struct GpuQuad {
+    pub ure: u8,
+    pub ven: u8,
+    pub dep: u8,
+    pub nor: Normal,
+    pub wid: u8,
+    pub hei: u8,
+    pub tex: u16,
+}
+
 
 impl PartialEq for BlockFace {
     fn eq(&self, other: &Self) -> bool {

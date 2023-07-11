@@ -6,6 +6,7 @@
 #![allow(non_snake_case)]
 #![allow(unused_parens)]
 #![allow(unused_unsafe)]
+#![feature(slice_as_chunks)]
 #![feature(pointer_byte_offsets)]
 #![feature(adt_const_params)]
 #![feature(core_intrinsics)]
@@ -17,7 +18,7 @@ mod block;
 mod world;
 mod util;
 
-use std::{collections::HashMap, ptr, os::raw::c_void, hint::black_box, time::SystemTime, mem};
+use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem};
 
 use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
 use gl::types;

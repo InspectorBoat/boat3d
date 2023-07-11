@@ -10,6 +10,7 @@ use std::hint::black_box;
 use std::hint::unreachable_unchecked;
 use std::intrinsics::prefetch_read_data;
 use std::marker::PhantomData;
+use std::mem;
 use std::num::NonZeroUsize;
 use std::ops::Add;
 use std::ops::Deref;
@@ -25,13 +26,14 @@ use std::os::raw::c_void;
 use std::hash::Hash;
 use std::ptr::NonNull;
 use crate::OTHER_FACES;
+use crate::block::blockface::GpuQuad;
 use crate::util::gl_helper::Page;
 use crate::util::gl_helper::BufferPoolAllocator;
 use crate::{block::{blockstate::BlockState, blockface::{Normal, BlockFace}}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::StagingBuffer}, BLOCKS};
 
 use super::world::{World, Lcg};
 #[derive(Debug)]
-pub struct Chunk<'a> {
+pub struct Chunk {
     // Block IDs
     pub blocks: [u8; 4096],
     // Light levels 0-15
@@ -42,7 +44,7 @@ pub struct Chunk<'a> {
     // Padding for page id
     pub dummy: i32,
     // Adjacent chunka
-    pub neighbors: Neighbors<'a>,
+    pub neighbors: Neighbors,
     // Number of rectangular block faces in a chunk
     pub face_count: u32,
 
@@ -50,47 +52,46 @@ pub struct Chunk<'a> {
     pub light_page: Option<Page>
 }
 #[derive(Debug)]
-pub struct Neighbors<'a> {
-    pub south: Option<*mut Chunk<'a>>,
-    pub west: Option<*mut Chunk<'a>>,
-    pub down: Option<*mut Chunk<'a>>,
-    pub north: Option<*mut Chunk<'a>>,
-    pub east: Option<*mut Chunk<'a>>,
-    pub up: Option<*mut Chunk<'a>>,
-    phantom: PhantomData<&'a ()>
+pub struct Neighbors {
+    pub south: Option<*mut Chunk>,
+    pub west: Option<*mut Chunk>,
+    pub down: Option<*mut Chunk>,
+    pub north: Option<*mut Chunk>,
+    pub east: Option<*mut Chunk>,
+    pub up: Option<*mut Chunk>,
 }
-impl Chunk<'_> {
-    pub fn get_block(&self, index: usize) -> &BlockState {
-        return &self[index];
-    }
+impl Chunk {
+    pub fn get_block(&self, index: usize) -> &'static BlockState { unsafe {
+        return &BLOCKS[*self.blocks.get_unchecked(index) as usize];
+    } }
     pub fn get_opposing_block<'a, const NORMAL: Normal>(&'a self, index: usize) -> &'a BlockState { unsafe {
         match NORMAL {
             Normal::SOUTH => {
                 if index & 0x00f == 0 {
                     match self.neighbors.south {
-                        Some(chunk) => return &(*chunk)[index | 0x00f],
+                        Some(chunk) => return &(*chunk).get_block(index | 0x00f),
                         None => return &BLOCKS[0],
                     }
                 }
-                return &self[index - 0x001];
+                return &self.get_block(index - 0x001);
             }
             Normal::WEST => {
                 if index & 0xf00 == 0 {
                     match self.neighbors.west {
-                        Some(chunk) => return &(*chunk)[index | 0xf00],
+                        Some(chunk) => return &(*chunk).get_block(index | 0xf00),
                         None => return &BLOCKS[0],
                     }
                 }
-                return &self[index - 0x100];
+                return &self.get_block(index - 0x100);
             }
             Normal::DOWN => {
                 if index & 0x0f0 == 0 {
                     match self.neighbors.down {
-                        Some(chunk) => return &(*chunk)[index | 0x0f0],
+                        Some(chunk) => return &(*chunk).get_block(index | 0x0f0),
                         None => return &BLOCKS[0],
                     }
                 }
-                return &self[index - 0x010];
+                return &self.get_block(index - 0x010);
             }
             _ => unsafe { std::hint::unreachable_unchecked(); }
         }
@@ -98,10 +99,10 @@ impl Chunk<'_> {
     } }
     
     pub fn get_face<const NORMAL: Normal>(&self, index: usize) -> &BlockFace {
-        return &self.get_block(index).model[NORMAL];
+        return &self.get_block(index).model.get_face(NORMAL);
     }
     pub fn get_opposing_face<'a, const NORMAL: Normal>(&'a self, index: usize) -> &BlockFace {
-        return &self.get_opposing_block::<NORMAL>(index).model[NORMAL.reverse()];
+        return &self.get_opposing_block::<NORMAL>(index).model.get_face(NORMAL.reverse());
     }
     
     pub fn get_face_pair<'a, const NORMAL: Normal>(&'a self, index: usize) -> (&BlockFace, &BlockFace) {
@@ -122,11 +123,7 @@ impl Chunk<'_> {
         return &OTHER_FACES[self.get_opposing_block::<NORMAL>(index).otherFaces[NORMAL.reverse().0 as usize] as usize];
     }
 
-    pub fn get_index(x: u8, y: u8, z: u8) -> usize {
-        return ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0);
-    }
-
-    pub fn make_terrain(&mut self, noise: &Vec<f32>, chunk_x: usize, chunk_y: usize, chunk_z: usize) {
+    pub fn make_terrain(&mut self, noise: &Vec<f32>, chunk_x: usize, chunk_y: usize, chunk_z: usize) { unsafe {
         self.pos = Vec3i {
             x: chunk_x as i32,
             y: chunk_y as i32,
@@ -144,11 +141,11 @@ impl Chunk<'_> {
                         (chunk_z << 4) |
                         (z << 0 )
                     };
-                    let (noise_val, block, light) = unsafe {(
+                    let (noise_val, block, light) = (
                         noise.get_unchecked(pos),
-                        self.blocks.get_unchecked_mut((x << 8) | (y << 4) | (z << 0)),
-                        self.light.get_unchecked_mut((x << 8) | (y << 4) | (z << 0)),
-                    )};
+                        self.blocks.get_unchecked_mut(Chunk::pos(x, y, z)),
+                        self.light.get_unchecked_mut(Chunk::pos(x, y, z)),
+                    );
                     *block = match *noise_val {
                         val if val < 0.5 => {
                             1
@@ -161,7 +158,7 @@ impl Chunk<'_> {
                 }
             }
         }
-    }
+    } }
 
     pub fn make_terrain_alt(&mut self, random: &mut Lcg) {
         for i in 0..4096 {
@@ -169,8 +166,6 @@ impl Chunk<'_> {
         }
     }
     
-
-
     // U = X
     // V = Y
     // D = Z
@@ -188,10 +183,10 @@ impl Chunk<'_> {
         let mut row_id: u16 = 0;
 
         for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
-            let pos = Chunk::get_index(u, v, d);
+            let pos = Chunk::pos(u, v, d);
 
             let (face_s, face_n) = self.get_face_pair::<{Normal::SOUTH}>(pos);
-            let compare = BlockFace::compare_is_culled(face_s, face_n);
+            let compare = BlockFace::should_cull(face_s, face_n);
             'south: {
                 if self.has_other_face::<{ Normal::SOUTH }>(pos) {
                     Run::add_face::<{ Normal::SOUTH }>(staging_buffer, &self.get_other_face::<{Normal::SOUTH}>(pos).0, pos);
@@ -232,7 +227,7 @@ impl Chunk<'_> {
                     else {
                         let next_pos = pos + 0x100;
                         let (next_face_s, next_face_n) = self.get_face_pair::<{Normal::SOUTH}>(next_pos);
-                        let compare = BlockFace::compare_is_culled(next_face_s, next_face_n);
+                        let compare = BlockFace::should_cull(next_face_s, next_face_n);
 
                         if compare.0 || !Run::match_faces(face_s, next_face_s) {
                             run_s.pull_partial(staging_buffer, &face_s, u, v, d);
@@ -290,7 +285,7 @@ impl Chunk<'_> {
                     else {
                         let next_pos = pos + 0x100;
                         let (next_face_s, next_face_n) = self.get_face_pair::<{Normal::SOUTH}>(next_pos);
-                        let compare = BlockFace::compare_is_culled(next_face_s, next_face_n);
+                        let compare = BlockFace::should_cull(next_face_s, next_face_n);
 
                         if compare.1 || !Run::match_faces(face_n, next_face_n) {
                             run_n.pull_partial(staging_buffer, &face_n, u, v, d);
@@ -328,10 +323,10 @@ impl Chunk<'_> {
         let mut row_id: u16 = 0;
         
         for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
-            let pos = Chunk::get_index(d, v, u);
+            let pos = Chunk::pos(d, v, u);
 
             let (face_w, face_e) = self.get_face_pair::<{Normal::WEST}>(pos);
-            let compare = BlockFace::compare_is_culled(face_w, face_e);
+            let compare = BlockFace::should_cull(face_w, face_e);
             'west: {
                 if self.has_other_face::<{ Normal::WEST }>(pos) {
                     Run::add_face::<{ Normal::WEST }>(staging_buffer, &self.get_other_face::<{Normal::WEST}>(pos).0, pos);
@@ -373,7 +368,7 @@ impl Chunk<'_> {
                     else {
                         let next_pos = pos + 0x001;
                         let (next_face_w, next_face_e) = self.get_face_pair::<{Normal::WEST}>(next_pos);
-                        let compare = BlockFace::compare_is_culled(next_face_w, next_face_e);
+                        let compare = BlockFace::should_cull(next_face_w, next_face_e);
 
                         if compare.0 || !Run::match_faces(face_w, next_face_w) {
                             run_w.pull_partial(staging_buffer, &face_w, u, v, d);
@@ -432,7 +427,7 @@ impl Chunk<'_> {
                     else {
                         let next_pos = pos + 0x001;
                         let (next_face_w, next_face_e) = self.get_face_pair::<{Normal::WEST}>(next_pos);
-                        let compare = BlockFace::compare_is_culled(next_face_w, next_face_e);
+                        let compare = BlockFace::should_cull(next_face_w, next_face_e);
 
                         if compare.1 || !Run::match_faces(face_e, next_face_e) {
                             run_e.pull_partial(staging_buffer, &face_e, u, v, d);
@@ -468,10 +463,10 @@ impl Chunk<'_> {
         let mut row_id: u16 = 0;
         
         for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
-            let pos = Chunk::get_index(v, d, u);
+            let pos = Chunk::pos(v, d, u);
 
             let (face_d, face_u) = self.get_face_pair::<{Normal::DOWN}>(pos);
-            let compare = BlockFace::compare_is_culled(face_d, face_u);
+            let compare = BlockFace::should_cull(face_d, face_u);
             'down: {
                 if self.has_other_face::<{ Normal::DOWN }>(pos) {
                     Run::add_face::<{ Normal::DOWN }>(staging_buffer, &self.get_other_face::<{Normal::DOWN}>(pos).0, pos);
@@ -513,7 +508,7 @@ impl Chunk<'_> {
                     else {
                         let next_pos = pos + 0x001;
                         let (next_face_d, next_face_u) = self.get_face_pair::<{Normal::DOWN}>(next_pos);
-                        let compare = BlockFace::compare_is_culled(next_face_d, next_face_u);
+                        let compare = BlockFace::should_cull(next_face_d, next_face_u);
 
                         if compare.0 || !Run::match_faces(face_d, next_face_d) {
                             run_d.pull_partial(staging_buffer, &face_d, u, v, d);
@@ -572,7 +567,7 @@ impl Chunk<'_> {
                     else {
                         let next_pos = pos + 0x001;
                         let (next_face_d, next_face_u) = self.get_face_pair::<{Normal::DOWN}>(next_pos);
-                        let compare = BlockFace::compare_is_culled(next_face_d, next_face_u);
+                        let compare = BlockFace::should_cull(next_face_d, next_face_u);
 
                         if compare.1 || !Run::match_faces(face_u, next_face_u) {
                             run_u.pull_partial(staging_buffer, &face_u, u, v, d);
@@ -593,7 +588,7 @@ impl Chunk<'_> {
     
     pub fn mesh_south_north_no_merge(&mut self, staging_buffer: &mut StagingBuffer) { unsafe {
         for z in 0..16_u8 { for y in 0..16_u8 { for x in 0..16_u8 {
-            let pos = ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0);
+            let pos = Chunk::pos(x, y, z);
             
             let face_s = self.get_face::<{Normal::SOUTH}>(pos);
             let face_n = self.get_opposing_face::<{Normal::SOUTH}>(pos);
@@ -616,7 +611,7 @@ impl Chunk<'_> {
     } }
     pub fn mesh_west_east_no_merge(&mut self, staging_buffer: &mut StagingBuffer) { unsafe {
         for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
-            let pos = ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0);
+            let pos = Chunk::pos(x, y, z);
 
             let face_w = self.get_face::<{Normal::WEST}>(pos);
             let face_e = self.get_opposing_face::<{Normal::WEST}>(pos);
@@ -635,12 +630,11 @@ impl Chunk<'_> {
             if self.has_opposing_other_face::<{Normal::WEST}>(pos) {
                 staging_buffer.put_u64(self.get_opposing_other_face::<{Normal::WEST}>(pos).0.as_u64() + offset);
             }
-
         } } }
     } }
     pub fn mesh_down_up_no_merge(&mut self, staging_buffer: &mut StagingBuffer) { unsafe {
         for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
-            let pos = ((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0);
+            let pos = Chunk::pos(x, y, z);
 
             let face_d = self.get_face::<{Normal::DOWN}>(pos);
             let face_u = self.get_opposing_face::<{Normal::DOWN}>(pos);
@@ -659,31 +653,29 @@ impl Chunk<'_> {
             if self.has_opposing_other_face::<{Normal::DOWN}>(pos) {
                 staging_buffer.put_u64(self.get_opposing_other_face::<{Normal::DOWN}>(pos).0.as_u64() + offset);
             }
-
         } } }
     } }
 
     pub fn generate_geometry_buffer(&mut self, staging_buffer: &mut StagingBuffer, buffer_allocator: &mut BufferPoolAllocator<1048576, 1024>) { unsafe {
-        self.mesh_south_north(staging_buffer);
-        self.mesh_west_east(staging_buffer);
-        self.mesh_down_up(staging_buffer);
+        // self.mesh_south_north(staging_buffer);
+        // self.mesh_west_east(staging_buffer);
+        // self.mesh_down_up(staging_buffer);
 
-        // self.mesh_south_north_no_merge(staging_buffer);
-        // self.mesh_west_east_no_merge(staging_buffer);
-        // self.mesh_down_up_no_merge(staging_buffer);
+        self.mesh_south_north_no_merge(staging_buffer);
+        self.mesh_west_east_no_merge(staging_buffer);
+        self.mesh_down_up_no_merge(staging_buffer);
 
         staging_buffer.format_quads();
 
-        self.face_count = (staging_buffer.index as u32) / 8;
+        self.face_count = staging_buffer.index as u32 / 8;
         
         self.geometry_page = buffer_allocator.allocate(staging_buffer.index);
         if let Some(page) = &self.geometry_page {
             buffer_allocator.upload(page, &staging_buffer.buffer.0.as_slice(), staging_buffer.index as isize);
         }
-
-        staging_buffer.reset();
     } }
 
+    /*
     pub fn generate_light_buffer(&mut self, staging_buffer: &mut StagingBuffer, buffer_allocator: &mut BufferPoolAllocator<32768, { 18 * 18 * 18 / 2 }>) { unsafe {
         'empty_check: {
             for i in 0..4096 {
@@ -739,6 +731,211 @@ impl Chunk<'_> {
             }
         }
     } }
+    */
+
+    pub fn generate_light_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, light_staging_buffer: &mut StagingBuffer, buffer_allocator: &mut BufferPoolAllocator<1048576, 1024>) { unsafe {
+        const BLOCKS_PER_QUAD: usize = 8;
+        // reserve bytes for indices
+        light_staging_buffer.index = geometry_staging_buffer.index / BLOCKS_PER_QUAD * mem::size_of::<u32>();
+        for (i, quad) in geometry_staging_buffer.iter().map(|quad| &*(quad as *const [u8; 8] as *const GpuQuad)).enumerate() {
+            *(&mut light_staging_buffer[i * mem::size_of::<u32>()] as *mut u8 as *mut u32) = light_staging_buffer.index as u32;
+            match quad.nor {
+                Normal::SOUTH => {
+                    let start_x = quad.ure / 16;
+                    let end_x = (quad.ure + quad.wid + 1) / 16;
+    
+                    let start_y = quad.ven / 16;
+                    let end_y = (quad.ven + quad.hei + 1) / 16;
+    
+                    let z = (quad.dep + 1) / 16;
+                    for x in start_x..end_x {
+                        for y in start_y..end_y {
+                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                        }
+                    }
+                }
+                Normal::NORTH => {
+                    let start_x = quad.ure / 16;
+                    let end_x = (quad.ure + quad.wid + 1) / 16;
+    
+                    let start_y = quad.ven / 16;
+                    let end_y = (quad.ven + quad.hei + 1) / 16;
+    
+                    let z = quad.dep / 16;
+                    for x in start_x..end_x {
+                        for y in start_y..end_y {
+                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                        }
+                    }
+                }
+                Normal::WEST => {
+                    let x = quad.dep / 16;
+    
+                    let start_y = quad.ven / 16;
+                    let end_y = (quad.ven + quad.hei + 1) / 16;
+    
+                    let start_z = quad.ure / 16;
+                    let end_z = (quad.ure + quad.wid + 1) / 16;
+                    
+                    for y in start_y..end_y {
+                        for z in start_z..end_z {
+                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                        }
+                    }
+                }
+                Normal::EAST => {
+                    let x = (quad.dep + 1) / 16;
+    
+                    let start_y = quad.ven / 16;
+                    let end_y = (quad.ven + quad.hei + 1) / 16;
+    
+                    let start_z = quad.ure / 16;
+                    let end_z = (quad.ure + quad.wid + 1) / 16;
+                    
+                    for y in start_y..end_y {
+                        for z in start_z..end_z {
+                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                        }
+                    }
+                }
+                Normal::DOWN => {
+                    let start_x = quad.ven / 16;
+                    let end_x = (quad.ven + quad.hei + 1) / 16;
+    
+                    let y = quad.dep / 16;
+    
+                    let start_z = quad.ure / 16;
+                    let end_z = (quad.ure + quad.wid + 1) / 16;
+                    
+                    for x in start_x..end_x {
+                        for z in start_z..end_z {
+                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                        }
+                    }
+                }
+                Normal::UP => {
+                    let start_x = quad.ven / 16;
+                    let end_x = (quad.ven + quad.hei + 1) / 16;
+    
+                    let y = (quad.dep + 1) / 16;
+    
+                    let start_z = quad.ure / 16;
+                    let end_z = (quad.ure + quad.wid + 1) / 16;
+                    
+                    for x in start_x..end_x {
+                        for z in start_z..end_z {
+                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                        }
+                    }
+                }
+    
+                _ => {
+                    unreachable_unchecked();
+                }
+            }
+        }
+        /*
+        let nor = mem::transmute::<u8, Normal>(nor);
+        match nor {
+            Normal::SOUTH => {
+                let start_x = ure / 16;
+                let end_x = (ure + wid + 1) / 16;
+
+                let start_y = ven / 16;
+                let end_y = (ven + hei + 1) / 16;
+
+                let z = (dep + 1) / 16;
+                for x in start_x..end_x {
+                    for y in start_y..end_y {
+                        self.light_index += 1;
+                        self.light[self.light_index] = chunk.light[((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0)];
+                    }
+                }
+            }
+            Normal::NORTH => {
+                let start_x = ure / 16;
+                let end_x = (ure + wid + 1) / 16;
+
+                let start_y = ven / 16;
+                let end_y = (ven + hei + 1) / 16;
+
+                let z = dep / 16;
+                for x in start_x..end_x {
+                    for y in start_y..end_y {
+                        self.light_index += 1;
+                        self.light[self.light_index] = chunk.light[((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0)];
+                    }
+                }
+            }
+            Normal::WEST => {
+                let x = dep / 16;
+
+                let start_y = ven / 16;
+                let end_y = (ven + hei + 1) / 16;
+
+                let start_z = ure / 16;
+                let end_z = (ure + wid + 1) / 16;
+                
+                for y in start_y..end_y {
+                    for z in start_z..end_z {
+                        self.light_index += 1;
+                        self.light[self.light_index] = chunk.light[((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0)];
+                    }
+                }
+            }
+            Normal::EAST => {
+                let x = (dep + 1) / 16;
+
+                let start_y = ven / 16;
+                let end_y = (ven + hei + 1) / 16;
+
+                let start_z = ure / 16;
+                let end_z = (ure + wid + 1) / 16;
+                
+                for y in start_y..end_y {
+                    for z in start_z..end_z {
+                        self.light_index += 1;
+                        self.light[self.light_index] = chunk.light[((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0)];
+                    }
+                }
+            }
+            Normal::DOWN => {
+                let start_x = ven / 16;
+                let end_x = (ven + hei + 1) / 16;
+
+                let y = dep / 16;
+
+                let start_z = ure / 16;
+                let end_z = (ure + wid + 1) / 16;
+                
+                for x in start_x..end_x {
+                    for z in start_z..end_z {
+                        self.light_index += 1;
+                        self.light[self.light_index] = chunk.light[((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0)];
+                    }
+                }
+            }
+            Normal::UP => {
+                let start_x = ven / 16;
+                let end_x = (ven + hei + 1) / 16;
+
+                let y = (dep + 1) / 16;
+
+                let start_z = ure / 16;
+                let end_z = (ure + wid + 1) / 16;
+                
+                for x in start_x..end_x {
+                    for z in start_z..end_z {
+                        self.light_index += 1;
+                        self.light[self.light_index] = chunk.light[((x as usize) << 8) | ((y as usize) << 4) | ((z as usize) << 0)];
+                    }
+                }
+            }
+            _ => unreachable_unchecked()
+        }
+        // */
+
+    } }
 
     pub fn cull_backfaces(&mut self, world: &mut World) {
         // let south = self.counts[0];
@@ -773,7 +970,9 @@ impl Chunk<'_> {
     }
 
     pub fn pos<T: TryInto<usize>>(x: T, y: T, z: T) -> usize { unsafe {
-        return (x.try_into().unwrap_unchecked() << 8) | (y.try_into().unwrap_unchecked() << 4) | (z.try_into().unwrap_unchecked() << 0);
+        return (x.try_into().unwrap_unchecked() << 8) |
+                (y.try_into().unwrap_unchecked() << 4) |
+                (z.try_into().unwrap_unchecked() << 0);
     } }
 
     pub const INDICES_ZYX: [u32; 4096] = {
@@ -824,22 +1023,12 @@ impl Chunk<'_> {
         arr
     };
 }
-impl Drop for Chunk<'_> {
+impl Drop for Chunk {
     fn drop(&mut self) {
         // println!("Dropped chunk {} {} {}", self.pos.x, self.pos.y, self.pos.z);
         // if let Some(buffer) = &self.buffer && buffer.valid() {
             // panic!()
         // }
-    }
-}
-
-impl Index<usize> for Chunk<'_> {
-    type Output = BlockState;
-
-    fn index(&self, index: usize) -> &Self::Output {
-        return unsafe {
-            &BLOCKS[*self.blocks.get_unchecked(index) as usize]
-        }
     }
 }
 
@@ -1034,6 +1223,7 @@ impl Default for Run {
 #[derive(Debug)]
 #[derive(Clone, Copy)]
 #[derive(Eq, PartialEq, Hash)]
+#[repr(C)]
 pub struct Vec3i {
     pub x: i32, pub y: i32, pub z: i32
 }
