@@ -1,16 +1,16 @@
 #version 460
-layout(location = 0) out vec4 relative_pos_chunk_id;
-layout(location = 1) out vec4 texture_pos_id;
 
-// relative pos, chunk id f32 * 3 + i32
-// texture pos, texture id f32 * 2 + i32
+layout(location = 0) out vec4 framebuffer;
+layout(location = 1) out vec4 unused;
 
-flat in int chunk_id_out;
-in vec4 relative_pos;
+// texture pos, texture id, quad width, light index f32 * 2 + u16 + u16 + u32
+
+// in vec4 relative_pos;
+flat in uint light_idx;
+flat in uint quad_width;
+flat in uint texture_id;
 in vec2 texture_pos;
-in float texture_id;
 
 void main() {
-        relative_pos_chunk_id = vec4(relative_pos.xyz, intBitsToFloat(chunk_id_out));
-        texture_pos_id = vec4(texture_pos, 0, texture_id);
+        framebuffer = vec4(texture_pos, uintBitsToFloat(texture_id << 16 | quad_width), uintBitsToFloat(light_idx));
 }

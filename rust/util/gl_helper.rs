@@ -242,7 +242,7 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
         }
     } }
     // Size in bytes
-    pub fn allocate(&mut self, size: usize) -> Option<Page> { unsafe {
+    pub fn allocate(&mut self, size: usize) -> Option<Page<P>> { unsafe {
         if size == 0 { return None; }
         let size = size.div_ceil(P);
 
@@ -268,7 +268,7 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
         }
         return None;
     } }
-    pub fn deallocate(&mut self, page: Option<Page>) {
+    pub fn deallocate(&mut self, page: Option<Page<P>>) {
         if let Some(page) = page {
             for i in page.start..(page.start + page.size.get()) {
                 self.pages[i] = false;
@@ -276,10 +276,10 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
         }
     }
 
-    pub fn upload_slice<T>(&mut self, page: Page, data: &[T], start: isize, length: isize) {
+    pub fn upload_slice<T>(&mut self, page: Page<P>, data: &[T], start: isize, length: isize) {
         self.buffer.upload_slice(data, (page.start * P + start as usize) as isize, length);
     }
-    pub fn upload<T>(&mut self, page: &Page, data: &[T], length: isize) { unsafe {
+    pub fn upload<T>(&mut self, page: &Page<P>, data: &[T], length: isize) { unsafe {
         if length > (page.size.get() * P) as isize {
             panic!("exceeded allocation size");
         }
@@ -291,7 +291,7 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
 }
 
 #[derive(Debug)]
-pub struct Page {
+pub struct Page<const P: usize> {
     pub start: usize,
     pub size: NonZeroUsize,
 }

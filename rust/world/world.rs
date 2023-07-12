@@ -15,8 +15,8 @@ use super::{chunk::Chunk, camera::Camera};
 pub struct World {
     pub chunks: HashMap::<Vec3i, Box::<Chunk>>,
     pub camera: Camera,
-    pub geometry_pool: BufferPoolAllocator<1048576, 1024>,
-    pub light_pool: BufferPoolAllocator<32768, { 17 * 17 * 17 }>,
+    pub geometry_pool: BufferPoolAllocator<524288, 1024>,
+    pub light_pool: BufferPoolAllocator<524288, 1024>,
 }
 
 impl World {
@@ -48,10 +48,13 @@ impl World {
         
         for _ in 0..mesh_passes {
             for chunk in world.chunks.values_mut() {
+                // if chunk.pos.x != 5 || chunk.pos.y != 2 || chunk.pos.z != 9 { continue; }
                 chunk.generate_geometry_buffer(&mut geometry_staging_buffer, &mut world.geometry_pool);
-                chunk.generate_light_buffer(&mut geometry_staging_buffer, &mut light_staging_buffer, &mut world.geometry_pool);
+                chunk.generate_light_buffer(&mut geometry_staging_buffer, &mut light_staging_buffer, &mut world.light_pool);
                 geometry_staging_buffer.reset();
+                light_staging_buffer.reset();
                 faces += chunk.face_count as usize;
+                // break;
             }
         }
         

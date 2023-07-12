@@ -157,9 +157,9 @@ fn main() { unsafe {
          1.0,  1.0,  1.0, 1.0
     ];
 
-    let quad_buffer = Buffer::create();
-    quad_buffer.upload(&screen_quad_vertices, mem::size_of::<[f32; 24]>() as isize, gl::STATIC_DRAW);
-    quad_buffer.bind_target(gl::ARRAY_BUFFER);
+    let screen_quad_buffer = Buffer::create();
+    screen_quad_buffer.upload(&screen_quad_vertices, mem::size_of::<[f32; 24]>() as isize, gl::STATIC_DRAW);
+    screen_quad_buffer.bind_target(gl::ARRAY_BUFFER);
     gl::EnableVertexAttribArray(0);
     gl::VertexAttribPointer(0, 2, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, ptr::null());
     gl::EnableVertexAttribArray(1);
@@ -208,6 +208,7 @@ fn main() { unsafe {
 
     world.geometry_pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
     world.light_pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
+
     while !window.should_close() {
         glfw.poll_events();
         
@@ -318,7 +319,6 @@ fn draw(world: &mut World, framebuffer: u32, geometry_program: &Program, post_pr
     geometry_program.bind();
     gl::BindFramebuffer(gl::FRAMEBUFFER, framebuffer);
     gl::ClearColor(16.0, 16.0, 16.0, 16.0);
-    // gl::ClearColor(1.0, 1.0, 1.0, 1.0);
     gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
     gl::Enable(gl::DEPTH_TEST);
     let camera_matrix = world.camera.get_matrix();
@@ -326,7 +326,6 @@ fn draw(world: &mut World, framebuffer: u32, geometry_program: &Program, post_pr
     for chunk in world.chunks.values() {
         if let Some(page) = &chunk.geometry_page {
             // if chunk.pos.x >= 16 || chunk.pos.y >= 32 || chunk.pos.z >= 32 { continue; }
-            // let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z, chunk.light_page.as_ref().unwrap().start as i32];
             let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z, 0];
             gl::Uniform4iv(1, 1, &raw const chunk.pos as *const i32);
             
