@@ -156,7 +156,8 @@ impl Chunk {
                             0
                         }
                     };
-                    *light = (*noise_val * 16.0) as u8;
+                    *light = rand::random();
+                    // *light = (*noise_val * 16.0) as u8;
                 }
             }
         }
@@ -677,64 +678,6 @@ impl Chunk {
         }
     } }
 
-    /*
-    pub fn generate_light_buffer(&mut self, staging_buffer: &mut StagingBuffer, buffer_allocator: &mut BufferPoolAllocator<32768, { 18 * 18 * 18 / 2 }>) { unsafe {
-        'empty_check: {
-            for i in 0..4096 {
-                if self.light[i] != 0 {
-                    break 'empty_check;
-                }
-            }
-            self.light_page = Some(
-                Page { start: 0, size: NonZeroUsize::new_unchecked(1) }
-            );
-            return;
-        }
-        self.light_page = buffer_allocator.allocate(1);
-        let mut light_staging_buffer = [0; 18 * 18 * 18];
-        let i = 0;
-        for x in -1_isize..17 {
-            for y in -1_isize..17 {
-                for z in -1_isize..17 {
-                    let mut chunk = &*self;
-                    if x == -1 {
-                        if let Some(west) = chunk.neighbors.west {
-                            chunk = &*west;
-                        } else { continue; }
-                    }
-                    else if x == 17 {
-                        if let Some(east) = chunk.neighbors.east {
-                            chunk = &*east;
-                        } else { continue; }
-                    }
-                    if y == -1 {
-                        if let Some(down) = chunk.neighbors.down {
-                            chunk = &*down;
-                        } else { continue; }
-                    }
-                    else if y == 17 {
-                        if let Some(up) = chunk.neighbors.up {
-                            chunk = &*up;
-                        } else { continue; }
-                    }
-                    if z == -1 {
-                        if let Some(south) = chunk.neighbors.south {
-                            chunk = &*south;
-                        } else { continue; }
-                    }
-                    else if z == 17 {
-                        if let Some(north) = chunk.neighbors.north {
-                            chunk = &*north;
-                        } else { continue; }
-                    }
-
-                    light_staging_buffer[i] = chunk.light[((x & 0x7 << 8) | (y & 0x7 << 4) | (z & 0x7 << 0)) as usize];
-                }
-            }
-        }
-    } }
-    */
-
     pub fn generate_light_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>) { unsafe {
         const BYTES_PER_QUAD: usize = 8;
 
@@ -746,13 +689,14 @@ impl Chunk {
         let light_bytes = geometry_staging_buffer.index / BYTES_PER_QUAD * BYTES_PER_LIGHT;
 
         self.light_page = light_buffer_allocator.allocate(reserved_indices_bytes + light_bytes);
-        
         if self.light_page.is_none() { return; }
         
-        let light_page_byte_offset = self.light_page.as_ref().unwrap_unchecked().start;
+        let page = self.light_page.as_ref().unwrap_unchecked();
+        
+        let light_page_byte_offset = page.start * page.get_block_size();
 
         for (i, quad) in geometry_staging_buffer.iter().map(|quad| &*(quad as *const [u8; 8] as *const GpuQuad)).enumerate() {
-            *(&mut light_staging_buffer[i * mem::size_of::<u32>()] as *mut u8 as *mut u32) = light_staging_buffer.index as u32;
+            *(&mut light_staging_buffer[i * mem::size_of::<u32>()] as *mut u8 as *mut u32) = light_page_byte_offset as u32 + light_staging_buffer.index as u32;
             match quad.nor {
                 Normal::SOUTH => {
                     let start_x = quad.ure / 16;
@@ -766,7 +710,8 @@ impl Chunk {
                     let mut i = 0;
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
-                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            // light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            light_staging_buffer.put_u32(rand::random::<u8>() as u32);
                             i += 1;
                         }
                     }
@@ -783,7 +728,8 @@ impl Chunk {
                     let mut i = 0;
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
-                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            // light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            light_staging_buffer.put_u32(rand::random::<u8>() as u32);
                             i += 1;
                         }
                     }
@@ -800,7 +746,8 @@ impl Chunk {
                     let mut i = 0;
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
-                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            // light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            light_staging_buffer.put_u32(rand::random::<u8>() as u32);
                             i += 1;
                         }
                     }
@@ -817,7 +764,8 @@ impl Chunk {
                     let mut i = 0;
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
-                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            // light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            light_staging_buffer.put_u32(rand::random::<u8>() as u32);
                             i += 1;
                         }
                     }
@@ -834,7 +782,8 @@ impl Chunk {
                     let mut i = 0;
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
-                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            // light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            light_staging_buffer.put_u32(rand::random::<u8>() as u32);
                             i += 1;
                         }
                     }
@@ -851,7 +800,8 @@ impl Chunk {
                     let mut i = 0;
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
-                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            // light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            light_staging_buffer.put_u32(rand::random::<u8>() as u32);
                             i += 1;
                         }
                     }
@@ -862,7 +812,6 @@ impl Chunk {
             }
         }
         
-        let page = self.light_page.as_ref().unwrap_unchecked();
         light_buffer_allocator.upload(page, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.index as isize);
     } }
 

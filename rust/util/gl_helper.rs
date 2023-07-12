@@ -295,3 +295,9 @@ pub struct Page<const P: usize> {
     pub start: usize,
     pub size: NonZeroUsize,
 }
+
+impl <const P: usize> Page<P> {
+    pub const fn get_block_size(&self) -> usize {
+        return P;
+    }
+}

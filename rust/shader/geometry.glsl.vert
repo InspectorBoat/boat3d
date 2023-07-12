@@ -72,8 +72,6 @@ struct Face {
         uint whtt;
 };
 
-layout(location = 0) uniform mat4 u_transform;
-layout(location = 1) uniform ivec4 chunk_pos;
 layout(std430, binding = 0) readonly restrict buffer Faces {
         Face faces[];
 };
@@ -81,12 +79,6 @@ layout(std430, binding = 0) readonly restrict buffer Faces {
 layout(std430, binding = 1) readonly restrict buffer Light {
         uint light[];
 };
-
-// out vec4 relative_pos;
-out uint light_idx;
-out uint quad_width;
-out uint texture_id;
-out vec2 texture_pos;
 
 vec4 get_relative_pos(int face_index) {
         return (uvec4(faces[face_index].uvdn) >> uvec4(0, 8, 16, 24)) & uvec4(0xff, 0xff, 0xff, 0x00);
@@ -116,6 +108,16 @@ float get_texture(int face_index) {
         return float(faces[face_index].whtt & 0xff);
 }
 
+layout(location = 0) uniform mat4 u_transform;
+layout(location = 1) uniform ivec3 chunk_pos;
+layout(location = 2) uniform uint light_page_byte_offset;
+
+// out vec4 relative_pos;
+out uint light_index;
+out uint quad_width;
+out uint texture_id;
+out vec2 texture_pos;
+
 void main() {
         int corner_index = gl_VertexID % 4;
         int face_index = gl_VertexID / 4;
@@ -125,8 +127,10 @@ void main() {
         vec4 offset = get_size(face_index) * corner_transforms[corner_index];
         vertex_pos += offset;
         
-        gl_Position = u_transform * (vertex_pos * pos_transforms[normal] + chunk_pos * 256);
+        gl_Position = u_transform * (vertex_pos * pos_transforms[normal] + vec4(chunk_pos, 0) * 256);
 
         // relative_pos = vertex_pos * pos_transforms[normal];
         texture_pos = offset.xy / 16;
+        light_index = light_page_byte_offset + face_index;
+        quad_width = 1;
 }

@@ -326,9 +326,9 @@ fn draw(world: &mut World, framebuffer: u32, geometry_program: &Program, post_pr
     for chunk in world.chunks.values() {
         if let Some(page) = &chunk.geometry_page {
             // if chunk.pos.x >= 16 || chunk.pos.y >= 32 || chunk.pos.z >= 32 { continue; }
-            let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z, 0];
-            gl::Uniform4iv(1, 1, &raw const chunk.pos as *const i32);
-            
+            let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z];
+            gl::Uniform3iv(1, 1, &raw const chunk.pos as *const i32);
+            gl::Uniform1ui(2, chunk.light_page.as_ref().unwrap_unchecked().start as u32);
             gl::DrawElementsBaseVertex(gl::TRIANGLE_STRIP, chunk.face_count as i32 * 5, gl::UNSIGNED_INT, ptr::null(), (page.start * 1024 / 2) as i32);
         }
     }
