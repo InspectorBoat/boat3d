@@ -6,7 +6,7 @@ use std::{ptr, hint};
 use std::{time, hint::black_box, alloc, mem};
 use crate::block::blockface::{Normal, BlockFace};
 use crate::util::byte_buffer::StagingBuffer;
-use crate::util::gl_helper::{Buffer, BufferPoolAllocator, log_if_error, Page, FrameBuffer, Texture, RenderBuffer, WindowStatus};
+use crate::util::gl_helper::{Buffer, BufferPoolAllocator, log_if_error, Page, FrameBuffer, Texture, RenderBuffer, WindowStatus, Program, Shader};
 use crate::world::chunk::{self, Vec3i};
 use simdnoise::NoiseBuilder;
 
@@ -19,7 +19,11 @@ pub struct World {
     pub light_pool: BufferPoolAllocator<524288, 1024>,
     pub framebuffer: Option<FrameBuffer>,
     pub texture_attachment: Option<Texture>,
-    pub renderbuffer_attachment: Option<RenderBuffer>
+    pub renderbuffer_attachment: Option<RenderBuffer>,
+    pub index_buffer: Option<Buffer>,
+    pub geometry_program: Option<Program>,
+    pub post_program: Option<Program>,
+    pub screen_buffer: Option<Buffer>
 }
 
 impl World {
@@ -32,6 +36,10 @@ impl World {
             framebuffer: None,
             texture_attachment: None,
             renderbuffer_attachment: None,
+            index_buffer: None,
+            geometry_program: None,
+            post_program: None,
+            screen_buffer: None,
         };
         
         return world;
@@ -60,6 +68,63 @@ impl World {
         self.framebuffer = Some(framebuffer);
         self.texture_attachment = Some(texture_attachment);
         self.renderbuffer_attachment = Some(renderbuffer_attachment);
+    } }
+
+    pub fn make_index_buffer(&mut self) { unsafe {
+        gl::Enable(gl::PRIMITIVE_RESTART);
+        gl::PrimitiveRestartIndex(u32::MAX as u32);
+        let mut index_array = Vec::<u32>::with_capacity(1024 * 1024 / 4);
+        let mut j = 0;
+        for i in 0..(1024 * 1024 / 4) {
+            if i % 5 == 4 {
+                index_array.push(u32::MAX);
+            }
+            else {
+                index_array.push(j);
+                j += 1;
+            }
+        }
+        let index_buffer = Buffer::create();
+        index_buffer.bind_target(gl::ELEMENT_ARRAY_BUFFER);
+        index_buffer.storage(1024 * 1024 / 4, gl::DYNAMIC_STORAGE_BIT);
+        index_buffer.upload_slice(&index_array.as_slice(), 0, index_array.len() as isize);
+        self.index_buffer = Some(index_buffer);    
+    } }
+
+    pub fn make_shader_programs(&mut self) { unsafe {
+        let geometry_program = Program::create(
+            Shader::create(gl::VERTEX_SHADER, include_str!("../shader/geometry.glsl.vert")),
+            Shader::create(gl::FRAGMENT_SHADER, include_str!("../shader/geometry.glsl.frag"))
+        );
+        geometry_program.bind();
+    
+        let post_program = Program::create(
+            Shader::create(gl::VERTEX_SHADER, include_str!("../shader/post.glsl.vert")),
+            Shader::create(gl::FRAGMENT_SHADER, include_str!("../shader/post.glsl.frag"))
+        );
+        self.geometry_program = Some(geometry_program);
+        self.post_program = Some(post_program);
+    } }
+
+    pub fn make_screen_buffer(&mut self) { unsafe {
+        let screen_vertices: [f32; 24] = [
+            -1.0,  1.0,  0.0, 1.0,
+            -1.0, -1.0,  0.0, 0.0,
+             1.0, -1.0,  1.0, 0.0,
+    
+            -1.0,  1.0,  0.0, 1.0,
+             1.0, -1.0,  1.0, 0.0,
+             1.0,  1.0,  1.0, 1.0,
+        ];
+    
+        let screen_buffer = Buffer::create();
+        screen_buffer.upload(&screen_vertices, mem::size_of::<[f32; 24]>() as isize, gl::STATIC_DRAW);
+        screen_buffer.bind_target(gl::ARRAY_BUFFER);
+        gl::EnableVertexAttribArray(0);
+        gl::VertexAttribPointer(0, 2, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, ptr::null());
+        gl::EnableVertexAttribArray(1);
+        gl::VertexAttribPointer(1, 2, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, (2 * mem::size_of::<f32>()) as *const c_void);
+        self.screen_buffer = Some(screen_buffer);
     } }
 
     pub fn generate(&mut self) { unsafe {

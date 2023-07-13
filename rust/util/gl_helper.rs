@@ -19,27 +19,6 @@ pub fn create_window(status: &WindowStatus) -> (Window, std::sync::mpsc::Receive
     return glfw::init(glfw::FAIL_ON_ERRORS).unwrap().create_window(status.width as u32, status.height as u32, "boat3d", glfw::WindowMode::Windowed)
             .expect("Failed to create GLFW window.");
 }
-pub fn setup_element_array() { unsafe {
-    gl::ClearColor(1.0, 1.0, 1.0, 1.0);
-    gl::Enable(gl::DEPTH_TEST);
-    gl::Enable(gl::PRIMITIVE_RESTART);
-    gl::PrimitiveRestartIndex(u32::MAX as u32);
-    let mut index_array = Vec::<u32>::with_capacity(1024 * 1024 / 4);
-    let mut j = 0;
-    for i in 0..(1024 * 1024 / 4) {
-        if i % 5 == 4 {
-            index_array.push(u32::MAX);
-        }
-        else {
-            index_array.push(j);
-            j += 1;
-        }
-    }
-    let index_buffer = Buffer::create();
-    index_buffer.bind_target(gl::ELEMENT_ARRAY_BUFFER);
-    index_buffer.storage(1024 * 1024 / 4, gl::DYNAMIC_STORAGE_BIT);
-    index_buffer.upload_slice(&index_array.as_slice(), 0, index_array.len() as isize);
-} }
 
 // */
 
@@ -170,6 +149,7 @@ impl Shader {
     } }
 }
 
+#[derive(Debug)]
 pub struct Program {
     pub id: u32
 }
