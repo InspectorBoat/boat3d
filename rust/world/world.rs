@@ -46,6 +46,16 @@ impl World {
     } }
 
     pub fn make_framebuffer(&mut self, status: &WindowStatus) { unsafe {
+        if let Some(framebuffer) = self.framebuffer.take() {
+            framebuffer.kill();
+        }
+        if let Some(texture_attachment) = self.texture_attachment.take() {
+            texture_attachment.kill();
+        }
+        if let Some(renderbuffer_attachment) = self.renderbuffer_attachment.take() {
+            renderbuffer_attachment.kill();
+        }
+
         let framebuffer = FrameBuffer::create();
         framebuffer.bind(gl::FRAMEBUFFER);
     

@@ -208,6 +208,9 @@ impl FrameBuffer {
     pub fn clear_bind(target: u32) { unsafe {
         gl::BindFramebuffer(target, 0);
     } }
+    pub fn kill(self) { unsafe {
+        gl::DeleteFramebuffers(1, &self.id);
+    } }
 }
 
 #[derive(Debug)]
@@ -226,6 +229,9 @@ impl RenderBuffer {
     pub fn bind(&self, target: u32) { unsafe {
         gl::BindRenderbuffer(gl::RENDERBUFFER, self.id);
     } }
+    pub fn kill(self) { unsafe {
+        gl::DeleteRenderbuffers(1, &self.id);
+    } }
 }
 
 #[derive(Debug)]
@@ -242,9 +248,13 @@ impl Texture {
     pub fn bind(&self, target: u32) { unsafe {
         gl::BindTexture(target, self.id);
     } }
+    pub fn kill(self) { unsafe {
+        gl::DeleteTextures(1, &self.id);
+    } }
     pub fn active(texture: u32) { unsafe {
         gl::ActiveTexture(texture);
     } }
+
 }
 
 impl Drop for Texture {

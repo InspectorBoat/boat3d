@@ -223,6 +223,7 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
             gl::Viewport(0, 0, width, height);
             (status.width, status.height) = (width, height);
             world.camera.ratio = width as f32 / height as f32;
+            world.make_framebuffer(status);
         }
         glfw::WindowEvent::CursorPos(x, y) => {
             if !status.mouse_captured { return }
