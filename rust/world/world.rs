@@ -6,7 +6,7 @@ use std::{ptr, hint};
 use std::{time, hint::black_box, alloc, mem};
 use crate::block::blockface::{Normal, BlockFace};
 use crate::util::byte_buffer::StagingBuffer;
-use crate::util::gl_helper::{Buffer, BufferPoolAllocator, log_if_error, Page};
+use crate::util::gl_helper::{Buffer, BufferPoolAllocator, log_if_error, Page, FrameBuffer, Texture, RenderBuffer, WindowStatus};
 use crate::world::chunk::{self, Vec3i};
 use simdnoise::NoiseBuilder;
 
@@ -17,54 +17,89 @@ pub struct World {
     pub camera: Camera,
     pub geometry_pool: BufferPoolAllocator<524288, 1024>,
     pub light_pool: BufferPoolAllocator<524288, 1024>,
+    pub framebuffer: Option<FrameBuffer>,
+    pub texture_attachment: Option<Texture>,
+    pub renderbuffer_attachment: Option<RenderBuffer>
 }
 
 impl World {
     pub fn new() -> World { unsafe {
-        let noise = NoiseBuilder::gradient_3d(512, 512, 512).generate_scaled(0.0, 1.0);
-        
-        let mut world = World {
+        let world = World {
             chunks: HashMap::<Vec3i, Box::<Chunk>>::new(),
             camera: Camera::new(),
             geometry_pool: BufferPoolAllocator::new(),
-            light_pool: BufferPoolAllocator::new()
+            light_pool: BufferPoolAllocator::new(),
+            framebuffer: None,
+            texture_attachment: None,
+            renderbuffer_attachment: None,
         };
+        
+        return world;
+    } }
 
+    pub fn make_framebuffer(&mut self, status: &WindowStatus) { unsafe {
+        let framebuffer = FrameBuffer::create();
+        framebuffer.bind(gl::FRAMEBUFFER);
+    
+        let texture_attachment = Texture::create();
+        Texture::active(0);
+        texture_attachment.bind(gl::TEXTURE_2D);
+        gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32F as i32, status.width as i32, status.height as i32, 0, gl::RGBA, gl::UNSIGNED_BYTE, ptr::null());
+        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
+        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+        FrameBuffer::texture2d_attachment(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT0, gl::TEXTURE_2D, &texture_attachment, 0);
+    
+        let renderbuffer_attachment = RenderBuffer::create();
+        renderbuffer_attachment.bind(gl::RENDERBUFFER);
+        gl::RenderbufferStorage(gl::RENDERBUFFER, gl::DEPTH24_STENCIL8, status.width as i32, status.height as i32);  
+        FrameBuffer::renderbuffer_attachment(gl::FRAMEBUFFER, gl::DEPTH_STENCIL_ATTACHMENT, gl::RENDERBUFFER, &renderbuffer_attachment);
+        
+        let attachments: [u32; 1] = [gl::COLOR_ATTACHMENT0];
+        gl::DrawBuffers(1, &raw const attachments as *const u32);
+
+        self.framebuffer = Some(framebuffer);
+        self.texture_attachment = Some(texture_attachment);
+        self.renderbuffer_attachment = Some(renderbuffer_attachment);
+    } }
+
+    pub fn generate(&mut self) { unsafe {
+        let noise = NoiseBuilder::gradient_3d(512, 512, 512).generate_scaled(0.0, 1.0);
         for x in 0..32 {
             for y in 0..32 {
                 for z in 0..32 {
                     let mut chunk = Box::<Chunk>::new_zeroed().assume_init();
                     chunk.make_terrain(&noise, x, y, z);
-                    world.add_chunk(chunk);
+                    self.add_chunk(chunk);
                 }
             }
         }
-        
+    } }
+
+    pub fn mesh(&mut self) { unsafe {
         let mut geometry_staging_buffer = StagingBuffer::new();
         let mut light_staging_buffer = StagingBuffer::new();
         let start = time::Instant::now();
-        let mut faces: usize = 0;
+        let mut quads: usize = 0;
         let mesh_passes = 1;
         
         for _ in 0..mesh_passes {
-            for chunk in world.chunks.values_mut() {
+            for chunk in self.chunks.values_mut() {
                 // if chunk.pos.x != 5 || chunk.pos.y != 2 || chunk.pos.z != 9 { continue; }
-                chunk.generate_geometry_buffer(&mut geometry_staging_buffer, &mut world.geometry_pool);
-                chunk.generate_light_buffer(&mut geometry_staging_buffer, &mut light_staging_buffer, &mut world.light_pool);
+                chunk.generate_geometry_buffer(&mut geometry_staging_buffer, &mut self.geometry_pool);
+                chunk.generate_light_buffer(&mut geometry_staging_buffer, &mut light_staging_buffer, &mut self.light_pool);
                 geometry_staging_buffer.reset();
                 light_staging_buffer.reset();
-                faces += chunk.face_count as usize;
+                quads += chunk.quad_count as usize;
                 // break;
             }
         }
         
         
         
-        let count = world.chunks.len() * mesh_passes;
+        let count = self.chunks.len() * mesh_passes;
         let elapsed = start.elapsed().as_millis();
         
-        println!("[6/6 axes] [merged] {count} chunks | {}ms | {} chunks/s | {}ms/chunk | {} faces | {} faces/chunk", elapsed, (1000.0 / elapsed as f64 * count as f64) as u64, elapsed as f64 / count as f64, faces, faces as u64 / count as u64);
-        return world;
+        println!("[6/6 axes] [merged] {count} chunks | {}ms | {} chunks/s | {}ms/chunk | {} quads | {} quads/chunk", elapsed, (1000.0 / elapsed as f64 * count as f64) as u64, elapsed as f64 / count as f64, quads, quads as u64 / count as u64);
     } }
 
     pub fn add_chunk(&mut self, chunk: Box<Chunk>) { unsafe {
@@ -115,14 +150,4 @@ impl World {
             self.geometry_pool.deallocate(chunk.geometry_page.take());
         }
     } }
-}
-
-pub struct Lcg {
-    pub val: u32,
-}
-impl Lcg {
-    pub fn next(&mut self) -> u32 {
-        self.val = (self.val * 1103515245 + 12346) % (2147483648 - 1);
-        return self.val;
-    }
 }

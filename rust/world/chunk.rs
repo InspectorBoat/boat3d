@@ -33,7 +33,7 @@ use crate::util::gl_helper::Page;
 use crate::util::gl_helper::BufferPoolAllocator;
 use crate::{block::{blockstate::BlockState, blockface::{Normal, BlockFace}}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::StagingBuffer}, BLOCKS};
 
-use super::world::{World, Lcg};
+use super::world::World;
 #[derive(Debug)]
 pub struct Chunk {
     // Block IDs
@@ -43,12 +43,10 @@ pub struct Chunk {
 
     // Chunk position
     pub pos: Vec3i,
-    // Padding for page id
-    pub dummy: i32,
-    // Adjacent chunka
+    // Adjacent chunks
     pub neighbors: Neighbors,
     // Number of rectangular block faces in a chunk
-    pub face_count: u32,
+    pub quad_count: u32,
 
     pub geometry_page: Option<Page<1024>>,
     pub light_page: Option<Page<1024>>
@@ -163,9 +161,9 @@ impl Chunk {
         }
     } }
 
-    pub fn make_terrain_alt(&mut self, random: &mut Lcg) {
+    pub fn make_terrain_alt(&mut self) {
         for i in 0..4096 {
-            self.blocks[i] = (random.next() % 2) as u8;
+            self.blocks[i] = rand::random::<u8>() % 2;
         }
     }
     
@@ -670,7 +668,7 @@ impl Chunk {
 
         geometry_staging_buffer.format_quads();
 
-        self.face_count = geometry_staging_buffer.index as u32 / 8;
+        self.quad_count = geometry_staging_buffer.index as u32 / 8;
         
         self.geometry_page = geometry_buffer_allocator.allocate(geometry_staging_buffer.index);
         if let Some(page) = &self.geometry_page {
@@ -693,7 +691,7 @@ impl Chunk {
         
         let page = self.light_page.as_ref().unwrap_unchecked();
         
-        let light_page_byte_offset = page.start * page.get_block_size();
+        let light_page_byte_offset = page.start * page.block_size();
 
         for (i, quad) in geometry_staging_buffer.iter().map(|quad| &*(quad as *const [u8; 8] as *const GpuQuad)).enumerate() {
             *(&mut light_staging_buffer[i * mem::size_of::<u32>()] as *mut u8 as *mut u32) = light_page_byte_offset as u32 + light_staging_buffer.index as u32;

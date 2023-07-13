@@ -1,6 +1,6 @@
 use std::{ffi::{c_void, CString}, ptr, ops::Deref, num::NonZeroUsize};
 
-use gl::types::GLuint;
+use gl::{types::GLuint, FramebufferRenderbuffer};
 use glfw::{Window, WindowEvent, Glfw, Context};
 
 use log::debug;
@@ -23,7 +23,7 @@ pub fn setup_element_array() { unsafe {
     gl::ClearColor(1.0, 1.0, 1.0, 1.0);
     gl::Enable(gl::DEPTH_TEST);
     gl::Enable(gl::PRIMITIVE_RESTART);
-    gl::PrimitiveRestartIndex(u32::MAX);
+    gl::PrimitiveRestartIndex(u32::MAX as u32);
     let mut index_array = Vec::<u32>::with_capacity(1024 * 1024 / 4);
     let mut j = 0;
     for i in 0..(1024 * 1024 / 4) {
@@ -65,7 +65,7 @@ pub fn log_if_error() {
 #[derive(Debug)]
 #[derive(PartialEq)]
 pub struct Buffer {
-    id: u32
+    pub id: u32
 }
 
 #[allow(dead_code)]
@@ -73,7 +73,9 @@ impl Buffer {
     pub fn create() -> Buffer { unsafe {
         let mut id: u32 = 0;
         gl::CreateBuffers(1, &mut id);
-        return Buffer { id };
+        return Buffer {
+            id: id
+        };
     } }
     pub fn generate() -> Buffer { unsafe {
         let mut id: u32 = 0;
@@ -145,35 +147,31 @@ impl Drop for Buffer {
 }
 
 pub struct Shader {
-    id: u32
+    pub id: u32
 }
 
 impl Shader {
-    pub fn create(r#type: u32, source: &str) -> Shader {
-        let id = unsafe { gl::CreateShader(r#type) };
-        unsafe {
-            let string = CString::new(source).unwrap();
-            gl::ShaderSource(id, 1, &string.as_ptr(), ptr::null());
-            gl::CompileShader(id);
+    pub fn create(r#type: u32, source: &str) -> Shader { unsafe {
+        let id = gl::CreateShader(r#type);
+        let string = CString::new(source).unwrap();
+        gl::ShaderSource(id, 1, &string.as_ptr(), ptr::null());
+        gl::CompileShader(id);
 
-            let mut status = 0;
-            gl::GetShaderiv(id, gl::COMPILE_STATUS, &mut status);
-            if status != gl::TRUE as i32 {
-                let mut length: i32 = 4096;
-                let mut log: Vec<u8> = vec![0; length as usize];
-                gl::GetShaderInfoLog(id, length, &mut length, log.as_mut_ptr() as *mut i8);
-    
-                panic!("Failed to compile {} shader: {}", if r#type == gl::VERTEX_SHADER { "vertex" } else { "fragment" }, std::str::from_utf8(&log).unwrap())
-            }
+        let mut status = 0;
+        gl::GetShaderiv(id, gl::COMPILE_STATUS, &mut status);
+        if status != gl::TRUE as i32 {
+            let mut length: i32 = 4096;
+            let mut log: Vec<u8> = vec![0; length as usize];
+            gl::GetShaderInfoLog(id, length, &mut length, log.as_mut_ptr() as *mut i8);
+            
+            panic!("Failed to compile {} shader: {}", if r#type == gl::VERTEX_SHADER { "vertex" } else { "fragment" }, std::str::from_utf8(&log).unwrap())
         }
-        return Shader {
-            id
-        }
-    }
+        return Shader { id: id };
+    } }
 }
 
 pub struct Program {
-    id: u32
+    pub id: u32
 }
 
 impl Program {
@@ -194,7 +192,7 @@ impl Program {
         }
         return Program {
             id
-        }
+        };
     } }
 
     pub fn bind(&self) { unsafe {
@@ -204,6 +202,76 @@ impl Program {
     pub fn uniform1i(&self, location: i32, v0: i32) { unsafe {
         gl::ProgramUniform1i(self.id, location, v0);
     } }
+}
+
+#[derive(Debug)]
+pub struct FrameBuffer {
+    pub id: u32
+}
+
+impl FrameBuffer {
+    pub fn create() -> FrameBuffer { unsafe {
+        let mut id: u32 = 0;
+        gl::GenFramebuffers(1, &mut id);
+        return FrameBuffer {
+            id: id
+        };
+    } }
+    pub fn bind(&self, target: u32) { unsafe {
+        gl::BindFramebuffer(target, self.id);
+    } }
+    pub fn texture2d_attachment(target: u32, attachment_location: u32, texture_type: u32, texture: &Texture, level: i32) { unsafe {
+        gl::FramebufferTexture2D(target, attachment_location, texture_type, texture.id, level);
+    } }
+    pub fn renderbuffer_attachment(target: u32, attachment_type: u32, renderbuffer_target: u32, renderbuffer: &RenderBuffer) { unsafe {
+        gl::FramebufferRenderbuffer(target, attachment_type, renderbuffer_target, renderbuffer.id)
+    } }
+    pub fn clear_bind(target: u32) { unsafe {
+        gl::BindFramebuffer(target, 0);
+    } }
+}
+
+#[derive(Debug)]
+pub struct RenderBuffer {
+    pub id: u32
+}
+
+impl RenderBuffer {
+    pub fn create() -> RenderBuffer { unsafe {
+        let mut id: u32 = 0;
+        gl::GenRenderbuffers(1, &mut id);
+        return RenderBuffer {
+            id: id
+        };
+    } }
+    pub fn bind(&self, target: u32) { unsafe {
+        gl::BindRenderbuffer(gl::RENDERBUFFER, self.id);
+    } }
+}
+
+#[derive(Debug)]
+pub struct Texture {
+    pub id: u32
+}
+
+impl Texture {
+    pub fn create() -> Texture { unsafe {
+        let mut id: u32 = 0;
+        gl::GenTextures(1, &mut id);
+        return Texture { id: id };
+    } }
+    pub fn bind(&self, target: u32) { unsafe {
+        gl::BindTexture(target, self.id);
+    } }
+    pub fn active(texture: u32) { unsafe {
+        gl::ActiveTexture(texture);
+    } }
+}
+
+impl Drop for Texture {
+    fn drop(&mut self) {
+        // panic!();
+    }
 }
 
 pub struct WindowStatus {
@@ -219,6 +287,8 @@ impl WindowStatus {
         return WindowStatus { fill_mode: gl::FILL, maximized: false, mouse_captured: false, width: 600, height: 600 }
     }
 }
+
+
 
 #[derive(Debug)]
 pub struct BufferPoolAllocator<const S: usize, const P: usize> {
@@ -297,7 +367,7 @@ pub struct Page<const P: usize> {
 }
 
 impl <const P: usize> Page<P> {
-    pub const fn get_block_size(&self) -> usize {
+    pub const fn block_size(&self) -> usize {
         return P;
     }
 }
