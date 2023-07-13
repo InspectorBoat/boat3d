@@ -19,6 +19,10 @@ impl StagingBuffer {
         *loc = val;
         self.index += 8;
     } }
+    pub fn insert_u32(&mut self, val: u32, index: usize) { unsafe {
+        let loc = self.buffer.0.as_mut_ptr().byte_add(index) as *mut u32;
+        *loc = val;
+    } }
     pub fn put_u32(&mut self, val: u32) { unsafe {
         let loc = self.buffer.0.as_mut_ptr().byte_add(self.index) as *mut u32;
         *loc = val;

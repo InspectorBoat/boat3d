@@ -187,17 +187,19 @@ fn draw(world: &mut World) { unsafe {
     const ELEMENTS_PER_QUAD: usize = 4;
 
     for chunk in world.chunks.values() {
-        if let Some(page) = &chunk.geometry_page {
-            if chunk.pos.x >= 8 || chunk.pos.y >= 8 || chunk.pos.z >= 8 { continue; }
+        if let Some(geometry_page) = &chunk.geometry_page {
+            // if chunk.pos.x >= 8 || chunk.pos.y >= 8 || chunk.pos.z >= 8 { continue; }
+            let Some(light_page) = &chunk.light_page else { unreachable_unchecked(); };
+
             let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z];
             gl::Uniform3iv(1, 1, &raw const chunk.pos as *const i32);
-            gl::Uniform1ui(2, chunk.light_page.as_ref().unwrap_unchecked().start as u32);
+            gl::Uniform1ui(2, (light_page.start * light_page.block_size() / mem::size_of::<u32>() / 2) as u32);
             gl::DrawElementsBaseVertex(
                 gl::TRIANGLE_STRIP,
                 chunk.quad_count as i32 * ELEMENT_INDICES_PER_QUAD,
                 gl::UNSIGNED_INT,
                 ptr::null(),
-                (page.start * page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD) as i32
+                (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD) as i32
             );
         }
     }

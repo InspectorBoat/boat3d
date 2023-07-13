@@ -692,15 +692,19 @@ impl Chunk {
 
         self.light_page = light_buffer_allocator.allocate(reserved_indices_bytes + light_bytes);
         if self.light_page.is_none() { return; }
-        
+
         let page = self.light_page.as_ref().unwrap_unchecked();
         
         let light_page_byte_offset = page.start * page.block_size();
 
         for (i, quad) in geometry_staging_buffer.iter().map(|quad| &*(quad as *const [u8; 8] as *const GpuQuad)).enumerate() {
-            *(&mut light_staging_buffer[i * mem::size_of::<u32>()] as *mut u8 as *mut u32) = (light_page_byte_offset as u32 + light_staging_buffer.index as u32) / 4;
-            light_staging_buffer.put_u32(rand::random::<u8>() as u32);
+            light_staging_buffer.insert_u32(((light_page_byte_offset + light_staging_buffer.index) / mem::size_of::<u32>()) as u32, i * mem::size_of::<u32>());
+            // light_staging_buffer.insert_u32(0xACAB1312, i * mem::size_of::<u32>());
+            light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
+            // light_staging_buffer.put_u32(0);
+
             continue;
+            #[allow(unreachable_code)]
             match quad.nor {
                 Normal::SOUTH => {
                     let start_x = quad.ure / 16;
@@ -815,10 +819,9 @@ impl Chunk {
                 }
             }
         }
-        
         light_buffer_allocator.upload(page, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.index as isize);
     } }
-
+    
     pub fn cull_backfaces(&mut self, world: &mut World) {
         // let south = self.counts[0];
         // let north = self.counts[3];    

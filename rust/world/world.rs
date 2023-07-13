@@ -52,7 +52,8 @@ impl World {
         let texture_attachment = Texture::create();
         Texture::active(0);
         texture_attachment.bind(gl::TEXTURE_2D);
-        gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32F as i32, status.width as i32, status.height as i32, 0, gl::RGBA, gl::UNSIGNED_BYTE, ptr::null());
+        gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32F as i32, status.width as i32, status.height as i32, 0, gl::RGBA, gl::BYTE, ptr::null());
+        // gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32UI as i32, status.width as i32, status.height as i32, 0, gl::RGBA_INTEGER, gl::INT, ptr::null());
         gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
         gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
         FrameBuffer::texture2d_attachment(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT0, gl::TEXTURE_2D, &texture_attachment, 0);
@@ -129,9 +130,9 @@ impl World {
 
     pub fn generate(&mut self) { unsafe {
         let noise = NoiseBuilder::gradient_3d(512, 512, 512).generate_scaled(0.0, 1.0);
-        for x in 0..16 {
-            for y in 0..16 {
-                for z in 0..16 {
+        for x in 0..32 {
+            for y in 0..32 {
+                for z in 0..32 {
                     let mut chunk = Box::<Chunk>::new_zeroed().assume_init();
                     chunk.make_terrain(&noise, x, y, z);
                     // chunk.make_terrain_alt(x, y, z);
@@ -148,15 +149,15 @@ impl World {
         let mut quads: usize = 0;
         let mesh_passes = 1;
         
+
         for _ in 0..mesh_passes {
             for chunk in self.chunks.values_mut() {
-                // if chunk.pos.x != 5 || chunk.pos.y != 2 || chunk.pos.z != 9 { continue; }
+                // if chunk.pos.x == 0 || chunk.pos.y == 0 || chunk.pos.z == 0 { continue; }
                 chunk.generate_geometry_buffer(&mut geometry_staging_buffer, &mut self.geometry_pool);
                 chunk.generate_light_buffer(&mut geometry_staging_buffer, &mut light_staging_buffer, &mut self.light_pool);
                 geometry_staging_buffer.reset();
                 light_staging_buffer.reset();
                 quads += chunk.quad_count as usize;
-                // break;
             }
         }
         
@@ -165,7 +166,7 @@ impl World {
         let count = self.chunks.len() * mesh_passes;
         let elapsed = start.elapsed().as_millis();
         
-        println!("[6/6 axes] [merged] {count} chunks | {}ms | {} chunks/s | {}ms/chunk | {} quads | {} quads/chunk", elapsed, (1000.0 / elapsed as f64 * count as f64) as u64, elapsed as f64 / count as f64, quads, quads as u64 / count as u64);
+        // println!("[6/6 axes] [merged] {count} chunks | {}ms | {} chunks/s | {}ms/chunk | {} quads | {} quads/chunk", elapsed, (1000.0 / elapsed as f64 * count as f64) as u64, elapsed as f64 / count as f64, quads, quads as u64 / count as u64);
     } }
 
     pub fn add_chunk(&mut self, chunk: Box<Chunk>) { unsafe {

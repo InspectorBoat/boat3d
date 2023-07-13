@@ -29,7 +29,7 @@ void main() {
     unpack_framebuffer(texture_pos, texture_id, quad_width, light_index);
     FragColor = vec4(texture_pos, 0.0, 1.0);
     
-    // if (light[light_index] > 8) {
+    // if (light[light[light_index]] == 0xACAB1312) {
     //     FragColor = vec4(0.5, 0.5, 0.5, 1.0);
     // }
     // else {
@@ -38,5 +38,4 @@ void main() {
     FragColor = vec4(light[light_index] * 0.0625, 0.0, 0.0, 1.0);
 
     // FragColor = texture(framebuffer, TexCoords);
-
 }
