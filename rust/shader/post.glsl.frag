@@ -22,12 +22,12 @@ void unpack_framebuffer(out vec2 texture_pos, out uint texture_id, out uint quad
 }
 
 void main() {
-    // vec2 texture_pos;
-    // uint texture_id;
-    // uint quad_width;
-    // uint light_index;
-    // unpack_framebuffer(texture_pos, texture_id, quad_width, light_index);
-    // FragColor = vec4(texture_pos, 0.0, 1.0);
+    vec2 texture_pos;
+    uint texture_id;
+    uint quad_width;
+    uint light_index;
+    unpack_framebuffer(texture_pos, texture_id, quad_width, light_index);
+    FragColor = vec4(texture_pos, 0.0, 1.0);
     
     // if (light[light_index] > 8) {
     //     FragColor = vec4(0.5, 0.5, 0.5, 1.0);
@@ -35,8 +35,8 @@ void main() {
     // else {
     //     FragColor = vec4(0.2, 0.2, 0.2, 1.0);
     // }
-    // FragColor = vec4(light[light_index] * 0.0625, 0.0, 0.0, 1.0);
+    FragColor = vec4(light[light_index] * 0.0625, 0.0, 0.0, 1.0);
 
-    FragColor = texture(framebuffer, TexCoords);
+    // FragColor = texture(framebuffer, TexCoords);
 
 }

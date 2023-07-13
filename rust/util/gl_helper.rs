@@ -42,12 +42,10 @@ pub fn log_if_error() {
 }
 
 #[derive(Debug)]
-#[derive(PartialEq)]
 pub struct Buffer {
     pub id: u32
 }
 
-#[allow(dead_code)]
 impl Buffer {
     pub fn create() -> Buffer { unsafe {
         let mut id: u32 = 0;
@@ -125,6 +123,7 @@ impl Drop for Buffer {
     }
 }
 
+#[derive(Debug)]
 pub struct Shader {
     pub id: u32
 }

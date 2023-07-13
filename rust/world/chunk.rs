@@ -51,6 +51,7 @@ pub struct Chunk {
     pub geometry_page: Option<Page<1024>>,
     pub light_page: Option<Page<1024>>
 }
+
 #[derive(Debug)]
 pub struct Neighbors {
     pub south: Option<*mut Chunk>,
@@ -130,40 +131,43 @@ impl Chunk {
             z: chunk_z as i32
         };
         
-        for x in 0..16 {
-            for y in 0..16 {
-                for z in 0..16 {
-                    let pos = {
-                        (chunk_x << 22) |
-                        (x << 18) |
-                        (chunk_y << 13) |
-                        (y << 9 ) |
-                        (chunk_z << 4) |
-                        (z << 0 )
-                    };
-                    let (noise_val, block, light) = (
-                        noise.get_unchecked(pos),
-                        self.blocks.get_unchecked_mut(Chunk::pos(x, y, z)),
-                        self.light.get_unchecked_mut(Chunk::pos(x, y, z)),
-                    );
-                    *block = match *noise_val {
-                        val if val < 0.5 => {
-                            1
-                        },
-                        _ => {
-                            0
-                        }
-                    };
-                    *light = rand::random();
-                    // *light = (*noise_val * 16.0) as u8;
+        for x in 0..16 { for y in 0..16 { for z in 0..16 {
+            let pos = {
+                (chunk_x << 22) |
+                (x << 18) |
+                (chunk_y << 13) |
+                (y << 9 ) |
+                (chunk_z << 4) |
+                (z << 0 )
+            };
+            let (noise_val, block, light) = (
+                noise.get_unchecked(pos),
+                self.blocks.get_unchecked_mut(Chunk::pos(x, y, z)),
+                self.light.get_unchecked_mut(Chunk::pos(x, y, z)),
+            );
+            *block = match *noise_val {
+                val if val < 0.5 => {
+                    1
+                },
+                _ => {
+                    0
                 }
-            }
-        }
+            };
+            *light = rand::random();
+            // *light = (*noise_val * 16.0) as u8;
+        } } }
     } }
 
-    pub fn make_terrain_alt(&mut self) {
+    pub fn make_terrain_alt(&mut self, chunk_x: usize, chunk_y: usize, chunk_z: usize) {
+        self.pos = Vec3i {
+            x: chunk_x as i32,
+            y: chunk_y as i32,
+            z: chunk_z as i32
+        };
+
         for i in 0..4096 {
             self.blocks[i] = rand::random::<u8>() % 2;
+            self.light[i] = rand::random::<u8>() % 16;
         }
     }
     
@@ -694,12 +698,14 @@ impl Chunk {
         let light_page_byte_offset = page.start * page.block_size();
 
         for (i, quad) in geometry_staging_buffer.iter().map(|quad| &*(quad as *const [u8; 8] as *const GpuQuad)).enumerate() {
-            *(&mut light_staging_buffer[i * mem::size_of::<u32>()] as *mut u8 as *mut u32) = light_page_byte_offset as u32 + light_staging_buffer.index as u32;
+            *(&mut light_staging_buffer[i * mem::size_of::<u32>()] as *mut u8 as *mut u32) = (light_page_byte_offset as u32 + light_staging_buffer.index as u32) / 4;
+            light_staging_buffer.put_u32(rand::random::<u8>() as u32);
+            continue;
             match quad.nor {
                 Normal::SOUTH => {
                     let start_x = quad.ure / 16;
                     let end_x = (quad.ure + quad.wid) / 16;
-    
+                    
                     let start_y = quad.ven / 16;
                     let end_y = (quad.ven + quad.hei) / 16;
     
@@ -934,7 +940,7 @@ impl Run {
      * Matches the top and bottom right corners of the run with the top and bottom left corners of the face
      * Used to immediately merge a face
      */
-    fn match_right(&self, face: &BlockFace) -> bool { unsafe {
+    pub fn match_right(&self, face: &BlockFace) -> bool { unsafe {
         return (
             self.tex == face.tex &&
             self.rig == 0 &&
@@ -947,7 +953,7 @@ impl Run {
      * Matches the top left corner of the run with the bottom left corner of the face
      * Used to begin a merge
      */
-    fn match_top_left(&self, face: &BlockFace) -> bool { unsafe {
+    pub fn match_top_left(&self, face: &BlockFace) -> bool { unsafe {
         return (
             self.tex == face.tex &&
             self.top == 0 &&
@@ -959,7 +965,7 @@ impl Run {
      * Matches the top right corner of the run with the bottom right corner of the face
      * Used to finalize a merge
      */
-    fn match_top_right(&self, face: &BlockFace) -> bool { unsafe {
+    pub fn match_top_right(&self, face: &BlockFace) -> bool { unsafe {
         return (
             face.bot == 0 &&
             self.rig == face.rig
@@ -970,7 +976,7 @@ impl Run {
      * Extends the run's end position and updates the end x
      * End y is already guaranteed to match
      */
-    fn merge_face(&mut self, buffer: &mut StagingBuffer, face: &BlockFace) { unsafe {
+    pub fn merge_face(&mut self, buffer: &mut StagingBuffer, face: &BlockFace) { unsafe {
         buffer[self.idx + 3] += 0x10;
         buffer[self.idx + 2] &= 0xf0;
         buffer[self.idx + 2] |= face.rig;
@@ -981,7 +987,7 @@ impl Run {
      * Pulls the run up after an incomplete merge
      * min_x, min_y, min_z, and texture are already guaranteed to match
      */
-    fn pull_partial(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
+    pub fn pull_partial(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
         let ind = buffer.index as u16;
         buffer.put_u64(buffer.get_u64(self.idx));
         
@@ -997,7 +1003,7 @@ impl Run {
      * Pulls the run up after a complete merge
      * Only possible change is top
      */
-    fn pull(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
+    pub fn pull(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
         buffer[self.idx as usize + 4] += 0x10;
         buffer[self.idx as usize + 3] &= 0xf0;
         buffer[self.idx as usize + 3] |= face.top;
@@ -1007,7 +1013,7 @@ impl Run {
     /**
      * Begins a new run
      */
-    fn begin<const NORMAL: Normal>(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, pos: usize, u: u8, row: u16) {
+    pub fn begin<const NORMAL: Normal>(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, pos: usize, u: u8, row: u16) {
         self.idx = buffer.index as u16;
         let offset: u32;
         match NORMAL {
@@ -1039,7 +1045,7 @@ impl Run {
 
         self.row = row;
     }
-    fn add_face<const NORMAL: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, pos: usize) {
+    pub fn add_face<const NORMAL: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, pos: usize) {
         let offset: u32;
         match NORMAL {
             Normal::SOUTH | Normal::NORTH => {
@@ -1060,7 +1066,7 @@ impl Run {
     /**
      * Matches the top and bottom right corners of the first face with the top and bottom left corners of the next face
      */
-    fn match_faces(face: &BlockFace, next: &BlockFace) -> bool {
+    pub fn match_faces(face: &BlockFace, next: &BlockFace) -> bool {
         return (
             face.tex == next.tex &&
             face.rig == next.lef &&
@@ -1069,11 +1075,11 @@ impl Run {
         );
     }
     
-    fn as_u32(&self) -> &u32 { unsafe {
+    pub fn as_u32(&self) -> &u32 { unsafe {
         return &*(&raw const self as *mut u32);
     } }
 
-    fn new() -> Run {
+    pub fn new() -> Run {
         Run {
             lef: 0,
             bot: 0,

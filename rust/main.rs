@@ -149,6 +149,8 @@ fn main() { unsafe {
     world.geometry_pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
     world.light_pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
 
+    println!("{}", world.geometry_pool.furthest);
+
     while !window.should_close() {
         glfw.poll_events();
         

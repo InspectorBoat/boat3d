@@ -129,11 +129,12 @@ impl World {
 
     pub fn generate(&mut self) { unsafe {
         let noise = NoiseBuilder::gradient_3d(512, 512, 512).generate_scaled(0.0, 1.0);
-        for x in 0..32 {
-            for y in 0..32 {
-                for z in 0..32 {
+        for x in 0..16 {
+            for y in 0..16 {
+                for z in 0..16 {
                     let mut chunk = Box::<Chunk>::new_zeroed().assume_init();
                     chunk.make_terrain(&noise, x, y, z);
+                    // chunk.make_terrain_alt(x, y, z);
                     self.add_chunk(chunk);
                 }
             }
