@@ -64,6 +64,7 @@ impl PartialEq for BlockFace {
 
 #[derive(Clone, Copy, Debug)]
 #[derive(PartialEq, Eq, PartialOrd, Ord, ConstParamTy)]
+#[repr(transparent)]
 pub struct Normal(pub u8);
 
 #[allow(dead_code)]

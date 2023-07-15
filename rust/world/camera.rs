@@ -4,7 +4,6 @@ use std::f32::consts::PI;
 use cgmath::{Matrix4, Perspective, PerspectiveFov, Rad, Vector3};
 use cgmath_culling::FrustumCuller;
 use frustum_query::frustum::Frustum;
-use ultraviolet::{Mat4, Vec3, projection::perspective_gl};
 #[derive(Debug, Clone, Copy)]
 pub struct Rot {
     pub yaw: f32,
@@ -14,9 +13,9 @@ pub struct Rot {
 pub struct Camera {
     pub prev_mouse: (f64, f64),
     pub ratio: f32,
-    pub camera_pos: Vec3,
+    pub camera_pos: Vector3<f32>,
     pub camera_rot: Rot,
-    pub frustum_pos: Vec3,
+    pub frustum_pos: Vector3<f32>,
     pub frustum_rot: Rot,
     pub frustum_frozen: bool,
 }
@@ -64,9 +63,9 @@ impl Camera {
         Camera { 
             prev_mouse: (f64::MAX, f64::MAX),
             ratio: 1.0,
-            camera_pos: Vec3 { x: 0.0, y: 0.0, z: 16.0 * 11.0 * 0.0 },
+            camera_pos: Vector3 { x: 0.0, y: 0.0, z: 16.0 * 11.0 * 0.0 },
             camera_rot: Rot { pitch: 0.0, yaw: 0.0 },
-            frustum_pos: Vec3 { x: 0.0, y: 0.0, z: 16.0 * 11.0 * 0.0 },
+            frustum_pos: Vector3 { x: 0.0, y: 0.0, z: 16.0 * 11.0 * 0.0 },
             frustum_rot: Rot { pitch: 0.0, yaw: 0.0 },
             frustum_frozen: false
         }

@@ -27,7 +27,7 @@ use cgmath_culling::{BoundingBox, Intersection};
 use gl::{types, FramebufferParameteri};
 use glfw::{Context, Window, Action, Key};
 use util::{gl_helper::*, byte_buffer::StagingBuffer};
-use world::{world::World, chunk::{Vec3i, Chunk}};
+use world::{world::World, chunk::Chunk};
 
 use crate::{util::gl_helper, world::camera};
 
@@ -128,7 +128,7 @@ static OTHER_FACES: [(BlockFace, bool); 4] = [
 ];
 
 fn main() { unsafe {
-    env::set_var("RUST_BACKTRACE", "1");
+    // env::set_var("RUST_BACKTRACE", "1");
 
     let mut glfw = gl_helper::init_glfw();
     let mut status = WindowStatus::new();

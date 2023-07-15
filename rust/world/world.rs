@@ -1,19 +1,23 @@
 use std::cell::{Ref, RefCell, UnsafeCell};
 use std::collections::HashMap;
+use std::hint::unreachable_unchecked;
 use std::ops::{Deref, Add};
 use std::os::raw::c_void;
+use std::ptr::NonNull;
 use std::{ptr, hint};
 use std::{time, hint::black_box, alloc, mem};
 use crate::block::blockface::{Normal, BlockFace};
 use crate::util::byte_buffer::StagingBuffer;
 use crate::util::gl_helper::{Buffer, BufferPoolAllocator, log_if_error, Page, FrameBuffer, Texture, RenderBuffer, WindowStatus, Program, Shader};
-use crate::world::chunk::{self, Vec3i};
+use crate::world::chunk;
+use cgmath::Vector3;
+use cgmath_culling::{Intersection, BoundingBox};
 use simdnoise::NoiseBuilder;
 
 use super::{chunk::Chunk, camera::Camera};
 #[derive(Debug)]
 pub struct World {
-    pub chunks: HashMap::<Vec3i, Box::<Chunk>>,
+    pub chunks: HashMap::<Vector3<i32>, Box::<Chunk>>,
     pub camera: Camera,
     pub geometry_pool: BufferPoolAllocator<524288, 1024>,
     pub light_pool: BufferPoolAllocator<524288, 1024>,
@@ -30,7 +34,7 @@ pub struct World {
 impl World {
     pub fn new() -> World { unsafe {
         let world = World {
-            chunks: HashMap::<Vec3i, Box::<Chunk>>::new(),
+            chunks: HashMap::<Vector3<i32>, Box::<Chunk>>::new(),
             camera: Camera::new(),
             geometry_pool: BufferPoolAllocator::new(),
             light_pool: BufferPoolAllocator::new(),
@@ -204,45 +208,136 @@ impl World {
         // Cast into usize and back to prevent rust from realizing the unboxed chunk is in fact the same chunk that was passed in
         
         let chunk = Box::<Chunk>::into_raw(chunk) as usize as *mut Chunk;
-        if let Some(south) = self.chunks.get_mut(&Vec3i { x, y, z: z - 1 }) {
-            south.neighbors.north = Some(chunk);
-            (*chunk).neighbors.south = Some(&raw mut **south);
+        if let Some(south) = self.chunks.get_mut(&Vector3 { x, y, z: z - 1 }) {
+            south.neighbors.north = Some(NonNull::new_unchecked(chunk));
+            (*chunk).neighbors.south = Some(NonNull::new_unchecked(&raw mut **south));
         }
-        if let Some(west) = self.chunks.get_mut(&Vec3i { x: x - 1, y, z }) {
-            west.neighbors.east = Some(chunk);
-            (*chunk).neighbors.west = Some(&raw mut **west);
+        if let Some(west) = self.chunks.get_mut(&Vector3 { x: x - 1, y, z }) {
+            west.neighbors.east = Some(NonNull::new_unchecked(chunk));
+            (*chunk).neighbors.west = Some(NonNull::new_unchecked(&raw mut **west));
         }
-        if let Some(down) = self.chunks.get_mut(&Vec3i { x, y: y - 1, z }) {
-            down.neighbors.up = Some(chunk);
-            (*chunk).neighbors.down = Some(&raw mut **down);
+        if let Some(down) = self.chunks.get_mut(&Vector3 { x, y: y - 1, z }) {
+            down.neighbors.up = Some(NonNull::new_unchecked(chunk));
+            (*chunk).neighbors.down = Some(NonNull::new_unchecked(&raw mut **down));
         }
-        if let Some(north) = self.chunks.get_mut(&Vec3i { x, y, z: z + 1 }) {
-            north.neighbors.south = Some(chunk);
-            (*chunk).neighbors.north = Some(&raw mut **north);
+        if let Some(north) = self.chunks.get_mut(&Vector3 { x, y, z: z + 1 }) {
+            north.neighbors.south = Some(NonNull::new_unchecked(chunk));
+            (*chunk).neighbors.north = Some(NonNull::new_unchecked(&raw mut **north));
         }
-        if let Some(east) = self.chunks.get_mut(&Vec3i { x: x + 1, y, z }) {
-            east.neighbors.west = Some(chunk);
-            (*chunk).neighbors.east = Some(&raw mut **east);
+        if let Some(east) = self.chunks.get_mut(&Vector3 { x: x + 1, y, z }) {
+            east.neighbors.west = Some(NonNull::new_unchecked(chunk));
+            (*chunk).neighbors.east = Some(NonNull::new_unchecked(&raw mut **east));
         }
-        if let Some(up) = self.chunks.get_mut(&Vec3i { x, y: y + 1, z }) {
-            up.neighbors.down = Some(chunk);
-            (*chunk).neighbors.up = Some(&raw mut **up);
+        if let Some(up) = self.chunks.get_mut(&Vector3 { x, y: y + 1, z }) {
+            up.neighbors.down = Some(NonNull::new_unchecked(chunk));
+            (*chunk).neighbors.up = Some(NonNull::new_unchecked(&raw mut **up));
         }
 
         let chunk = Box::from_raw(*(&raw const chunk as *mut *mut Chunk));
         self.chunks.insert(chunk.pos, chunk);
     } }
 
-    pub fn remove_chunk(&mut self, pos: Vec3i) { unsafe {
+    pub fn remove_chunk(&mut self, pos: Vector3<i32>) { unsafe {
         if let Some(mut chunk) = self.chunks.remove(&pos) {
             println!("removing chunk at {} {} {}", pos.x, pos.y, pos.z);
-            chunk.neighbors.south.inspect(|south| (**south).neighbors.north = None);
-            chunk.neighbors.west.inspect(|west| (**west).neighbors.east = None);
-            chunk.neighbors.down.inspect(|down| (**down).neighbors.up = None);
-            chunk.neighbors.north.inspect(|north| (**north).neighbors.south = None);
-            chunk.neighbors.east.inspect(|east| (**east).neighbors.west = None);
-            chunk.neighbors.up.inspect(|up| (**up).neighbors.down = None);
+            if let Some(mut south) = chunk.neighbors.south {
+                south.as_mut().neighbors.north = None;
+            }
+            if let Some(mut west) = chunk.neighbors.west {
+                west.as_mut().neighbors.east = None;
+            }
+            if let Some(mut down) = chunk.neighbors.down {
+                down.as_mut().neighbors.up = None;
+            }
+            if let Some(mut north) = chunk.neighbors.north {
+                north.as_mut().neighbors.south = None;
+            }
+            if let Some(mut east) = chunk.neighbors.east {
+                east.as_mut().neighbors.west = None;
+            }
+            if let Some(mut up) = chunk.neighbors.up {
+                up.as_mut().neighbors.down = None;
+            }
             self.geometry_pool.deallocate(chunk.geometry_page.take());
+            self.light_pool.deallocate(chunk.light_page.take());
         }
     } }
+
+    fn draw(&mut self) { unsafe {
+        self.geometry_program.as_ref().unwrap().bind();
+        self.framebuffer.as_ref().unwrap().bind(gl::FRAMEBUFFER);
+    
+        gl::ClearColor(16.0, 16.0, 16.0, 16.0);
+        gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+        gl::Enable(gl::DEPTH_TEST);
+        // let camera_matrix = self.camera.get_matrix().as_array();
+        let camera_matrix: [f32; 16] = *(self.camera.get_matrix().as_ref());
+        gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_ptr());
+    
+        let frustum = self.camera.get_frustum();
+        const ELEMENT_INDICES_PER_QUAD: i32 = 5;
+        const BYTES_PER_QUAD: usize = 8;
+        const ELEMENTS_PER_QUAD: usize = 4;
+    
+        let mut frustum_results: [Intersection; 8 * 8 * 8] = [Intersection::Inside; 512];
+        for x in 0..8 {
+            for y in 0..8 {
+                for z in 0..8 {
+                    frustum_results[(x << 6) | (y << 3) | (z << 0)] = frustum.test_bounding_box(
+                        BoundingBox {
+                            min: Vector3 {
+                                x: (x * 256 * 4) as f32 - self.camera.frustum_pos.x,
+                                y: (y * 256 * 4) as f32 - self.camera.frustum_pos.y,
+                                z: (z * 256 * 4) as f32 - self.camera.frustum_pos.z,
+                            },
+                            max: Vector3 {
+                                x: (x * 256 * 4) as f32 - self.camera.frustum_pos.x + 256.0 * 4.0,
+                                y: (y * 256 * 4) as f32 - self.camera.frustum_pos.y + 256.0 * 4.0,
+                                z: (z * 256 * 4) as f32 - self.camera.frustum_pos.z + 256.0 * 4.0,
+                            }
+                        }
+                    );
+                }
+            }
+        }
+    
+        for chunk in self.chunks.values() {
+            if let Some(geometry_page) = &chunk.geometry_page {
+                // if chunk.pos.x >= 8 || chunk.pos.y >= 8 || chunk.pos.z >= 8 { continue; }
+                let Some(light_page) = &chunk.light_page else { unreachable_unchecked(); };
+                match frustum_results[(((chunk.pos.x / 4) << 6) | ((chunk.pos.y / 4) << 3) | ((chunk.pos.z / 4) << 0)) as usize] {
+                    Intersection::Inside => {}
+                    // Intersection::Partial => { if frustum.test_bounding_box(chunk.get_bounding_box(&self.camera)) == Intersection::Outside { continue; } }
+                    Intersection::Partial => { if frustum.test_sphere(chunk.get_bounding_sphere(&self.camera)) == Intersection::Outside { continue; } }
+                    Intersection::Outside => { continue; }
+                }
+                let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z];
+                gl::Uniform3iv(1, 1, &raw const chunk.pos as *const i32);
+                gl::Uniform1ui(2, (light_page.start * light_page.block_size() / mem::size_of::<u32>() / 2) as u32);
+                gl::DrawElementsBaseVertex(
+                    gl::TRIANGLE_STRIP,
+                    chunk.quad_count as i32 * ELEMENT_INDICES_PER_QUAD,
+                    gl::UNSIGNED_INT,
+                    ptr::null(),
+                    (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD) as i32
+                );
+            }
+        }
+    
+        self.post_program.as_ref().unwrap().bind();
+    
+        gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
+        FrameBuffer::clear_bind(gl::FRAMEBUFFER);
+        gl::ClearColor(1.0, 1.0, 1.0, 1.0);
+        gl::Clear(gl::COLOR_BUFFER_BIT);
+        gl::Disable(gl::DEPTH_TEST);
+    
+        gl::ActiveTexture(gl::TEXTURE0);
+        self.texture_attachment.as_ref().unwrap().bind(gl::TEXTURE_2D);
+        gl::ActiveTexture(gl::TEXTURE1);
+        self.block_texture.as_ref().unwrap().bind(gl::TEXTURE_2D_ARRAY);
+        
+        gl::DrawArrays(gl::TRIANGLES, 0, 6);
+    } }
+    
 }

@@ -45,7 +45,7 @@ pub struct Chunk {
     pub light: [u8; 4096],
 
     // Chunk position
-    pub pos: Vec3i,
+    pub pos: Vector3<i32>,
     // Adjacent chunks
     pub neighbors: Neighbors,
     // Number of rectangular block faces in a chunk
@@ -57,78 +57,92 @@ pub struct Chunk {
 
 #[derive(Debug)]
 pub struct Neighbors {
-    pub south: Option<*mut Chunk>,
-    pub west: Option<*mut Chunk>,
-    pub down: Option<*mut Chunk>,
-    pub north: Option<*mut Chunk>,
-    pub east: Option<*mut Chunk>,
-    pub up: Option<*mut Chunk>,
+    pub south: Option<NonNull<Chunk>>,
+    pub west: Option<NonNull<Chunk>>,
+    pub down: Option<NonNull<Chunk>>,
+    pub north: Option<NonNull<Chunk>>,
+    pub east: Option<NonNull<Chunk>>,
+    pub up: Option<NonNull<Chunk>>,
 }
 impl Chunk {
-    pub fn get_block(&self, index: usize) -> &'static BlockState { unsafe {
+    pub fn get_neighbor<const N: Normal>(&self) -> Option<&Chunk> { unsafe {
+        match N {
+            Normal::NORTH => {
+                return mem::transmute(self.neighbors.north);
+            }
+            Normal::SOUTH => {
+                return mem::transmute(self.neighbors.south);
+            }
+            Normal::EAST => {
+                return mem::transmute(self.neighbors.east);
+            }
+            Normal::WEST => {
+                return mem::transmute(self.neighbors.west);
+            }
+            Normal::UP => {
+                return mem::transmute(self.neighbors.up);
+            }
+            Normal::DOWN => {
+                return mem::transmute(self.neighbors.down);
+            }
+            _ => { unreachable_unchecked(); }
+        }
+    } }
+
+    pub fn get_block(&self, index: usize) -> &BlockState { unsafe {
         return &BLOCKS[*self.blocks.get_unchecked(index) as usize];
     } }
-    pub fn get_opposing_block<'a, const NORMAL: Normal>(&'a self, index: usize) -> &'a BlockState { unsafe {
-        match NORMAL {
+    pub fn get_opposing_block<const N: Normal>(&self, index: usize) -> &BlockState { unsafe {
+        match N {
             Normal::SOUTH => {
                 if index & 0x00f == 0 {
-                    match self.neighbors.south {
-                        Some(chunk) => return &(*chunk).get_block(index | 0x00f),
-                        None => return &BLOCKS[0],
-                    }
+                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |chunk| chunk.get_block(index | 0x00f));
                 }
                 return &self.get_block(index - 0x001);
             }
             Normal::WEST => {
                 if index & 0xf00 == 0 {
-                    match self.neighbors.west {
-                        Some(chunk) => return &(*chunk).get_block(index | 0xf00),
-                        None => return &BLOCKS[0],
-                    }
+                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |chunk| chunk.get_block(index | 0xf00));
                 }
                 return &self.get_block(index - 0x100);
             }
             Normal::DOWN => {
                 if index & 0x0f0 == 0 {
-                    match self.neighbors.down {
-                        Some(chunk) => return &(*chunk).get_block(index | 0x0f0),
-                        None => return &BLOCKS[0],
-                    }
+                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |chunk| chunk.get_block(index | 0x0f0));
                 }
                 return &self.get_block(index - 0x010);
             }
-            _ => unsafe { std::hint::unreachable_unchecked(); }
+            _ => unsafe { hint::unreachable_unchecked(); }
         }
-
     } }
     
-    pub fn get_face<const NORMAL: Normal>(&self, index: usize) -> &BlockFace {
-        return &self.get_block(index).model.get_face(NORMAL);
+    pub fn get_face<const N: Normal>(&self, index: usize) -> &BlockFace {
+        return &self.get_block(index).model.get_face(N);
     }
-    pub fn get_opposing_face<'a, const NORMAL: Normal>(&'a self, index: usize) -> &BlockFace {
-        return &self.get_opposing_block::<NORMAL>(index).model.get_face(NORMAL.reverse());
+    pub fn get_opposing_face<const N: Normal>(&self, index: usize) -> &BlockFace {
+        return &self.get_opposing_block::<N>(index).model.get_face(N.reverse());
     }
     
-    pub fn get_face_pair<'a, const NORMAL: Normal>(&'a self, index: usize) -> (&BlockFace, &BlockFace) {
-        return (self.get_face::<NORMAL>(index), self.get_opposing_face::<NORMAL>(index))
+    pub fn get_face_pair<const N: Normal>(&self, index: usize) -> (&BlockFace, &BlockFace) {
+        return (self.get_face::<N>(index), self.get_opposing_face::<N>(index))
     }
 
-    pub fn has_other_face<const NORMAL: Normal>(&self, index: usize) -> bool {
-        return self.get_block(index).otherFaces[NORMAL.0 as usize] != 0xffff;
+    pub fn has_other_face<const N: Normal>(&self, index: usize) -> bool {
+        return self.get_block(index).otherFaces[N.0 as usize] != 0xffff;
     }
-    pub fn has_opposing_other_face<const NORMAL: Normal>(&self, index: usize) -> bool {
-        return self.get_opposing_block::<NORMAL>(index).otherFaces[NORMAL.reverse().0 as usize] != 0xffff;
+    pub fn has_opposing_other_face<const N: Normal>(&self, index: usize) -> bool {
+        return self.get_opposing_block::<N>(index).otherFaces[N.reverse().0 as usize] != 0xffff;
     }
     
-    pub fn get_other_face<const NORMAL: Normal>(&self, index: usize) -> &(BlockFace, bool) {
-        return &OTHER_FACES[self.get_block(index).otherFaces[NORMAL.0 as usize] as usize];
+    pub fn get_other_face<const N: Normal>(&self, index: usize) -> &(BlockFace, bool) {
+        return &OTHER_FACES[self.get_block(index).otherFaces[N.0 as usize] as usize];
     }
-    pub fn get_opposing_other_face<const NORMAL: Normal>(&self, index: usize) -> &(BlockFace, bool) {
-        return &OTHER_FACES[self.get_opposing_block::<NORMAL>(index).otherFaces[NORMAL.reverse().0 as usize] as usize];
+    pub fn get_opposing_other_face<const N: Normal>(&self, index: usize) -> &(BlockFace, bool) {
+        return &OTHER_FACES[self.get_opposing_block::<N>(index).otherFaces[N.reverse().0 as usize] as usize];
     }
 
     pub fn make_terrain(&mut self, noise: &Vec<f32>, chunk_x: usize, chunk_y: usize, chunk_z: usize) { unsafe {
-        self.pos = Vec3i {
+        self.pos = Vector3 {
             x: chunk_x as i32,
             y: chunk_y as i32,
             z: chunk_z as i32
@@ -162,7 +176,7 @@ impl Chunk {
     } }
 
     pub fn make_terrain_alt(&mut self, chunk_x: usize, chunk_y: usize, chunk_z: usize) {
-        self.pos = Vec3i {
+        self.pos = Vector3 {
             x: chunk_x as i32,
             y: chunk_y as i32,
             z: chunk_z as i32
@@ -665,13 +679,13 @@ impl Chunk {
     } }
 
     pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>) { unsafe {
-        // self.mesh_south_north(geometry_staging_buffer);
-        // self.mesh_west_east(geometry_staging_buffer);
-        // self.mesh_down_up(geometry_staging_buffer);
+        self.mesh_south_north(geometry_staging_buffer);
+        self.mesh_west_east(geometry_staging_buffer);
+        self.mesh_down_up(geometry_staging_buffer);
 
-        self.mesh_south_north_no_merge(geometry_staging_buffer);
-        self.mesh_west_east_no_merge(geometry_staging_buffer);
-        self.mesh_down_up_no_merge(geometry_staging_buffer);
+        // self.mesh_south_north_no_merge(geometry_staging_buffer);
+        // self.mesh_west_east_no_merge(geometry_staging_buffer);
+        // self.mesh_down_up_no_merge(geometry_staging_buffer);
 
         geometry_staging_buffer.format_quads();
 
@@ -702,10 +716,10 @@ impl Chunk {
 
         for (i, quad) in geometry_staging_buffer.iter().map(|quad| &*(quad as *const [u8; 8] as *const GpuQuad)).enumerate() {
             light_staging_buffer.insert_u32(((light_page_byte_offset + light_staging_buffer.index) / mem::size_of::<u32>()) as u32, i * mem::size_of::<u32>());
-            // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
+            light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
 
-            // continue;
-            // #[allow(unreachable_code)]
+            continue;
+            #[allow(unreachable_code)]
             match quad.nor {
                 Normal::SOUTH => {
                     let start_x = quad.ure / 16;
@@ -822,38 +836,6 @@ impl Chunk {
         }
         light_buffer_allocator.upload(page, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.index as isize);
     } }
-
-    pub fn cull_backfaces(&mut self, world: &mut World) {
-        // let south = self.counts[0];
-        // let north = self.counts[3];
-        // if world.camera.pos.z > self.pos.z as f32 * 16.0 + 16.0 { self.counts[0] = 0 }
-        // if world.camera.pos.z < self.pos.z as f32 * 16.0 { self.counts[3] = 0 }
-
-        // let west = self.counts[1];
-        // let east = self.counts[4];
-        // if world.camera.pos.x > self.pos.x as f32 * 16.0 + 16.0 { self.counts[1] = 0 }
-        // if world.camera.pos.x < self.pos.x as f32 * 16.0 { self.counts[4] = 0 }
-
-        // let down = self.counts[2];
-        // let up = self.counts[5];
-        // if world.camera.pos.y > self.pos.y as f32 * 16.0 + 16.0 { self.counts[2] = 0 }
-        // if world.camera.pos.y < self.pos.y as f32 * 16.0 { self.counts[5] = 0 }
-
-        // unsafe { gl::MultiDrawElements(
-        //     gl::TRIANGLE_STRIP,
-        //     &raw const self.counts as *const i32,
-        //     gl::UNSIGNED_INT,
-        //     &raw const self.offsets as *const *const c_void,
-        //     6
-        // ) };
-
-        // self.counts[0] = south;
-        // self.counts[1] = west;
-        // self.counts[2] = down;
-        // self.counts[3] = north;
-        // self.counts[4] = east;
-        // self.counts[5] = up;
-    }
 
     pub fn get_bounding_box(&self, camera: &Camera) -> BoundingBox<f32> {
         return BoundingBox {
@@ -1043,10 +1025,10 @@ impl Run {
     /**
      * Begins a new run
      */
-    pub fn begin<const NORMAL: Normal>(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, pos: usize, u: u8, row: u16) {
+    pub fn begin<const N: Normal>(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, pos: usize, u: u8, row: u16) {
         self.idx = buffer.index as u16;
         let offset: u32;
-        match NORMAL {
+        match N {
             Normal::SOUTH | Normal::NORTH => {
                 offset = Chunk::INDICES_ZYX[pos];
             }
@@ -1075,9 +1057,9 @@ impl Run {
 
         self.row = row;
     }
-    pub fn add_face<const NORMAL: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, pos: usize) {
+    pub fn add_face<const N: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, pos: usize) {
         let offset: u32;
-        match NORMAL {
+        match N {
             Normal::SOUTH | Normal::NORTH => {
                 offset = Chunk::INDICES_ZYX[pos];
             }
@@ -1130,12 +1112,4 @@ impl Default for Run {
     fn default() -> Self {
         return Run::new();
     }
-}
-
-#[derive(Debug)]
-#[derive(Clone, Copy)]
-#[derive(Eq, PartialEq, Hash)]
-#[repr(C)]
-pub struct Vec3i {
-    pub x: i32, pub y: i32, pub z: i32
 }
