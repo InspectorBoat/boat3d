@@ -23,7 +23,8 @@ pub struct World {
     pub index_buffer: Option<Buffer>,
     pub geometry_program: Option<Program>,
     pub post_program: Option<Program>,
-    pub screen_buffer: Option<Buffer>
+    pub screen_buffer: Option<Buffer>,
+    pub block_texture: Option<Texture>
 }
 
 impl World {
@@ -40,11 +41,27 @@ impl World {
             geometry_program: None,
             post_program: None,
             screen_buffer: None,
+            block_texture: None,
         };
-        
+
         return world;
     } }
 
+    pub fn make_block_texture(&mut self) { unsafe {
+        gl::ActiveTexture(gl::TEXTURE0);
+        let block_texture = Texture::create();
+        block_texture.bind(gl::TEXTURE_2D_ARRAY);
+        let image: [u8; 16 * 3 * 64] = [0; 16 * 3 * 64].map(|_| rand::random());
+        gl::TexImage3D(gl::TEXTURE_2D_ARRAY, 0, gl::RGBA as i32, 4, 4, 64, 0, gl::RGB, gl::BYTE, &image as *const u8 as *const c_void);
+        gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_WRAP_S, gl::CLAMP_TO_EDGE as i32);
+        gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_WRAP_T, gl::CLAMP_TO_EDGE as i32);
+        // set texture filtering parameters
+        gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
+        gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+        log_if_error();
+        self.block_texture = Some(block_texture);
+    } }
+    
     pub fn make_framebuffer(&mut self, status: &WindowStatus) { unsafe {
         if let Some(framebuffer) = self.framebuffer.take() {
             framebuffer.kill();
@@ -60,7 +77,7 @@ impl World {
         framebuffer.bind(gl::FRAMEBUFFER);
     
         let texture_attachment = Texture::create();
-        Texture::active(0);
+        gl::ActiveTexture(gl::TEXTURE0);
         texture_attachment.bind(gl::TEXTURE_2D);
         gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32F as i32, status.width as i32, status.height as i32, 0, gl::RGBA, gl::BYTE, ptr::null());
         // gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32UI as i32, status.width as i32, status.height as i32, 0, gl::RGBA_INTEGER, gl::INT, ptr::null());
@@ -107,12 +124,13 @@ impl World {
             Shader::create(gl::VERTEX_SHADER, include_str!("../shader/geometry.glsl.vert")),
             Shader::create(gl::FRAGMENT_SHADER, include_str!("../shader/geometry.glsl.frag"))
         );
-        geometry_program.bind();
-    
         let post_program = Program::create(
             Shader::create(gl::VERTEX_SHADER, include_str!("../shader/post.glsl.vert")),
             Shader::create(gl::FRAGMENT_SHADER, include_str!("../shader/post.glsl.frag"))
         );
+        post_program.uniform1i(0, 0);
+        post_program.uniform1i(1, 1);
+    
         self.geometry_program = Some(geometry_program);
         self.post_program = Some(post_program);
     } }

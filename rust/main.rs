@@ -141,6 +141,7 @@ fn main() { unsafe {
 
     world.generate();
     world.mesh();
+    world.make_block_texture();
     world.make_framebuffer(&status);
     world.make_index_buffer();
     world.make_shader_programs();
@@ -149,12 +150,12 @@ fn main() { unsafe {
     world.geometry_pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
     world.light_pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
 
-    println!("{}", world.geometry_pool.furthest);
-
     while !window.should_close() {
         glfw.poll_events();
         
-        for (_, event) in glfw::flush_messages(&events) { handle_window_event(&mut window, &mut world, event, &mut keys, &mut status); }
+        for (_, event) in glfw::flush_messages(&events) {
+            handle_window_event(&mut window, &mut world, event, &mut keys, &mut status);
+        }
         
         update(&mut world, &mut keys);
         
@@ -182,6 +183,8 @@ fn draw(world: &mut World) { unsafe {
     let camera_matrix = world.camera.get_matrix();
     gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_array().as_ptr());
 
+    let frustum = world.camera.get_frustum();
+
     const ELEMENT_INDICES_PER_QUAD: i32 = 5;
     const BYTES_PER_QUAD: usize = 8;
     const ELEMENTS_PER_QUAD: usize = 4;
@@ -190,7 +193,9 @@ fn draw(world: &mut World) { unsafe {
         if let Some(geometry_page) = &chunk.geometry_page {
             // if chunk.pos.x >= 8 || chunk.pos.y >= 8 || chunk.pos.z >= 8 { continue; }
             let Some(light_page) = &chunk.light_page else { unreachable_unchecked(); };
-
+            if !frustum.point_intersecting(&(chunk.pos.x as f32 - world.camera.frustum_pos.x / 256.0), &(chunk.pos.y as f32 - world.camera.frustum_pos.y / 256.0), &(chunk.pos.z as f32 - world.camera.frustum_pos.z / 256.0)) {
+                continue;
+            }
             let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z];
             gl::Uniform3iv(1, 1, &raw const chunk.pos as *const i32);
             gl::Uniform1ui(2, (light_page.start * light_page.block_size() / mem::size_of::<u32>() / 2) as u32);
@@ -213,6 +218,8 @@ fn draw(world: &mut World) { unsafe {
 
     gl::ActiveTexture(gl::TEXTURE0);
     world.texture_attachment.as_ref().unwrap().bind(gl::TEXTURE_2D);
+    gl::ActiveTexture(gl::TEXTURE1);
+    world.block_texture.as_ref().unwrap().bind(gl::TEXTURE_2D_ARRAY);
     
     gl::DrawArrays(gl::TRIANGLES, 0, 6);
 } }
@@ -229,8 +236,8 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
             if !status.mouse_captured { return }
             let delta = (x - world.camera.prev_mouse.0, y - world.camera.prev_mouse.1);
             if world.camera.prev_mouse != (f64::MAX, f64::MAX) {
-                world.camera.rot.yaw += (delta.0 / 500.0) as f32;
-                world.camera.rot.pitch += (delta.1 / 500.0) as f32;
+                world.camera.camera_rot.yaw += (delta.0 / 500.0) as f32;
+                world.camera.camera_rot.pitch += (delta.1 / 500.0) as f32;
             }
             world.camera.prev_mouse = (x, y);
         }
@@ -247,6 +254,13 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
                     if status.maximized { window.restore() }
                     else { window.maximize() }
                     status.maximized = !status.maximized;
+                }
+                Key::F => {
+                    world.camera.frustum_frozen = !world.camera.frustum_frozen;
+                    if world.camera.frustum_frozen == false {
+                        world.camera.camera_pos = world.camera.frustum_pos;
+                        world.camera.camera_rot = world.camera.frustum_rot;
+                    }
                 }
                 _ => ()
             }
@@ -272,27 +286,27 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
 } }
 
 fn update(world: &mut World, keys: &mut HashMap<Key, bool>) {
-    let speed = 0.1 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
+    let speed = 1.6 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
     for (key, pressed) in keys.iter() {
         if *pressed == false { continue; }
         match key {
             Key::W => {
-                world.camera.step(0.0, -speed as f64);
+                world.camera.step(0.0, 0.0, -speed as f64);
             }
             Key::S => {
-                world.camera.step(0.0, speed as f64);
+                world.camera.step(0.0, 0.0, speed as f64);
             }
             Key::A => {
-                world.camera.step(-speed as f64, 0.0);
+                world.camera.step(-speed as f64, 0.0, 0.0);
             }
             Key::D => {
-                world.camera.step(speed as f64, 0.0);
+                world.camera.step(speed as f64, 0.0, 0.0);
             }
             Key::Space => {
-                world.camera.pos.y += speed;
+                world.camera.step(0.0, speed as f64, 0.0);
             }
             Key::LeftShift => {
-                world.camera.pos.y -= speed;
+                world.camera.step(0.0, - speed as f64, 0.0);
             }
             _ => ()
         }

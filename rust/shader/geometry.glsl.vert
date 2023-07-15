@@ -68,8 +68,10 @@ const mat4[] corner_transforms = {
 };
 
 struct Face {
-        uint uvdn;
-        uint whtt;
+        // uint uvdn;
+        // uint whtt;
+        uint ndvu;
+        uint tthw;
 };
 
 layout(std430, binding = 0) readonly restrict buffer Faces {
@@ -81,31 +83,31 @@ layout(std430, binding = 1) readonly restrict buffer Light {
 };
 
 vec4 get_relative_pos(int face_index) {
-        return (uvec4(faces[face_index].uvdn) >> uvec4(0, 8, 16, 24)) & uvec4(0xff, 0xff, 0xff, 0x00);
+        return (uvec4(faces[face_index].ndvu) >> uvec4(0, 8, 16, 24)) & uvec4(0xff, 0xff, 0xff, 0x00);
         // return vec4(
-        //         (faces[face_index].uvdn >>  0) & 0xff,
-        //         (faces[face_index].uvdn >>  8) & 0xff,
-        //         (faces[face_index].uvdn >> 16) & 0xff,
+        //         (faces[face_index].ndvu >>  0) & 0xff,
+        //         (faces[face_index].ndvu >>  8) & 0xff,
+        //         (faces[face_index].ndvu >> 16) & 0xff,
         //         0
         // );
 }
 
 uint get_normal(int face_index) {
-        return (faces[face_index].uvdn >> 24) & 0xff;
+        return (faces[face_index].ndvu >> 24) & 0xff;
 }
 
 vec4 get_size(int face_index) {
-        return (uvec4(faces[face_index].whtt) >> uvec4(0, 8, 16, 24) & uvec4(0xff, 0xff, 0x00, 0x00)) + uvec4(1, 1, 0, 1);
+        return (uvec4(faces[face_index].tthw) >> uvec4(0, 8, 16, 24) & uvec4(0xff, 0xff, 0x00, 0x00)) + uvec4(1, 1, 0, 1);
         // return vec4(
-        //         ((faces[face_index].whtt >> 0) & 0xff) + 1,
-        //         ((faces[face_index].whtt >> 8) & 0xff) + 1,
+        //         ((faces[face_index].tthw >> 0) & 0xff) + 1,
+        //         ((faces[face_index].tthw >> 8) & 0xff) + 1,
         //         0,
         //         1
         // );
 }
 
-float get_texture(int face_index) {
-        return float(faces[face_index].whtt & 0xff);
+uint get_texture(int face_index) {
+        return faces[face_index].tthw >> 24 & 0xff;
 }
 
 layout(location = 0) uniform mat4 u_transform;
@@ -131,6 +133,7 @@ void main() {
         
         // relative_pos = vertex_pos * pos_transforms[normal];
         texture_pos = offset.xy / 16;
+        texture_id = get_texture(face_index);
         light_index = light[light_page_index_offset + face_index];
         quad_width = 1;
 }

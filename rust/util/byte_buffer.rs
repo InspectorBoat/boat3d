@@ -1,5 +1,5 @@
 use std::{ops::{IndexMut, Index, Add}, hint::{unreachable_unchecked, black_box}, mem};
-use crate::{block::blockface::{BlockFace, Normal}, world::chunk::Chunk};
+use crate::{block::blockface::{BlockFace, Normal, GpuQuad}, world::chunk::Chunk};
 #[repr(C, align(8))]
 pub struct StagingBuffer {
     pub index: usize,
@@ -80,9 +80,9 @@ impl StagingBuffer {
             face[3] = nor;
             face[4] = wid;
             face[5] = hei;
-            // arr[6] = tex.0;
-            // arr[7] = tex.1;
-
+            // face[6] = tex.0;
+            // face[7] = tex.1;
+            face[7] = rand::random::<u8>() & 0x3f;
         }
     } }
     pub fn reset(&mut self) {

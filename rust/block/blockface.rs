@@ -44,6 +44,7 @@ impl BlockFace {
 }
 
 #[repr(C, align(8))]
+#[derive(Debug)]
 pub struct GpuQuad {
     pub ure: u8,
     pub ven: u8,

@@ -251,10 +251,6 @@ impl Texture {
     pub fn kill(self) { unsafe {
         gl::DeleteTextures(1, &self.id);
     } }
-    pub fn active(texture: u32) { unsafe {
-        gl::ActiveTexture(texture);
-    } }
-
 }
 
 impl Drop for Texture {
