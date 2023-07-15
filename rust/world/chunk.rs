@@ -127,18 +127,24 @@ impl Chunk {
         return (self.get_face::<N>(index), self.get_opposing_face::<N>(index))
     }
 
-    pub fn has_other_face<const N: Normal>(&self, index: usize) -> bool {
+    pub fn has_extra_face<const N: Normal>(&self, index: usize) -> bool {
         return self.get_block(index).otherFaces[N.0 as usize] != 0xffff;
     }
-    pub fn has_opposing_other_face<const N: Normal>(&self, index: usize) -> bool {
+    pub fn has_opposing_extra_face<const N: Normal>(&self, index: usize) -> bool {
         return self.get_opposing_block::<N>(index).otherFaces[N.reverse().0 as usize] != 0xffff;
     }
     
-    pub fn get_other_face<const N: Normal>(&self, index: usize) -> &(BlockFace, bool) {
-        return &OTHER_FACES[self.get_block(index).otherFaces[N.0 as usize] as usize];
+    pub fn get_extra_face<const N: Normal>(&self, index: usize) -> Option<&(BlockFace, bool)> {
+        if self.has_extra_face::<N>(index) {
+            return Some(&OTHER_FACES[self.get_block(index).otherFaces[N.0 as usize] as usize]);
+        }
+        return None;
     }
-    pub fn get_opposing_other_face<const N: Normal>(&self, index: usize) -> &(BlockFace, bool) {
-        return &OTHER_FACES[self.get_opposing_block::<N>(index).otherFaces[N.reverse().0 as usize] as usize];
+    pub fn get_opposing_extra_face<const N: Normal>(&self, index: usize) -> Option<&(BlockFace, bool)> {
+        if self.has_opposing_extra_face::<N>(index) {
+            return Some(&OTHER_FACES[self.get_opposing_block::<N>(index).otherFaces[N.reverse().0 as usize] as usize]);
+        }
+        return None;
     }
 
     pub fn make_terrain(&mut self, noise: &Vec<f32>, chunk_x: usize, chunk_y: usize, chunk_z: usize) { unsafe {
@@ -163,8 +169,11 @@ impl Chunk {
                 self.light.get_unchecked_mut(Chunk::pos(x, y, z)),
             );
             *block = match *noise_val {
-                val if val < 0.5 => {
+                val if val < 0.49 => {
                     1
+                },
+                val if val < 0.50 => {
+                    2
                 },
                 _ => {
                     0
@@ -210,8 +219,8 @@ impl Chunk {
             let (face_s, face_n) = self.get_face_pair::<{Normal::SOUTH}>(pos);
             let compare = BlockFace::should_cull(face_s, face_n);
             'south: {
-                if self.has_other_face::<{ Normal::SOUTH }>(pos) {
-                    Run::add_face::<{ Normal::SOUTH }>(geometry_staging_buffer, &self.get_other_face::<{Normal::SOUTH}>(pos).0, pos);
+                if let Some(face) = self.get_extra_face::<{Normal::SOUTH}>(pos) {
+                    Run::add_face::<{ Normal::SOUTH }>(geometry_staging_buffer, &face.0, pos);
                 }
     
                 if compare.0 {
@@ -268,8 +277,8 @@ impl Chunk {
             'north: {
                 // break 'north;
 
-                if self.has_opposing_other_face::<{ Normal::SOUTH }>(pos) {
-                    Run::add_face::<{ Normal::SOUTH }>(geometry_staging_buffer, &self.get_opposing_other_face::<{Normal::SOUTH}>(pos).0, pos);
+                if let Some(face) = self.get_opposing_extra_face::<{ Normal::SOUTH }>(pos) {
+                    Run::add_face::<{ Normal::NORTH }>(geometry_staging_buffer, &face.0, pos);
                 }
 
                 if compare.1 {
@@ -350,10 +359,10 @@ impl Chunk {
             let (face_w, face_e) = self.get_face_pair::<{Normal::WEST}>(pos);
             let compare = BlockFace::should_cull(face_w, face_e);
             'west: {
-                if self.has_other_face::<{ Normal::WEST }>(pos) {
-                    Run::add_face::<{ Normal::WEST }>(geometry_staging_buffer, &self.get_other_face::<{Normal::WEST}>(pos).0, pos);
+                if let Some(face) = self.get_extra_face::<{Normal::WEST}>(pos) {
+                    Run::add_face::<{ Normal::WEST }>(geometry_staging_buffer, &face.0, pos);
                 }
-
+    
                 if compare.0 {
                     active_run_w = false;
                     break 'west
@@ -409,10 +418,9 @@ impl Chunk {
             'east: {
                 // break 'east;
 
-                if self.has_opposing_other_face::<{ Normal::WEST }>(pos) {
-                    Run::add_face::<{ Normal::WEST }>(geometry_staging_buffer, &self.get_opposing_other_face::<{Normal::WEST}>(pos).0, pos);
+                if let Some(face) = self.get_opposing_extra_face::<{ Normal::WEST }>(pos) {
+                    Run::add_face::<{ Normal::EAST }>(geometry_staging_buffer, &face.0, pos);
                 }
-
                 if compare.1 {
                     active_run_e = false;
                     break 'east
@@ -490,10 +498,10 @@ impl Chunk {
             let (face_d, face_u) = self.get_face_pair::<{Normal::DOWN}>(pos);
             let compare = BlockFace::should_cull(face_d, face_u);
             'down: {
-                if self.has_other_face::<{ Normal::DOWN }>(pos) {
-                    Run::add_face::<{ Normal::DOWN }>(geometry_staging_buffer, &self.get_other_face::<{Normal::DOWN}>(pos).0, pos);
+                if let Some(face) = self.get_extra_face::<{Normal::DOWN}>(pos) {
+                    Run::add_face::<{ Normal::DOWN }>(geometry_staging_buffer, &face.0, pos);
                 }
-
+    
                 if compare.0 {
                     active_run_d = false;
                     break 'down
@@ -549,8 +557,8 @@ impl Chunk {
             'up: {
                 // break 'up;
 
-                if self.has_opposing_other_face::<{ Normal::DOWN }>(pos) {
-                    Run::add_face::<{ Normal::DOWN }>(geometry_staging_buffer, &self.get_opposing_other_face::<{Normal::DOWN}>(pos).0, pos);
+                if let Some(face) = self.get_opposing_extra_face::<{ Normal::DOWN }>(pos) {
+                    Run::add_face::<{ Normal::UP }>(geometry_staging_buffer, &face.0, pos);
                 }
 
                 if compare.1 {
@@ -623,13 +631,13 @@ impl Chunk {
             if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_s.as_u64() + offset); }
             if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_n.as_u64() + offset); }
             
-            if self.has_other_face::<{Normal::SOUTH}>(pos) {
-                geometry_staging_buffer.put_u64(self.get_other_face::<{Normal::SOUTH}>(pos).0.as_u64() + offset);
+            if let Some(face) = self.get_extra_face::<{Normal::SOUTH}>(pos) {
+                Run::add_face::<{ Normal::SOUTH }>(geometry_staging_buffer, &face.0, pos);
             }
-            if self.has_opposing_other_face::<{Normal::SOUTH}>(pos) {
-                geometry_staging_buffer.put_u64(self.get_opposing_other_face::<{Normal::SOUTH}>(pos).0.as_u64() + offset);
+            if let Some(face) = self.get_opposing_extra_face::<{ Normal::SOUTH }>(pos) {
+                Run::add_face::<{ Normal::NORTH }>(geometry_staging_buffer, &face.0, pos);
             }
-        } } }
+    } } }
     } }
     pub fn mesh_west_east_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) { unsafe {
         for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
@@ -646,13 +654,14 @@ impl Chunk {
             if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_w.as_u64() + offset); }
             if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_e.as_u64() + offset); }
 
-            if self.has_other_face::<{Normal::WEST}>(pos) {
-                geometry_staging_buffer.put_u64(self.get_other_face::<{Normal::WEST}>(pos).0.as_u64() + offset);
+            if let Some(face) = self.get_extra_face::<{Normal::WEST}>(pos) {
+                Run::add_face::<{ Normal::WEST }>(geometry_staging_buffer, &face.0, pos);
             }
-            if self.has_opposing_other_face::<{Normal::WEST}>(pos) {
-                geometry_staging_buffer.put_u64(self.get_opposing_other_face::<{Normal::WEST}>(pos).0.as_u64() + offset);
+
+            if let Some(face) = self.get_opposing_extra_face::<{ Normal::WEST }>(pos) {
+                Run::add_face::<{ Normal::EAST }>(geometry_staging_buffer, &face.0, pos);
             }
-        } } }
+    } } }
     } }
     pub fn mesh_down_up_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) { unsafe {
         for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
@@ -669,13 +678,14 @@ impl Chunk {
             if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_d.as_u64() + offset); }
             if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_u.as_u64() + offset); }
 
-            if self.has_other_face::<{Normal::DOWN}>(pos) {
-                geometry_staging_buffer.put_u64(self.get_other_face::<{Normal::DOWN}>(pos).0.as_u64() + offset);
+            if let Some(face) = self.get_extra_face::<{Normal::UP}>(pos) {
+                Run::add_face::<{ Normal::UP }>(geometry_staging_buffer, &face.0, pos);
             }
-            if self.has_opposing_other_face::<{Normal::DOWN}>(pos) {
-                geometry_staging_buffer.put_u64(self.get_opposing_other_face::<{Normal::DOWN}>(pos).0.as_u64() + offset);
+
+            if let Some(face) = self.get_opposing_extra_face::<{ Normal::UP }>(pos) {
+                Run::add_face::<{ Normal::DOWN }>(geometry_staging_buffer, &face.0, pos);
             }
-        } } }
+    } } }
     } }
 
     pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>) { unsafe {
@@ -1057,6 +1067,10 @@ impl Run {
 
         self.row = row;
     }
+    
+    /**
+     * Directly adds a face
+     */
     pub fn add_face<const N: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, pos: usize) {
         let offset: u32;
         match N {
