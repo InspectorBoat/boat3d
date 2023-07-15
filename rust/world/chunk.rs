@@ -25,6 +25,8 @@ use std::os::raw::c_void;
 // use std::ptr;
 use std::hash::Hash;
 use std::ptr::NonNull;
+use cgmath::Vector3;
+use cgmath_culling::BoundingBox;
 use gl::BLOCK_INDEX;
 
 use crate::OTHER_FACES;
@@ -32,7 +34,7 @@ use crate::block::blockface::GpuQuad;
 use crate::util::gl_helper::Page;
 use crate::util::gl_helper::BufferPoolAllocator;
 use crate::{block::{blockstate::BlockState, blockface::{Normal, BlockFace}}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::StagingBuffer}, BLOCKS};
-
+use super::camera::Camera;
 use super::world::World;
 #[derive(Debug)]
 pub struct Chunk {
@@ -850,6 +852,21 @@ impl Chunk {
         // self.counts[3] = north;
         // self.counts[4] = east;
         // self.counts[5] = up;
+    }
+
+    pub fn get_bounding_box(&self, camera: &Camera) -> BoundingBox<f32> {
+        return BoundingBox {
+            min: Vector3 {
+                x: (self.pos.x * 256) as f32 - camera.frustum_pos.x,
+                y: (self.pos.y * 256) as f32 - camera.frustum_pos.y,
+                z: (self.pos.z * 256) as f32 - camera.frustum_pos.z,
+            },
+            max: Vector3 {
+                x: (self.pos.x * 256) as f32 - camera.frustum_pos.x + 256.0,
+                y: (self.pos.y * 256) as f32 - camera.frustum_pos.y + 256.0,
+                z: (self.pos.z * 256) as f32 - camera.frustum_pos.z + 256.0,
+            }
+        };
     }
 
     pub fn pos<T: TryInto<usize>>(x: T, y: T, z: T) -> usize { unsafe {

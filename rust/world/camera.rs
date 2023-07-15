@@ -1,6 +1,8 @@
 use core::str;
 use std::f32::consts::PI;
 
+use cgmath::{Matrix4, Perspective, PerspectiveFov, Rad, Vector3};
+use cgmath_culling::FrustumCuller;
 use frustum_query::frustum::Frustum;
 use ultraviolet::{Mat4, Vec3, projection::perspective_gl};
 #[derive(Debug, Clone, Copy)]
@@ -35,6 +37,21 @@ impl Camera {
         return perspective * modelview;
     }
 
+    pub fn get_matrix_cgmath(&mut self) -> Matrix4<f32> {
+        let perspective = Matrix4::from(PerspectiveFov {
+            fovy: Rad(PI / 2.0),
+            aspect: self.ratio,
+            near: 0.1,
+            far: 16000.0,
+        });
+        let modelview =
+            Matrix4::from_angle_x(Rad(PI + self.camera_rot.pitch))
+            * Matrix4::from_angle_y(Rad(- self.camera_rot.yaw))
+            * Matrix4::from_translation(Vector3 { x: -self.camera_pos.x, y: self.camera_pos.y, z: -self.camera_pos.z })
+            * Matrix4::from_nonuniform_scale(1.0, -1.0, 1.0);
+        return perspective * modelview;
+    }
+
     pub fn get_frustum(&mut self) -> Frustum {
         if !self.frustum_frozen {
             self.frustum_pos = self.camera_pos;
@@ -51,6 +68,24 @@ impl Camera {
         let projection = Mat4::identity()
             * perspective_gl(PI / 2.0, self.ratio, 0.1, 16000.0);
         return frustum_query::frustum::Frustum::from_modelview_and_projection(modelview.as_array(), projection.as_array());
+    }
+
+    pub fn get_frustum_cgmath(&mut self) -> FrustumCuller<f32> {
+        if !self.frustum_frozen {
+            self.frustum_pos = self.camera_pos;
+            self.frustum_rot = self.camera_rot;
+        }
+        let perspective = Matrix4::from(PerspectiveFov {
+            fovy: Rad(PI / 2.0),
+            aspect: self.ratio,
+            near: 0.1,
+            far: 16000.0,
+        });
+        let modelview = 
+            Matrix4::from_angle_x(Rad(PI + self.frustum_rot.pitch))
+            * Matrix4::from_angle_y(Rad(- self.frustum_rot.yaw))
+            * Matrix4::from_nonuniform_scale(1.0, -1.0, 1.0);
+        return FrustumCuller::from_matrix(perspective * modelview);
     }
 
     pub fn step(&mut self, x: f64, y: f64, z: f64) {
