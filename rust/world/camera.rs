@@ -21,23 +21,7 @@ pub struct Camera {
     pub frustum_frozen: bool,
 }
 impl Camera {
-    pub fn get_matrix(&mut self) -> Mat4 {
-        let perspective = perspective_gl(PI / 2.0, self.ratio, 0.1, 16000.0);
-        let modelview =
-            Mat4::from_rotation_x(PI + self.camera_rot.pitch)
-            * Mat4::from_rotation_y(- self.camera_rot.yaw)
-            * Mat4::from_translation(Vec3::new(-self.camera_pos.x, self.camera_pos.y, -self.camera_pos.z))
-            * Mat4::from_nonuniform_scale(Vec3{
-                x: 1.0,
-                y: -1.0,
-                z: 1.0
-            });
-
-        
-        return perspective * modelview;
-    }
-
-    pub fn get_matrix_cgmath(&mut self) -> Matrix4<f32> {
+    pub fn get_matrix(&mut self) -> Matrix4<f32> {
         let perspective = Matrix4::from(PerspectiveFov {
             fovy: Rad(PI / 2.0),
             aspect: self.ratio,
@@ -52,25 +36,7 @@ impl Camera {
         return perspective * modelview;
     }
 
-    pub fn get_frustum(&mut self) -> Frustum {
-        if !self.frustum_frozen {
-            self.frustum_pos = self.camera_pos;
-            self.frustum_rot = self.camera_rot;
-        }
-        let modelview = 
-            Mat4::from_rotation_x(PI + self.frustum_rot.pitch)
-            * Mat4::from_rotation_y(- self.frustum_rot.yaw)
-            * Mat4::from_nonuniform_scale(Vec3{
-                x: 1.0,
-                y: -1.0,
-                z: 1.0
-            });
-        let projection = Mat4::identity()
-            * perspective_gl(PI / 2.0, self.ratio, 0.1, 16000.0);
-        return frustum_query::frustum::Frustum::from_modelview_and_projection(modelview.as_array(), projection.as_array());
-    }
-
-    pub fn get_frustum_cgmath(&mut self) -> FrustumCuller<f32> {
+    pub fn get_frustum(&mut self) -> FrustumCuller<f32> {
         if !self.frustum_frozen {
             self.frustum_pos = self.camera_pos;
             self.frustum_rot = self.camera_rot;

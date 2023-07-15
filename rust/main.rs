@@ -184,25 +184,46 @@ fn draw(world: &mut World) { unsafe {
     gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
     gl::Enable(gl::DEPTH_TEST);
     // let camera_matrix = world.camera.get_matrix().as_array();
-    let camera_matrix: [f32; 16] = **(&world.camera.get_matrix_cgmath().as_ref());
+    let camera_matrix: [f32; 16] = *(world.camera.get_matrix().as_ref());
     gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_ptr());
 
     let frustum = world.camera.get_frustum();
-    let frustum = world.camera.get_frustum_cgmath();
     const ELEMENT_INDICES_PER_QUAD: i32 = 5;
     const BYTES_PER_QUAD: usize = 8;
     const ELEMENTS_PER_QUAD: usize = 4;
+
+    let mut frustum_results: [Intersection; 8 * 8 * 8] = [Intersection::Inside; 512];
+    for x in 0..8 {
+        for y in 0..8 {
+            for z in 0..8 {
+                frustum_results[(x << 6) | (y << 3) | (z << 0)] = frustum.test_bounding_box(
+                    BoundingBox {
+                        min: Vector3 {
+                            x: (x * 256 * 4) as f32 - world.camera.frustum_pos.x,
+                            y: (y * 256 * 4) as f32 - world.camera.frustum_pos.y,
+                            z: (z * 256 * 4) as f32 - world.camera.frustum_pos.z,
+                        },
+                        max: Vector3 {
+                            x: (x * 256 * 4) as f32 - world.camera.frustum_pos.x + 256.0 * 4.0,
+                            y: (y * 256 * 4) as f32 - world.camera.frustum_pos.y + 256.0 * 4.0,
+                            z: (z * 256 * 4) as f32 - world.camera.frustum_pos.z + 256.0 * 4.0,
+                        }
+                    }
+                );
+            }
+        }
+    }
 
     for chunk in world.chunks.values() {
         if let Some(geometry_page) = &chunk.geometry_page {
             // if chunk.pos.x >= 8 || chunk.pos.y >= 8 || chunk.pos.z >= 8 { continue; }
             let Some(light_page) = &chunk.light_page else { unreachable_unchecked(); };
-            if frustum.test_bounding_box(chunk.get_bounding_box(&world.camera)) == Intersection::Outside {
-                continue;
+            match frustum_results[(((chunk.pos.x / 4) << 6) | ((chunk.pos.y / 4) << 3) | ((chunk.pos.z / 4) << 0)) as usize] {
+                Intersection::Inside => {}
+                // Intersection::Partial => { if frustum.test_bounding_box(chunk.get_bounding_box(&world.camera)) == Intersection::Outside { continue; } }
+                Intersection::Partial => { if frustum.test_sphere(chunk.get_bounding_sphere(&world.camera)) == Intersection::Outside { continue; } }
+                Intersection::Outside => { continue; }
             }
-            // if !frustum.sphere_intersecting(&((chunk.pos.x * 256) as f32 - world.camera.frustum_pos.x + 128.0), &((chunk.pos.y * 256) as f32 - world.camera.frustum_pos.y + 128.0), &((chunk.pos.z * 256) as f32 - world.camera.frustum_pos.z + 128.0), &221.702503369) {
-            //     continue;
-            // }
             let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z];
             gl::Uniform3iv(1, 1, &raw const chunk.pos as *const i32);
             gl::Uniform1ui(2, (light_page.start * light_page.block_size() / mem::size_of::<u32>() / 2) as u32);
@@ -215,6 +236,7 @@ fn draw(world: &mut World) { unsafe {
             );
         }
     }
+
     world.post_program.as_ref().unwrap().bind();
 
     gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);

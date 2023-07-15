@@ -27,6 +27,7 @@ use std::hash::Hash;
 use std::ptr::NonNull;
 use cgmath::Vector3;
 use cgmath_culling::BoundingBox;
+use cgmath_culling::Sphere;
 use gl::BLOCK_INDEX;
 
 use crate::OTHER_FACES;
@@ -824,7 +825,7 @@ impl Chunk {
 
     pub fn cull_backfaces(&mut self, world: &mut World) {
         // let south = self.counts[0];
-        // let north = self.counts[3];    
+        // let north = self.counts[3];
         // if world.camera.pos.z > self.pos.z as f32 * 16.0 + 16.0 { self.counts[0] = 0 }
         // if world.camera.pos.z < self.pos.z as f32 * 16.0 { self.counts[3] = 0 }
 
@@ -866,6 +867,17 @@ impl Chunk {
                 y: (self.pos.y * 256) as f32 - camera.frustum_pos.y + 256.0,
                 z: (self.pos.z * 256) as f32 - camera.frustum_pos.z + 256.0,
             }
+        };
+    }
+
+    pub fn get_bounding_sphere(&self, camera: &Camera) -> Sphere<f32> {
+        return Sphere {
+            center: Vector3 {
+                x: (self.pos.x * 256) as f32 - camera.frustum_pos.x + 128.0,
+                y: (self.pos.y * 256) as f32 - camera.frustum_pos.y + 128.0,
+                z: (self.pos.z * 256) as f32 - camera.frustum_pos.z + 128.0,
+            },
+            radius: 221.702503369
         };
     }
 
