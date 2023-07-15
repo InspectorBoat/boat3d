@@ -28,7 +28,9 @@ impl BlockFace {
     pub fn should_cull(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX) }
         let diff = a.as_u32() + 0x10101010 - b.as_u32();
-        return (diff >= 0x10101010, diff <= 0x10101010)
+        // Cull A if no lanes overflow
+        // Cull B if all lanes overflow or are 0
+        return (diff == 0x10101010 || diff & 0x10101010 == 0x10101010, diff == 0x10101010 || diff & 0x10101010 == 0)
     }
     
     pub fn as_u64(&self) -> u64 { unsafe {
