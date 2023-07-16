@@ -88,6 +88,7 @@ impl Chunk {
             _ => { unreachable_unchecked(); }
         }
     } }
+    
     pub fn get_block(&self, index: usize) -> &BlockState { unsafe {
         return &BLOCKS[*self.blocks.get_unchecked(index) as usize];
     } }
@@ -122,6 +123,49 @@ impl Chunk {
         return &self.get_opposing_block::<N>(index).model.get_face(N.reverse());
     }
     
+    pub fn get_light<const N: Normal>(&self, index: usize) -> u8 {
+        match N {
+            Normal::NORTH => {
+                if index & 0x00f == 0x00f {
+                    return self.get_neighbor::<N>().map_or(0, |chunk| chunk.light[index & 0xff0]);
+                }
+                return self.light[index + 0x001];
+            }
+            Normal::SOUTH => {
+                if index & 0x00f == 0 {
+                    return self.get_neighbor::<N>().map_or(0, |chunk| chunk.light[index | 0x00f]);
+                }
+                return self.light[index - 0x001];
+            }
+            Normal::EAST => {
+                if index & 0xf00 == 0xf00 {
+                    return self.get_neighbor::<N>().map_or(0, |chunk| chunk.light[index & 0x0ff]);
+                }
+                return self.light[index + 0x100];
+            }
+            Normal::WEST => {
+                if index & 0xf00 == 0 {
+                    return self.get_neighbor::<N>().map_or(0, |chunk| chunk.light[index | 0xf00]);
+                }
+                return self.light[index - 0x100];
+            }
+            Normal::UP => {
+                if index & 0x0f0 == 0x0f0 {
+                    return self.get_neighbor::<N>().map_or(0, |chunk| chunk.light[index & 0xf0f]);
+                }
+                return self.light[index + 0x010];
+            }
+            Normal::DOWN => {
+                if index & 0x0f0 == 0 {
+                    return self.get_neighbor::<N>().map_or(0, |chunk| chunk.light[index | 0x0f0]);
+                }
+                return self.light[index - 0x010];
+            }
+            _ => unsafe { hint::unreachable_unchecked(); }
+        }
+
+    }
+
     pub fn get_face_pair<const N: Normal>(&self, index: usize) -> (&BlockFace, &BlockFace) {
         return (self.get_face::<N>(index), self.get_opposing_face::<N>(index))
     }
@@ -189,10 +233,20 @@ impl Chunk {
             y: chunk_y as i32,
             z: chunk_z as i32
         };
+        self.blocks[Chunk::index(1, 1, 0)] = 1;
+        self.blocks[Chunk::index(1, 0, 1)] = 1;
+        self.blocks[Chunk::index(0, 1, 1)] = 1;
+
+        self.blocks[Chunk::index(1, 1, 2)] = 1;
+        self.blocks[Chunk::index(1, 2, 1)] = 1;
+        self.blocks[Chunk::index(2, 1, 1)] = 1;
+
+        self.light[Chunk::index(1, 1, 1)] = 15;
+
 
         for i in 0..4096 {
-            self.blocks[i] = rand::random::<u8>() % 2;
-            self.light[i] = rand::random::<u8>() % 16;
+            // self.blocks[i] = rand::random::<u8>() % 2;
+            // self.light[i] = rand::random::<u8>() % 16;
         }
     }
     
@@ -717,11 +771,7 @@ impl Chunk {
         for (i, quad) in geometry_staging_buffer.iter().map(|quad| mem::transmute::<&[u8; 8], &GpuQuad>(quad)).enumerate() {
             // insert the index offset of the light chunk
             light_staging_buffer.set_u32(i * mem::size_of::<u32>(), (light_staging_buffer.index / mem::size_of::<u32>()) as u32);
-            // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
-            // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
-
-            // continue;
-            // #[allow(unreachable_code)]
+            
             match quad.nor {
                 Normal::SOUTH => {
                     let start_x = quad.ure / 16;
@@ -729,16 +779,12 @@ impl Chunk {
                     
                     let start_y = quad.ven / 16;
                     let end_y = (quad.ven + quad.hei) / 16;
-    
+                    
                     let z = (quad.dep + 1) / 16;
                     
-                    let mut i = 0;
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
-                            // light_staging_buffer.put_u32(16 - i as u32);
-                            light_staging_buffer.put_u32(self.light[Chunk::index(x, y, z)] as u32);
-                            // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
-                            i += 1;
+                            light_staging_buffer.put_u32(self.get_light::<{ Normal::SOUTH }>(Chunk::index(x, y, z)) as u32);
                         }
                     }
                 }
@@ -748,16 +794,21 @@ impl Chunk {
     
                     let start_y = quad.ven / 16;
                     let end_y = (quad.ven + quad.hei) / 16;
+
+                    // if this from the neighboring chunk, z wraps to 15, which is the only way for it to be 15
+                    let z = (quad.dep - 16) / 16;
                     
-                    let z = quad.dep / 16;
-                    
-                    let mut i = 0;
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
-                            // light_staging_buffer.put_u32(16 - i as u32);
-                            light_staging_buffer.put_u32(self.light[Chunk::index(x, y, z)] as u32);
-                            // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
-                            i += 1;
+                            if z == 15 {
+                                if let Some(north) = self.get_neighbor::<{ Normal::NORTH }>() {
+                                    light_staging_buffer.put_u32(north.get_light::<{ Normal::NORTH }>(Chunk::index(x, y, z)) as u32);
+                                }
+                                else {
+                                    light_staging_buffer.put_u32(0);
+                                }
+                            }
+                            light_staging_buffer.put_u32(self.get_light::<{ Normal::NORTH }>(Chunk::index(x, y, z)) as u32);
                         }
                     }
                 }
@@ -770,18 +821,15 @@ impl Chunk {
                     let start_z = quad.ure / 16;
                     let end_z = (quad.ure + quad.wid) / 16;
                     
-                    let mut i = 0;
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
-                            // light_staging_buffer.put_u32(16 - i as u32);
-                            light_staging_buffer.put_u32(self.light[Chunk::index(x, y, z)] as u32);
-                            // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
-                            i += 1;
+                            light_staging_buffer.put_u32(self.get_light::<{ Normal::WEST }>(Chunk::index(x, y, z)) as u32);
                         }
                     }
                 }
                 Normal::EAST => {
-                    let x = (quad.dep + 1) / 16;
+                    // if this from the neighboring chunk, x wraps to 15, which is the only way for it to be 15
+                    let x = (quad.dep - 16) / 16;
     
                     let start_y = quad.ven / 16;
                     let end_y = (quad.ven + quad.hei) / 16;
@@ -789,13 +837,17 @@ impl Chunk {
                     let start_z = quad.ure / 16;
                     let end_z = (quad.ure + quad.wid) / 16;
                     
-                    let mut i = 0;
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
-                            // light_staging_buffer.put_u32(16 - i as u32);
-                            light_staging_buffer.put_u32(self.light[Chunk::index(x, y, z)] as u32);
-                            // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
-                            i += 1;
+                            if x == 15 {
+                                if let Some(east) = self.get_neighbor::<{ Normal::EAST }>() {
+                                    light_staging_buffer.put_u32(east.get_light::<{ Normal::EAST }>(Chunk::index(x, y, z)) as u32);
+                                }
+                                else {
+                                    light_staging_buffer.put_u32(0);
+                                }
+                            }
+                            light_staging_buffer.put_u32(self.get_light::<{ Normal::EAST }>(Chunk::index(x, y, z)) as u32);
                         }
                     }
                 }
@@ -808,32 +860,33 @@ impl Chunk {
                     let start_z = quad.ure / 16;
                     let end_z = (quad.ure + quad.wid) / 16;
                     
-                    let mut i = 0;
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
-                            // light_staging_buffer.put_u32(16 - i as u32);
-                            light_staging_buffer.put_u32(self.light[Chunk::index(x, y, z)] as u32);
-                            // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
-                            i += 1;
+                            light_staging_buffer.put_u32(self.get_light::<{ Normal::DOWN }>(Chunk::index(x, y, z)) as u32);
                         }
                     }
                 }
                 Normal::UP => {
                     let start_x = quad.ven / 16;
                     let end_x = (quad.ven + quad.hei) / 16;
-    
-                    let y = (quad.dep + 1) / 16;
+
+                    // if this from the neighboring chunk, y wraps to 15, which is the only way for it to be 15
+                    let y = (quad.dep - 16) / 16;
     
                     let start_z = quad.ure / 16;
                     let end_z = (quad.ure + quad.wid) / 16;
                     
-                    let mut i = 0;
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
-                            // light_staging_buffer.put_u32(16 - i as u32);
-                            light_staging_buffer.put_u32(self.light[Chunk::index(x, y, z)] as u32);
-                            // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
-                            i += 1;
+                            if y == 15 {
+                                if let Some(up) = self.get_neighbor::<{ Normal::UP }>() {
+                                    light_staging_buffer.put_u32(up.get_light::<{ Normal::UP }>(Chunk::index(x, y, z)) as u32);
+                                }
+                                else {
+                                    light_staging_buffer.put_u32(0);
+                                }
+                            }
+                            light_staging_buffer.put_u32(self.get_light::<{ Normal::UP }>(Chunk::index(x, y, z)) as u32);
                         }
                     }
                 }
@@ -849,7 +902,6 @@ impl Chunk {
         if let Some(light_page) = &self.light_page {
             light_buffer_allocator.upload(light_page, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.index as isize);
         }
-
     } }
 
     pub fn get_bounding_box(&self, camera: &Camera) -> BoundingBox<f32> {

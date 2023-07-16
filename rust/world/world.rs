@@ -1,6 +1,7 @@
 use std::cell::{Ref, RefCell, UnsafeCell};
 use std::collections::HashMap;
 use std::hint::unreachable_unchecked;
+use std::mem::MaybeUninit;
 use std::ops::{Deref, Add};
 use std::os::raw::c_void;
 use std::ptr::NonNull;
@@ -56,9 +57,9 @@ impl World {
         let block_texture = Texture::create();
         block_texture.bind(gl::TEXTURE_2D_ARRAY);
         let image: [u8; 16 * 3 * 64] = [0; 16 * 3 * 64].map(|_| rand::random());
-        gl::TexImage3D(gl::TEXTURE_2D_ARRAY, 0, gl::RGBA as i32, 4, 4, 64, 0, gl::RGB, gl::BYTE, &image as *const u8 as *const c_void);
-        gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_WRAP_S, gl::CLAMP_TO_EDGE as i32);
-        gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_WRAP_T, gl::CLAMP_TO_EDGE as i32);
+        gl::TexImage3D(gl::TEXTURE_2D_ARRAY, 0, gl::RGBA as i32, 4, 4, 64, 0, gl::RGB, gl::BYTE, &raw const image as *const c_void);
+        gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_WRAP_S, gl::REPEAT as i32);
+        gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_WRAP_T, gl::REPEAT as i32);
         // set texture filtering parameters
         gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
         gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
@@ -178,11 +179,16 @@ impl World {
         let mut geometry_staging_buffer = StagingBuffer::new();
         let mut light_staging_buffer = StagingBuffer::new();
         let start = time::Instant::now();
-        let mut total_quads: usize = 0;        
+        let mut total_quads: usize = 0;
+
+        let mut exact_geometry_bytes = 0;
+        let mut exact_light_bytes = 0;
 
         for chunk in self.chunks.values_mut() {
             chunk.generate_geometry_buffer(&mut geometry_staging_buffer, &mut self.geometry_pool);
             chunk.generate_light_buffer(&mut geometry_staging_buffer, &mut light_staging_buffer, &mut self.light_pool);
+            exact_geometry_bytes += geometry_staging_buffer.index;
+            exact_light_bytes += light_staging_buffer.index;
             geometry_staging_buffer.reset();
             light_staging_buffer.reset();
             total_quads += chunk.quad_count as usize;
@@ -194,6 +200,12 @@ impl World {
         let ms_per_chunk = elapsed as f64 / total_chunks as f64;
         let quads_per_chunk = total_quads as u64 / total_chunks as u64;
         println!("[6/6 axes] [merged] {total_chunks} chunks | {elapsed}ms | {chunks_per_sec} chunks/s | {ms_per_chunk}ms/chunk | {total_quads} quads | {quads_per_chunk} quads/chunk");
+        let geometry_pool_bytes_used = self.geometry_pool.furthest * self.geometry_pool.block_size();
+        let light_pool_bytes_used = self.light_pool.furthest * self.light_pool.block_size();
+        let total_pool_megabytes_used = (geometry_pool_bytes_used + light_pool_bytes_used) / 1024 / 1024;
+        println!("{geometry_pool_bytes_used} pooled geometry bytes | {light_pool_bytes_used} pooled light bytes | {total_pool_megabytes_used} pooled megabytes");
+        let total_exact_megabytes_used = (exact_geometry_bytes + exact_light_bytes) / 1024 / 1024;
+        println!("{exact_geometry_bytes} exact geometry bytes | {exact_light_bytes} exact light bytes | {total_exact_megabytes_used} megabytes");
     } }
 
     pub fn add_chunk(&mut self, chunk: Box<Chunk>) { unsafe {
@@ -300,7 +312,6 @@ impl World {
         for chunk in self.chunks.values() {
             // only render chunk if it has a geometry and light page
             if let (Some(geometry_page), Some(light_page)) = (&chunk.geometry_page, &chunk.light_page) {
-
                 // check chunk against chunked frustum culling results
                 match frustum_results[(((chunk.pos.x / 4) << 6) | ((chunk.pos.y / 4) << 3) | ((chunk.pos.z / 4) << 0)) as usize] {
                     Intersection::Inside => {}
@@ -313,7 +324,7 @@ impl World {
                 // set light page index offset uniform
                 gl::Uniform1ui(2, (light_page.start * light_page.block_size() / mem::size_of::<u32>()) as u32);
                 // what to offset the face index by to get the quad id
-                gl::Uniform1ui(3, (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD / 4) as u32);
+                gl::Uniform1ui(3, (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD) as u32);
                 gl::DrawElementsBaseVertex(
                     gl::TRIANGLE_STRIP,
                     chunk.quad_count as i32 * ELEMENT_INDICES_PER_QUAD,

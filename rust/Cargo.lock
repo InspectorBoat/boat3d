@@ -21,12 +21,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
-name = "bytemuck"
-version = "1.13.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "17febce684fd15d89027105661fec94afb475cb995fbc59d2865198446ba2eea"
-
-[[package]]
 name = "cfg-if"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -57,12 +51,6 @@ checksum = "7526fc17f8aa1ba0672b870c4098a10a11bb3ea221450c4bac62561c569729b7"
 dependencies = [
  "cgmath",
 ]
-
-[[package]]
-name = "frustum_query"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e1771c26abed26b2527d888742fffd27dab86d205bf4846748abf29c06ef5a05"
 
 [[package]]
 name = "fuchsia-cprng"
@@ -280,23 +268,12 @@ version = "0.1.0"
 dependencies = [
  "cgmath",
  "cgmath-culling",
- "frustum_query",
  "gl",
  "glfw",
  "libc",
  "log",
  "rand 0.8.5",
  "simdnoise",
- "ultraviolet",
-]
-
-[[package]]
-name = "safe_arch"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "794821e4ccb0d9f979512f9c1973480123f9bd62a90d74ab0f9426fcf8f4a529"
-dependencies = [
- "bytemuck",
 ]
 
 [[package]]
@@ -319,29 +296,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "ultraviolet"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf2728f3858937f50df6d92b741f53ef8fd5b5ae23b03b73fb9ac891e980df3b"
-dependencies = [
- "wide",
-]
-
-[[package]]
 name = "wasi"
 version = "0.11.0+wasi-snapshot-preview1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
-
-[[package]]
-name = "wide"
-version = "0.7.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b689b6c49d6549434bf944e6b0f39238cf63693cb7a147e9d887507fffa3b223"
-dependencies = [
- "bytemuck",
- "safe_arch",
-]
 
 [[package]]
 name = "winapi"

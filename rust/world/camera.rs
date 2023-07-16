@@ -3,7 +3,6 @@ use std::f32::consts::PI;
 
 use cgmath::{Matrix4, Perspective, PerspectiveFov, Rad, Vector3};
 use cgmath_culling::FrustumCuller;
-use frustum_query::frustum::Frustum;
 #[derive(Debug, Clone, Copy)]
 pub struct Rot {
     pub yaw: f32,

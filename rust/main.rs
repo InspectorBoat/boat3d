@@ -15,6 +15,8 @@
 #![feature(result_option_inspect)]
 #![feature(int_roundings)]
 #![feature(portable_simd)]
+#![feature(maybe_uninit_uninit_array, maybe_uninit_slice, maybe_uninit_array_assume_init)]
+
 mod block;
 mod world;
 mod util;
@@ -164,7 +166,6 @@ fn main() { unsafe {
         
         gl::PolygonMode(gl::FRONT_AND_BACK, status.fill_mode);
         world.draw();
-        // draw(&mut world);
 
         window.swap_buffers();
 
@@ -239,7 +240,7 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
 } }
 
 fn update(world: &mut World, keys: &mut HashMap<Key, bool>) {
-    let speed = 1.0 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
+    let speed = 0.2 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
     for (key, pressed) in keys.iter() {
         if *pressed == false { continue; }
         match key {
