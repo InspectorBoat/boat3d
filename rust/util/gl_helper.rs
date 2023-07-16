@@ -339,7 +339,7 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
             panic!("exceeded allocation size");
         }
         self.staging_buffer.upload_slice(data, 0, length);
-
+        
         gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * P) as isize, length as isize);
         // self.buffer.upload_slice (data, (page.start * 1024) as isize, length);
     } }

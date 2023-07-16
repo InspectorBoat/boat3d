@@ -184,7 +184,7 @@ impl Chunk {
         } } }
     } }
 
-    pub fn make_terrain_alt(&mut self, chunk_x: usize, chunk_y: usize, chunk_z: usize) {
+    pub fn make_terrain_alt(&mut self, noise: &Vec<f32>, chunk_x: usize, chunk_y: usize, chunk_z: usize) {
         self.pos = Vector3 {
             x: chunk_x as i32,
             y: chunk_y as i32,

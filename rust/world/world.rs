@@ -167,7 +167,7 @@ impl World {
                 for z in 0..32 {
                     let mut chunk = Box::<Chunk>::new_zeroed().assume_init();
                     chunk.make_terrain(&noise, x, y, z);
-                    // chunk.make_terrain_alt(x, y, z);
+                    // chunk.make_terrain_alt(&noise, x, y, z);
                     self.add_chunk(chunk);
                 }
             }
@@ -178,27 +178,24 @@ impl World {
         let mut geometry_staging_buffer = StagingBuffer::new();
         let mut light_staging_buffer = StagingBuffer::new();
         let start = time::Instant::now();
-        let mut quads: usize = 0;
-        let mesh_passes = 1;
-        
+        let mut total_quads: usize = 0;        
 
-        for _ in 0..mesh_passes {
-            for chunk in self.chunks.values_mut() {
-                // if chunk.pos.x == 0 || chunk.pos.y == 0 || chunk.pos.z == 0 { continue; }
-                chunk.generate_geometry_buffer(&mut geometry_staging_buffer, &mut self.geometry_pool);
-                chunk.generate_light_buffer(&mut geometry_staging_buffer, &mut light_staging_buffer, &mut self.light_pool);
-                geometry_staging_buffer.reset();
-                light_staging_buffer.reset();
-                quads += chunk.quad_count as usize;
-            }
+        for chunk in self.chunks.values_mut() {
+            chunk.generate_geometry_buffer(&mut geometry_staging_buffer, &mut self.geometry_pool);
+            chunk.generate_light_buffer(&mut geometry_staging_buffer, &mut light_staging_buffer, &mut self.light_pool);
+            geometry_staging_buffer.reset();
+            light_staging_buffer.reset();
+            total_quads += chunk.quad_count as usize;
         }
         
         
         
-        let count = self.chunks.len() * mesh_passes;
+        let total_chunks = self.chunks.len();
         let elapsed = start.elapsed().as_millis();
-        
-        // println!("[6/6 axes] [merged] {count} chunks | {}ms | {} chunks/s | {}ms/chunk | {} quads | {} quads/chunk", elapsed, (1000.0 / elapsed as f64 * count as f64) as u64, elapsed as f64 / count as f64, quads, quads as u64 / count as u64);
+        let chunks_per_sec = (1000.0 / elapsed as f64 * total_chunks as f64) as u64;
+        let ms_per_chunk = elapsed as f64 / total_chunks as f64;
+        let quads_per_chunk = total_quads as u64 / total_chunks as u64;
+        println!("[6/6 axes] [merged] {total_chunks} chunks | {elapsed}ms | {chunks_per_sec} chunks/s | {ms_per_chunk}ms/chunk | {total_quads} quads | {quads_per_chunk} quads/chunk");
     } }
 
     pub fn add_chunk(&mut self, chunk: Box<Chunk>) { unsafe {

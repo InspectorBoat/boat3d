@@ -1,4 +1,4 @@
-use std::{mem, hint::unreachable_unchecked, marker::ConstParamTy};
+use std::{mem, hint::unreachable_unchecked, marker::ConstParamTy, simd::{Simd, SimdPartialOrd, SimdUint}};
 
 
 /*
@@ -27,10 +27,14 @@ pub struct BlockFace {
 impl BlockFace {
     pub fn should_cull(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX) }
-        let diff = a.as_u32() + 0x10101010 - b.as_u32();
-        // Cull A if no lanes overflow
-        // Cull B if all lanes overflow or are 0
-        return (diff == 0x10101010 || diff & 0x10101010 == 0x10101010, diff == 0x10101010 || diff & 0x10101010 == 0)
+
+        let a = Simd::from_array([a.lef, a.bot, a.rig, a.top]);
+        let b = Simd::from_array([b.lef, b.bot, b.rig, b.top]);
+
+        let cull_a = a.simd_ge(b).all();
+        let cull_b = b.simd_ge(a).all();
+
+        return (cull_a, cull_b);
     }
     
     pub fn as_u64(&self) -> u64 { unsafe {
