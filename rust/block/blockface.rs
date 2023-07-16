@@ -69,15 +69,21 @@ impl PartialEq for BlockFace {
 }
 
 #[derive(Clone, Copy, Debug)]
-#[derive(PartialEq, Eq, PartialOrd, Ord, ConstParamTy)]
-#[repr(transparent)]
-pub struct Normal(pub u8);
+#[derive(PartialEq, Eq, ConstParamTy)]
+#[repr(u8)]
+pub enum Normal {
+    SOUTH = 0,
+    WEST = 1,
+    DOWN = 2,
+    NORTH = 3,
+    EAST = 4,
+    UP = 5,
+    NONE = u8::MAX
+}
 
-#[allow(dead_code)]
-#[allow(unused_parens)]
 impl Normal {
     pub fn reverse(&self) -> Normal {
-        match *self {
+        match self {
             Normal::SOUTH => { return Normal::NORTH; }
             Normal::WEST => { return Normal::EAST; }
             Normal::DOWN => { return Normal::UP; }
@@ -87,28 +93,4 @@ impl Normal {
             _ => unsafe { unreachable_unchecked(); }
         }
     }
-    pub const SOUTH: Normal = Normal(0);
-    pub const WEST:  Normal = Normal(1);
-    pub const DOWN:  Normal = Normal(2);
-    pub const NORTH: Normal = Normal(3);
-    pub const EAST:  Normal = Normal(4);
-    pub const UP:    Normal = Normal(5);
-
-    pub const NONE:  Normal = Normal(u8::MAX);
 }
-
-impl Into<u8> for Normal {
-    fn into(self) -> u8 {
-        return self.0;
-    }
-}
-impl Into<usize> for Normal {
-    fn into(self) -> usize {
-        return self.0 as usize;
-    }
-}
-// impl<T: Into<u8>> From<T> for Normal {
-    // fn from(val: T) -> Normal {
-        // return Normal(val.into());
-    // }
-// }

@@ -128,21 +128,21 @@ impl Chunk {
     }
 
     pub fn has_extra_face<const N: Normal>(&self, index: usize) -> bool {
-        return self.get_block(index).otherFaces[N.0 as usize] != 0xffff;
+        return self.get_block(index).otherFaces[N as usize] != 0xffff;
     }
     pub fn has_opposing_extra_face<const N: Normal>(&self, index: usize) -> bool {
-        return self.get_opposing_block::<N>(index).otherFaces[N.reverse().0 as usize] != 0xffff;
+        return self.get_opposing_block::<N>(index).otherFaces[N.reverse() as usize] != 0xffff;
     }
     
     pub fn get_extra_face<const N: Normal>(&self, index: usize) -> Option<&(BlockFace, bool)> {
         if self.has_extra_face::<N>(index) {
-            return Some(&OTHER_FACES[self.get_block(index).otherFaces[N.0 as usize] as usize]);
+            return Some(&OTHER_FACES[self.get_block(index).otherFaces[N as usize] as usize]);
         }
         return None;
     }
     pub fn get_opposing_extra_face<const N: Normal>(&self, index: usize) -> Option<&(BlockFace, bool)> {
         if self.has_opposing_extra_face::<N>(index) {
-            return Some(&OTHER_FACES[self.get_opposing_block::<N>(index).otherFaces[N.reverse().0 as usize] as usize]);
+            return Some(&OTHER_FACES[self.get_opposing_block::<N>(index).otherFaces[N.reverse() as usize] as usize]);
         }
         return None;
     }
