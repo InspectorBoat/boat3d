@@ -44,7 +44,7 @@ impl BlockFace {
         return *(&raw const *self as *const u32);
     } }
     pub const NONE: BlockFace = BlockFace {
-        lef: 0x0f, bot: 0x0f, dep: 0, nor: Normal::NONE,
+        lef: 0x0f, bot: 0x0f, dep: 0x0, nor: Normal::NONE,
         rig: 0x0f, top: 0x0f, tex: u16::MAX
     };
 }

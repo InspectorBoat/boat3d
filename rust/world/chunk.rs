@@ -88,7 +88,6 @@ impl Chunk {
             _ => { unreachable_unchecked(); }
         }
     } }
-
     pub fn get_block(&self, index: usize) -> &BlockState { unsafe {
         return &BLOCKS[*self.blocks.get_unchecked(index) as usize];
     } }
@@ -155,7 +154,7 @@ impl Chunk {
         };
         
         for x in 0..16 { for y in 0..16 { for z in 0..16 {
-            let pos = {
+            let index = {
                 (chunk_x << 22) |
                 (x << 18) |
                 (chunk_y << 13) |
@@ -164,22 +163,22 @@ impl Chunk {
                 (z << 0 )
             };
             let (noise_val, block, light) = (
-                noise.get_unchecked(pos),
-                self.blocks.get_unchecked_mut(Chunk::pos(x, y, z)),
-                self.light.get_unchecked_mut(Chunk::pos(x, y, z)),
+                noise.get_unchecked(index),
+                self.blocks.get_unchecked_mut(Chunk::index(x, y, z)),
+                self.light.get_unchecked_mut(Chunk::index(x, y, z)),
             );
             *block = match *noise_val {
-                val if val < 0.49 => {
-                    1
-                },
+                // val if val < 0.49 => {
+                //     1
+                // },
                 val if val < 0.50 => {
-                    2
+                    1
                 },
                 _ => {
                     0
                 }
             };
-            *light = rand::random();
+            *light = rand::random::<u8>() & 0xf;
             // *light = (*noise_val * 16.0) as u8;
         } } }
     } }
@@ -214,13 +213,13 @@ impl Chunk {
         let mut row_id: u16 = 0;
 
         for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
-            let pos = Chunk::pos(u, v, d);
+            let index = Chunk::index(u, v, d);
 
-            let (face_s, face_n) = self.get_face_pair::<{Normal::SOUTH}>(pos);
+            let (face_s, face_n) = self.get_face_pair::<{Normal::SOUTH}>(index);
             let compare = BlockFace::should_cull(face_s, face_n);
             'south: {
-                if let Some(face) = self.get_extra_face::<{Normal::SOUTH}>(pos) {
-                    Run::add_face::<{ Normal::SOUTH }>(geometry_staging_buffer, &face.0, pos);
+                if let Some(face) = self.get_extra_face::<{Normal::SOUTH}>(index) {
+                    Run::add_face::<{ Normal::SOUTH }>(geometry_staging_buffer, &face.0, index);
                 }
     
                 if compare.0 {
@@ -256,7 +255,7 @@ impl Chunk {
                         }
                     }
                     else {
-                        let next_pos = pos + 0x100;
+                        let next_pos = index + 0x100;
                         let (next_face_s, next_face_n) = self.get_face_pair::<{Normal::SOUTH}>(next_pos);
                         let compare = BlockFace::should_cull(next_face_s, next_face_n);
 
@@ -272,13 +271,13 @@ impl Chunk {
                 run_s = &mut row_s[u as usize];
                 same_row_s = true;
                 active_run_s = true;
-                run_s.begin::<{ Normal::SOUTH }>(geometry_staging_buffer, &face_s, pos, u, row_id);
+                run_s.begin::<{ Normal::SOUTH }>(geometry_staging_buffer, &face_s, index, u, row_id);
             }
             'north: {
                 // break 'north;
 
-                if let Some(face) = self.get_opposing_extra_face::<{ Normal::SOUTH }>(pos) {
-                    Run::add_face::<{ Normal::NORTH }>(geometry_staging_buffer, &face.0, pos);
+                if let Some(face) = self.get_opposing_extra_face::<{ Normal::SOUTH }>(index) {
+                    Run::add_face::<{ Normal::NORTH }>(geometry_staging_buffer, &face.0, index);
                 }
 
                 if compare.1 {
@@ -314,7 +313,7 @@ impl Chunk {
                         }
                     }
                     else {
-                        let next_pos = pos + 0x100;
+                        let next_pos = index + 0x100;
                         let (next_face_s, next_face_n) = self.get_face_pair::<{Normal::SOUTH}>(next_pos);
                         let compare = BlockFace::should_cull(next_face_s, next_face_n);
 
@@ -330,7 +329,7 @@ impl Chunk {
                 run_n = &mut row_n[u as usize];
                 active_run_n = true;
                 same_row_n = true;
-                run_n.begin::<{ Normal::NORTH }>(geometry_staging_buffer, &face_n, pos, u, row_id);
+                run_n.begin::<{ Normal::NORTH }>(geometry_staging_buffer, &face_n, index, u, row_id);
             }
         } (active_run_s, active_run_n) = (false, false); row_id += 1;
         } row_id += 16;
@@ -354,13 +353,13 @@ impl Chunk {
         let mut row_id: u16 = 0;
         
         for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
-            let pos = Chunk::pos(d, v, u);
+            let index = Chunk::index(d, v, u);
 
-            let (face_w, face_e) = self.get_face_pair::<{Normal::WEST}>(pos);
+            let (face_w, face_e) = self.get_face_pair::<{Normal::WEST}>(index);
             let compare = BlockFace::should_cull(face_w, face_e);
             'west: {
-                if let Some(face) = self.get_extra_face::<{Normal::WEST}>(pos) {
-                    Run::add_face::<{ Normal::WEST }>(geometry_staging_buffer, &face.0, pos);
+                if let Some(face) = self.get_extra_face::<{Normal::WEST}>(index) {
+                    Run::add_face::<{ Normal::WEST }>(geometry_staging_buffer, &face.0, index);
                 }
     
                 if compare.0 {
@@ -397,7 +396,7 @@ impl Chunk {
                         }
                     }
                     else {
-                        let next_pos = pos + 0x001;
+                        let next_pos = index + 0x001;
                         let (next_face_w, next_face_e) = self.get_face_pair::<{Normal::WEST}>(next_pos);
                         let compare = BlockFace::should_cull(next_face_w, next_face_e);
 
@@ -413,13 +412,13 @@ impl Chunk {
                 run_w = &mut row_w[u as usize];
                 same_row_w = true;
                 active_run_w = true;
-                run_w.begin::<{ Normal::WEST }>(geometry_staging_buffer, &face_w, pos, u, row_id);
+                run_w.begin::<{ Normal::WEST }>(geometry_staging_buffer, &face_w, index, u, row_id);
             }
             'east: {
                 // break 'east;
 
-                if let Some(face) = self.get_opposing_extra_face::<{ Normal::WEST }>(pos) {
-                    Run::add_face::<{ Normal::EAST }>(geometry_staging_buffer, &face.0, pos);
+                if let Some(face) = self.get_opposing_extra_face::<{ Normal::WEST }>(index) {
+                    Run::add_face::<{ Normal::EAST }>(geometry_staging_buffer, &face.0, index);
                 }
                 if compare.1 {
                     active_run_e = false;
@@ -455,7 +454,7 @@ impl Chunk {
                         }
                     }
                     else {
-                        let next_pos = pos + 0x001;
+                        let next_pos = index + 0x001;
                         let (next_face_w, next_face_e) = self.get_face_pair::<{Normal::WEST}>(next_pos);
                         let compare = BlockFace::should_cull(next_face_w, next_face_e);
 
@@ -471,7 +470,7 @@ impl Chunk {
                 run_e = &mut row_e[u as usize];
                 active_run_e = true;
                 same_row_e = true;
-                run_e.begin::<{ Normal::EAST }>(geometry_staging_buffer, &face_e, pos, u, row_id);
+                run_e.begin::<{ Normal::EAST }>(geometry_staging_buffer, &face_e, index, u, row_id);
             }
         } (active_run_w, active_run_e) = (false, false); row_id += 1; } row_id += 16; }
     }
@@ -493,13 +492,13 @@ impl Chunk {
         let mut row_id: u16 = 0;
         
         for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
-            let pos = Chunk::pos(v, d, u);
+            let index = Chunk::index(v, d, u);
 
-            let (face_d, face_u) = self.get_face_pair::<{Normal::DOWN}>(pos);
+            let (face_d, face_u) = self.get_face_pair::<{Normal::DOWN}>(index);
             let compare = BlockFace::should_cull(face_d, face_u);
             'down: {
-                if let Some(face) = self.get_extra_face::<{Normal::DOWN}>(pos) {
-                    Run::add_face::<{ Normal::DOWN }>(geometry_staging_buffer, &face.0, pos);
+                if let Some(face) = self.get_extra_face::<{Normal::DOWN}>(index) {
+                    Run::add_face::<{ Normal::DOWN }>(geometry_staging_buffer, &face.0, index);
                 }
     
                 if compare.0 {
@@ -536,7 +535,7 @@ impl Chunk {
                         }
                     }
                     else {
-                        let next_pos = pos + 0x001;
+                        let next_pos = index + 0x001;
                         let (next_face_d, next_face_u) = self.get_face_pair::<{Normal::DOWN}>(next_pos);
                         let compare = BlockFace::should_cull(next_face_d, next_face_u);
 
@@ -552,13 +551,13 @@ impl Chunk {
                 run_d = &mut row_d[u as usize];
                 same_row_d = true;
                 active_run_d = true;
-                run_d.begin::<{ Normal::DOWN }>(geometry_staging_buffer, &face_d, pos, u, row_id);
+                run_d.begin::<{ Normal::DOWN }>(geometry_staging_buffer, &face_d, index, u, row_id);
             }
             'up: {
                 // break 'up;
 
-                if let Some(face) = self.get_opposing_extra_face::<{ Normal::DOWN }>(pos) {
-                    Run::add_face::<{ Normal::UP }>(geometry_staging_buffer, &face.0, pos);
+                if let Some(face) = self.get_opposing_extra_face::<{ Normal::DOWN }>(index) {
+                    Run::add_face::<{ Normal::UP }>(geometry_staging_buffer, &face.0, index);
                 }
 
                 if compare.1 {
@@ -595,7 +594,7 @@ impl Chunk {
                         }
                     }
                     else {
-                        let next_pos = pos + 0x001;
+                        let next_pos = index + 0x001;
                         let (next_face_d, next_face_u) = self.get_face_pair::<{Normal::DOWN}>(next_pos);
                         let compare = BlockFace::should_cull(next_face_d, next_face_u);
 
@@ -611,91 +610,91 @@ impl Chunk {
                 run_u = &mut row_u[u as usize];
                 active_run_u = true;
                 same_row_u = true;
-                run_u.begin::<{ Normal::UP }>(geometry_staging_buffer, &face_u, pos, u, row_id);
+                run_u.begin::<{ Normal::UP }>(geometry_staging_buffer, &face_u, index, u, row_id);
             }
         } (active_run_d, active_run_u) = (false, false); row_id += 1; } row_id += 16; }
     }
     
     pub fn mesh_south_north_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) { unsafe {
         for z in 0..16_u8 { for y in 0..16_u8 { for x in 0..16_u8 {
-            let pos = Chunk::pos(x, y, z);
+            let index = Chunk::index(x, y, z);
             
-            let face_s = self.get_face::<{Normal::SOUTH}>(pos);
-            let face_n = self.get_opposing_face::<{Normal::SOUTH}>(pos);
+            let face_s = self.get_face::<{Normal::SOUTH}>(index);
+            let face_n = self.get_opposing_face::<{Normal::SOUTH}>(index);
 
             let compare = face_s.as_u32() + 0x10101010 - face_n.as_u32();
             if compare == 0x10101010 { continue; }
             
-            let offset = Chunk::INDICES_ZYX[pos] as u64;
+            let offset = Chunk::INDICES_ZYX[index] as u64;
             
             if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_s.as_u64() + offset); }
             if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_n.as_u64() + offset); }
             
-            if let Some(face) = self.get_extra_face::<{Normal::SOUTH}>(pos) {
-                Run::add_face::<{ Normal::SOUTH }>(geometry_staging_buffer, &face.0, pos);
+            if let Some(face) = self.get_extra_face::<{Normal::SOUTH}>(index) {
+                Run::add_face::<{ Normal::SOUTH }>(geometry_staging_buffer, &face.0, index);
             }
-            if let Some(face) = self.get_opposing_extra_face::<{ Normal::SOUTH }>(pos) {
-                Run::add_face::<{ Normal::NORTH }>(geometry_staging_buffer, &face.0, pos);
+            if let Some(face) = self.get_opposing_extra_face::<{ Normal::SOUTH }>(index) {
+                Run::add_face::<{ Normal::NORTH }>(geometry_staging_buffer, &face.0, index);
             }
     } } }
     } }
     pub fn mesh_west_east_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) { unsafe {
         for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
-            let pos = Chunk::pos(x, y, z);
+            let index = Chunk::index(x, y, z);
 
-            let face_w = self.get_face::<{Normal::WEST}>(pos);
-            let face_e = self.get_opposing_face::<{Normal::WEST}>(pos);
+            let face_w = self.get_face::<{Normal::WEST}>(index);
+            let face_e = self.get_opposing_face::<{Normal::WEST}>(index);
 
             let compare = face_w.as_u32() + 0x10101010 - face_e.as_u32();
             if compare == 0x10101010 { continue; }
             
-            let offset = Chunk::INDICES_XYZ[pos] as u64;
+            let offset = Chunk::INDICES_XYZ[index] as u64;
             
             if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_w.as_u64() + offset); }
             if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_e.as_u64() + offset); }
 
-            if let Some(face) = self.get_extra_face::<{Normal::WEST}>(pos) {
-                Run::add_face::<{ Normal::WEST }>(geometry_staging_buffer, &face.0, pos);
+            if let Some(face) = self.get_extra_face::<{Normal::WEST}>(index) {
+                Run::add_face::<{ Normal::WEST }>(geometry_staging_buffer, &face.0, index);
             }
 
-            if let Some(face) = self.get_opposing_extra_face::<{ Normal::WEST }>(pos) {
-                Run::add_face::<{ Normal::EAST }>(geometry_staging_buffer, &face.0, pos);
+            if let Some(face) = self.get_opposing_extra_face::<{ Normal::WEST }>(index) {
+                Run::add_face::<{ Normal::EAST }>(geometry_staging_buffer, &face.0, index);
             }
     } } }
     } }
     pub fn mesh_down_up_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) { unsafe {
         for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
-            let pos = Chunk::pos(x, y, z);
+            let index = Chunk::index(x, y, z);
 
-            let face_d = self.get_face::<{Normal::DOWN}>(pos);
-            let face_u = self.get_opposing_face::<{Normal::DOWN}>(pos);
+            let face_d = self.get_face::<{Normal::DOWN}>(index);
+            let face_u = self.get_opposing_face::<{Normal::DOWN}>(index);
 
             let compare = face_d.as_u32() + 0x10101010 - face_u.as_u32();
             if compare == 0x10101010 { continue; }
             
-            let offset = Chunk::INDICES_YXZ[pos] as u64;
+            let offset = Chunk::INDICES_YXZ[index] as u64;
             
             if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_d.as_u64() + offset); }
             if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_u.as_u64() + offset); }
 
-            if let Some(face) = self.get_extra_face::<{Normal::UP}>(pos) {
-                Run::add_face::<{ Normal::UP }>(geometry_staging_buffer, &face.0, pos);
+            if let Some(face) = self.get_extra_face::<{Normal::DOWN}>(index) {
+                Run::add_face::<{ Normal::DOWN }>(geometry_staging_buffer, &face.0, index);
             }
 
-            if let Some(face) = self.get_opposing_extra_face::<{ Normal::UP }>(pos) {
-                Run::add_face::<{ Normal::DOWN }>(geometry_staging_buffer, &face.0, pos);
+            if let Some(face) = self.get_opposing_extra_face::<{ Normal::DOWN }>(index) {
+                Run::add_face::<{ Normal::UP }>(geometry_staging_buffer, &face.0, index);
             }
     } } }
     } }
 
     pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>) { unsafe {
-        self.mesh_south_north(geometry_staging_buffer);
-        self.mesh_west_east(geometry_staging_buffer);
-        self.mesh_down_up(geometry_staging_buffer);
+        // self.mesh_south_north(geometry_staging_buffer);
+        // self.mesh_west_east(geometry_staging_buffer);
+        // self.mesh_down_up(geometry_staging_buffer);
 
-        // self.mesh_south_north_no_merge(geometry_staging_buffer);
-        // self.mesh_west_east_no_merge(geometry_staging_buffer);
-        // self.mesh_down_up_no_merge(geometry_staging_buffer);
+        self.mesh_south_north_no_merge(geometry_staging_buffer);
+        self.mesh_west_east_no_merge(geometry_staging_buffer);
+        self.mesh_down_up_no_merge(geometry_staging_buffer);
 
         geometry_staging_buffer.format_quads();
 
@@ -710,26 +709,19 @@ impl Chunk {
     pub fn generate_light_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>) { unsafe {
         const BYTES_PER_QUAD: usize = 8;
 
-        let reserved_indices_bytes = geometry_staging_buffer.index / BYTES_PER_QUAD * mem::size_of::<u32>();
-        light_staging_buffer.index = reserved_indices_bytes;
+        // bytes reserved to index a light chunk for each quad
+        // need 1 u32 per quad
+        let reserved_bytes = geometry_staging_buffer.index / BYTES_PER_QUAD * mem::size_of::<u32>();
+        light_staging_buffer.index = reserved_bytes;
 
-        // 4 bits per light level, 4 light levels per smooth light level, 2 smooth light levels per face (block/sky)
-        const BYTES_PER_LIGHT: usize = 4;
-        let light_bytes = geometry_staging_buffer.index / BYTES_PER_QUAD * BYTES_PER_LIGHT;
+        for (i, quad) in geometry_staging_buffer.iter().map(|quad| mem::transmute::<&[u8; 8], &GpuQuad>(quad)).enumerate() {
+            // insert the index offset of the light chunk
+            light_staging_buffer.set_u32(i * mem::size_of::<u32>(), (light_staging_buffer.index / mem::size_of::<u32>()) as u32);
+            // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
+            // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
 
-        self.light_page = light_buffer_allocator.allocate(reserved_indices_bytes + light_bytes);
-        if self.light_page.is_none() { return; }
-
-        let page = self.light_page.as_ref().unwrap_unchecked();
-        
-        let light_page_byte_offset = page.start * page.block_size();
-
-        for (i, quad) in geometry_staging_buffer.iter().map(|quad| &*(quad as *const [u8; 8] as *const GpuQuad)).enumerate() {
-            light_staging_buffer.insert_u32(((light_page_byte_offset + light_staging_buffer.index) / mem::size_of::<u32>()) as u32, i * mem::size_of::<u32>());
-            light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
-
-            continue;
-            #[allow(unreachable_code)]
+            // continue;
+            // #[allow(unreachable_code)]
             match quad.nor {
                 Normal::SOUTH => {
                     let start_x = quad.ure / 16;
@@ -743,7 +735,8 @@ impl Chunk {
                     let mut i = 0;
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
-                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            // light_staging_buffer.put_u32(16 - i as u32);
+                            light_staging_buffer.put_u32(self.light[Chunk::index(x, y, z)] as u32);
                             // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
                             i += 1;
                         }
@@ -761,7 +754,8 @@ impl Chunk {
                     let mut i = 0;
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
-                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            // light_staging_buffer.put_u32(16 - i as u32);
+                            light_staging_buffer.put_u32(self.light[Chunk::index(x, y, z)] as u32);
                             // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
                             i += 1;
                         }
@@ -779,7 +773,8 @@ impl Chunk {
                     let mut i = 0;
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
-                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            // light_staging_buffer.put_u32(16 - i as u32);
+                            light_staging_buffer.put_u32(self.light[Chunk::index(x, y, z)] as u32);
                             // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
                             i += 1;
                         }
@@ -797,7 +792,8 @@ impl Chunk {
                     let mut i = 0;
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
-                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            // light_staging_buffer.put_u32(16 - i as u32);
+                            light_staging_buffer.put_u32(self.light[Chunk::index(x, y, z)] as u32);
                             // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
                             i += 1;
                         }
@@ -815,7 +811,8 @@ impl Chunk {
                     let mut i = 0;
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
-                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            // light_staging_buffer.put_u32(16 - i as u32);
+                            light_staging_buffer.put_u32(self.light[Chunk::index(x, y, z)] as u32);
                             // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
                             i += 1;
                         }
@@ -833,7 +830,8 @@ impl Chunk {
                     let mut i = 0;
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
-                            light_staging_buffer.put_u32(self.light[Chunk::pos(x, y, z)] as u32);
+                            // light_staging_buffer.put_u32(16 - i as u32);
+                            light_staging_buffer.put_u32(self.light[Chunk::index(x, y, z)] as u32);
                             // light_staging_buffer.put_u32(rand::random::<u32>() & 0xf);
                             i += 1;
                         }
@@ -844,7 +842,15 @@ impl Chunk {
                 }
             }
         }
-        light_buffer_allocator.upload(page, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.index as isize);
+        
+        self.light_page = light_buffer_allocator.allocate(light_staging_buffer.index);
+        if self.light_page.is_none() { return; }
+
+        if let Some(light_page) = &self.light_page {
+            light_buffer_allocator.upload(light_page, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.index as isize);
+        }
+
+
     } }
 
     pub fn get_bounding_box(&self, camera: &Camera) -> BoundingBox<f32> {
@@ -873,7 +879,7 @@ impl Chunk {
         };
     }
 
-    pub fn pos<T: TryInto<usize>>(x: T, y: T, z: T) -> usize { unsafe {
+    pub fn index<T: TryInto<usize>>(x: T, y: T, z: T) -> usize { unsafe {
         return (x.try_into().unwrap_unchecked() << 8) |
                 (y.try_into().unwrap_unchecked() << 4) |
                 (z.try_into().unwrap_unchecked() << 0);

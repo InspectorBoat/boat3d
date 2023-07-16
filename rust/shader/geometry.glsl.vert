@@ -114,7 +114,6 @@ layout(location = 0) uniform mat4 u_transform;
 layout(location = 1) uniform ivec3 chunk_pos;
 layout(location = 2) uniform uint light_page_index_offset;
 
-// out vec4 relative_pos;
 out uint light_index;
 out uint quad_width;
 out uint texture_id;
@@ -131,9 +130,8 @@ void main() {
         
         gl_Position = u_transform * (vertex_pos * pos_transforms[normal] + vec4(chunk_pos, 0) * 256);
         
-        // relative_pos = vertex_pos * pos_transforms[normal];
         texture_pos = offset.xy / 16;
         texture_id = get_texture(face_index);
-        light_index = light[light_page_index_offset + face_index];
-        quad_width = 1;
+        light_index = light[light_page_index_offset + face_index] + light_page_index_offset * 2; // i don't understand why it's * 2, probably to offset the / 2?
+        quad_width = uint(ceil(get_size(face_index).x / 16));
 }

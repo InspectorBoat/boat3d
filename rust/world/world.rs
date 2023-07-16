@@ -162,9 +162,9 @@ impl World {
 
     pub fn generate(&mut self) { unsafe {
         let noise = NoiseBuilder::gradient_3d(512, 512, 512).generate_scaled(0.0, 1.0);
-        for x in 0..32 {
-            for y in 0..32 {
-                for z in 0..32 {
+        for x in 0..4 {
+            for y in 0..4 {
+                for z in 0..4 {
                     let mut chunk = Box::<Chunk>::new_zeroed().assume_init();
                     chunk.make_terrain(&noise, x, y, z);
                     // chunk.make_terrain_alt(&noise, x, y, z);
@@ -187,8 +187,6 @@ impl World {
             light_staging_buffer.reset();
             total_quads += chunk.quad_count as usize;
         }
-        
-        
         
         let total_chunks = self.chunks.len();
         let elapsed = start.elapsed().as_millis();
@@ -260,14 +258,14 @@ impl World {
         }
     } }
 
-    fn draw(&mut self) { unsafe {
+    pub fn draw(&mut self) { unsafe {
         self.geometry_program.as_ref().unwrap().bind();
         self.framebuffer.as_ref().unwrap().bind(gl::FRAMEBUFFER);
     
-        gl::ClearColor(16.0, 16.0, 16.0, 16.0);
+        gl::ClearColor(0.0, 0.0, 0.0, 0.0);
         gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         gl::Enable(gl::DEPTH_TEST);
-        // let camera_matrix = self.camera.get_matrix().as_array();
+
         let camera_matrix: [f32; 16] = *(self.camera.get_matrix().as_ref());
         gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_ptr());
     
@@ -275,7 +273,8 @@ impl World {
         const ELEMENT_INDICES_PER_QUAD: i32 = 5;
         const BYTES_PER_QUAD: usize = 8;
         const ELEMENTS_PER_QUAD: usize = 4;
-    
+        
+        // do chunked frustum culling
         let mut frustum_results: [Intersection; 8 * 8 * 8] = [Intersection::Inside; 512];
         for x in 0..8 {
             for y in 0..8 {
@@ -297,19 +296,21 @@ impl World {
                 }
             }
         }
-    
+        
         for chunk in self.chunks.values() {
-            if let Some(geometry_page) = &chunk.geometry_page {
-                // if chunk.pos.x >= 8 || chunk.pos.y >= 8 || chunk.pos.z >= 8 { continue; }
-                let Some(light_page) = &chunk.light_page else { unreachable_unchecked(); };
+            // only render chunk if it has a geometry and light page
+            if let (Some(geometry_page), Some(light_page)) = (&chunk.geometry_page, &chunk.light_page) {
+
+                // check chunk against chunked frustum culling results
                 match frustum_results[(((chunk.pos.x / 4) << 6) | ((chunk.pos.y / 4) << 3) | ((chunk.pos.z / 4) << 0)) as usize] {
                     Intersection::Inside => {}
-                    // Intersection::Partial => { if frustum.test_bounding_box(chunk.get_bounding_box(&self.camera)) == Intersection::Outside { continue; } }
+                    // use a sphere test for individual chunks to save time
                     Intersection::Partial => { if frustum.test_sphere(chunk.get_bounding_sphere(&self.camera)) == Intersection::Outside { continue; } }
                     Intersection::Outside => { continue; }
                 }
-                let pos = [chunk.pos.x, chunk.pos.y, chunk.pos.z];
+                // set chunk position uniform
                 gl::Uniform3iv(1, 1, &raw const chunk.pos as *const i32);
+                // set light page index offset uniform
                 gl::Uniform1ui(2, (light_page.start * light_page.block_size() / mem::size_of::<u32>() / 2) as u32);
                 gl::DrawElementsBaseVertex(
                     gl::TRIANGLE_STRIP,
@@ -320,15 +321,15 @@ impl World {
                 );
             }
         }
-    
+        
         self.post_program.as_ref().unwrap().bind();
-    
+        
         gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
         FrameBuffer::clear_bind(gl::FRAMEBUFFER);
         gl::ClearColor(1.0, 1.0, 1.0, 1.0);
         gl::Clear(gl::COLOR_BUFFER_BIT);
         gl::Disable(gl::DEPTH_TEST);
-    
+        
         gl::ActiveTexture(gl::TEXTURE0);
         self.texture_attachment.as_ref().unwrap().bind(gl::TEXTURE_2D);
         gl::ActiveTexture(gl::TEXTURE1);

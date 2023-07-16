@@ -27,7 +27,9 @@ void main() {
     uint quad_width;
     uint light_index;
     unpack_framebuffer(texture_pos, texture_id, quad_width, light_index);
-    FragColor = vec4(light[light_index] * 0.0625, 0.0, 0.0, 1.0);
+    uint index_offset = uint(texture_pos.x) + uint(texture_pos.y) * quad_width;
+    index_offset = 0;
+    FragColor = vec4(light[light_index + index_offset] * 0.0625, 0.0, 0.0, 1.0);
     // FragColor = texture(block_texture, vec3(texture_pos, texture_id)) * light[light_index] * 0.0625;
     // FragColor = texture(block_texture, vec3(TexCoords, 1.0));
 }

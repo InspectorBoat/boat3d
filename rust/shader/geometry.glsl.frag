@@ -5,7 +5,6 @@ layout(location = 1) out vec4 unused;
 
 // texture pos, texture id, quad width, light index f32 * 2 + u16 + u16 + u32
 
-// in vec4 relative_pos;
 flat in uint light_index;
 flat in uint quad_width;
 flat in uint texture_id;

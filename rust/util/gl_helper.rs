@@ -296,7 +296,7 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
             furthest: 0
         }
     } }
-    // Size in bytes
+    // size given in bytes
     pub fn allocate(&mut self, size: usize) -> Option<Page<P>> { unsafe {
         if size == 0 { return None; }
         let size = size.div_ceil(P);
@@ -331,9 +331,6 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
         }
     }
 
-    pub fn upload_slice<T>(&mut self, page: Page<P>, data: &[T], start: isize, length: isize) {
-        self.buffer.upload_slice(data, (page.start * P + start as usize) as isize, length);
-    }
     pub fn upload<T>(&mut self, page: &Page<P>, data: &[T], length: isize) { unsafe {
         if length > (page.size.get() * P) as isize {
             panic!("exceeded allocation size");
@@ -341,7 +338,7 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
         self.staging_buffer.upload_slice(data, 0, length);
         
         gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * P) as isize, length as isize);
-        // self.buffer.upload_slice (data, (page.start * 1024) as isize, length);
+        // self.buffer.upload_slice (data, (page.start * P) as isize, length);
     } }
 }
 
@@ -352,6 +349,7 @@ pub struct Page<const P: usize> {
 }
 
 impl <const P: usize> Page<P> {
+    // returns block size in bytes
     pub const fn block_size(&self) -> usize {
         return P;
     }
