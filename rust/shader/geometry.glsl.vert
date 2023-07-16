@@ -113,6 +113,7 @@ uint get_texture(int face_index) {
 layout(location = 0) uniform mat4 u_transform;
 layout(location = 1) uniform ivec3 chunk_pos;
 layout(location = 2) uniform uint light_page_index_offset;
+layout(location = 3) uniform uint face_index_offset;
 
 out uint light_index;
 out uint quad_width;
@@ -132,6 +133,6 @@ void main() {
         
         texture_pos = offset.xy / 16;
         texture_id = get_texture(face_index);
-        light_index = light[light_page_index_offset + face_index] + light_page_index_offset * 2; // i don't understand why it's * 2, probably to offset the / 2?
+        light_index = light[light_page_index_offset + face_index - face_index_offset] + light_page_index_offset;
         quad_width = uint(ceil(get_size(face_index).x / 16));
 }

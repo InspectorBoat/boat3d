@@ -688,13 +688,13 @@ impl Chunk {
     } }
 
     pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>) { unsafe {
-        // self.mesh_south_north(geometry_staging_buffer);
-        // self.mesh_west_east(geometry_staging_buffer);
-        // self.mesh_down_up(geometry_staging_buffer);
+        self.mesh_south_north(geometry_staging_buffer);
+        self.mesh_west_east(geometry_staging_buffer);
+        self.mesh_down_up(geometry_staging_buffer);
 
-        self.mesh_south_north_no_merge(geometry_staging_buffer);
-        self.mesh_west_east_no_merge(geometry_staging_buffer);
-        self.mesh_down_up_no_merge(geometry_staging_buffer);
+        // self.mesh_south_north_no_merge(geometry_staging_buffer);
+        // self.mesh_west_east_no_merge(geometry_staging_buffer);
+        // self.mesh_down_up_no_merge(geometry_staging_buffer);
 
         geometry_staging_buffer.format_quads();
 
@@ -849,7 +849,6 @@ impl Chunk {
         if let Some(light_page) = &self.light_page {
             light_buffer_allocator.upload(light_page, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.index as isize);
         }
-
 
     } }
 

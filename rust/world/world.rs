@@ -162,9 +162,9 @@ impl World {
 
     pub fn generate(&mut self) { unsafe {
         let noise = NoiseBuilder::gradient_3d(512, 512, 512).generate_scaled(0.0, 1.0);
-        for x in 0..4 {
-            for y in 0..4 {
-                for z in 0..4 {
+        for x in 0..32 {
+            for y in 0..32 {
+                for z in 0..32 {
                     let mut chunk = Box::<Chunk>::new_zeroed().assume_init();
                     chunk.make_terrain(&noise, x, y, z);
                     // chunk.make_terrain_alt(&noise, x, y, z);
@@ -311,7 +311,9 @@ impl World {
                 // set chunk position uniform
                 gl::Uniform3iv(1, 1, &raw const chunk.pos as *const i32);
                 // set light page index offset uniform
-                gl::Uniform1ui(2, (light_page.start * light_page.block_size() / mem::size_of::<u32>() / 2) as u32);
+                gl::Uniform1ui(2, (light_page.start * light_page.block_size() / mem::size_of::<u32>()) as u32);
+                // what to offset the face index by to get the quad id
+                gl::Uniform1ui(3, (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD / 4) as u32);
                 gl::DrawElementsBaseVertex(
                     gl::TRIANGLE_STRIP,
                     chunk.quad_count as i32 * ELEMENT_INDICES_PER_QUAD,
@@ -324,6 +326,7 @@ impl World {
         
         self.post_program.as_ref().unwrap().bind();
         
+        if self.camera.frustum_frozen { return; }
         gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
         FrameBuffer::clear_bind(gl::FRAMEBUFFER);
         gl::ClearColor(1.0, 1.0, 1.0, 1.0);

@@ -97,6 +97,7 @@ impl Buffer {
             data.as_ptr() as *const c_void
         );
     } }
+    // length and offset in bytes
     pub fn get_sub_data<T: Sized + Clone + Default>(&self, offset: isize, length: isize) -> Vec<T> { unsafe {
         let mut data = vec![Default::default(); (length as usize) * std::mem::size_of::<T>()];
         gl::GetNamedBufferSubData(
@@ -340,6 +341,10 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
         gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * P) as isize, length as isize);
         // self.buffer.upload_slice (data, (page.start * P) as isize, length);
     } }
+
+    pub const fn block_size(&self) -> usize {
+        return P;
+    }
 }
 
 #[derive(Debug)]
