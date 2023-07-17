@@ -9,7 +9,6 @@ use std::hint;
 use std::hint::black_box;
 use std::hint::unreachable_unchecked;
 use std::intrinsics::prefetch_read_data;
-use std::marker::PhantomData;
 use std::mem;
 use std::num::NonZeroUsize;
 use std::ops::Add;
@@ -222,8 +221,8 @@ impl Chunk {
                     0
                 }
             };
-            *light = rand::random::<u8>() & 0xf;
-            // *light = (*noise_val * 16.0) as u8;
+            // *light = rand::random::<u8>() & 0xf;
+            *light = (*noise_val * 64.0 - 32.0) as u8;
         } } }
     } }
 
@@ -266,127 +265,132 @@ impl Chunk {
         
         let mut row_id: u16 = 0;
 
-        for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
-            let index = Chunk::index(u, v, d);
+        for d in 0..16_u8 {
+            for v in 0..16_u8 {
+                for u in 0..16_u8 {
+                    let index = Chunk::index(u, v, d);
 
-            let (face_s, face_n) = self.get_face_pair::<{Normal::SOUTH}>(index);
-            let compare = BlockFace::should_cull(face_s, face_n);
-            'south: {
-                if let Some(face) = self.get_extra_face::<{Normal::SOUTH}>(index) {
-                    Run::add_face::<{ Normal::SOUTH }>(geometry_staging_buffer, &face.0, index);
-                }
-    
-                if compare.0 {
-                    active_run_s = false;
-                    break 'south
-                }
-                // /*
-                if active_run_s && same_row_s {
-                    if run_s.match_right(&face_s) {
-                        run_s.merge_face(geometry_staging_buffer, &face_s);
-                        break 'south
-                    } else {
-                        active_run_s = false;
-                    }
-                }
-                // /*
-                if !active_run_s {
-                    run_s = &mut row_s[u as usize];
-                    if run_s.row + 1 == row_id && run_s.match_top_left(&face_s) {
-                        same_row_s = false;
+                    let (face_s, face_n) = self.get_face_pair::<{Normal::SOUTH}>(index);
+                    let compare = BlockFace::should_cull(face_s, face_n);
+                    'south: {
+                        if let Some(face) = self.get_extra_face::<{Normal::SOUTH}>(index) {
+                            Run::add_face::<{ Normal::SOUTH }>(geometry_staging_buffer, &face.0, index);
+                        }
+            
+                        if compare.0 {
+                            active_run_s = false;
+                            break 'south
+                        }
+                        // /*
+                        if active_run_s && same_row_s {
+                            if run_s.match_right(&face_s) {
+                                run_s.merge_face(geometry_staging_buffer, &face_s);
+                                break 'south
+                            } else {
+                                active_run_s = false;
+                            }
+                        }
+                        // /*
+                        if !active_run_s {
+                            run_s = &mut row_s[u as usize];
+                            if run_s.row + 1 == row_id && run_s.match_top_left(&face_s) {
+                                same_row_s = false;
+                                active_run_s = true;
+                            }
+                        }
+                        if active_run_s {
+                            if run_s.end == u {
+                                if run_s.match_top_right(&face_s) {
+                                    run_s.pull(geometry_staging_buffer, &face_s, u, v, d);
+                                    active_run_s = false;
+                                }
+                                else {
+                                    run_s.pull_partial(geometry_staging_buffer, &face_s, u, v, d);
+                                    same_row_s = true;
+                                }
+                            }
+                            else {
+                                let next_pos = index + 0x100;
+                                let (next_face_s, next_face_n) = self.get_face_pair::<{Normal::SOUTH}>(next_pos);
+                                let compare = BlockFace::should_cull(next_face_s, next_face_n);
+
+                                if compare.0 || !Run::match_faces(face_s, next_face_s) {
+                                    run_s.pull_partial(geometry_staging_buffer, &face_s, u, v, d);
+                                    active_run_s = false;
+                                }
+                            }
+                            break 'south
+                        }
+                        // */
+                        // */
+                        run_s = &mut row_s[u as usize];
+                        same_row_s = true;
                         active_run_s = true;
+                        run_s.begin::<{ Normal::SOUTH }>(geometry_staging_buffer, &face_s, index, u, row_id);
                     }
-                }
-                if active_run_s {
-                    if run_s.end == u {
-                        if run_s.match_top_right(&face_s) {
-                            run_s.pull(geometry_staging_buffer, &face_s, u, v, d);
-                            active_run_s = false;
-                        }
-                        else {
-                            run_s.pull_partial(geometry_staging_buffer, &face_s, u, v, d);
-                            same_row_s = true;
-                        }
-                    }
-                    else {
-                        let next_pos = index + 0x100;
-                        let (next_face_s, next_face_n) = self.get_face_pair::<{Normal::SOUTH}>(next_pos);
-                        let compare = BlockFace::should_cull(next_face_s, next_face_n);
+                    'north: {
+                        // break 'north;
 
-                        if compare.0 || !Run::match_faces(face_s, next_face_s) {
-                            run_s.pull_partial(geometry_staging_buffer, &face_s, u, v, d);
-                            active_run_s = false;
+                        if let Some(face) = self.get_opposing_extra_face::<{ Normal::SOUTH }>(index) {
+                            Run::add_face::<{ Normal::NORTH }>(geometry_staging_buffer, &face.0, index);
                         }
-                    }
-                    break 'south
-                }
-                // */
-                // */
-                run_s = &mut row_s[u as usize];
-                same_row_s = true;
-                active_run_s = true;
-                run_s.begin::<{ Normal::SOUTH }>(geometry_staging_buffer, &face_s, index, u, row_id);
-            }
-            'north: {
-                // break 'north;
 
-                if let Some(face) = self.get_opposing_extra_face::<{ Normal::SOUTH }>(index) {
-                    Run::add_face::<{ Normal::NORTH }>(geometry_staging_buffer, &face.0, index);
-                }
+                        if compare.1 {
+                            active_run_n = false;
+                            break 'north
+                        }
+                        // /*
+                        if active_run_n && same_row_n {
+                            if run_n.match_right(&face_n) {
+                                run_n.merge_face(geometry_staging_buffer, &face_n);
+                                break 'north
+                            } else {
+                                active_run_n = false;
+                            }
+                        }
+                        // /*
+                        if !active_run_n {
+                            run_n = &mut row_n[u as usize];
+                            if run_n.row + 1 == row_id && run_n.match_top_left(&face_n) {
+                                same_row_n = false;
+                                active_run_n = true;
+                            }
+                        }
+                        if active_run_n {
+                            if run_n.end == u {
+                                if run_n.match_top_right(&face_n) {
+                                    run_n.pull(geometry_staging_buffer, &face_n, u, v, d);
+                                    active_run_n = false;
+                                }
+                                else {
+                                    run_n.pull_partial(geometry_staging_buffer, &face_n, u, v, d);
+                                    same_row_n = true;
+                                }
+                            }
+                            else {
+                                let next_pos = index + 0x100;
+                                let (next_face_s, next_face_n) = self.get_face_pair::<{Normal::SOUTH}>(next_pos);
+                                let compare = BlockFace::should_cull(next_face_s, next_face_n);
 
-                if compare.1 {
-                    active_run_n = false;
-                    break 'north
-                }
-                // /*
-                if active_run_n && same_row_n {
-                    if run_n.match_right(&face_n) {
-                        run_n.merge_face(geometry_staging_buffer, &face_n);
-                        break 'north
-                    } else {
-                        active_run_n = false;
-                    }
-                }
-                // /*
-                if !active_run_n {
-                    run_n = &mut row_n[u as usize];
-                    if run_n.row + 1 == row_id && run_n.match_top_left(&face_n) {
-                        same_row_n = false;
+                                if compare.1 || !Run::match_faces(face_n, next_face_n) {
+                                    run_n.pull_partial(geometry_staging_buffer, &face_n, u, v, d);
+                                    active_run_n = false;
+                                }
+                            }
+                            break 'north
+                        }
+                        // */
+                        // */
+                        run_n = &mut row_n[u as usize];
                         active_run_n = true;
+                        same_row_n = true;
+                        run_n.begin::<{ Normal::NORTH }>(geometry_staging_buffer, &face_n, index, u, row_id);
                     }
                 }
-                if active_run_n {
-                    if run_n.end == u {
-                        if run_n.match_top_right(&face_n) {
-                            run_n.pull(geometry_staging_buffer, &face_n, u, v, d);
-                            active_run_n = false;
-                        }
-                        else {
-                            run_n.pull_partial(geometry_staging_buffer, &face_n, u, v, d);
-                            same_row_n = true;
-                        }
-                    }
-                    else {
-                        let next_pos = index + 0x100;
-                        let (next_face_s, next_face_n) = self.get_face_pair::<{Normal::SOUTH}>(next_pos);
-                        let compare = BlockFace::should_cull(next_face_s, next_face_n);
-
-                        if compare.1 || !Run::match_faces(face_n, next_face_n) {
-                            run_n.pull_partial(geometry_staging_buffer, &face_n, u, v, d);
-                            active_run_n = false;
-                        }
-                    }
-                    break 'north
-                }
-                // */
-                // */
-                run_n = &mut row_n[u as usize];
-                active_run_n = true;
-                same_row_n = true;
-                run_n.begin::<{ Normal::NORTH }>(geometry_staging_buffer, &face_n, index, u, row_id);
+                (active_run_s, active_run_n) = (false, false);
+                row_id += 1;
             }
-        } (active_run_s, active_run_n) = (false, false); row_id += 1;
-        } row_id += 16;
+            row_id += 16;
         }
     }
     
@@ -406,127 +410,133 @@ impl Chunk {
         
         let mut row_id: u16 = 0;
         
-        for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
-            let index = Chunk::index(d, v, u);
+        for d in 0..16_u8 {
+            for v in 0..16_u8 {
+                for u in 0..16_u8 {
+                    let index = Chunk::index(d, v, u);
 
-            let (face_w, face_e) = self.get_face_pair::<{Normal::WEST}>(index);
-            let compare = BlockFace::should_cull(face_w, face_e);
-            'west: {
-                if let Some(face) = self.get_extra_face::<{Normal::WEST}>(index) {
-                    Run::add_face::<{ Normal::WEST }>(geometry_staging_buffer, &face.0, index);
-                }
-    
-                if compare.0 {
-                    active_run_w = false;
-                    break 'west
-                }
+                    let (face_w, face_e) = self.get_face_pair::<{Normal::WEST}>(index);
+                    let compare = BlockFace::should_cull(face_w, face_e);
+                    'west: {
+                        if let Some(face) = self.get_extra_face::<{Normal::WEST}>(index) {
+                            Run::add_face::<{ Normal::WEST }>(geometry_staging_buffer, &face.0, index);
+                        }
+            
+                        if compare.0 {
+                            active_run_w = false;
+                            break 'west
+                        }
 
-                // /*
-                if active_run_w && same_row_w {
-                    if run_w.match_right(&face_w) {
-                        run_w.merge_face(geometry_staging_buffer, &face_w);
-                        break 'west
-                    } else {
-                        active_run_w = false;
-                    }
-                }
-                // /*
-                if !active_run_w {
-                    run_w = &mut row_w[u as usize];
-                    if run_w.row + 1 == row_id && run_w.match_top_left(&face_w) {
-                        same_row_w = false;
+                        // /*
+                        if active_run_w && same_row_w {
+                            if run_w.match_right(&face_w) {
+                                run_w.merge_face(geometry_staging_buffer, &face_w);
+                                break 'west
+                            } else {
+                                active_run_w = false;
+                            }
+                        }
+                        // /*
+                        if !active_run_w {
+                            run_w = &mut row_w[u as usize];
+                            if run_w.row + 1 == row_id && run_w.match_top_left(&face_w) {
+                                same_row_w = false;
+                                active_run_w = true;
+                            }
+                        }
+                        if active_run_w {
+                            if run_w.end == u {
+                                if run_w.match_top_right(&face_w) {
+                                    run_w.pull(geometry_staging_buffer, &face_w, u, v, d);
+                                    active_run_w = false;
+                                }
+                                else {
+                                    run_w.pull_partial(geometry_staging_buffer, &face_w, u, v, d);
+                                    same_row_w = true;
+                                }
+                            }
+                            else {
+                                let next_pos = index + 0x001;
+                                let (next_face_w, next_face_e) = self.get_face_pair::<{Normal::WEST}>(next_pos);
+                                let compare = BlockFace::should_cull(next_face_w, next_face_e);
+
+                                if compare.0 || !Run::match_faces(face_w, next_face_w) {
+                                    run_w.pull_partial(geometry_staging_buffer, &face_w, u, v, d);
+                                    active_run_w = false;
+                                }
+                            }
+                            break 'west
+                        }
+                        // */
+                        // */
+                        run_w = &mut row_w[u as usize];
+                        same_row_w = true;
                         active_run_w = true;
+                        run_w.begin::<{ Normal::WEST }>(geometry_staging_buffer, &face_w, index, u, row_id);
                     }
-                }
-                if active_run_w {
-                    if run_w.end == u {
-                        if run_w.match_top_right(&face_w) {
-                            run_w.pull(geometry_staging_buffer, &face_w, u, v, d);
-                            active_run_w = false;
-                        }
-                        else {
-                            run_w.pull_partial(geometry_staging_buffer, &face_w, u, v, d);
-                            same_row_w = true;
-                        }
-                    }
-                    else {
-                        let next_pos = index + 0x001;
-                        let (next_face_w, next_face_e) = self.get_face_pair::<{Normal::WEST}>(next_pos);
-                        let compare = BlockFace::should_cull(next_face_w, next_face_e);
+                    'east: {
+                        // break 'east;
 
-                        if compare.0 || !Run::match_faces(face_w, next_face_w) {
-                            run_w.pull_partial(geometry_staging_buffer, &face_w, u, v, d);
-                            active_run_w = false;
+                        if let Some(face) = self.get_opposing_extra_face::<{ Normal::WEST }>(index) {
+                            Run::add_face::<{ Normal::EAST }>(geometry_staging_buffer, &face.0, index);
                         }
-                    }
-                    break 'west
-                }
-                // */
-                // */
-                run_w = &mut row_w[u as usize];
-                same_row_w = true;
-                active_run_w = true;
-                run_w.begin::<{ Normal::WEST }>(geometry_staging_buffer, &face_w, index, u, row_id);
-            }
-            'east: {
-                // break 'east;
+                        if compare.1 {
+                            active_run_e = false;
+                            break 'east
+                        }
+                        // /*
+                        if active_run_e && same_row_e {
+                            if run_e.match_right(&face_e) {
+                                run_e.merge_face(geometry_staging_buffer, &face_e);
+                                break 'east
+                            } else {
+                                active_run_e = false;
+                            }
+                        }
+                        // /* 
+                        if !active_run_e {
+                            run_e = &mut row_e[u as usize];
+                            if run_e.row + 1 == row_id && run_e.match_top_left(&face_e) {
+                                same_row_e = false;
+                                active_run_e = true;
+                            }
+                        }
 
-                if let Some(face) = self.get_opposing_extra_face::<{ Normal::WEST }>(index) {
-                    Run::add_face::<{ Normal::EAST }>(geometry_staging_buffer, &face.0, index);
-                }
-                if compare.1 {
-                    active_run_e = false;
-                    break 'east
-                }
-                // /*
-                if active_run_e && same_row_e {
-                    if run_e.match_right(&face_e) {
-                        run_e.merge_face(geometry_staging_buffer, &face_e);
-                        break 'east
-                    } else {
-                        active_run_e = false;
-                    }
-                }
-                // /* 
-                if !active_run_e {
-                    run_e = &mut row_e[u as usize];
-                    if run_e.row + 1 == row_id && run_e.match_top_left(&face_e) {
-                        same_row_e = false;
+                        if active_run_e {
+                            if run_e.end == u {
+                                if run_e.match_top_right(&face_e) {
+                                    run_e.pull(geometry_staging_buffer, &face_e, u, v, d);
+                                    active_run_e = false;
+                                }
+                                else {
+                                    run_e.pull_partial(geometry_staging_buffer, &face_e, u, v, d);
+                                    same_row_e = true;
+                                }
+                            }
+                            else {
+                                let next_pos = index + 0x001;
+                                let (next_face_w, next_face_e) = self.get_face_pair::<{Normal::WEST}>(next_pos);
+                                let compare = BlockFace::should_cull(next_face_w, next_face_e);
+
+                                if compare.1 || !Run::match_faces(face_e, next_face_e) {
+                                    run_e.pull_partial(geometry_staging_buffer, &face_e, u, v, d);
+                                    active_run_e = false;
+                                }
+                            }
+                            break 'east
+                        }
+                        // */
+                        // */
+                        run_e = &mut row_e[u as usize];
                         active_run_e = true;
+                        same_row_e = true;
+                        run_e.begin::<{ Normal::EAST }>(geometry_staging_buffer, &face_e, index, u, row_id);
                     }
                 }
-
-                if active_run_e {
-                    if run_e.end == u {
-                        if run_e.match_top_right(&face_e) {
-                            run_e.pull(geometry_staging_buffer, &face_e, u, v, d);
-                            active_run_e = false;
-                        }
-                        else {
-                            run_e.pull_partial(geometry_staging_buffer, &face_e, u, v, d);
-                            same_row_e = true;
-                        }
-                    }
-                    else {
-                        let next_pos = index + 0x001;
-                        let (next_face_w, next_face_e) = self.get_face_pair::<{Normal::WEST}>(next_pos);
-                        let compare = BlockFace::should_cull(next_face_w, next_face_e);
-
-                        if compare.1 || !Run::match_faces(face_e, next_face_e) {
-                            run_e.pull_partial(geometry_staging_buffer, &face_e, u, v, d);
-                            active_run_e = false;
-                        }
-                    }
-                    break 'east
-                }
-                // */
-                // */
-                run_e = &mut row_e[u as usize];
-                active_run_e = true;
-                same_row_e = true;
-                run_e.begin::<{ Normal::EAST }>(geometry_staging_buffer, &face_e, index, u, row_id);
+                (active_run_w, active_run_e) = (false, false); row_id += 1;
             }
-        } (active_run_w, active_run_e) = (false, false); row_id += 1; } row_id += 16; }
+            row_id += 16;
+        }
     }
     
     // U = Z
@@ -545,201 +555,219 @@ impl Chunk {
         
         let mut row_id: u16 = 0;
         
-        for d in 0..16_u8 { for v in 0..16_u8 { for u in 0..16_u8 {
-            let index = Chunk::index(v, d, u);
+        for d in 0..16_u8 {
+            for v in 0..16_u8 {
+                for u in 0..16_u8 {
+                    let index = Chunk::index(v, d, u);
 
-            let (face_d, face_u) = self.get_face_pair::<{Normal::DOWN}>(index);
-            let compare = BlockFace::should_cull(face_d, face_u);
-            'down: {
-                if let Some(face) = self.get_extra_face::<{Normal::DOWN}>(index) {
-                    Run::add_face::<{ Normal::DOWN }>(geometry_staging_buffer, &face.0, index);
-                }
-    
-                if compare.0 {
-                    active_run_d = false;
-                    break 'down
-                }
+                    let (face_d, face_u) = self.get_face_pair::<{Normal::DOWN}>(index);
+                    let compare = BlockFace::should_cull(face_d, face_u);
+                    'down: {
+                        if let Some(face) = self.get_extra_face::<{Normal::DOWN}>(index) {
+                            Run::add_face::<{ Normal::DOWN }>(geometry_staging_buffer, &face.0, index);
+                        }
+            
+                        if compare.0 {
+                            active_run_d = false;
+                            break 'down
+                        }
 
-                // /*
-                if active_run_d && same_row_d {
-                    if run_d.match_right(&face_d) {
-                        run_d.merge_face(geometry_staging_buffer, &face_d);
-                        break 'down
-                    } else {
-                        active_run_d = false;
-                    }
-                }
-                // /*
-                if !active_run_d {
-                    run_d = &mut row_d[u as usize];
-                    if run_d.row + 1 == row_id && run_d.match_top_left(&face_d) {
-                        same_row_d = false;
+                        // /*
+                        if active_run_d && same_row_d {
+                            if run_d.match_right(&face_d) {
+                                run_d.merge_face(geometry_staging_buffer, &face_d);
+                                break 'down
+                            } else {
+                                active_run_d = false;
+                            }
+                        }
+                        // /*
+                        if !active_run_d {
+                            run_d = &mut row_d[u as usize];
+                            if run_d.row + 1 == row_id && run_d.match_top_left(&face_d) {
+                                same_row_d = false;
+                                active_run_d = true;
+                            }
+                        }
+                        if active_run_d {
+                            if run_d.end == u {
+                                if run_d.match_top_right(&face_d) {
+                                    run_d.pull(geometry_staging_buffer, &face_d, u, v, d);
+                                    active_run_d = false;
+                                }
+                                else {
+                                    run_d.pull_partial(geometry_staging_buffer, &face_d, u, v, d);
+                                    same_row_d = true;
+                                }
+                            }
+                            else {
+                                let next_pos = index + 0x001;
+                                let (next_face_d, next_face_u) = self.get_face_pair::<{Normal::DOWN}>(next_pos);
+                                let compare = BlockFace::should_cull(next_face_d, next_face_u);
+
+                                if compare.0 || !Run::match_faces(face_d, next_face_d) {
+                                    run_d.pull_partial(geometry_staging_buffer, &face_d, u, v, d);
+                                    active_run_d = false;
+                                }
+                            }
+                            break 'down
+                        }
+                        // */
+                        // */
+                        run_d = &mut row_d[u as usize];
+                        same_row_d = true;
                         active_run_d = true;
+                        run_d.begin::<{ Normal::DOWN }>(geometry_staging_buffer, &face_d, index, u, row_id);
                     }
-                }
-                if active_run_d {
-                    if run_d.end == u {
-                        if run_d.match_top_right(&face_d) {
-                            run_d.pull(geometry_staging_buffer, &face_d, u, v, d);
-                            active_run_d = false;
-                        }
-                        else {
-                            run_d.pull_partial(geometry_staging_buffer, &face_d, u, v, d);
-                            same_row_d = true;
-                        }
-                    }
-                    else {
-                        let next_pos = index + 0x001;
-                        let (next_face_d, next_face_u) = self.get_face_pair::<{Normal::DOWN}>(next_pos);
-                        let compare = BlockFace::should_cull(next_face_d, next_face_u);
+                    'up: {
+                        // break 'up;
 
-                        if compare.0 || !Run::match_faces(face_d, next_face_d) {
-                            run_d.pull_partial(geometry_staging_buffer, &face_d, u, v, d);
-                            active_run_d = false;
+                        if let Some(face) = self.get_opposing_extra_face::<{ Normal::DOWN }>(index) {
+                            Run::add_face::<{ Normal::UP }>(geometry_staging_buffer, &face.0, index);
                         }
-                    }
-                    break 'down
-                }
-                // */
-                // */
-                run_d = &mut row_d[u as usize];
-                same_row_d = true;
-                active_run_d = true;
-                run_d.begin::<{ Normal::DOWN }>(geometry_staging_buffer, &face_d, index, u, row_id);
-            }
-            'up: {
-                // break 'up;
 
-                if let Some(face) = self.get_opposing_extra_face::<{ Normal::DOWN }>(index) {
-                    Run::add_face::<{ Normal::UP }>(geometry_staging_buffer, &face.0, index);
-                }
+                        if compare.1 {
+                            active_run_u = false;
+                            break 'up
+                        }
+                        // /*
+                        if active_run_u && same_row_u {
+                            if run_u.match_right(&face_u) {
+                                run_u.merge_face(geometry_staging_buffer, &face_u);
+                                break 'up
+                            } else {
+                                active_run_u = false;
+                            }
+                        }
+                        // /* 
+                        if !active_run_u {
+                            run_u = &mut row_u[u as usize];
+                            if run_u.row + 1 == row_id && run_u.match_top_left(&face_u) {
+                                same_row_u = false;
+                                active_run_u = true;
+                            }
+                        }
 
-                if compare.1 {
-                    active_run_u = false;
-                    break 'up
-                }
-                // /*
-                if active_run_u && same_row_u {
-                    if run_u.match_right(&face_u) {
-                        run_u.merge_face(geometry_staging_buffer, &face_u);
-                        break 'up
-                    } else {
-                        active_run_u = false;
-                    }
-                }
-                // /* 
-                if !active_run_u {
-                    run_u = &mut row_u[u as usize];
-                    if run_u.row + 1 == row_id && run_u.match_top_left(&face_u) {
-                        same_row_u = false;
+                        if active_run_u {
+                            if run_u.end == u {
+                                if run_u.match_top_right(&face_u) {
+                                    run_u.pull(geometry_staging_buffer, &face_u, u, v, d);
+                                    active_run_u = false;
+                                }
+                                else {
+                                    run_u.pull_partial(geometry_staging_buffer, &face_u, u, v, d);
+                                    same_row_u = true;
+                                }
+                            }
+                            else {
+                                let next_pos = index + 0x001;
+                                let (next_face_d, next_face_u) = self.get_face_pair::<{Normal::DOWN}>(next_pos);
+                                let compare = BlockFace::should_cull(next_face_d, next_face_u);
+
+                                if compare.1 || !Run::match_faces(face_u, next_face_u) {
+                                    run_u.pull_partial(geometry_staging_buffer, &face_u, u, v, d);
+                                    active_run_u = false;
+                                }
+                            }
+                            break 'up
+                        }
+                        // */
+                        // */
+                        run_u = &mut row_u[u as usize];
                         active_run_u = true;
+                        same_row_u = true;
+                        run_u.begin::<{ Normal::UP }>(geometry_staging_buffer, &face_u, index, u, row_id);
                     }
                 }
-
-                if active_run_u {
-                    if run_u.end == u {
-                        if run_u.match_top_right(&face_u) {
-                            run_u.pull(geometry_staging_buffer, &face_u, u, v, d);
-                            active_run_u = false;
-                        }
-                        else {
-                            run_u.pull_partial(geometry_staging_buffer, &face_u, u, v, d);
-                            same_row_u = true;
-                        }
-                    }
-                    else {
-                        let next_pos = index + 0x001;
-                        let (next_face_d, next_face_u) = self.get_face_pair::<{Normal::DOWN}>(next_pos);
-                        let compare = BlockFace::should_cull(next_face_d, next_face_u);
-
-                        if compare.1 || !Run::match_faces(face_u, next_face_u) {
-                            run_u.pull_partial(geometry_staging_buffer, &face_u, u, v, d);
-                            active_run_u = false;
-                        }
-                    }
-                    break 'up
-                }
-                // */
-                // */
-                run_u = &mut row_u[u as usize];
-                active_run_u = true;
-                same_row_u = true;
-                run_u.begin::<{ Normal::UP }>(geometry_staging_buffer, &face_u, index, u, row_id);
+                (active_run_d, active_run_u) = (false, false); row_id += 1;
             }
-        } (active_run_d, active_run_u) = (false, false); row_id += 1; } row_id += 16; }
+            row_id += 16;
+        }
     }
     
-    pub fn mesh_south_north_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) { unsafe {
-        for z in 0..16_u8 { for y in 0..16_u8 { for x in 0..16_u8 {
-            let index = Chunk::index(x, y, z);
-            
-            let face_s = self.get_face::<{Normal::SOUTH}>(index);
-            let face_n = self.get_opposing_face::<{Normal::SOUTH}>(index);
+    pub fn mesh_south_north_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
+        for z in 0..16_u8 {
+            for y in 0..16_u8 {
+                for x in 0..16_u8 {
+                    let index = Chunk::index(x, y, z);
+                    
+                    let face_s = self.get_face::<{Normal::SOUTH}>(index);
+                    let face_n = self.get_opposing_face::<{Normal::SOUTH}>(index);
 
-            let compare = face_s.as_u32() + 0x10101010 - face_n.as_u32();
-            if compare == 0x10101010 { continue; }
-            
-            let offset = Chunk::INDICES_ZYX[index] as u64;
-            
-            if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_s.as_u64() + offset); }
-            if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_n.as_u64() + offset); }
-            
-            if let Some(face) = self.get_extra_face::<{Normal::SOUTH}>(index) {
-                Run::add_face::<{ Normal::SOUTH }>(geometry_staging_buffer, &face.0, index);
+                    let compare = face_s.as_u32() + 0x10101010 - face_n.as_u32();
+                    if compare == 0x10101010 { continue; }
+                    
+                    let offset = Chunk::INDICES_ZYX[index] as u64;
+                    
+                    if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_s.as_u64() + offset); }
+                    if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_n.as_u64() + offset); }
+                    
+                    if let Some(face) = self.get_extra_face::<{Normal::SOUTH}>(index) {
+                        Run::add_face::<{ Normal::SOUTH }>(geometry_staging_buffer, &face.0, index);
+                    }
+                    if let Some(face) = self.get_opposing_extra_face::<{ Normal::SOUTH }>(index) {
+                        Run::add_face::<{ Normal::NORTH }>(geometry_staging_buffer, &face.0, index);
+                    }
+                }
             }
-            if let Some(face) = self.get_opposing_extra_face::<{ Normal::SOUTH }>(index) {
-                Run::add_face::<{ Normal::NORTH }>(geometry_staging_buffer, &face.0, index);
+        }
+    }
+    pub fn mesh_west_east_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
+        for x in 0..16_u8 {
+            for y in 0..16_u8 {
+                for z in 0..16_u8 {
+                    let index = Chunk::index(x, y, z);
+
+                    let face_w = self.get_face::<{Normal::WEST}>(index);
+                    let face_e = self.get_opposing_face::<{Normal::WEST}>(index);
+
+                    let compare = face_w.as_u32() + 0x10101010 - face_e.as_u32();
+                    if compare == 0x10101010 { continue; }
+                    
+                    let offset = Chunk::INDICES_XYZ[index] as u64;
+                    
+                    if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_w.as_u64() + offset); }
+                    if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_e.as_u64() + offset); }
+
+                    if let Some(face) = self.get_extra_face::<{Normal::WEST}>(index) {
+                        Run::add_face::<{ Normal::WEST }>(geometry_staging_buffer, &face.0, index);
+                    }
+
+                    if let Some(face) = self.get_opposing_extra_face::<{ Normal::WEST }>(index) {
+                        Run::add_face::<{ Normal::EAST }>(geometry_staging_buffer, &face.0, index);
+                    }
+                }
             }
-    } } }
-    } }
-    pub fn mesh_west_east_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) { unsafe {
-        for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
-            let index = Chunk::index(x, y, z);
+        }
+    }
+    pub fn mesh_down_up_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
+        for x in 0..16_u8 {
+            for y in 0..16_u8 {
+                for z in 0..16_u8 {
+                    let index = Chunk::index(x, y, z);
 
-            let face_w = self.get_face::<{Normal::WEST}>(index);
-            let face_e = self.get_opposing_face::<{Normal::WEST}>(index);
+                    let face_d = self.get_face::<{Normal::DOWN}>(index);
+                    let face_u = self.get_opposing_face::<{Normal::DOWN}>(index);
 
-            let compare = face_w.as_u32() + 0x10101010 - face_e.as_u32();
-            if compare == 0x10101010 { continue; }
-            
-            let offset = Chunk::INDICES_XYZ[index] as u64;
-            
-            if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_w.as_u64() + offset); }
-            if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_e.as_u64() + offset); }
+                    let compare = face_d.as_u32() + 0x10101010 - face_u.as_u32();
+                    if compare == 0x10101010 { continue; }
 
-            if let Some(face) = self.get_extra_face::<{Normal::WEST}>(index) {
-                Run::add_face::<{ Normal::WEST }>(geometry_staging_buffer, &face.0, index);
+                    let offset = Chunk::INDICES_YXZ[index] as u64;
+
+                    if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_d.as_u64() + offset); }
+                    if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_u.as_u64() + offset); }
+
+                    if let Some(face) = self.get_extra_face::<{Normal::DOWN}>(index) {
+                        Run::add_face::<{ Normal::DOWN }>(geometry_staging_buffer, &face.0, index);
+                    }
+                
+                    if let Some(face) = self.get_opposing_extra_face::<{ Normal::DOWN }>(index) {
+                        Run::add_face::<{ Normal::UP }>(geometry_staging_buffer, &face.0, index);
+                    }
+                }
             }
-
-            if let Some(face) = self.get_opposing_extra_face::<{ Normal::WEST }>(index) {
-                Run::add_face::<{ Normal::EAST }>(geometry_staging_buffer, &face.0, index);
-            }
-    } } }
-    } }
-    pub fn mesh_down_up_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) { unsafe {
-        for x in 0..16_u8 { for y in 0..16_u8 { for z in 0..16_u8 {
-            let index = Chunk::index(x, y, z);
-
-            let face_d = self.get_face::<{Normal::DOWN}>(index);
-            let face_u = self.get_opposing_face::<{Normal::DOWN}>(index);
-
-            let compare = face_d.as_u32() + 0x10101010 - face_u.as_u32();
-            if compare == 0x10101010 { continue; }
-            
-            let offset = Chunk::INDICES_YXZ[index] as u64;
-            
-            if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_d.as_u64() + offset); }
-            if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_u.as_u64() + offset); }
-
-            if let Some(face) = self.get_extra_face::<{Normal::DOWN}>(index) {
-                Run::add_face::<{ Normal::DOWN }>(geometry_staging_buffer, &face.0, index);
-            }
-
-            if let Some(face) = self.get_opposing_extra_face::<{ Normal::DOWN }>(index) {
-                Run::add_face::<{ Normal::UP }>(geometry_staging_buffer, &face.0, index);
-            }
-    } } }
-    } }
+        }
+    }
 
     pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>) { unsafe {
         self.mesh_south_north(geometry_staging_buffer);
@@ -801,8 +829,8 @@ impl Chunk {
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
                             if z == 15 {
-                                if let Some(north) = self.get_neighbor::<{ Normal::NORTH }>() {
-                                    light_staging_buffer.put_u32(north.get_light::<{ Normal::NORTH }>(Chunk::index(x, y, z)) as u32);
+                                if let Some(south) = self.get_neighbor::<{ Normal::SOUTH }>() {
+                                    light_staging_buffer.put_u32(south.get_light::<{ Normal::NORTH }>(Chunk::index(x, y, z)) as u32);
                                 }
                                 else {
                                     light_staging_buffer.put_u32(0);
@@ -840,8 +868,8 @@ impl Chunk {
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
                             if x == 15 {
-                                if let Some(east) = self.get_neighbor::<{ Normal::EAST }>() {
-                                    light_staging_buffer.put_u32(east.get_light::<{ Normal::EAST }>(Chunk::index(x, y, z)) as u32);
+                                if let Some(west) = self.get_neighbor::<{ Normal::WEST }>() {
+                                    light_staging_buffer.put_u32(west.get_light::<{ Normal::EAST }>(Chunk::index(x, y, z)) as u32);
                                 }
                                 else {
                                     light_staging_buffer.put_u32(0);
@@ -879,8 +907,8 @@ impl Chunk {
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
                             if y == 15 {
-                                if let Some(up) = self.get_neighbor::<{ Normal::UP }>() {
-                                    light_staging_buffer.put_u32(up.get_light::<{ Normal::UP }>(Chunk::index(x, y, z)) as u32);
+                                if let Some(down) = self.get_neighbor::<{ Normal::DOWN }>() {
+                                    light_staging_buffer.put_u32(down.get_light::<{ Normal::UP }>(Chunk::index(x, y, z)) as u32);
                                 }
                                 else {
                                     light_staging_buffer.put_u32(0);

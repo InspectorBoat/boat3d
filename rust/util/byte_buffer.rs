@@ -82,7 +82,6 @@ impl StagingBuffer {
             face[5] = hei;
             // face[6] = tex.0;
             // face[7] = tex.1;
-            face[7] = rand::random::<u8>() & 0x3f;
         }
     } }
     pub fn reset(&mut self) {
