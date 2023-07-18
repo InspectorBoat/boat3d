@@ -240,7 +240,7 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
 } }
 
 fn update(world: &mut World, keys: &mut HashMap<Key, bool>) {
-    let speed = 0.2 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
+    let speed = 1.6 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
     for (key, pressed) in keys.iter() {
         if *pressed == false { continue; }
         match key {

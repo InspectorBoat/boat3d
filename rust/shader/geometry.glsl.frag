@@ -1,4 +1,4 @@
-#version 460
+#version 450
 
 layout(location = 0) out vec4 framebuffer;
 layout(location = 1) out vec4 unused;

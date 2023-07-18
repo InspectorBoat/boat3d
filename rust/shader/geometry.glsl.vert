@@ -1,4 +1,4 @@
-#version 460
+#version 450
 
 const mat4[] pos_transforms = {
         mat4(
