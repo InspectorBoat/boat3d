@@ -29,3 +29,8 @@ jobs:
         cargo build --release --verbose
     - name: Run tests
       run: cargo test --verbose
+      
+    - uses: actions/upload-artifact@v3
+      with:
+        name: boat3d
+        path: target/release/boat3d.exe
