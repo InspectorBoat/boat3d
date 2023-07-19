@@ -3,9 +3,6 @@ use std::{ffi::{c_void, CString}, ptr, ops::Deref, num::NonZeroUsize};
 use gl::{types::GLuint, FramebufferRenderbuffer};
 use glfw::{Window, WindowEvent, Glfw, Context};
 
-use log::debug;
-
-
 // /*
 pub fn init_gl(window: &mut Window) {
     gl::load_with(|s| window.get_proc_address(s) as *const _);
@@ -208,6 +205,9 @@ impl FrameBuffer {
     } }
     pub fn clear_bind(target: u32) { unsafe {
         gl::BindFramebuffer(target, 0);
+    } }
+    pub fn clear_unsigned_integer_color_attachment(&self, attachment_location: i32, clear_color: *const u32) { unsafe {
+        gl::ClearNamedFramebufferuiv(self.id, gl::COLOR, attachment_location, clear_color);
     } }
     pub fn kill(self) { unsafe {
         gl::DeleteFramebuffers(1, &self.id);

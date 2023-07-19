@@ -11,8 +11,6 @@ path = "main.rs"
 
 [dependencies]
 gl = "0.14.0"
-libc = "0.2.139"
-log = "0.4.17"
 simdnoise = "3.1.6"
 rand = "*"
 cgmath = "^0.16"
@@ -25,7 +23,7 @@ default-features = false
 [profile.release]
 _lto = true
 _codegen-units = 1
-_strip = false
+strip = true
 
 [profile.bench]
 debug = true

@@ -34,7 +34,7 @@ pub struct World {
 
 impl World {
     pub fn new() -> World { unsafe {
-        let world = World {
+        let mut world = World {
             chunks: HashMap::<Vector3<i32>, Box::<Chunk>>::new(),
             camera: Camera::new(),
             geometry_pool: BufferPoolAllocator::new(),
@@ -49,6 +49,11 @@ impl World {
             block_texture: None,
         };
 
+        // reserve space for the sky
+        let sky_page = world.light_pool.allocate(world.light_pool.block_size());
+        let sky_data: [(u32, u32, u32, u32); 1024 / 4 / 4] = [(15, 0, 0, 0); 1024 / 4 / 4];
+        world.light_pool.upload(&sky_page.unwrap(), &sky_data, 1024);
+
         return world;
     } }
 
@@ -56,8 +61,13 @@ impl World {
         gl::ActiveTexture(gl::TEXTURE0);
         let block_texture = Texture::create();
         block_texture.bind(gl::TEXTURE_2D_ARRAY);
-        let image: [u8; 16 * 3 * 64] = [0; 16 * 3 * 64].map(|_| rand::random());
-        gl::TexImage3D(gl::TEXTURE_2D_ARRAY, 0, gl::RGBA as i32, 4, 4, 64, 0, gl::RGB, gl::BYTE, &raw const image as *const c_void);
+        let mut image: [u8; 16 * 3 * 64] = [0; 16 * 3 * 64].map(|_| rand::random());
+        image[0] = 127;
+        image[1] = 127;
+        image[2] = 127;
+        image[3] = 0;
+
+        gl::TexImage3D(gl::TEXTURE_2D_ARRAY, 0, gl::RGBA as i32, 4, 4, 64, 0, gl::RGBA, gl::BYTE, &raw const image as *const c_void);
         gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_WRAP_S, gl::REPEAT as i32);
         gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_WRAP_T, gl::REPEAT as i32);
         // set texture filtering parameters
@@ -84,7 +94,7 @@ impl World {
         let texture_attachment = Texture::create();
         gl::ActiveTexture(gl::TEXTURE0);
         texture_attachment.bind(gl::TEXTURE_2D);
-        gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32F as i32, status.width as i32, status.height as i32, 0, gl::RGBA, gl::BYTE, ptr::null());
+        gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32UI as i32, status.width as i32, status.height as i32, 0, gl::RGBA_INTEGER, gl::INT, ptr::null());
         // gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32UI as i32, status.width as i32, status.height as i32, 0, gl::RGBA_INTEGER, gl::INT, ptr::null());
         gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
         gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
@@ -162,12 +172,15 @@ impl World {
     } }
 
     pub fn generate(&mut self) { unsafe {
-        let noise = NoiseBuilder::gradient_3d(512, 512, 512).generate_scaled(0.0, 1.0);
-        for x in 0..32 {
-            for y in 0..32 {
-                for z in 0..32 {
+        const MAX_X: usize = 4;
+        const MAX_Y: usize = 4;
+        const MAX_Z: usize = 4;
+        let noise = NoiseBuilder::gradient_3d(MAX_X * 16, MAX_Y * 16, MAX_Z * 16).generate_scaled(0.0, 1.0);
+        for x in 0..MAX_X {
+            for y in 0..MAX_Y {
+                for z in 0..MAX_Z {
                     let mut chunk = Box::<Chunk>::new_zeroed().assume_init();
-                    chunk.make_terrain(&noise, x, y, z);
+                    chunk.make_terrain(&noise, x, y, z, MAX_X, MAX_Y, MAX_Z);
                     // chunk.make_terrain_alt(&noise, x, y, z);
                     self.add_chunk(chunk);
                 }
@@ -271,11 +284,16 @@ impl World {
     } }
 
     pub fn draw(&mut self) { unsafe {
+        let framebuffer = self.framebuffer.as_ref().unwrap();
+
         self.geometry_program.as_ref().unwrap().bind();
         self.framebuffer.as_ref().unwrap().bind(gl::FRAMEBUFFER);
     
-        gl::ClearColor(0.0, 0.0, 0.0, 0.0);
-        gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+        let clear_color: [u32; 4] = [0, 0, 0, 0];
+        gl::ClearNamedFramebufferuiv(framebuffer.id, gl::COLOR, 0, &raw const clear_color as *const u32);
+
+        gl::ClearNamedFramebufferfi(framebuffer.id, gl::DEPTH_STENCIL, 0, 1.0, 0);
+
         gl::Enable(gl::DEPTH_TEST);
 
         let camera_matrix: [f32; 16] = *(self.camera.get_matrix().as_ref());
@@ -337,7 +355,6 @@ impl World {
         
         self.post_program.as_ref().unwrap().bind();
         
-        if self.camera.frustum_frozen { return; }
         gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
         FrameBuffer::clear_bind(gl::FRAMEBUFFER);
         gl::ClearColor(1.0, 1.0, 1.0, 1.0);

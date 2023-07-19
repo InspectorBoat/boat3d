@@ -107,7 +107,7 @@ vec4 get_size(int face_index) {
 }
 
 uint get_texture(int face_index) {
-        return faces[face_index].tthw >> 24 & 0xff;
+        return faces[face_index].tthw >> 16;
 }
 
 layout(location = 0) uniform mat4 u_transform;

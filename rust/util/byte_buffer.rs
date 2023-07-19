@@ -80,6 +80,7 @@ impl StagingBuffer {
             face[3] = nor;
             face[4] = wid;
             face[5] = hei;
+
             // face[6] = tex.0;
             // face[7] = tex.1;
         }
