@@ -172,15 +172,12 @@ impl World {
     } }
 
     pub fn generate(&mut self) { unsafe {
-        const MAX_X: usize = 4;
-        const MAX_Y: usize = 4;
-        const MAX_Z: usize = 4;
-        let noise = NoiseBuilder::gradient_3d(MAX_X * 16, MAX_Y * 16, MAX_Z * 16).generate_scaled(0.0, 1.0);
-        for x in 0..MAX_X {
-            for y in 0..MAX_Y {
-                for z in 0..MAX_Z {
+        let noise = NoiseBuilder::gradient_3d(World::MAX_CHUNK_X * 16, World::MAX_CHUNK_Y * 16, World::MAX_CHUNK_Z * 16).generate_scaled(0.0, 1.0);
+        for x in 0..World::MAX_CHUNK_X {
+            for y in 0..World::MAX_CHUNK_Y {
+                for z in 0..World::MAX_CHUNK_Z {
                     let mut chunk = Box::<Chunk>::new_zeroed().assume_init();
-                    chunk.make_terrain(&noise, x, y, z, MAX_X, MAX_Y, MAX_Z);
+                    chunk.make_terrain(&noise, x, y, z);
                     // chunk.make_terrain_alt(&noise, x, y, z);
                     self.add_chunk(chunk);
                 }
@@ -305,11 +302,19 @@ impl World {
         const ELEMENTS_PER_QUAD: usize = 4;
         
         // do chunked frustum culling
-        let mut frustum_results: [Intersection; 8 * 8 * 8] = [Intersection::Inside; 512];
-        for x in 0..8 {
-            for y in 0..8 {
-                for z in 0..8 {
-                    frustum_results[(x << 6) | (y << 3) | (z << 0)] = frustum.test_bounding_box(
+        const MAX_FRUSTUM_CHUNK_X: usize = World::MAX_CHUNK_X.div_ceil(4);
+        const MAX_FRUSTUM_CHUNK_Y: usize = World::MAX_CHUNK_Y.div_ceil(4);
+        const MAX_FRUSTUM_CHUNK_Z: usize = World::MAX_CHUNK_Z.div_ceil(4);
+        let mut frustum_results: [Intersection; MAX_FRUSTUM_CHUNK_X * MAX_FRUSTUM_CHUNK_Y * MAX_FRUSTUM_CHUNK_Z] = [Intersection::Inside; MAX_FRUSTUM_CHUNK_X * MAX_FRUSTUM_CHUNK_Y * MAX_FRUSTUM_CHUNK_Z];
+        
+        for x in 0..MAX_FRUSTUM_CHUNK_X {
+            for y in 0..MAX_FRUSTUM_CHUNK_Y {
+                for z in 0..MAX_FRUSTUM_CHUNK_Z {
+                    frustum_results[
+                        (x * MAX_FRUSTUM_CHUNK_Y * MAX_FRUSTUM_CHUNK_Z) +
+                        (y * MAX_FRUSTUM_CHUNK_Z) +
+                        (z)
+                    ] = frustum.test_bounding_box(
                         BoundingBox {
                             min: Vector3 {
                                 x: (x * 256 * 4) as f32 - self.camera.frustum_pos.x,
@@ -331,7 +336,11 @@ impl World {
             // only render chunk if it has a geometry and light page
             if let (Some(geometry_page), Some(light_page)) = (&chunk.geometry_page, &chunk.light_page) {
                 // check chunk against chunked frustum culling results
-                match frustum_results[(((chunk.pos.x / 4) << 6) | ((chunk.pos.y / 4) << 3) | ((chunk.pos.z / 4) << 0)) as usize] {
+                match frustum_results[
+                    ((chunk.pos.x as usize / 4) * MAX_FRUSTUM_CHUNK_Y * MAX_FRUSTUM_CHUNK_Z) +
+                    ((chunk.pos.y as usize / 4) * MAX_FRUSTUM_CHUNK_Z) +
+                    (chunk.pos.z as usize / 4)
+                ] {
                     Intersection::Inside => {}
                     // use a sphere test for individual chunks to save time
                     Intersection::Partial => { if frustum.test_sphere(chunk.get_bounding_sphere(&self.camera)) == Intersection::Outside { continue; } }
@@ -369,4 +378,7 @@ impl World {
         gl::DrawArrays(gl::TRIANGLES, 0, 6);
     } }
     
+    pub const MAX_CHUNK_X: usize = 128;
+    pub const MAX_CHUNK_Y: usize = 8;
+    pub const MAX_CHUNK_Z: usize = 128;
 }

@@ -189,7 +189,7 @@ impl Chunk {
         return None;
     }
 
-    pub fn make_terrain(&mut self, noise: &Vec<f32>, chunk_x: usize, chunk_y: usize, chunk_z: usize, max_x: usize, max_y: usize, max_z: usize) { unsafe {
+    pub fn make_terrain(&mut self, noise: &Vec<f32>, chunk_x: usize, chunk_y: usize, chunk_z: usize) { unsafe {
         self.pos = Vector3 {
             x: chunk_x as i32,
             y: chunk_y as i32,
@@ -197,14 +197,14 @@ impl Chunk {
         };
         
         for x in 0..16 { for y in 0..16 { for z in 0..16 {
-            let max_world_y = max_y * 16;
-            let max_world_z = max_z * 16;
+            let max_world_y = World::MAX_CHUNK_Y * 16;
+            let max_world_z = World::MAX_CHUNK_Z * 16;
             let world_x = chunk_x * 16 + x;
             let world_y = chunk_y * 16 + y;
             let world_z = chunk_z * 16 + z;
             let index = {
-                world_x * max_world_z * max_world_y |
-                world_y * max_world_z |
+                world_x * max_world_z * max_world_y +
+                world_y * max_world_z +
                 world_z
             };
             let (noise_val, block, light) = (

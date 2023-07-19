@@ -304,7 +304,8 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
 
         let mut run = 0;
         let mut start = 0;
-        for i in 0..S {
+        // hack to make meshing not take O(n^2)
+        for i in self.furthest..S {
             if !self.pages[i] {
                 if run == 0 { start = i; }
                 run += 1;
