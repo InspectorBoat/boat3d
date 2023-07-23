@@ -1,0 +1,16 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "build",
+            "command": "gcc main.c -O3 -IC:/Users/inspe/Documents/Code/boat3d/c/lib/glfw-3.3.8.bin.WIN64/include -LC:/Users/inspe/Documents/Code/boat3d/c/lib/glfw-3.3.8.bin.WIN64/lib-mingw-w64 -lglfw3dll -IC:/VulkanSDK/1.3.239.0/Include -LC:/VulkanSDK/1.3.239.0/Lib -lvulkan-1\n.\\a.exe",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/c"
+            },
+            "group": "build",
+        }
+    ]
+}

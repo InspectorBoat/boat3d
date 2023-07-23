@@ -1,0 +1,24 @@
+{
+    // "rust-analyzer.linkedProjects": [
+
+    //     "C:\\Users\\inspe\\Documents\\Code\\Boat3d\\rust\\Cargo.toml"
+    // ],
+    "rust-analyzer.rustc.source": "C:\\Users\\inspe\\Documents\\Code\\Boat3d\\rust\\Cargo.toml",
+    "rust-analyzer.lens.implementations.enable": false,
+    "rust-analyzer.inlayHints.typeHints.enable": false,
+    "rust-analyzer.inlayHints.parameterHints.enable": false,
+    "files.exclude": {
+        "out": true,
+        "output": true,
+        "rust/target": true
+    },
+    "rust-analyzer.inlayHints.chainingHints.enable": false,
+    "files.associations": {
+        "*.hs": "haskell",
+        "*.kt": "coffeescript",
+        "glfw3.h": "c",
+        "stdio.h": "c"
+    },
+    "C_Cpp.intelliSenseEngineFallback": "disabled",
+    "zig.formattingProvider": "off",
+}

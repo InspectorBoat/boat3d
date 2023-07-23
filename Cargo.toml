@@ -1,0 +1,26 @@
+[package]
+name = "boat3d"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+gl = "0.14.0"
+simdnoise = "3.1.6"
+rand = "*"
+cgmath = "^0.16"
+cgmath-culling = "0.2.0"
+
+[dependencies.glfw]
+version = "*"
+default-features = false
+
+[profile.release]
+_lto = true
+_codegen-units = 1
+_strip = true
+
+[profile.bench]
+debug = true
+strip = false
