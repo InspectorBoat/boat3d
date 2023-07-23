@@ -11,7 +11,7 @@ use std::{time, hint::black_box, alloc, mem};
 use crate::block::blockface::{Normal, BlockFace};
 use crate::util::byte_buffer::StagingBuffer;
 use crate::util::gl_helper::{Buffer, BufferPoolAllocator, log_if_error, Page, FrameBuffer, Texture, RenderBuffer, WindowStatus, Program, Shader};
-use crate::world::chunk;
+use crate::world::{chunk, self};
 use cgmath::Vector3;
 use cgmath_culling::{Intersection, BoundingBox};
 use simdnoise::NoiseBuilder;
@@ -30,7 +30,10 @@ pub struct World {
     pub geometry_program: Option<Program>,
     pub post_program: Option<Program>,
     pub screen_buffer: Option<Buffer>,
-    pub block_texture: Option<Texture>
+    pub block_texture: Option<Texture>,
+    pub counts: Box<[i32; World::MAX_CHUNK_X * World::MAX_CHUNK_Y * World::MAX_CHUNK_Z]>,
+    pub indices: Box<[*const c_void; World::MAX_CHUNK_X * World::MAX_CHUNK_Y * World::MAX_CHUNK_Z]>,
+    pub base_vertices: Box<[i32; World::MAX_CHUNK_X * World::MAX_CHUNK_Y * World::MAX_CHUNK_Z]>,
 }
 
 impl World {
@@ -48,6 +51,9 @@ impl World {
             post_program: None,
             screen_buffer: None,
             block_texture: None,
+            counts: Box::new_zeroed().assume_init(),
+            indices: Box::new_zeroed().assume_init(),
+            base_vertices: Box::new_zeroed().assume_init()
         };
 
         // reserve space for the sky
@@ -197,7 +203,7 @@ impl World {
 
         for chunk in self.chunks.values_mut() {
             chunk.generate_geometry_buffer(&mut geometry_staging_buffer, &mut self.geometry_pool);
-            chunk.generate_light_buffer(&mut geometry_staging_buffer, &mut light_staging_buffer, &mut self.light_pool);
+            chunk.generate_light_buffer(&mut geometry_staging_buffer, &mut self.geometry_pool, &mut light_staging_buffer, &mut self.light_pool);
             exact_geometry_bytes += geometry_staging_buffer.index;
             exact_light_bytes += light_staging_buffer.index;
             geometry_staging_buffer.reset();
@@ -333,6 +339,8 @@ impl World {
             }
         }
         
+        let mut drawnChunks = 0;
+
         for chunk in self.chunks.values() {
             // only render chunk if it has a geometry and light page
             if let (Some(geometry_page), Some(light_page)) = (&chunk.geometry_page, &chunk.light_page) {
@@ -347,33 +355,23 @@ impl World {
                     Intersection::Partial => { if frustum.test_sphere(chunk.get_bounding_sphere(&self.camera)) == Intersection::Outside { continue; } }
                     Intersection::Outside => { continue; }
                 }
-                // set chunk position uniform
-                gl::Uniform3iv(1, 1, &raw const chunk.pos as *const i32);
-                // set light page index offset uniform
-                gl::Uniform1ui(2, (light_page.start * light_page.block_size() / mem::size_of::<u32>()) as u32);
-                // what to offset the face index by to get the quad id
-                gl::Uniform1ui(3, (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD) as u32);
-                gl::DrawElementsBaseVertex(
-                    gl::TRIANGLE_STRIP,
-                    chunk.quad_count as i32 * ELEMENT_INDICES_PER_QUAD,
-                    gl::UNSIGNED_INT,
-                    ptr::null(),
-                    (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD) as i32
-                );
-                // let count = chunk.quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
-                // let indices = ptr::null();
-                // let basevertex = (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD) as i32;
-                // gl::MultiDrawElementsBaseVertex(
-                //     gl::TRIANGLE_STRIP,
-                //     &count,
-                //     gl::UNSIGNED_INT,
-                //     &indices,
-                //     1,
-                //     &basevertex
-                // )
+                let count = chunk.quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
+                let basevertex = (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD) as i32;
+                self.counts[drawnChunks] = count;
+                self.base_vertices[drawnChunks] = basevertex;
+                drawnChunks += 1;
             }
         }
-        
+
+        gl::MultiDrawElementsBaseVertex(
+            gl::TRIANGLE_STRIP,
+            &raw const *self.counts as *const i32,
+            gl::UNSIGNED_INT,
+            &raw const *self.indices as *const *const c_void,
+            drawnChunks as i32,
+            &raw const *self.base_vertices as *const i32
+        );
+
         self.post_program.as_ref().unwrap().bind();
         
         gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
@@ -390,7 +388,7 @@ impl World {
         gl::DrawArrays(gl::TRIANGLES, 0, 6);
     } }
     
-    pub const MAX_CHUNK_X: usize = 4;
-    pub const MAX_CHUNK_Y: usize = 4;
-    pub const MAX_CHUNK_Z: usize = 4;
+    pub const MAX_CHUNK_X: usize = 128;
+    pub const MAX_CHUNK_Y: usize = 8;
+    pub const MAX_CHUNK_Z: usize = 128;
 }

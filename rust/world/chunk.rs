@@ -784,13 +784,14 @@ impl Chunk {
 
         self.quad_count = geometry_staging_buffer.index as u32 / 8;
         
-        self.geometry_page = geometry_buffer_allocator.allocate(geometry_staging_buffer.index);
+        self.geometry_page = geometry_buffer_allocator.allocate(geometry_staging_buffer.index + 4 * mem::size_of::<u32>());
         if let Some(page) = &self.geometry_page {
-            geometry_buffer_allocator.upload(page, &geometry_staging_buffer.buffer.0.as_slice(), geometry_staging_buffer.index as isize);
+            geometry_buffer_allocator.upload_offset(page, &geometry_staging_buffer.buffer.0.as_slice(), geometry_staging_buffer.index, 4 * mem::size_of::<u32>());
+            geometry_buffer_allocator.upload(page, &[self.pos.x, self.pos.y, self.pos.z], 3 * mem::size_of::<u32>());
         }
     } }
 
-    pub fn generate_light_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>) { unsafe {
+    pub fn generate_light_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>) { unsafe {
         const BYTES_PER_QUAD: usize = 8;
 
         // bytes reserved to index a light chunk for each quad
@@ -930,8 +931,12 @@ impl Chunk {
         if self.light_page.is_none() { return; }
 
         if let Some(light_page) = &self.light_page {
-            light_buffer_allocator.upload(light_page, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.index as isize);
+            light_buffer_allocator.upload(light_page, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.index);
+            if let Some(page) = &self.geometry_page {
+                geometry_buffer_allocator.upload_offset(page, &[(light_page.start * light_page.block_size() / mem::size_of::<u32>()) as u32], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
+            }
         }
+
     } }
 
     pub fn get_bounding_box(&self, camera: &Camera) -> BoundingBox<f32> {

@@ -333,11 +333,11 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
         }
     }
 
-    pub fn upload<T>(&mut self, page: &Page<P>, data: &[T], length: isize) { unsafe {
-        if length > (page.size.get() * P) as isize {
+    pub fn upload<T>(&mut self, page: &Page<P>, data: &[T], length: usize) { unsafe {
+        if length > page.size.get() * P {
             panic!("exceeded allocation size");
         }
-        self.staging_buffer.upload_slice(data, 0, length);
+        self.staging_buffer.upload_slice(data, 0, length as isize);
         
         gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * P) as isize, length as isize);
         // self.buffer.upload_slice(data, (page.start * P) as isize, length);
