@@ -24,7 +24,7 @@ impl Camera {
             fovy: Rad(PI / 2.0),
             aspect: self.ratio,
             near: 0.1,
-            far: 16000.0,
+            far: 48000.0,
         });
         let modelview =
             Matrix4::from_angle_x(Rad(PI + self.camera_rot.pitch))
@@ -43,7 +43,7 @@ impl Camera {
             fovy: Rad(PI / 2.0),
             aspect: self.ratio,
             near: 0.1,
-            far: 16000.0,
+            far: 48000.0,
         });
         let modelview = 
             Matrix4::from_angle_x(Rad(PI + self.frustum_rot.pitch))

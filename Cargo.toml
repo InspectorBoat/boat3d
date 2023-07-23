@@ -17,9 +17,9 @@ version = "*"
 default-features = false
 
 [profile.release]
-_lto = true
-_codegen-units = 1
-_strip = true
+lto = true
+codegen-units = 1
+strip = true
 
 [profile.dev]
 opt-level = 3
