@@ -5,6 +5,7 @@ use std::mem::MaybeUninit;
 use std::ops::{Deref, Add};
 use std::os::raw::c_void;
 use std::ptr::NonNull;
+use std::str::CharIndices;
 use std::{ptr, hint};
 use std::{time, hint::black_box, alloc, mem};
 use crate::block::blockface::{Normal, BlockFace};
@@ -61,7 +62,7 @@ impl World {
         gl::ActiveTexture(gl::TEXTURE0);
         let block_texture = Texture::create();
         block_texture.bind(gl::TEXTURE_2D_ARRAY);
-        let mut image: [u8; 16 * 3 * 64] = [0; 16 * 3 * 64].map(|_| rand::random());
+        let mut image: [u8; 16 * 4 * 64] = [0; 16 * 4 * 64].map(|_| rand::random());
         image[0] = 127;
         image[1] = 127;
         image[2] = 127;
@@ -129,8 +130,8 @@ impl World {
         }
         let index_buffer = Buffer::create();
         index_buffer.bind_target(gl::ELEMENT_ARRAY_BUFFER);
-        index_buffer.storage(1024 * 1024 / 4, gl::DYNAMIC_STORAGE_BIT);
-        index_buffer.upload_slice(&index_array.as_slice(), 0, index_array.len() as isize);
+        index_buffer.storage(1024 * 1024, gl::DYNAMIC_STORAGE_BIT);
+        index_buffer.upload_slice(&index_array.as_slice(), 0, 1024 * 1024);
         self.index_buffer = Some(index_buffer);    
     } }
 
@@ -359,6 +360,17 @@ impl World {
                     ptr::null(),
                     (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD) as i32
                 );
+                // let count = chunk.quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
+                // let indices = ptr::null();
+                // let basevertex = (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD) as i32;
+                // gl::MultiDrawElementsBaseVertex(
+                //     gl::TRIANGLE_STRIP,
+                //     &count,
+                //     gl::UNSIGNED_INT,
+                //     &indices,
+                //     1,
+                //     &basevertex
+                // )
             }
         }
         
@@ -378,7 +390,7 @@ impl World {
         gl::DrawArrays(gl::TRIANGLES, 0, 6);
     } }
     
-    pub const MAX_CHUNK_X: usize = 128;
-    pub const MAX_CHUNK_Y: usize = 8;
-    pub const MAX_CHUNK_Z: usize = 128;
+    pub const MAX_CHUNK_X: usize = 4;
+    pub const MAX_CHUNK_Y: usize = 4;
+    pub const MAX_CHUNK_Z: usize = 4;
 }

@@ -340,7 +340,17 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
         self.staging_buffer.upload_slice(data, 0, length);
         
         gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * P) as isize, length as isize);
-        // self.buffer.upload_slice (data, (page.start * P) as isize, length);
+        // self.buffer.upload_slice(data, (page.start * P) as isize, length);
+    } }
+
+    pub fn upload_offset<T>(&mut self, page: &Page<P>, data: &[T], length: usize, offset: usize) { unsafe {
+        if length + offset > page.size.get() * P {
+            panic!("exceeded allocation size");
+        }
+        self.staging_buffer.upload_slice(data, 0, length as isize);
+        
+        gl::CopyNamedBufferSubData(self.staging_buffer.id, self.buffer.id, 0, (page.start * P + offset) as isize, length as isize);
+        // self.buffer.upload_slice(data, (page.start * P) as isize, length);
     } }
 
     pub const fn block_size(&self) -> usize {
