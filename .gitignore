@@ -1,2 +1,4 @@
-target
+target/*
+!target/release
+target/release/*
 !target/release/boat3d.exe

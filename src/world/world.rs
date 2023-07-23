@@ -113,8 +113,8 @@ impl World {
     
         let renderbuffer_attachment = RenderBuffer::create();
         renderbuffer_attachment.bind(gl::RENDERBUFFER);
-        gl::RenderbufferStorage(gl::RENDERBUFFER, gl::DEPTH24_STENCIL8, status.width as i32, status.height as i32);  
-        FrameBuffer::renderbuffer_attachment(gl::FRAMEBUFFER, gl::DEPTH_STENCIL_ATTACHMENT, gl::RENDERBUFFER, &renderbuffer_attachment);
+        gl::RenderbufferStorage(gl::RENDERBUFFER, gl::DEPTH_COMPONENT32F, status.width as i32, status.height as i32);  
+        FrameBuffer::renderbuffer_attachment(gl::FRAMEBUFFER, gl::DEPTH_ATTACHMENT, gl::RENDERBUFFER, &renderbuffer_attachment);
         
         let attachments: [u32; 1] = [gl::COLOR_ATTACHMENT0];
         gl::DrawBuffers(1, &raw const attachments as *const u32);
@@ -373,16 +373,16 @@ impl World {
                 drawnChunks += 1;
             }
         }
-
-        gl::MultiDrawElementsBaseVertex(
-            gl::TRIANGLE_STRIP,
-            &raw const *self.counts as *const i32,
-            gl::UNSIGNED_INT,
-            &raw const *self.indices as *const *const c_void,
-            drawnChunks as i32,
-            &raw const *self.base_vertices as *const i32
-        );
-
+        if drawnChunks >= 1 {
+            gl::MultiDrawElementsBaseVertex(
+                gl::TRIANGLE_STRIP,
+                &raw const *self.counts as *const i32,
+                gl::UNSIGNED_INT,
+                &raw const *self.indices as *const *const c_void,
+                drawnChunks as i32,
+                &raw const *self.base_vertices as *const i32
+            );
+        }
         self.post_program.as_ref().unwrap().bind();
         
         gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
@@ -399,7 +399,7 @@ impl World {
         gl::DrawArrays(gl::TRIANGLES, 0, 6);
     } }
     
-    pub const MAX_CHUNK_X: usize = 32;
-    pub const MAX_CHUNK_Y: usize = 32;
-    pub const MAX_CHUNK_Z: usize = 32;
+    pub const MAX_CHUNK_X: usize = 128;
+    pub const MAX_CHUNK_Y: usize = 8;
+    pub const MAX_CHUNK_Z: usize = 128;
 }

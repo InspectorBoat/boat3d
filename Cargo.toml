@@ -21,6 +21,7 @@ _lto = true
 _codegen-units = 1
 _strip = true
 
-[profile.bench]
-debug = true
-strip = false
+[profile.dev]
+opt-level = 3
+debug = false
+overflow-checks = false

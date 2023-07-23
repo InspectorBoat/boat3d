@@ -33,7 +33,7 @@ use world::{world::World, chunk::Chunk};
 
 use crate::{util::gl_helper, world::camera};
 
-static BLOCKS: [BlockState; 3] = [
+const BLOCKS: [BlockState; 3] = [
     BlockState {
         block: Block { name: "air" },
         model: BlockModel([
@@ -110,7 +110,7 @@ static BLOCKS: [BlockState; 3] = [
     }
 ];
 
-static OTHER_FACES: [(BlockFace, bool); 4] = [
+const OTHER_FACES: [(BlockFace, bool); 4] = [
     (BlockFace {
         lef: 0x00, bot: 0x08, dep: 0x8, nor: Normal::SOUTH,
         rig: 0x00, top: 0x00, tex: 1
