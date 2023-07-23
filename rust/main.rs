@@ -145,7 +145,7 @@ fn main() { unsafe {
     let mut world = World::new();
 
     world.generate();
-    world.mesh();
+    world.mesh_all();
     world.make_block_texture();
     world.make_framebuffer(&status);
     world.make_index_buffer();

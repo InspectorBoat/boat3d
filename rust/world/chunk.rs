@@ -228,11 +228,11 @@ impl Chunk {
         } } }
     } }
 
-    pub fn make_terrain_alt(&mut self, noise: &Vec<f32>, chunk_x: usize, chunk_y: usize, chunk_z: usize) {
+    pub fn make_terrain_alt(&mut self, chunk_x: i32, chunk_y: i32, chunk_z: i32) {
         self.pos = Vector3 {
-            x: chunk_x as i32,
-            y: chunk_y as i32,
-            z: chunk_z as i32
+            x: chunk_x,
+            y: chunk_y,
+            z: chunk_z
         };
         self.blocks[Chunk::index(1, 1, 0)] = 1;
         self.blocks[Chunk::index(1, 0, 1)] = 1;
@@ -246,8 +246,8 @@ impl Chunk {
 
 
         for i in 0..4096 {
-            // self.blocks[i] = rand::random::<u8>() % 2;
-            // self.light[i] = rand::random::<u8>() % 16;
+            self.blocks[i] = rand::random::<u8>() % 2;
+            self.light[i] = rand::random::<u8>() % 16;
         }
     }
     

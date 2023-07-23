@@ -23,6 +23,8 @@ pub struct World {
     pub camera: Camera,
     pub geometry_pool: BufferPoolAllocator<524288, 1024>,
     pub light_pool: BufferPoolAllocator<524288, 1024>,
+    pub geometry_staging_buffer: StagingBuffer,
+    pub light_staging_buffer: StagingBuffer,
     pub framebuffer: Option<FrameBuffer>,
     pub texture_attachment: Option<Texture>,
     pub renderbuffer_attachment: Option<RenderBuffer>,
@@ -43,6 +45,8 @@ impl World {
             camera: Camera::new(),
             geometry_pool: BufferPoolAllocator::new(),
             light_pool: BufferPoolAllocator::new(),
+            geometry_staging_buffer: StagingBuffer::new(),
+            light_staging_buffer: StagingBuffer::new(),
             framebuffer: None,
             texture_attachment: None,
             renderbuffer_attachment: None,
@@ -192,9 +196,7 @@ impl World {
         }
     } }
 
-    pub fn mesh(&mut self) { unsafe {
-        let mut geometry_staging_buffer = StagingBuffer::new();
-        let mut light_staging_buffer = StagingBuffer::new();
+    pub fn mesh_all(&mut self) { unsafe {
         let start = time::Instant::now();
         let mut total_quads: usize = 0;
 
@@ -202,12 +204,12 @@ impl World {
         let mut exact_light_bytes = 0;
 
         for chunk in self.chunks.values_mut() {
-            chunk.generate_geometry_buffer(&mut geometry_staging_buffer, &mut self.geometry_pool);
-            chunk.generate_light_buffer(&mut geometry_staging_buffer, &mut self.geometry_pool, &mut light_staging_buffer, &mut self.light_pool);
-            exact_geometry_bytes += geometry_staging_buffer.index;
-            exact_light_bytes += light_staging_buffer.index;
-            geometry_staging_buffer.reset();
-            light_staging_buffer.reset();
+            chunk.generate_geometry_buffer(&mut self.geometry_staging_buffer, &mut self.geometry_pool);
+            chunk.generate_light_buffer(&mut self.geometry_staging_buffer, &mut self.geometry_pool, &mut self.light_staging_buffer, &mut self.light_pool);
+            exact_geometry_bytes += self.geometry_staging_buffer.index;
+            exact_light_bytes += self.light_staging_buffer.index;
+            self.geometry_staging_buffer.reset();
+            self.light_staging_buffer.reset();
             total_quads += chunk.quad_count as usize;
         }
         
@@ -224,6 +226,15 @@ impl World {
         let total_exact_megabytes_used = (exact_geometry_bytes + exact_light_bytes) / 1024 / 1024;
         println!("{exact_geometry_bytes} exact geometry bytes | {exact_light_bytes} exact light bytes | {total_exact_megabytes_used} megabytes");
     } }
+
+    pub fn mesh(&mut self, pos: Vector3<i32>) {
+        if let Some(chunk) = self.chunks.get_mut(&pos) {
+            chunk.generate_geometry_buffer(&mut self.geometry_staging_buffer, &mut self.geometry_pool);
+            chunk.generate_light_buffer(&mut self.geometry_staging_buffer, &mut self.geometry_pool, &mut self.light_staging_buffer, &mut self.light_pool);
+            self.geometry_staging_buffer.reset();
+            self.light_staging_buffer.reset();
+        }
+    }
 
     pub fn add_chunk(&mut self, chunk: Box<Chunk>) { unsafe {
         let (x, y, z) = (chunk.pos.x, chunk.pos.y, chunk.pos.z);
@@ -388,7 +399,7 @@ impl World {
         gl::DrawArrays(gl::TRIANGLES, 0, 6);
     } }
     
-    pub const MAX_CHUNK_X: usize = 128;
-    pub const MAX_CHUNK_Y: usize = 8;
-    pub const MAX_CHUNK_Z: usize = 128;
+    pub const MAX_CHUNK_X: usize = 32;
+    pub const MAX_CHUNK_Y: usize = 32;
+    pub const MAX_CHUNK_Z: usize = 32;
 }

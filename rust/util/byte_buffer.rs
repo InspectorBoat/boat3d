@@ -1,12 +1,14 @@
 use std::{ops::{IndexMut, Index, Add}, hint::{unreachable_unchecked, black_box}, mem};
 use crate::{block::blockface::{BlockFace, Normal, GpuQuad}, world::chunk::Chunk};
 #[repr(C, align(8))]
+#[derive(Debug)]
 pub struct StagingBuffer {
     pub index: usize,
     pub buffer: Box<Buffer>,
 }
 
 #[repr(C, align(8))]
+#[derive(Debug)]
 pub struct Buffer(pub [u8; 262144]);
 
 impl StagingBuffer {
