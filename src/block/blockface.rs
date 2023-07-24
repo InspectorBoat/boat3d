@@ -43,6 +43,20 @@ impl BlockFace {
     pub fn as_u32(&self) -> u32 { unsafe {
         return *(&raw const *self as *const u32);
     } }
+    pub fn to_gpu_quad<const N: Normal>(&self, index: usize) -> u64 {
+        let (x, y, z) = 'xyz: { match N {
+            South => {
+                break 'xyz (index >> 8 & 0xf, index >> 4 & 0xf, index & 0xf);
+            },
+            West => todo!(),
+            Down => todo!(),
+            North => todo!(),
+            East => todo!(),
+            Up => todo!(),
+            Unaligned => todo!(),
+        } };
+        todo!();
+    }
     pub const NONE: BlockFace = BlockFace {
         lef: 0x0f, bot: 0x0f, dep: 0x0, nor: Unaligned,
         rig: 0x0f, top: 0x0f, tex: u16::MAX
@@ -112,15 +126,15 @@ pub enum Normal {
 }
 
 impl Normal {
-    pub fn reverse(&self) -> Normal {
+    pub const fn reverse(&self) -> Normal { unsafe {
         match self {
             South => { return North; }
-            West => { return East; }
-            Down => { return Up; }
+            West  => { return East; }
+            Down  => { return Up; }
             North => { return South; }
-            East => { return West; }
-            Up => { return Down; }
-            _ => unsafe { unreachable_unchecked(); }
+            East  => { return West; }
+            Up    => { return Down; }
+            _     => { unreachable_unchecked(); }
         }
-    }
+    } }
 }
