@@ -1,5 +1,5 @@
 use std::{mem, hint::unreachable_unchecked, marker::ConstParamTy, simd::{Simd, SimdPartialOrd, SimdUint}};
-
+use Normal::*;
 
 /*
  * |---------------|
@@ -44,7 +44,7 @@ impl BlockFace {
         return *(&raw const *self as *const u32);
     } }
     pub const NONE: BlockFace = BlockFace {
-        lef: 0x0f, bot: 0x0f, dep: 0x0, nor: Normal::NONE,
+        lef: 0x0f, bot: 0x0f, dep: 0x0, nor: Unaligned,
         rig: 0x0f, top: 0x0f, tex: u16::MAX
     };
 }
@@ -102,24 +102,24 @@ impl PartialEq for BlockFace {
 #[derive(PartialEq, Eq, ConstParamTy)]
 #[repr(u8)]
 pub enum Normal {
-    SOUTH = 0,
-    WEST = 1,
-    DOWN = 2,
-    NORTH = 3,
-    EAST = 4,
-    UP = 5,
-    NONE = u8::MAX
+    South = 0,
+    West = 1,
+    Down = 2,
+    North = 3,
+    East = 4,
+    Up = 5,
+    Unaligned = u8::MAX
 }
 
 impl Normal {
     pub fn reverse(&self) -> Normal {
         match self {
-            Normal::SOUTH => { return Normal::NORTH; }
-            Normal::WEST => { return Normal::EAST; }
-            Normal::DOWN => { return Normal::UP; }
-            Normal::NORTH => { return Normal::SOUTH; }
-            Normal::EAST => { return Normal::WEST; }
-            Normal::UP => { return Normal::DOWN; }
+            South => { return North; }
+            West => { return East; }
+            Down => { return Up; }
+            North => { return South; }
+            East => { return West; }
+            Up => { return Down; }
             _ => unsafe { unreachable_unchecked(); }
         }
     }
