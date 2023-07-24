@@ -372,9 +372,9 @@ impl World {
         gl::DrawArrays(gl::TRIANGLES, 0, 6);
     } }
     
-    pub const MAX_SECTION_X: usize = 128;
+    pub const MAX_SECTION_X: usize = 8;
     pub const MAX_SECTION_Y: usize = 8;
-    pub const MAX_SECTION_Z: usize = 128;
+    pub const MAX_SECTION_Z: usize = 8;
 }
 
 pub enum SectionType {

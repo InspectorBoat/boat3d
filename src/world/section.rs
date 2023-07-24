@@ -319,13 +319,13 @@ impl Section {
 
                         if compare.1 {
                             active_run_n = false;
-                            break 'north
+                            break 'north;
                         }
                         // /*
                         if active_run_n && same_row_n {
                             if run_n.match_right(&face_n) {
                                 run_n.merge_face(geometry_staging_buffer, &face_n);
-                                break 'north
+                                break 'north;
                             } else {
                                 active_run_n = false;
                             }
@@ -752,13 +752,13 @@ impl Section {
     }
 
     pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<1048576, 1024>) { unsafe {
-        self.mesh_south_north(geometry_staging_buffer);
-        self.mesh_west_east(geometry_staging_buffer);
-        self.mesh_down_up(geometry_staging_buffer);
+        // self.mesh_south_north(geometry_staging_buffer);
+        // self.mesh_west_east(geometry_staging_buffer);
+        // self.mesh_down_up(geometry_staging_buffer);
 
-        // self.mesh_south_north_no_merge(geometry_staging_buffer);
-        // self.mesh_west_east_no_merge(geometry_staging_buffer);
-        // self.mesh_down_up_no_merge(geometry_staging_buffer);
+        self.mesh_south_north_no_merge(geometry_staging_buffer);
+        self.mesh_west_east_no_merge(geometry_staging_buffer);
+        self.mesh_down_up_no_merge(geometry_staging_buffer);
 
         geometry_staging_buffer.format_quads();
 
@@ -783,15 +783,15 @@ impl Section {
             // insert the index offset of the light section
             light_staging_buffer.set_u32(i * mem::size_of::<u32>(), (light_staging_buffer.index / mem::size_of::<u32>()) as u32);
             
-            match quad.nor {
+            match quad.normal {
                 Normal::SOUTH => {
-                    let start_x = quad.ure / 16;
-                    let end_x = (quad.ure + quad.wid) / 16;
+                    let start_x = quad.rel_x / 16;
+                    let end_x = (quad.rel_x + quad.width) / 16;
                     
-                    let start_y = quad.ven / 16;
-                    let end_y = (quad.ven + quad.hei) / 16;
+                    let start_y = quad.rel_y / 16;
+                    let end_y = (quad.rel_y + quad.height) / 16;
                     
-                    let z = (quad.dep + 1) / 16;
+                    let z = (quad.rel_z + 1) / 16;
                     
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
@@ -800,14 +800,14 @@ impl Section {
                     }
                 }
                 Normal::NORTH => {
-                    let start_x = quad.ure / 16;
-                    let end_x = (quad.ure + quad.wid) / 16;
+                    let start_x = quad.rel_x / 16;
+                    let end_x = (quad.rel_x + quad.width) / 16;
     
-                    let start_y = quad.ven / 16;
-                    let end_y = (quad.ven + quad.hei) / 16;
+                    let start_y = quad.rel_y / 16;
+                    let end_y = (quad.rel_y + quad.height) / 16;
 
                     // if this from the neighboring section, z wraps to 15, which is the only way for it to be 15
-                    let z = (quad.dep - 16) / 16;
+                    let z = (quad.rel_z - 16) / 16;
                     
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
@@ -824,13 +824,13 @@ impl Section {
                     }
                 }
                 Normal::WEST => {
-                    let x = quad.dep / 16;
+                    let x = quad.rel_z / 16;
     
-                    let start_y = quad.ven / 16;
-                    let end_y = (quad.ven + quad.hei) / 16;
+                    let start_y = quad.rel_y / 16;
+                    let end_y = (quad.rel_y + quad.height) / 16;
     
-                    let start_z = quad.ure / 16;
-                    let end_z = (quad.ure + quad.wid) / 16;
+                    let start_z = quad.rel_x / 16;
+                    let end_z = (quad.rel_x + quad.width) / 16;
                     
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
@@ -840,13 +840,13 @@ impl Section {
                 }
                 Normal::EAST => {
                     // if this from the neighboring section, x wraps to 15, which is the only way for it to be 15
-                    let x = (quad.dep - 16) / 16;
+                    let x = (quad.rel_z - 16) / 16;
     
-                    let start_y = quad.ven / 16;
-                    let end_y = (quad.ven + quad.hei) / 16;
+                    let start_y = quad.rel_y / 16;
+                    let end_y = (quad.rel_y + quad.height) / 16;
     
-                    let start_z = quad.ure / 16;
-                    let end_z = (quad.ure + quad.wid) / 16;
+                    let start_z = quad.rel_x / 16;
+                    let end_z = (quad.rel_x + quad.width) / 16;
                     
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
@@ -863,13 +863,13 @@ impl Section {
                     }
                 }
                 Normal::DOWN => {
-                    let start_x = quad.ven / 16;
-                    let end_x = (quad.ven + quad.hei) / 16;
+                    let start_x = quad.rel_y / 16;
+                    let end_x = (quad.rel_y + quad.height) / 16;
     
-                    let y = quad.dep / 16;
+                    let y = quad.rel_z / 16;
     
-                    let start_z = quad.ure / 16;
-                    let end_z = (quad.ure + quad.wid) / 16;
+                    let start_z = quad.rel_x / 16;
+                    let end_z = (quad.rel_x + quad.width) / 16;
                     
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
@@ -878,14 +878,14 @@ impl Section {
                     }
                 }
                 Normal::UP => {
-                    let start_x = quad.ven / 16;
-                    let end_x = (quad.ven + quad.hei) / 16;
+                    let start_x = quad.rel_y / 16;
+                    let end_x = (quad.rel_y + quad.height) / 16;
 
                     // if this from the neighboring section, y wraps to 15, which is the only way for it to be 15
-                    let y = (quad.dep - 16) / 16;
+                    let y = (quad.rel_z - 16) / 16;
     
-                    let start_z = quad.ure / 16;
-                    let end_z = (quad.ure + quad.wid) / 16;
+                    let start_z = quad.rel_x / 16;
+                    let end_z = (quad.rel_x + quad.width) / 16;
                     
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
@@ -997,14 +997,6 @@ impl Section {
             y += 1; }
         arr
     };
-}
-impl Drop for Section {
-    fn drop(&mut self) {
-        // println!("Dropped section {} {} {}", self.pos.x, self.pos.y, self.pos.z);
-        // if let Some(buffer) = &self.buffer && buffer.valid() {
-            // panic!()
-        // }
-    }
 }
 
 #[derive(Clone, Debug)]

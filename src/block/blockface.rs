@@ -51,14 +51,44 @@ impl BlockFace {
 
 #[repr(C, align(8))]
 #[derive(Debug)]
+pub struct BufferQuad {
+    pub block_rel_x_left: u8,
+    pub block_rel_y_bottom: u8,
+    pub block_rel_z_right: u8,
+    pub block_width_top: u8,
+    pub block_height_depth: u8,
+    pub normal: Normal,
+    pub texture: u16
+}
+
+impl BufferQuad {
+    pub fn get_rel_x(&self) -> u8 {
+        return self.block_rel_x_left;
+    }
+    pub fn get_rel_y(&self) -> u8 {
+        return self.block_rel_y_bottom;
+    }
+    pub fn get_rel_z(&self) -> u8 {
+        return (self.block_rel_z_right & 0xf0) | (self.block_width_top & 0x0f);
+    }
+    pub fn get_normal(&self) -> Normal {
+        return self.normal;
+    }
+    pub fn get_width(&self) -> u8 {
+        return self.block_width_top & 0xf0;
+    }
+}
+
+#[repr(C, align(8))]
+#[derive(Debug)]
 pub struct GpuQuad {
-    pub ure: u8,
-    pub ven: u8,
-    pub dep: u8,
-    pub nor: Normal,
-    pub wid: u8,
-    pub hei: u8,
-    pub tex: u16,
+    pub rel_x: u8,
+    pub rel_y: u8,
+    pub rel_z: u8,
+    pub normal: Normal,
+    pub width: u8,
+    pub height: u8,
+    pub texture: u16,
 }
 
 
