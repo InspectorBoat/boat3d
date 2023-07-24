@@ -16,6 +16,7 @@
 #![feature(int_roundings)]
 #![feature(portable_simd)]
 #![feature(maybe_uninit_uninit_array, maybe_uninit_slice, maybe_uninit_array_assume_init)]
+#![feature(slice_from_ptr_range)]
 
 mod block;
 mod world;
@@ -29,7 +30,7 @@ use cgmath_culling::{BoundingBox, Intersection};
 use gl::{types, FramebufferParameteri};
 use glfw::{Context, Window, Action, Key};
 use util::{gl_helper::*, byte_buffer::StagingBuffer};
-use world::{world::World, chunk::Chunk};
+use world::{world::World, section::Section};
 
 use crate::{util::gl_helper, world::camera};
 
@@ -266,16 +267,3 @@ fn update(world: &mut World, keys: &mut HashMap<Key, bool>) {
         }
     }
 }
-
-/*
- *              X Y Z        U V D
- *              -----        -----
- * SOUTH   ->   0 0 -   ->   X Y Z
- * NORTH   ->   0 0 +   ->   X Y Z
- * WEST    ->   - 0 0   ->   Z Y X
- * EAST    ->   + 0 0   ->   Z Y X
- * DOWN    ->   0 - 0   ->   Z X Y
- * UP      ->   0 + 0   ->   Z X Y
- * 
- * (UVD * t + WH * c + chunk) * look
- */

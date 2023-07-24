@@ -1,27 +1,12 @@
-use core::panic;
-use core::slice;
-use std::arch::asm;
-use std::cell::Cell;
-use std::cell::OnceCell;
-use std::cell::UnsafeCell;
-use std::fmt::DebugStruct;
 use std::hint;
-use std::hint::black_box;
-use std::hint::unreachable_unchecked;
-use std::intrinsics::prefetch_read_data;
 use std::mem;
 use std::num::NonZeroUsize;
 use std::ops::Add;
 use std::ops::Deref;
 use std::ops::DerefMut;
-// use std::mem;
-// use std::ops::BitAnd;
 use std::ops::Index;
 use std::ops::Sub;
-// use std::ops::Add;
-// use std::ops::SubAssign;
 use std::os::raw::c_void;
-// use std::ptr;
 use std::hash::Hash;
 use std::ptr::NonNull;
 use cgmath::Vector3;
@@ -36,19 +21,25 @@ use crate::util::gl_helper::BufferPoolAllocator;
 use crate::{block::{blockstate::BlockState, blockface::{Normal, BlockFace}}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::StagingBuffer}, BLOCKS};
 use super::camera::Camera;
 use super::world::World;
+
+/// A 16x16x16 volume of blocks
+
 #[derive(Debug)]
-pub struct Chunk {
-    // Block IDs
-    pub blocks: [u8; 4096],
-    // Light levels 0-15
+pub struct Section {
+    // block ids
+    pub blocks: [u16; 4096],
+    // light levels 0-15
     pub light: [u8; 4096],
 
-    // Chunk position
+    // section position
     pub pos: Vector3<i32>,
-    // Adjacent chunks
+    // adjacent chunks
     pub neighbors: Neighbors,
-    // Number of rectangular block faces in a chunk
+    // number of rectangular block faces in a section
     pub quad_count: u32,
+
+    // if the chunk needs to be remeshed
+    pub dirty: bool,
 
     pub geometry_page: Option<Page<1024>>,
     pub light_page: Option<Page<1024>>
@@ -56,15 +47,24 @@ pub struct Chunk {
 
 #[derive(Debug)]
 pub struct Neighbors {
-    pub south: Option<NonNull<Chunk>>,
-    pub west: Option<NonNull<Chunk>>,
-    pub down: Option<NonNull<Chunk>>,
-    pub north: Option<NonNull<Chunk>>,
-    pub east: Option<NonNull<Chunk>>,
-    pub up: Option<NonNull<Chunk>>,
+    pub south: Option<NonNull<Section>>,
+    pub west: Option<NonNull<Section>>,
+    pub down: Option<NonNull<Section>>,
+    pub north: Option<NonNull<Section>>,
+    pub east: Option<NonNull<Section>>,
+    pub up: Option<NonNull<Section>>,
 }
-impl Chunk {
-    pub fn get_neighbor<const N: Normal>(&self) -> Option<&Chunk> { unsafe {
+
+impl Section {
+    pub fn set_block(&mut self, pos: Vector3<i32>, block_id: u16) {
+        let index = Section::index(pos.x, pos.y, pos.z);
+        if block_id != self.blocks[index] {
+            self.dirty = true;
+            self.blocks[index] = block_id;
+        }
+    }
+
+    pub fn get_neighbor<const N: Normal>(&self) -> Option<&Section> { unsafe {
         match N {
             Normal::NORTH => {
                 return mem::transmute(self.neighbors.north);
@@ -84,7 +84,7 @@ impl Chunk {
             Normal::DOWN => {
                 return mem::transmute(self.neighbors.down);
             }
-            _ => { unreachable_unchecked(); }
+            _ => { hint::unreachable_unchecked(); }
         }
     } }
     
@@ -95,19 +95,19 @@ impl Chunk {
         match N {
             Normal::SOUTH => {
                 if index & 0x00f == 0 {
-                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |chunk| chunk.get_block(index | 0x00f));
+                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(index | 0x00f));
                 }
                 return &self.get_block(index - 0x001);
             }
             Normal::WEST => {
                 if index & 0xf00 == 0 {
-                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |chunk| chunk.get_block(index | 0xf00));
+                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(index | 0xf00));
                 }
                 return &self.get_block(index - 0x100);
             }
             Normal::DOWN => {
                 if index & 0x0f0 == 0 {
-                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |chunk| chunk.get_block(index | 0x0f0));
+                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(index | 0x0f0));
                 }
                 return &self.get_block(index - 0x010);
             }
@@ -122,48 +122,47 @@ impl Chunk {
         return &self.get_opposing_block::<N>(index).model.get_face(N.reverse());
     }
     
-    pub fn get_light<const N: Normal>(&self, index: usize) -> u8 {
+    pub fn get_light<const N: Normal>(&self, index: usize) -> u8 { unsafe {
         match N {
             Normal::NORTH => {
                 if index & 0x00f == 0x00f {
-                    return self.get_neighbor::<N>().map_or(0, |chunk| chunk.light[index & 0xff0]);
+                    return self.get_neighbor::<N>().map_or(0, |section| section.light[index & 0xff0]);
                 }
                 return self.light[index + 0x001];
             }
             Normal::SOUTH => {
                 if index & 0x00f == 0 {
-                    return self.get_neighbor::<N>().map_or(0, |chunk| chunk.light[index | 0x00f]);
+                    return self.get_neighbor::<N>().map_or(0, |section| section.light[index | 0x00f]);
                 }
                 return self.light[index - 0x001];
             }
             Normal::EAST => {
                 if index & 0xf00 == 0xf00 {
-                    return self.get_neighbor::<N>().map_or(0, |chunk| chunk.light[index & 0x0ff]);
+                    return self.get_neighbor::<N>().map_or(0, |section| section.light[index & 0x0ff]);
                 }
                 return self.light[index + 0x100];
             }
             Normal::WEST => {
                 if index & 0xf00 == 0 {
-                    return self.get_neighbor::<N>().map_or(0, |chunk| chunk.light[index | 0xf00]);
+                    return self.get_neighbor::<N>().map_or(0, |section| section.light[index | 0xf00]);
                 }
                 return self.light[index - 0x100];
             }
             Normal::UP => {
                 if index & 0x0f0 == 0x0f0 {
-                    return self.get_neighbor::<N>().map_or(0, |chunk| chunk.light[index & 0xf0f]);
+                    return self.get_neighbor::<N>().map_or(0, |section| section.light[index & 0xf0f]);
                 }
                 return self.light[index + 0x010];
             }
             Normal::DOWN => {
                 if index & 0x0f0 == 0 {
-                    return self.get_neighbor::<N>().map_or(0, |chunk| chunk.light[index | 0x0f0]);
+                    return self.get_neighbor::<N>().map_or(0, |section| section.light[index | 0x0f0]);
                 }
                 return self.light[index - 0x010];
             }
-            _ => unsafe { hint::unreachable_unchecked(); }
+            _ => { hint::unreachable_unchecked(); }
         }
-
-    }
+    } }
 
     pub fn get_face_pair<const N: Normal>(&self, index: usize) -> (&BlockFace, &BlockFace) {
         return (self.get_face::<N>(index), self.get_opposing_face::<N>(index))
@@ -189,19 +188,13 @@ impl Chunk {
         return None;
     }
 
-    pub fn make_terrain(&mut self, noise: &Vec<f32>, chunk_x: usize, chunk_y: usize, chunk_z: usize) { unsafe {
-        self.pos = Vector3 {
-            x: chunk_x as i32,
-            y: chunk_y as i32,
-            z: chunk_z as i32
-        };
-        
+    pub fn make_terrain(&mut self, noise: &Vec<f32>) { unsafe {
         for x in 0..16 { for y in 0..16 { for z in 0..16 {
-            let max_world_y = World::MAX_CHUNK_Y * 16;
-            let max_world_z = World::MAX_CHUNK_Z * 16;
-            let world_x = chunk_x * 16 + x;
-            let world_y = chunk_y * 16 + y;
-            let world_z = chunk_z * 16 + z;
+            let max_world_y = World::MAX_SECTION_Y * 16;
+            let max_world_z = World::MAX_SECTION_Z * 16;
+            let world_x = self.pos.x as usize * 16 + x;
+            let world_y = self.pos.y as usize * 16 + y;
+            let world_z = self.pos.z as usize * 16 + z;
             let index = {
                 world_x * max_world_z * max_world_y +
                 world_y * max_world_z +
@@ -209,8 +202,8 @@ impl Chunk {
             };
             let (noise_val, block, light) = (
                 noise.get_unchecked(index),
-                self.blocks.get_unchecked_mut(Chunk::index(x, y, z)),
-                self.light.get_unchecked_mut(Chunk::index(x, y, z)),
+                self.blocks.get_unchecked_mut(Section::index(x, y, z)),
+                self.light.get_unchecked_mut(Section::index(x, y, z)),
             );
             *block = match *noise_val {
                 // val if val < 0.49 => {
@@ -227,30 +220,17 @@ impl Chunk {
             // *light = (*noise_val * 64.0 - 32.0) as u8;
         } } }
     } }
-
-    pub fn make_terrain_alt(&mut self, chunk_x: i32, chunk_y: i32, chunk_z: i32) {
-        self.pos = Vector3 {
-            x: chunk_x,
-            y: chunk_y,
-            z: chunk_z
-        };
-        self.blocks[Chunk::index(1, 1, 0)] = 1;
-        self.blocks[Chunk::index(1, 0, 1)] = 1;
-        self.blocks[Chunk::index(0, 1, 1)] = 1;
-
-        self.blocks[Chunk::index(1, 1, 2)] = 1;
-        self.blocks[Chunk::index(1, 2, 1)] = 1;
-        self.blocks[Chunk::index(2, 1, 1)] = 1;
-
-        self.light[Chunk::index(1, 1, 1)] = 15;
-
-
+    pub fn make_terrain_alt(&mut self) {
         for i in 0..4096 {
-            self.blocks[i] = rand::random::<u8>() % 2;
+            self.blocks[i] = rand::random::<u16>() % 2;
             self.light[i] = rand::random::<u8>() % 16;
         }
     }
     
+    pub fn set_pos(&mut self, pos: Vector3<i32>) {
+        self.pos = pos;
+    }
+
     // U = X
     // V = Y
     // D = Z
@@ -270,7 +250,7 @@ impl Chunk {
         for d in 0..16_u8 {
             for v in 0..16_u8 {
                 for u in 0..16_u8 {
-                    let index = Chunk::index(u, v, d);
+                    let index = Section::index(u, v, d);
 
                     let (face_s, face_n) = self.get_face_pair::<{Normal::SOUTH}>(index);
                     let compare = BlockFace::should_cull(face_s, face_n);
@@ -415,7 +395,7 @@ impl Chunk {
         for d in 0..16_u8 {
             for v in 0..16_u8 {
                 for u in 0..16_u8 {
-                    let index = Chunk::index(d, v, u);
+                    let index = Section::index(d, v, u);
 
                     let (face_w, face_e) = self.get_face_pair::<{Normal::WEST}>(index);
                     let compare = BlockFace::should_cull(face_w, face_e);
@@ -560,7 +540,7 @@ impl Chunk {
         for d in 0..16_u8 {
             for v in 0..16_u8 {
                 for u in 0..16_u8 {
-                    let index = Chunk::index(v, d, u);
+                    let index = Section::index(v, d, u);
 
                     let (face_d, face_u) = self.get_face_pair::<{Normal::DOWN}>(index);
                     let compare = BlockFace::should_cull(face_d, face_u);
@@ -691,7 +671,7 @@ impl Chunk {
         for z in 0..16_u8 {
             for y in 0..16_u8 {
                 for x in 0..16_u8 {
-                    let index = Chunk::index(x, y, z);
+                    let index = Section::index(x, y, z);
                     
                     let face_s = self.get_face::<{Normal::SOUTH}>(index);
                     let face_n = self.get_opposing_face::<{Normal::SOUTH}>(index);
@@ -699,7 +679,7 @@ impl Chunk {
                     let compare = face_s.as_u32() + 0x10101010 - face_n.as_u32();
                     if compare == 0x10101010 { continue; }
                     
-                    let offset = Chunk::INDICES_ZYX[index] as u64;
+                    let offset = Section::INDICES_ZYX[index] as u64;
                     
                     if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_s.as_u64() + offset); }
                     if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_n.as_u64() + offset); }
@@ -718,7 +698,7 @@ impl Chunk {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
                 for z in 0..16_u8 {
-                    let index = Chunk::index(x, y, z);
+                    let index = Section::index(x, y, z);
 
                     let face_w = self.get_face::<{Normal::WEST}>(index);
                     let face_e = self.get_opposing_face::<{Normal::WEST}>(index);
@@ -726,7 +706,7 @@ impl Chunk {
                     let compare = face_w.as_u32() + 0x10101010 - face_e.as_u32();
                     if compare == 0x10101010 { continue; }
                     
-                    let offset = Chunk::INDICES_XYZ[index] as u64;
+                    let offset = Section::INDICES_XYZ[index] as u64;
                     
                     if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_w.as_u64() + offset); }
                     if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_e.as_u64() + offset); }
@@ -746,7 +726,7 @@ impl Chunk {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
                 for z in 0..16_u8 {
-                    let index = Chunk::index(x, y, z);
+                    let index = Section::index(x, y, z);
 
                     let face_d = self.get_face::<{Normal::DOWN}>(index);
                     let face_u = self.get_opposing_face::<{Normal::DOWN}>(index);
@@ -754,7 +734,7 @@ impl Chunk {
                     let compare = face_d.as_u32() + 0x10101010 - face_u.as_u32();
                     if compare == 0x10101010 { continue; }
 
-                    let offset = Chunk::INDICES_YXZ[index] as u64;
+                    let offset = Section::INDICES_YXZ[index] as u64;
 
                     if compare < 0x10101010 { geometry_staging_buffer.put_u64(face_d.as_u64() + offset); }
                     if compare > 0x10101010 { geometry_staging_buffer.put_u64(face_u.as_u64() + offset); }
@@ -771,7 +751,7 @@ impl Chunk {
         }
     }
 
-    pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>) { unsafe {
+    pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<1048576, 1024>) { unsafe {
         self.mesh_south_north(geometry_staging_buffer);
         self.mesh_west_east(geometry_staging_buffer);
         self.mesh_down_up(geometry_staging_buffer);
@@ -791,7 +771,7 @@ impl Chunk {
         }
     } }
 
-    pub fn generate_light_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferPoolAllocator<524288, 1024>) { unsafe {
+    pub fn generate_light_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<1048576, 1024>, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferPoolAllocator<1048576, 1024>) { unsafe {
         const BYTES_PER_QUAD: usize = 8;
 
         // bytes reserved to index a light chunk for each quad
@@ -800,7 +780,7 @@ impl Chunk {
         light_staging_buffer.index = reserved_bytes;
 
         for (i, quad) in geometry_staging_buffer.iter().map(|quad| mem::transmute::<&[u8; 8], &GpuQuad>(quad)).enumerate() {
-            // insert the index offset of the light chunk
+            // insert the index offset of the light section
             light_staging_buffer.set_u32(i * mem::size_of::<u32>(), (light_staging_buffer.index / mem::size_of::<u32>()) as u32);
             
             match quad.nor {
@@ -815,7 +795,7 @@ impl Chunk {
                     
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
-                            light_staging_buffer.put_u32(self.get_light::<{ Normal::SOUTH }>(Chunk::index(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_light::<{ Normal::SOUTH }>(Section::index(x, y, z)) as u32);
                         }
                     }
                 }
@@ -826,20 +806,20 @@ impl Chunk {
                     let start_y = quad.ven / 16;
                     let end_y = (quad.ven + quad.hei) / 16;
 
-                    // if this from the neighboring chunk, z wraps to 15, which is the only way for it to be 15
+                    // if this from the neighboring section, z wraps to 15, which is the only way for it to be 15
                     let z = (quad.dep - 16) / 16;
                     
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
                             if z == 15 {
                                 if let Some(south) = self.get_neighbor::<{ Normal::SOUTH }>() {
-                                    light_staging_buffer.put_u32(south.get_light::<{ Normal::NORTH }>(Chunk::index(x, y, z)) as u32);
+                                    light_staging_buffer.put_u32(south.get_light::<{ Normal::NORTH }>(Section::index(x, y, z)) as u32);
                                 }
                                 else {
                                     light_staging_buffer.put_u32(0);
                                 }
                             }
-                            light_staging_buffer.put_u32(self.get_light::<{ Normal::NORTH }>(Chunk::index(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_light::<{ Normal::NORTH }>(Section::index(x, y, z)) as u32);
                         }
                     }
                 }
@@ -854,12 +834,12 @@ impl Chunk {
                     
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
-                            light_staging_buffer.put_u32(self.get_light::<{ Normal::WEST }>(Chunk::index(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_light::<{ Normal::WEST }>(Section::index(x, y, z)) as u32);
                         }
                     }
                 }
                 Normal::EAST => {
-                    // if this from the neighboring chunk, x wraps to 15, which is the only way for it to be 15
+                    // if this from the neighboring section, x wraps to 15, which is the only way for it to be 15
                     let x = (quad.dep - 16) / 16;
     
                     let start_y = quad.ven / 16;
@@ -872,13 +852,13 @@ impl Chunk {
                         for z in start_z..=end_z {
                             if x == 15 {
                                 if let Some(west) = self.get_neighbor::<{ Normal::WEST }>() {
-                                    light_staging_buffer.put_u32(west.get_light::<{ Normal::EAST }>(Chunk::index(x, y, z)) as u32);
+                                    light_staging_buffer.put_u32(west.get_light::<{ Normal::EAST }>(Section::index(x, y, z)) as u32);
                                 }
                                 else {
                                     light_staging_buffer.put_u32(0);
                                 }
                             }
-                            light_staging_buffer.put_u32(self.get_light::<{ Normal::EAST }>(Chunk::index(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_light::<{ Normal::EAST }>(Section::index(x, y, z)) as u32);
                         }
                     }
                 }
@@ -893,7 +873,7 @@ impl Chunk {
                     
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
-                            light_staging_buffer.put_u32(self.get_light::<{ Normal::DOWN }>(Chunk::index(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_light::<{ Normal::DOWN }>(Section::index(x, y, z)) as u32);
                         }
                     }
                 }
@@ -901,7 +881,7 @@ impl Chunk {
                     let start_x = quad.ven / 16;
                     let end_x = (quad.ven + quad.hei) / 16;
 
-                    // if this from the neighboring chunk, y wraps to 15, which is the only way for it to be 15
+                    // if this from the neighboring section, y wraps to 15, which is the only way for it to be 15
                     let y = (quad.dep - 16) / 16;
     
                     let start_z = quad.ure / 16;
@@ -911,19 +891,17 @@ impl Chunk {
                         for z in start_z..=end_z {
                             if y == 15 {
                                 if let Some(down) = self.get_neighbor::<{ Normal::DOWN }>() {
-                                    light_staging_buffer.put_u32(down.get_light::<{ Normal::UP }>(Chunk::index(x, y, z)) as u32);
+                                    light_staging_buffer.put_u32(down.get_light::<{ Normal::UP }>(Section::index(x, y, z)) as u32);
                                 }
                                 else {
                                     light_staging_buffer.put_u32(0);
                                 }
                             }
-                            light_staging_buffer.put_u32(self.get_light::<{ Normal::UP }>(Chunk::index(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_light::<{ Normal::UP }>(Section::index(x, y, z)) as u32);
                         }
                     }
                 }
-                _ => {
-                    unreachable_unchecked();
-                }
+                _ => { hint::unreachable_unchecked(); }
             }
         }
         
@@ -965,10 +943,11 @@ impl Chunk {
         };
     }
 
+    #[inline]
     pub fn index<T: TryInto<usize>>(x: T, y: T, z: T) -> usize { unsafe {
         return (x.try_into().unwrap_unchecked() << 8) |
-                (y.try_into().unwrap_unchecked() << 4) |
-                (z.try_into().unwrap_unchecked() << 0);
+               (y.try_into().unwrap_unchecked() << 4) |
+               (z.try_into().unwrap_unchecked() << 0);
     } }
 
     pub const INDICES_ZYX: [u32; 4096] = {
@@ -1019,9 +998,9 @@ impl Chunk {
         arr
     };
 }
-impl Drop for Chunk {
+impl Drop for Section {
     fn drop(&mut self) {
-        // println!("Dropped chunk {} {} {}", self.pos.x, self.pos.y, self.pos.z);
+        // println!("Dropped section {} {} {}", self.pos.x, self.pos.y, self.pos.z);
         // if let Some(buffer) = &self.buffer && buffer.valid() {
             // panic!()
         // }
@@ -1132,16 +1111,16 @@ impl Run {
         let offset: u32;
         match N {
             Normal::SOUTH | Normal::NORTH => {
-                offset = Chunk::INDICES_ZYX[pos];
+                offset = Section::INDICES_ZYX[pos];
             }
             Normal::WEST | Normal::EAST => {
-                offset = Chunk::INDICES_XYZ[pos];
+                offset = Section::INDICES_XYZ[pos];
             }
             Normal::DOWN | Normal::UP => {
-                offset = Chunk::INDICES_YXZ[pos];
+                offset = Section::INDICES_YXZ[pos];
             }
             _ => {
-                unsafe { unreachable_unchecked(); }
+                unsafe { hint::unreachable_unchecked(); }
             }
         }
         buffer.put_u64(face.as_u64() + offset as u64);
@@ -1163,24 +1142,22 @@ impl Run {
     /**
      * Directly adds a face
      */
-    pub fn add_face<const N: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, pos: usize) {
+    pub fn add_face<const N: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, pos: usize) { unsafe {
         let offset: u32;
         match N {
             Normal::SOUTH | Normal::NORTH => {
-                offset = Chunk::INDICES_ZYX[pos];
+                offset = Section::INDICES_ZYX[pos];
             }
             Normal::WEST | Normal::EAST => {
-                offset = Chunk::INDICES_XYZ[pos];
+                offset = Section::INDICES_XYZ[pos];
             }
             Normal::DOWN | Normal::UP => {
-                offset = Chunk::INDICES_YXZ[pos];
+                offset = Section::INDICES_YXZ[pos];
             }
-            _ => {
-                unsafe { unreachable_unchecked(); }
-            }
+            _ => { hint::unreachable_unchecked(); }
         }
         buffer.put_u64(face.as_u64() + offset as u64);
-    }
+    } }
     /**
      * Matches the top and bottom right corners of the first face with the top and bottom left corners of the next face
      */

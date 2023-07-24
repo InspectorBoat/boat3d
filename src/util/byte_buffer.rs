@@ -1,5 +1,5 @@
 use std::{ops::{IndexMut, Index, Add}, hint::{unreachable_unchecked, black_box}, mem};
-use crate::{block::blockface::{BlockFace, Normal, GpuQuad}, world::chunk::Chunk};
+use crate::{block::blockface::{BlockFace, Normal, GpuQuad}, world::section::Section};
 #[repr(C, align(8))]
 #[derive(Debug)]
 pub struct StagingBuffer {
@@ -47,7 +47,7 @@ impl StagingBuffer {
     }
     pub fn put_face(&mut self, face: &BlockFace, pos: usize) { unsafe {
         let loc = self.buffer.0.as_mut_ptr().byte_add(self.index) as *mut u64;
-        *loc = face.as_u64() + Chunk::INDICES_ZYX[pos] as u64;
+        *loc = face.as_u64() + Section::INDICES_ZYX[pos] as u64;
         self.index += 8;
     } }
     
@@ -66,7 +66,6 @@ impl StagingBuffer {
      * 
      * Converts a quad from left-bottom-right-top format to u-v-d-w-h format
      */
-    #[allow(unused_parens)]
     pub fn format_quads(&mut self) { unsafe {
         for face in self.iter_mut() {
             let ure = (face[0]);

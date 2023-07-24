@@ -21,4 +21,5 @@
     },
     "C_Cpp.intelliSenseEngineFallback": "disabled",
     "zig.formattingProvider": "off",
+    "git.ignoreLimitWarning": true,
 }
