@@ -132,7 +132,7 @@ const OTHER_FACES: [(BlockFace, bool); 4] = [
 ];
 
 fn main() { unsafe {
-    // env::set_var("RUST_BACKTRACE", "1");
+    env::set_var("RUST_BACKTRACE", "1");
     let mut glfw = gl_helper::init_glfw();
     let mut status = WindowStatus::new();
     let (mut window, events) = gl_helper::create_window(&status);

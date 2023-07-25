@@ -2,7 +2,7 @@ use std::hint;
 
 use crate::{block::blockface::{BlockFace, Normal::{self, *}}, util::byte_buffer::StagingBuffer};
 
-use super::section::Section;
+use super::{section::Section, blockpos::BlockPos};
 
 #[derive(Clone, Debug)]
 #[allow(dead_code)]
@@ -77,16 +77,16 @@ impl Run {
      * Pulls the run up after an incomplete merge
      * min_x, min_y, min_z, and texture are already guaranteed to match
      */
-    pub fn pull_partial(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
+    pub fn pull_partial(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, rel_x: u8, rel_y: u8, rel_z: u8) {
         let ind = buffer.index as u16;
         buffer.put_u64(buffer.get_u64(self.idx));
         
-        buffer[ind + 1] = v << 4;
-        buffer[ind + 2] = (d << 4) | face.rig;
-        buffer[ind + 3] = ((u - self.beg) << 4) | face.top;
+        buffer[ind + 1] = rel_y << 4;
+        buffer[ind + 2] = (rel_z << 4) | face.rig;
+        buffer[ind + 3] = ((rel_x - self.beg) << 4) | face.top;
         buffer[ind + 4] &= 0x0f;
         self.idx = ind;
-        self.end = u;
+        self.end = rel_x;
         self.row += 1;
     }
     /**
@@ -103,18 +103,18 @@ impl Run {
     /**
      * Begins a new run
      */
-    pub fn begin<const N: Normal>(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, pos: usize, u: u8, row: u16) {
+    pub fn begin<const N: Normal>(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, index: BlockPos, u: u8, row: u16) {
         self.idx = buffer.index as u16;
         let offset: u32;
         match N {
             South | North => {
-                offset = Section::INDICES_ZYX[pos];
+                offset = Section::INDICES_ZYX[index.index];
             }
             West | East => {
-                offset = Section::INDICES_XYZ[pos];
+                offset = Section::INDICES_XYZ[index.index];
             }
             Down | Up => {
-                offset = Section::INDICES_YXZ[pos];
+                offset = Section::INDICES_YXZ[index.index];
             }
             _ => {
                 unsafe { hint::unreachable_unchecked(); }
@@ -139,17 +139,17 @@ impl Run {
     /**
      * Directly adds a face
      */
-    pub fn add_face<const N: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, index: usize) { unsafe {
+    pub fn add_face<const N: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, index: BlockPos) { unsafe {
         let offset: u32;
         match N {
             South | North => {
-                offset = Section::INDICES_ZYX[index];
+                offset = Section::INDICES_ZYX[index.index];
             }
             West | East => {
-                offset = Section::INDICES_XYZ[index];
+                offset = Section::INDICES_XYZ[index.index];
             }
             Down | Up => {
-                offset = Section::INDICES_YXZ[index];
+                offset = Section::INDICES_YXZ[index.index];
             }
             _ => { hint::unreachable_unchecked(); }
         }
