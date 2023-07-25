@@ -209,8 +209,8 @@ impl World {
         for (i, section) in self.sections.values_mut().enumerate() {
             section.generate_geometry_buffer(&mut self.geometry_staging_buffer, &mut self.geometry_pool);
             section.generate_light_buffer(&mut self.geometry_staging_buffer, &mut self.geometry_pool, &mut self.light_staging_buffer, &mut self.light_pool);
-            exact_geometry_bytes += self.geometry_staging_buffer.index;
-            exact_light_bytes += self.light_staging_buffer.index;
+            exact_geometry_bytes += self.geometry_staging_buffer.idx;
+            exact_light_bytes += self.light_staging_buffer.idx;
             self.geometry_staging_buffer.reset();
             self.light_staging_buffer.reset();
             total_quads += section.quad_count as usize;

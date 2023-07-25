@@ -92,105 +92,105 @@ impl Section {
         }
     } }
     
-    pub fn get_block(&self, index: BlockPos) -> &BlockState { unsafe {
-        return &BLOCKS[self.blocks[index.index] as usize];
+    pub fn get_block(&self, pos: BlockPos) -> &BlockState { unsafe {
+        return &BLOCKS[self.blocks[pos.index] as usize];
     } }
-    pub fn get_opposing_block<const N: Normal>(&self, index: BlockPos) -> &BlockState { unsafe {
+    pub fn get_opposing_block<const N: Normal>(&self, pos: BlockPos) -> &BlockState { unsafe {
         match N {
             South => {
-                if index.z() == 0 {
-                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(index.set_z(15)));
+                if pos.z() == 0 {
+                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_z(15)));
                 }
-                return &self.get_block(index - BlockPos::new(0, 0, 1));
+                return &self.get_block(pos - BlockPos::new(0, 0, 1));
             }
             West => {
-                if index.x() == 0 {
-                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(index.set_x(15)));
+                if pos.x() == 0 {
+                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_x(15)));
                 }
-                return &self.get_block(index - BlockPos::new(1, 0, 0));
+                return &self.get_block(pos - BlockPos::new(1, 0, 0));
             }
             Down => {
-                if index.y() == 0 {
-                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(index.set_y(15)));
+                if pos.y() == 0 {
+                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_y(15)));
                 }
-                return &self.get_block(index - BlockPos::new(0, 1, 0));
+                return &self.get_block(pos - BlockPos::new(0, 1, 0));
             }
             _ => unsafe { hint::unreachable_unchecked(); }
         }
     } }
     
-    pub fn get_face<const N: Normal>(&self, index: BlockPos) -> &BlockFace {
-        return &self.get_block(index).model.get_face(N);
+    pub fn get_face<const N: Normal>(&self, pos: BlockPos) -> &BlockFace {
+        return &self.get_block(pos).model.get_face(N);
     }
-    pub fn get_opposing_face<const N: Normal>(&self, index: BlockPos) -> &BlockFace {
-        return &self.get_opposing_block::<N>(index).model.get_face(N.reverse());
+    pub fn get_opposing_face<const N: Normal>(&self, pos: BlockPos) -> &BlockFace {
+        return &self.get_opposing_block::<N>(pos).model.get_face(N.reverse());
     }
 
     pub fn get_light(&self, index: BlockPos) -> u8 {
         return self.light[index.index];
     }
-    pub fn get_face_light<const N: Normal>(&self, index: BlockPos) -> u8 { unsafe {
+    pub fn get_face_light<const N: Normal>(&self, pos: BlockPos) -> u8 { unsafe {
         match N {
             North => {
-                if index.z() == 15 {
-                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(index.set_z(0)));
+                if pos.z() == 15 {
+                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(pos.set_z(0)));
                 }
-                return self.get_light(index + BlockPos::new(0, 0, 1));
+                return self.get_light(pos + BlockPos::new(0, 0, 1));
             }
             South => {
-                if index.z() == 0 {
-                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(index.set_z(15)));
+                if pos.z() == 0 {
+                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(pos.set_z(15)));
                 }
-                return self.get_light(index - BlockPos::new(0, 0, 1));
+                return self.get_light(pos - BlockPos::new(0, 0, 1));
             }
             East => {
-                if index.x() == 15 {
-                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(index.set_x(0)));
+                if pos.x() == 15 {
+                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(pos.set_x(0)));
                 }
-                return self.get_light(index + BlockPos::new(1, 0, 0));
+                return self.get_light(pos + BlockPos::new(1, 0, 0));
             }
             West => {
-                if index.x() == 0 {
-                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(index.set_x(15)));
+                if pos.x() == 0 {
+                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(pos.set_x(15)));
                 }
-                return self.get_light(index - BlockPos::new(1, 0, 0));
+                return self.get_light(pos - BlockPos::new(1, 0, 0));
             }
             Up => {
-                if index.y() == 15 {
-                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(index.set_y(0)));
+                if pos.y() == 15 {
+                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(pos.set_y(0)));
                 }
-                return self.get_light(index + BlockPos::new(0, 1, 0));
+                return self.get_light(pos + BlockPos::new(0, 1, 0));
             }
             Down => {
-                if index.y() == 0 {
-                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(index.set_y(15)));
+                if pos.y() == 0 {
+                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(pos.set_y(15)));
                 }
-                return self.get_light(index - BlockPos::new(0, 1, 0));
+                return self.get_light(pos - BlockPos::new(0, 1, 0));
             }
             _ => { hint::unreachable_unchecked(); }
         }
     } }
 
-    pub fn get_face_pair<const N: Normal>(&self, index: BlockPos) -> (&BlockFace, &BlockFace) {
-        return (self.get_face::<N>(index), self.get_opposing_face::<N>(index))
+    pub fn get_face_pair<const N: Normal>(&self, pos: BlockPos) -> (&BlockFace, &BlockFace) {
+        return (self.get_face::<N>(pos), self.get_opposing_face::<N>(pos))
     }
 
-    pub fn has_extra_face<const N: Normal>(&self, index: BlockPos) -> bool {
-        return self.get_block(index).otherFaces[N as usize] != 0xffff;
+    pub fn has_extra_face<const N: Normal>(&self, pos: BlockPos) -> bool {
+        return self.get_block(pos).otherFaces[N as usize] != 0xffff;
     }
-    pub fn has_opposing_extra_face<const N: Normal>(&self, index: BlockPos) -> bool {
-        return self.get_opposing_block::<N>(index).otherFaces[N.reverse() as usize] != 0xffff;
+    pub fn has_opposing_extra_face<const N: Normal>(&self, pos: BlockPos) -> bool {
+        return self.get_opposing_block::<N>(pos).otherFaces[N.reverse() as usize] != 0xffff;
     }
     
-    pub fn get_extra_face<const N: Normal>(&self, index: BlockPos) -> Option<&(BlockFace, bool)> {
-        if self.has_extra_face::<N>(index) {
-            return Some(&OTHER_FACES[self.get_block(index).otherFaces[N as usize] as usize]);
+    pub fn get_extra_face<const N: Normal>(&self, pos: BlockPos) -> Option<&(BlockFace, bool)> {
+        if self.has_extra_face::<N>(pos) {
+            return Some(&OTHER_FACES[self.get_block(pos).otherFaces[N as usize] as usize]);
         }
         return None;
     }
-    pub fn get_opposing_extra_face<const N: Normal>(&self, index: BlockPos) -> Option<&(BlockFace, bool)> {
-        if self.has_opposing_extra_face::<N>(index) {
-            return Some(&OTHER_FACES[self.get_opposing_block::<N>(index).otherFaces[N.reverse() as usize] as usize]);
+    pub fn get_opposing_extra_face<const N: Normal>(&self, pos: BlockPos) -> Option<&(BlockFace, bool)> {
+        if self.has_opposing_extra_face::<N>(pos) {
+            return Some(&OTHER_FACES[self.get_opposing_block::<N>(pos).otherFaces[N.reverse() as usize] as usize]);
         }
         return None;
     }
@@ -255,7 +255,6 @@ impl Section {
         for rel_z in 0..16_u8 {
             for rel_y in 0..16_u8 {
                 for rel_x in 0..16_u8 {
-                    let index = Section::index(rel_x, rel_y, rel_z);
                     let index = BlockPos::new(rel_x, rel_y, rel_z);
 
                     let (face_s, face_n) = self.get_face_pair::<{South}>(index);
@@ -399,7 +398,6 @@ impl Section {
         for rel_z in 0..16_u8 {
             for rel_y in 0..16_u8 {
                 for rel_x in 0..16_u8 {
-                    let index = Section::index(rel_z, rel_y, rel_x);
                     let index = BlockPos::new(rel_z, rel_y, rel_x);
                     
                     let (face_w, face_e) = self.get_face_pair::<{West}>(index);
@@ -543,7 +541,6 @@ impl Section {
         for rel_z in 0..16_u8 {
             for rel_y in 0..16_u8 {
                 for rel_x in 0..16_u8 {
-                    let index = Section::index(rel_y, rel_z, rel_x);
                     let index = BlockPos::new(rel_y, rel_z, rel_x);
 
                     let (face_d, face_u) = self.get_face_pair::<{Down}>(index);
@@ -782,11 +779,11 @@ impl Section {
 
         geometry_staging_buffer.format_quads();
 
-        self.quad_count = geometry_staging_buffer.index as u32 / 8;
+        self.quad_count = geometry_staging_buffer.idx as u32 / 8;
         
-        self.geometry_page = geometry_buffer_allocator.allocate(geometry_staging_buffer.index + 4 * mem::size_of::<u32>());
+        self.geometry_page = geometry_buffer_allocator.allocate(geometry_staging_buffer.idx + 4 * mem::size_of::<u32>());
         if let Some(page) = &self.geometry_page {
-            geometry_buffer_allocator.upload_offset(page, &geometry_staging_buffer.buffer.0.as_slice(), geometry_staging_buffer.index, 4 * mem::size_of::<u32>());
+            geometry_buffer_allocator.upload_offset(page, &geometry_staging_buffer.buffer.0.as_slice(), geometry_staging_buffer.idx, 4 * mem::size_of::<u32>());
             geometry_buffer_allocator.upload(page, &[self.pos.x, self.pos.y, self.pos.z], 3 * mem::size_of::<u32>());
         }
     } }
@@ -796,12 +793,12 @@ impl Section {
 
         // bytes reserved to index a light chunk for each quad
         // need 1 u32 per quad
-        let reserved_bytes = geometry_staging_buffer.index / BYTES_PER_QUAD * mem::size_of::<u32>();
-        light_staging_buffer.index = reserved_bytes;
+        let reserved_bytes = geometry_staging_buffer.idx / BYTES_PER_QUAD * mem::size_of::<u32>();
+        light_staging_buffer.idx = reserved_bytes;
 
         for (i, quad) in geometry_staging_buffer.iter().map(|quad| mem::transmute::<&[u8; 8], &GpuQuad>(quad)).enumerate() {
             // insert the index offset of the light section
-            light_staging_buffer.set_u32(i * mem::size_of::<u32>(), (light_staging_buffer.index / mem::size_of::<u32>()) as u32);
+            light_staging_buffer.set_u32(i * mem::size_of::<u32>(), (light_staging_buffer.idx / mem::size_of::<u32>()) as u32);
             
             match quad.normal {
                 South => {
@@ -925,11 +922,11 @@ impl Section {
             }
         }
         
-        self.light_page = light_buffer_allocator.allocate(light_staging_buffer.index);
+        self.light_page = light_buffer_allocator.allocate(light_staging_buffer.idx);
         if self.light_page.is_none() { return; }
 
         if let Some(light_page) = &self.light_page {
-            light_buffer_allocator.upload(light_page, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.index);
+            light_buffer_allocator.upload(light_page, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.idx);
             if let Some(page) = &self.geometry_page {
                 geometry_buffer_allocator.upload_offset(page, &[(light_page.start * light_page.block_size() / mem::size_of::<u32>()) as u32], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
             }

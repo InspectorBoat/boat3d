@@ -83,13 +83,19 @@ impl BufferQuad {
         return self.block_rel_y_bottom;
     }
     pub fn get_rel_z(&self) -> u8 {
-        return (self.block_rel_z_right & 0xf0) | (self.block_width_top & 0x0f);
+        return (self.block_rel_z_right & 0xf0) | (self.block_height_depth & 0x0f);
     }
     pub fn get_normal(&self) -> Normal {
         return self.normal;
     }
     pub fn get_width(&self) -> u8 {
-        return self.block_width_top & 0xf0;
+        return (self.block_width_top & 0xf0) | (0xf - (self.block_rel_z_right & 0x0f) - (self.block_rel_x_left & 0x0f));
+    }
+    pub fn get_height(&self) -> u8 {
+        return (self.block_height_depth & 0xf0) | (0xf - (self.block_width_top & 0x0f) - (self.block_rel_y_bottom & 0x0f));
+    }
+    pub fn get_texture(&self) -> u16 {
+        return self.texture;
     }
 }
 

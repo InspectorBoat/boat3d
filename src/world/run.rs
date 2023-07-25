@@ -1,6 +1,6 @@
 use std::hint;
 
-use crate::{block::blockface::{BlockFace, Normal::{self, *}}, util::byte_buffer::StagingBuffer};
+use crate::{block::blockface::{BlockFace, Normal::{self, *}, BufferQuad}, util::byte_buffer::StagingBuffer};
 
 use super::{section::Section, blockpos::BlockPos};
 
@@ -19,10 +19,9 @@ pub struct Run {
     
     pub tex: u16,
     
-    pub idx: u16,
+    pub idx: u32,
     
     pub row: u16,
-    pub pad: u16
 }
 
 impl Run {
@@ -67,9 +66,11 @@ impl Run {
      * End y is already guaranteed to match
      */
     pub fn merge_face(&mut self, buffer: &mut StagingBuffer, face: &BlockFace) { unsafe {
-        buffer[self.idx + 3] += 0x10;
-        buffer[self.idx + 2] &= 0xf0;
-        buffer[self.idx + 2] |= face.rig;
+        let buffer_quad = &mut *(&raw mut buffer[self.idx as u32] as *mut BufferQuad);
+        buffer_quad.block_width_top += 0x10;
+        buffer_quad.block_rel_z_right &= 0xf0;
+        buffer_quad.block_rel_z_right |= face.rig;
+
         self.end += 1;
         self.rig = face.rig;
     } }
@@ -77,44 +78,48 @@ impl Run {
      * Pulls the run up after an incomplete merge
      * min_x, min_y, min_z, and texture are already guaranteed to match
      */
-    pub fn pull_partial(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, rel_x: u8, rel_y: u8, rel_z: u8) {
-        let ind = buffer.index as u16;
+    pub fn pull_partial(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, rel_x: u8, rel_y: u8, rel_z: u8) { unsafe {
+        let idx = buffer.idx as u32;
+        // copy the quad over
         buffer.put_u64(buffer.get_u64(self.idx));
-        
-        buffer[ind + 1] = rel_y << 4;
-        buffer[ind + 2] = (rel_z << 4) | face.rig;
-        buffer[ind + 3] = ((rel_x - self.beg) << 4) | face.top;
-        buffer[ind + 4] &= 0x0f;
-        self.idx = ind;
+        let buffer_quad = &mut *(&raw mut buffer[idx] as *mut BufferQuad);
+        buffer_quad.block_rel_y_bottom = rel_y << 4;
+        buffer_quad.block_rel_z_right = (rel_z << 4) | face.rig;
+        buffer_quad.block_width_top = ((rel_x - self.beg) << 4) | face.top;
+        buffer_quad.block_height_depth &= 0x0f;
+
+        self.idx = idx;
         self.end = rel_x;
         self.row += 1;
-    }
+    } }
     /**
      * Pulls the run up after a complete merge
      * Only possible change is top
      */
-    pub fn pull(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, u: u8, v: u8, d: u8) {
-        buffer[self.idx as usize + 4] += 0x10;
-        buffer[self.idx as usize + 3] &= 0xf0;
-        buffer[self.idx as usize + 3] |= face.top;
+    pub fn pull(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, rel_x: u8, rel_y: u8, rel_z: u8) { unsafe {
+        let buffer_quad = &mut *(&raw mut buffer[self.idx] as *mut BufferQuad);
+        buffer_quad.block_height_depth += 0x10;
+        buffer_quad.block_width_top &= 0xf0;
+        buffer_quad.block_width_top |= face.top;
+
         self.top = face.top;
         self.row += 1;
-    }
+    } }
     /**
      * Begins a new run
      */
-    pub fn begin<const N: Normal>(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, index: BlockPos, u: u8, row: u16) {
-        self.idx = buffer.index as u16;
+    pub fn begin<const N: Normal>(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, pos: BlockPos, rel_x: u8, row: u16) {
+        self.idx = buffer.idx as u32;
         let offset: u32;
         match N {
             South | North => {
-                offset = Section::INDICES_ZYX[index.index];
+                offset = Section::INDICES_ZYX[pos.index];
             }
             West | East => {
-                offset = Section::INDICES_XYZ[index.index];
+                offset = Section::INDICES_XYZ[pos.index];
             }
             Down | Up => {
-                offset = Section::INDICES_YXZ[index.index];
+                offset = Section::INDICES_YXZ[pos.index];
             }
             _ => {
                 unsafe { hint::unreachable_unchecked(); }
@@ -128,8 +133,9 @@ impl Run {
         self.rig = face.rig;
         self.top = face.top;
 
-        self.beg = u;
-        self.end = u;
+        self.beg = rel_x;
+        self.end = rel_x;
+
         self.tex = face.tex;
 
 
@@ -183,7 +189,6 @@ impl Run {
             tex: 0,
             row: u16::MAX - 1,
             idx: 0,
-            pad: 0
         }
     }
 }
