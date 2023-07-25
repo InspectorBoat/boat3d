@@ -13,6 +13,7 @@ use cgmath::Vector3;
 use cgmath_culling::BoundingBox;
 use cgmath_culling::Sphere;
 use gl::BLOCK_INDEX;
+use itertools::iproduct;
 
 use crate::OTHER_FACES;
 use crate::block::blockface::GpuQuad;
@@ -121,7 +122,7 @@ impl Section {
     pub fn get_opposing_face<const N: Normal>(&self, index: usize) -> &BlockFace {
         return &self.get_opposing_block::<N>(index).model.get_face(N.reverse());
     }
-    
+
     pub fn get_light<const N: Normal>(&self, index: usize) -> u8 { unsafe {
         match N {
             North => {
@@ -230,6 +231,7 @@ impl Section {
     pub fn set_pos(&mut self, pos: Vector3<i32>) {
         self.pos = pos;
     }
+    
     // rel_x, rel_y, rel_z = x, y, z
     pub fn mesh_south_north(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
         let mut row_s: [Run; 16] = Default::default();
@@ -372,6 +374,7 @@ impl Section {
             row_id += 16;
         }
     }
+    
     // rel_x, rel_y, rel_z = z, y, x
     pub fn mesh_west_east(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
         let mut row_w: [Run; 16] = Default::default();
@@ -514,6 +517,7 @@ impl Section {
             row_id += 16;
         }
     }
+    
     // rel_x, rel_y, rel_z = z, x, y
     pub fn mesh_down_up(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
         let mut row_d: [Run; 16] = Default::default();
@@ -659,11 +663,11 @@ impl Section {
     }
     
     pub fn mesh_south_north_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
-        for z in 0..16_u8 {
+        for x in 0..16_u8 {
             for y in 0..16_u8 {
-                for x in 0..16_u8 {
-                    let index = Section::index(x, y, z);
-                    
+                for z in 0..16_u8 {
+                    let pos = Vector3::new(x, y, z);
+                    let index = Section::index_pos(pos);
                     let face_s = self.get_face::<{South}>(index);
                     let face_n = self.get_opposing_face::<{South}>(index);
 
@@ -954,6 +958,13 @@ impl Section {
     } }
 
     #[inline]
+    pub fn index_pos<T: TryInto<usize>>(pos: Vector3<T>) -> usize { unsafe {
+        return (pos.x.try_into().unwrap_unchecked() << 8) |
+               (pos.y.try_into().unwrap_unchecked() << 4) |
+               (pos.z.try_into().unwrap_unchecked() << 0);
+    } }
+
+    #[inline]
     pub fn pos<const N: Normal>(index: usize) -> Vector3<u8>{
         match N {
             South | North => {
@@ -973,6 +984,10 @@ impl Section {
             Down | Up => todo!(),
             Unaligned => todo!(),
         }
+    }
+
+    pub fn iter() -> impl Iterator<Item = Vector3<i32>> {
+        return (0..16).flat_map(move |x| (0..16).flat_map(move |y| (0..16).map(move |z| Vector3::new(x, y, z))));
     }
 
     pub const INDICES_ZYX: [u32; 4096] = {
@@ -1027,7 +1042,6 @@ impl Section {
 #[derive(Clone, Debug)]
 #[allow(dead_code)]
 #[repr(C)]
-
 pub struct Run {
     lef: u8,
     bot: u8,

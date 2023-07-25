@@ -204,7 +204,7 @@ impl World {
         let mut exact_geometry_bytes = 0;
         let mut exact_light_bytes = 0;
 
-        let mut j = 0;
+        // let mut j = 0;
         let total = self.sections.len();
         for (i, section) in self.sections.values_mut().enumerate() {
             section.generate_geometry_buffer(&mut self.geometry_staging_buffer, &mut self.geometry_pool);
@@ -215,12 +215,12 @@ impl World {
             self.light_staging_buffer.reset();
             total_quads += section.quad_count as usize;
 
-            if j == 100 {
-                println!("meshed {i}/{total} : {}%", i as f32 / total as f32 * 100.0);
-                j = 0;
-                continue;
-            }
-            j += 1;
+            // if j == 100 {
+            //     println!("meshed {i}/{total} : {}%", i as f32 / total as f32 * 100.0);
+            //     j = 0;
+            //     continue;
+            // }
+            // j += 1;
         }
         
         let total_sections = self.sections.len();
@@ -372,9 +372,9 @@ impl World {
         gl::DrawArrays(gl::TRIANGLES, 0, 6);
     } }
     
-    pub const MAX_SECTION_X: usize = 8;
-    pub const MAX_SECTION_Y: usize = 8;
-    pub const MAX_SECTION_Z: usize = 8;
+    pub const MAX_SECTION_X: usize = 32;
+    pub const MAX_SECTION_Y: usize = 32;
+    pub const MAX_SECTION_Z: usize = 32;
 }
 
 pub enum SectionType {
