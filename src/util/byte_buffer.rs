@@ -1,5 +1,5 @@
 use std::{ops::{IndexMut, Index, Add}, hint::{unreachable_unchecked, black_box}, mem};
-use crate::{block::blockface::{BlockFace, Normal, GpuQuad, BufferQuad}, world::section::Section};
+use crate::{block::blockface::{BlockFace, Normal}, world::section::Section, mesh::{buffer_quad::BufferQuad, gpu_quad::GpuQuad}};
 #[repr(C, align(8))]
 #[derive(Debug)]
 pub struct StagingBuffer {

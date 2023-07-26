@@ -21,13 +21,14 @@
 mod block;
 mod world;
 mod util;
+mod mesh;
 
 use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem};
 use std::env;
 use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
 use cgmath::Vector3;
 use cgmath_culling::{BoundingBox, Intersection};
-use gl::{types, FramebufferParameteri};
+use gl::{types::{self, __GLsync}, FramebufferParameteri};
 use glfw::{Context, Window, Action, Key};
 use util::{gl_helper::*, byte_buffer::StagingBuffer};
 use world::{world::World, section::Section};
@@ -38,74 +39,74 @@ use crate::{util::gl_helper, world::camera};
 const BLOCKS: [BlockState; 3] = [
     BlockState {
         block: Block { name: "air" },
-        model: BlockModel([
-            BlockFace::NONE,
-            BlockFace::NONE,
-            BlockFace::NONE,
-            BlockFace::NONE,
-            BlockFace::NONE,
-            BlockFace::NONE
-        ]),
+        model: BlockModel {
+            south: BlockFace::NONE,
+            west: BlockFace::NONE,
+            down: BlockFace::NONE,
+            north: BlockFace::NONE,
+            east: BlockFace::NONE,
+            up: BlockFace::NONE
+        },
         otherFaces: BlockState::NONE
     },
     BlockState {
         block: Block { name: "bricks" },
-        model: BlockModel([
-            BlockFace {
+        model: BlockModel {
+            south: BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0x0, nor: South,
                 rig: 0x00, top: 0x00, tex: 1
             },
-            BlockFace {
+            west: BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0x0, nor: West,
                 rig: 0x00, top: 0x00, tex: 1
             },
-            BlockFace {
+            down: BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0x0, nor: Down,
                 rig: 0x00, top: 0x00, tex: 1
             },
-            BlockFace {
+            north: BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0xf, nor: North,
                 rig: 0x00, top: 0x00, tex: 1
             },
-            BlockFace {
+            east: BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0xf, nor: East,
                 rig: 0x00, top: 0x00, tex: 1
             },
-            BlockFace {
+            up: BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0xf, nor: Up,
                 rig: 0x00, top: 0x00, tex: 1
             },
-        ]),
+        },
         otherFaces: BlockState::NONE
     },
     BlockState {
         block: Block { name: "brick_stairs" },
-        model: BlockModel([
-            BlockFace {
+        model: BlockModel {
+            south: BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0x0, nor: South,
                 rig: 0x00, top: 0x08, tex: 2
             },
-            BlockFace {
+            west: BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0x0, nor: West,
                 rig: 0x00, top: 0x08, tex: 2
             },
-            BlockFace {
+            down: BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0x0, nor: Down,
                 rig: 0x00, top: 0x00, tex: 2
             },
-            BlockFace {
+            north: BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0xf, nor: North,
                 rig: 0x00, top: 0x00, tex: 2
             },
-            BlockFace {
+            east: BlockFace {
                 lef: 0x00, bot: 0x00, dep: 0xf, nor: East,
                 rig: 0x00, top: 0x08, tex: 2
             },
-            BlockFace {
+            up: BlockFace {
                 lef: 0x08, bot: 0x00, dep: 0xf, nor: Up,
                 rig: 0x00, top: 0x00, tex: 2
             },
-        ]),
+        },
         otherFaces: [
             0, 1, 0xffff, 0xffff, 2, 3
         ]
@@ -139,12 +140,8 @@ fn main() { unsafe {
 
     gl_helper::init_gl(&mut window);
 
-    let mut keys: HashMap<glfw::Key, bool> = HashMap::new();
-    let mut start = std::time::Instant::now();
-    let mut frames = 1;
-    
     let mut world = World::new();
-
+    
     world.generate();
     world.mesh_all();
     world.make_block_texture();
@@ -152,30 +149,45 @@ fn main() { unsafe {
     world.make_index_buffer();
     world.make_shader_programs();
     world.make_screen_buffer();
-
+    
     world.geometry_pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
     world.light_pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
+    
+    glfw.set_swap_interval(glfw::SwapInterval::None);
 
+    let mut keys: HashMap<glfw::Key, bool> = HashMap::new();
+    let mut start = std::time::Instant::now();
+    let mut frames = 1;
     while !window.should_close() {
         glfw.poll_events();
+        glfw::flush_messages(&events).for_each(|(_, event)| handle_window_event(&mut window, &mut world, event, &mut keys, &mut status));
         
-        for (_, event) in glfw::flush_messages(&events) {
-            handle_window_event(&mut window, &mut world, event, &mut keys, &mut status);
-        }
         
-        update(&mut world, &mut keys);
-        
+        world.update(&mut keys);
+
         gl::PolygonMode(gl::FRONT_AND_BACK, status.fill_mode);
-        world.draw();
+        
+        while world.fences.len() > 9 {
+            if let Some(fence) = world.fences.pop() {
+                gl::ClientWaitSync(fence, gl::SYNC_FLUSH_COMMANDS_BIT, u64::MAX);
+                gl::DeleteSync(fence);
+            }
+        }
 
-        window.swap_buffers();
-
+        world.render();
+        
+        let fence = gl::FenceSync(gl::SYNC_GPU_COMMANDS_COMPLETE, 0);
+        if fence == 0 as *const __GLsync { panic!(); }
+        world.fences.push(fence);
+        
         if frames % 100 == 0 {
             frames = 1;
-            
             println!("fps: {}", 1000.0 / (start.elapsed().as_millis() as f64 / 100.0));
             start = std::time::Instant::now();
-        } else { frames += 1; }
+        } else {
+            frames += 1;
+        }
+        window.swap_buffers();
     }
 } }
 
@@ -217,6 +229,9 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
                         world.camera.camera_rot = world.camera.frustum_rot;
                     }
                 }
+                Key::G => {
+                    println!("{:?}", world.camera);
+                }
                 _ => ()
             }
         }
@@ -239,31 +254,3 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
         _ => {}
     }
 } }
-
-fn update(world: &mut World, keys: &mut HashMap<Key, bool>) {
-    let speed = 5.0 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
-    for (key, pressed) in keys.iter() {
-        if *pressed == false { continue; }
-        match key {
-            Key::W => {
-                world.camera.step(0.0, 0.0, -speed as f64);
-            }
-            Key::S => {
-                world.camera.step(0.0, 0.0, speed as f64);
-            }
-            Key::A => {
-                world.camera.step(-speed as f64, 0.0, 0.0);
-            }
-            Key::D => {
-                world.camera.step(speed as f64, 0.0, 0.0);
-            }
-            Key::Space => {
-                world.camera.step(0.0, speed as f64, 0.0);
-            }
-            Key::LeftShift => {
-                world.camera.step(0.0, - speed as f64, 0.0);
-            }
-            _ => ()
-        }
-    }
-}

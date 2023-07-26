@@ -15,6 +15,8 @@ use crate::util::gl_helper::{Buffer, BufferPoolAllocator, log_if_error, Page, Fr
 use crate::world::{section, self};
 use cgmath::Vector3;
 use cgmath_culling::{Intersection, BoundingBox, FrustumCuller};
+use gl::types::__GLsync;
+use glfw::Key;
 use simdnoise::NoiseBuilder;
 
 use super::{section::Section, camera::Camera};
@@ -37,6 +39,7 @@ pub struct World {
     pub counts: Vec<i32>,
     pub indices: Vec<*const c_void>,
     pub base_vertices: Vec<i32>,
+    pub fences: Vec<*const __GLsync>
 }
 
 impl World {
@@ -59,6 +62,7 @@ impl World {
             counts: Vec::new(),
             indices: Vec::new(),
             base_vertices: Vec::new(),
+            fences: Vec::new(),
         };
 
         // reserve space for the sky
@@ -305,7 +309,7 @@ impl World {
         }
     } }
 
-    pub fn draw(&mut self) { unsafe {
+    pub fn render(&mut self) { unsafe {
         let framebuffer = self.framebuffer.as_ref().unwrap();
 
         self.geometry_program.as_ref().unwrap().bind();
@@ -332,12 +336,12 @@ impl World {
         for section in self.sections.values() {
             // only render section if it has a geometry and light page
             if let (Some(geometry_page), Some(light_page)) = (&section.geometry_page, &section.light_page) {
-                if frustum.test_sphere(section.get_bounding_sphere(&self.camera)) == Intersection::Outside { continue; }
+                // if frustum.test_sphere(section.get_bounding_sphere(&self.camera)) == Intersection::Outside { continue; }
                 let count = section.quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
-                let basevertex = (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD) as i32;
+                let base_vertex = (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD) as i32;
                 self.counts.push(count);
                 self.indices.push(0 as *const c_void);
-                self.base_vertices.push(basevertex);
+                self.base_vertices.push(base_vertex);
                 drawnSections += 1;
             }
         }
@@ -372,6 +376,34 @@ impl World {
         gl::DrawArrays(gl::TRIANGLES, 0, 6);
     } }
     
+    pub fn update(&mut self, keys: &mut HashMap<Key, bool>) {
+        let speed = 5.0 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
+        for (key, pressed) in keys.iter() {
+            if *pressed == false { continue; }
+            match key {
+                Key::W => {
+                    self.camera.step(0.0, 0.0, -speed as f64);
+                }
+                Key::S => {
+                    self.camera.step(0.0, 0.0, speed as f64);
+                }
+                Key::A => {
+                    self.camera.step(-speed as f64, 0.0, 0.0);
+                }
+                Key::D => {
+                    self.camera.step(speed as f64, 0.0, 0.0);
+                }
+                Key::Space => {
+                    self.camera.step(0.0, speed as f64, 0.0);
+                }
+                Key::LeftShift => {
+                    self.camera.step(0.0, - speed as f64, 0.0);
+                }
+                _ => {}
+            }
+        }
+    }
+
     pub const MAX_SECTION_X: usize = 32;
     pub const MAX_SECTION_Y: usize = 32;
     pub const MAX_SECTION_Z: usize = 32;

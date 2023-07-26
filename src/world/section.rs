@@ -17,7 +17,7 @@ use gl::BLOCK_INDEX;
 use itertools::iproduct;
 
 use crate::OTHER_FACES;
-use crate::block::blockface::GpuQuad;
+use crate::mesh::gpu_quad::GpuQuad;
 use crate::util::gl_helper::Page;
 use crate::util::gl_helper::BufferPoolAllocator;
 use crate::{block::{blockstate::BlockState, blockface::{Normal::{self, *}, BlockFace}}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::StagingBuffer}, BLOCKS};
@@ -769,13 +769,13 @@ impl Section {
     }
 
     pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<1048576, 1024>) { unsafe {
-        self.mesh_south_north(geometry_staging_buffer);
-        self.mesh_west_east(geometry_staging_buffer);
-        self.mesh_down_up(geometry_staging_buffer);
+        // self.mesh_south_north(geometry_staging_buffer);
+        // self.mesh_west_east(geometry_staging_buffer);
+        // self.mesh_down_up(geometry_staging_buffer);
 
-        // self.mesh_south_north_no_merge(geometry_staging_buffer);
-        // self.mesh_west_east_no_merge(geometry_staging_buffer);
-        // self.mesh_down_up_no_merge(geometry_staging_buffer);
+        self.mesh_south_north_no_merge(geometry_staging_buffer);
+        self.mesh_west_east_no_merge(geometry_staging_buffer);
+        self.mesh_down_up_no_merge(geometry_staging_buffer);
 
         geometry_staging_buffer.format_quads();
 
