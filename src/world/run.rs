@@ -1,6 +1,6 @@
 use std::hint;
 
-use crate::{block::{blockface::BlockFace, normal::Normal::{self, *}}, util::byte_buffer::StagingBuffer, mesh::buffer_quad::BufferQuad};
+use crate::{block::{blockface::BlockFace, normal::Normal::{self, *}}, mesh::{buffer_quad::BufferQuad, byte_buffer::StagingBuffer}};
 
 use super::{section::Section, blockpos::BlockPos};
 

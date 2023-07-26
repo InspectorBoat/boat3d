@@ -20,7 +20,7 @@
 
 mod block;
 mod world;
-mod util;
+mod gl_util;
 mod mesh;
 
 use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem};
@@ -30,11 +30,11 @@ use cgmath::Vector3;
 use cgmath_culling::{BoundingBox, Intersection};
 use gl::{types::{self, __GLsync}, FramebufferParameteri};
 use glfw::{Context, Window, Action, Key};
-use util::{gl_helper::*, byte_buffer::StagingBuffer};
+use gl_util::gl_helper::*;
 use world::{world::World, section::Section};
 
 use Normal::*;
-use crate::{util::gl_helper, world::camera};
+use crate::{gl_util::gl_helper, world::camera};
 
 pub const BLOCKS: [BlockState; 3] = [
     BlockState {
