@@ -1,5 +1,7 @@
 use std::{mem, hint::unreachable_unchecked, marker::ConstParamTy, simd::{Simd, SimdPartialOrd, SimdUint}};
+use super::normal::Normal;
 use Normal::*;
+
 
 /*
  * |---------------|
@@ -53,31 +55,4 @@ impl PartialEq for BlockFace {
     fn eq(&self, other: &Self) -> bool {
         return self.top == other.top && self.lef == other.lef && self.bot == other.bot && self.dep == other.dep && self.nor == other.nor && self.rig == other.rig && self.top == other.top;
     }
-}
-
-#[derive(Clone, Copy, Debug)]
-#[derive(PartialEq, Eq, ConstParamTy)]
-#[repr(u8)]
-pub enum Normal {
-    South = 0,
-    West = 1,
-    Down = 2,
-    North = 3,
-    East = 4,
-    Up = 5,
-    Unaligned = u8::MAX
-}
-
-impl Normal {
-    pub const fn reverse(&self) -> Normal { unsafe {
-        match self {
-            South => { return North; }
-            West  => { return East; }
-            Down  => { return Up; }
-            North => { return South; }
-            East  => { return West; }
-            Up    => { return Down; }
-            _     => { unreachable_unchecked(); }
-        }
-    } }
 }

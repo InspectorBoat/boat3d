@@ -16,11 +16,13 @@ use cgmath_culling::Sphere;
 use gl::BLOCK_INDEX;
 use itertools::iproduct;
 
+use crate::BLOCKS;
 use crate::OTHER_FACES;
+use crate::block::normal::Normal::{self, *};
 use crate::mesh::gpu_quad::GpuQuad;
 use crate::util::gl_helper::Page;
 use crate::util::gl_helper::BufferPoolAllocator;
-use crate::{block::{blockstate::BlockState, blockface::{Normal::{self, *}, BlockFace}}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::StagingBuffer}, BLOCKS};
+use crate::{block::{blockstate::BlockState, blockface::BlockFace}, util::{gl_helper::{Buffer, log_if_error, log_error}, byte_buffer::StagingBuffer}};
 use super::blockpos::BlockPos;
 use super::camera::Camera;
 use super::run::Run;

@@ -25,7 +25,7 @@ mod mesh;
 
 use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem};
 use std::env;
-use block::{blockstate::BlockState, blockface::BlockFace, block::Block, blockface::Normal, blockmodel::BlockModel};
+use block::{blockstate::BlockState, blockface::BlockFace, block::Block, normal::Normal, blockmodel::BlockModel};
 use cgmath::Vector3;
 use cgmath_culling::{BoundingBox, Intersection};
 use gl::{types::{self, __GLsync}, FramebufferParameteri};
@@ -36,7 +36,7 @@ use world::{world::World, section::Section};
 use Normal::*;
 use crate::{util::gl_helper, world::camera};
 
-const BLOCKS: [BlockState; 3] = [
+pub const BLOCKS: [BlockState; 3] = [
     BlockState {
         block: Block { name: "air" },
         model: BlockModel {
@@ -113,7 +113,7 @@ const BLOCKS: [BlockState; 3] = [
     }
 ];
 
-const OTHER_FACES: [(BlockFace, bool); 4] = [
+pub const OTHER_FACES: [(BlockFace, bool); 4] = [
     (BlockFace {
         lef: 0x00, bot: 0x08, dep: 0x8, nor: South,
         rig: 0x00, top: 0x00, tex: 1

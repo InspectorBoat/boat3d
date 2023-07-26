@@ -9,7 +9,7 @@ use std::ptr::NonNull;
 use std::str::CharIndices;
 use std::{ptr, hint};
 use std::{time, hint::black_box, alloc, mem};
-use crate::block::blockface::{Normal, BlockFace};
+use crate::block::{blockface::BlockFace, normal::Normal};
 use crate::util::byte_buffer::StagingBuffer;
 use crate::util::gl_helper::{Buffer, BufferPoolAllocator, log_if_error, Page, FrameBuffer, Texture, RenderBuffer, WindowStatus, Program, Shader};
 use crate::world::{section, self};

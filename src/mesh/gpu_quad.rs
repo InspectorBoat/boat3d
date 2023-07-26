@@ -1,4 +1,4 @@
-use crate::block::blockface::Normal;
+use crate::block::normal::Normal;
 
 #[repr(C, align(8))]
 #[derive(Debug)]

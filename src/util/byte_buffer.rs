@@ -1,5 +1,5 @@
 use std::{ops::{IndexMut, Index, Add}, hint::{unreachable_unchecked, black_box}, mem};
-use crate::{block::blockface::{BlockFace, Normal}, world::section::Section, mesh::{buffer_quad::BufferQuad, gpu_quad::GpuQuad}};
+use crate::{block::blockface::BlockFace, world::section::Section, mesh::{buffer_quad::BufferQuad, gpu_quad::GpuQuad}};
 #[repr(C, align(8))]
 #[derive(Debug)]
 pub struct StagingBuffer {
@@ -51,21 +51,6 @@ impl StagingBuffer {
         self.idx += 8;
     } }
     
-    /** 
-     *   0f0   00f
-     *   ---------
-     * 0 ure ~ lef
-     * 1 ven ~ bot
-     * 2 dep ~ rig
-     * 3 wid ~ top
-     * 4 hei ~ dep
-     * 5 nor ~ nor
-     * 6 tex ~ tex
-     * 7 tex ~ tex
-     * 
-     * 
-     * Converts a quad from left-bottom-right-top format to u-v-d-w-h format
-     */
     pub fn format_quads(&mut self) { unsafe {
         for buffer_quad in self.iter_mut().map(|quad| mem::transmute::<&mut [u8; 8], &mut BufferQuad>(quad)) {
             let gpu_quad = GpuQuad {
