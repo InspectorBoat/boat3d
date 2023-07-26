@@ -1,11 +1,5 @@
-use std::{ffi::{c_void, CString}, ptr, ops::Deref, num::NonZeroUsize};
-
-use gl::{types::GLuint, FramebufferRenderbuffer};
 use glfw::{Window, WindowEvent, Glfw, Context};
 
-use super::buffer::Buffer;
-
-// /*
 pub fn init_gl(window: &mut Window) {
     gl::load_with(|s| window.get_proc_address(s) as *const _);
     window.set_all_polling(true);
@@ -18,9 +12,6 @@ pub fn create_window(status: &WindowStatus) -> (Window, std::sync::mpsc::Receive
     return glfw::init(glfw::FAIL_ON_ERRORS).unwrap().create_window(status.width as u32, status.height as u32, "boat3d", glfw::WindowMode::Windowed)
             .expect("Failed to create GLFW window.");
 }
-
-// */
-
 pub fn log_error() {
     match unsafe { gl::GetError() } {
         gl::INVALID_ENUM => println!("INVALID_ENUM"),

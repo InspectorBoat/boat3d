@@ -23,18 +23,16 @@ mod world;
 mod gl_util;
 mod mesh;
 
-use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem};
+use std::collections::HashMap;
 use std::env;
 use block::{blockstate::BlockState, blockface::BlockFace, block::Block, normal::Normal, blockmodel::BlockModel};
-use cgmath::Vector3;
-use cgmath_culling::{BoundingBox, Intersection};
-use gl::{types::{self, __GLsync}, FramebufferParameteri};
+use gl::types::__GLsync;
 use glfw::{Context, Window, Action, Key};
 use gl_util::gl_helper::*;
 use world::{world::World, section::Section};
 
 use Normal::*;
-use crate::{gl_util::gl_helper, world::camera};
+use crate::gl_util::gl_helper;
 
 pub const BLOCKS: [BlockState; 3] = [
     BlockState {

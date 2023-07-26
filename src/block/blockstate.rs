@@ -1,4 +1,4 @@
-use super::{blockmodel::BlockModel, block::Block, blockface::BlockFace};
+use super::{blockmodel::BlockModel, block::Block};
 
 #[derive(Clone, Debug)]
 pub struct BlockState {

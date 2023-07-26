@@ -1,4 +1,4 @@
-use std::{mem, hint::unreachable_unchecked, marker::ConstParamTy, simd::{Simd, SimdPartialOrd, SimdUint}};
+use std::simd::{Simd, SimdPartialOrd};
 use super::normal::Normal;
 use Normal::*;
 

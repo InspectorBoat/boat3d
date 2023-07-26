@@ -1,4 +1,4 @@
-use std::{ops::Index, hint};
+use std::hint;
 
 use super::{blockface::BlockFace, normal::Normal::{self, *}};
 
