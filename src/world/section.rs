@@ -837,13 +837,13 @@ impl Section {
             
             match quad.normal {
                 South => {
-                    let start_x = quad.rel_x / 16;
-                    let end_x = (quad.rel_x + quad.width) / 16;
+                    let start_x = quad.x / 16;
+                    let end_x = (quad.x + quad.width) / 16;
                     
-                    let start_y = quad.rel_y / 16;
-                    let end_y = (quad.rel_y + quad.height) / 16;
+                    let start_y = quad.y / 16;
+                    let end_y = (quad.y + quad.height) / 16;
                     
-                    let z = (quad.rel_z + 1) / 16;
+                    let z = (quad.z + 1) / 16;
                     
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
@@ -852,14 +852,14 @@ impl Section {
                     }
                 }
                 North => {
-                    let start_x = quad.rel_x / 16;
-                    let end_x = (quad.rel_x + quad.width) / 16;
+                    let start_x = quad.x / 16;
+                    let end_x = (quad.x + quad.width) / 16;
     
-                    let start_y = quad.rel_y / 16;
-                    let end_y = (quad.rel_y + quad.height) / 16;
+                    let start_y = quad.y / 16;
+                    let end_y = (quad.y + quad.height) / 16;
 
                     // if this from the neighboring section, z wraps to 15, which is the only way for it to be 15
-                    let z = (quad.rel_z - 16) / 16;
+                    let z = (quad.z - 16) / 16;
                     
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
@@ -876,13 +876,13 @@ impl Section {
                     }
                 }
                 West => {
-                    let x = quad.rel_z / 16;
+                    let x = quad.x / 16;
     
-                    let start_y = quad.rel_y / 16;
-                    let end_y = (quad.rel_y + quad.height) / 16;
+                    let start_y = quad.y / 16;
+                    let end_y = (quad.y + quad.height) / 16;
     
-                    let start_z = quad.rel_x / 16;
-                    let end_z = (quad.rel_x + quad.width) / 16;
+                    let start_z = quad.z / 16;
+                    let end_z = (quad.z + quad.width) / 16;
                     
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
@@ -892,13 +892,13 @@ impl Section {
                 }
                 East => {
                     // if this from the neighboring section, x wraps to 15, which is the only way for it to be 15
-                    let x = (quad.rel_z - 16) / 16;
+                    let x = (quad.x - 16) / 16;
     
-                    let start_y = quad.rel_y / 16;
-                    let end_y = (quad.rel_y + quad.height) / 16;
+                    let start_y = quad.y / 16;
+                    let end_y = (quad.y + quad.height) / 16;
     
-                    let start_z = quad.rel_x / 16;
-                    let end_z = (quad.rel_x + quad.width) / 16;
+                    let start_z = quad.z / 16;
+                    let end_z = (quad.z + quad.width) / 16;
                     
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
@@ -915,13 +915,13 @@ impl Section {
                     }
                 }
                 Down => {
-                    let start_x = quad.rel_y / 16;
-                    let end_x = (quad.rel_y + quad.height) / 16;
+                    let start_x = quad.x / 16;
+                    let end_x = (quad.x + quad.height) / 16;
     
-                    let y = quad.rel_z / 16;
+                    let y = quad.y / 16;
     
-                    let start_z = quad.rel_x / 16;
-                    let end_z = (quad.rel_x + quad.width) / 16;
+                    let start_z = quad.z / 16;
+                    let end_z = (quad.z + quad.width) / 16;
                     
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
@@ -930,14 +930,14 @@ impl Section {
                     }
                 }
                 Up => {
-                    let start_x = quad.rel_y / 16;
-                    let end_x = (quad.rel_y + quad.height) / 16;
+                    let start_x = quad.x / 16;
+                    let end_x = (quad.x + quad.height) / 16;
 
                     // if this from the neighboring section, y wraps to 15, which is the only way for it to be 15
-                    let y = (quad.rel_z - 16) / 16;
+                    let y = (quad.y - 16) / 16;
     
-                    let start_z = quad.rel_x / 16;
-                    let end_z = (quad.rel_x + quad.width) / 16;
+                    let start_z = quad.z / 16;
+                    let end_z = (quad.z + quad.width) / 16;
                     
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
@@ -954,11 +954,11 @@ impl Section {
                     }
                 }
                 _ => {
-                    let x = quad.rel_x / 16;
+                    let x = quad.x / 16;
                     
-                    let y = quad.rel_y / 16;
+                    let y = quad.y / 16;
                     
-                    let z = (quad.rel_z + 1) / 16;
+                    let z = (quad.z + 1) / 16;
 
                     light_staging_buffer.put_u32(self.get_face_light::<{South}>(BlockPos::new(x, y, z)) as u32);
 

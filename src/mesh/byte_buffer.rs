@@ -54,9 +54,9 @@ impl StagingBuffer {
     pub fn format_quads(&mut self) { unsafe {
         for buffer_quad in self.iter_mut().map(|quad| mem::transmute::<&mut [u8; 8], &mut BufferQuad>(quad)) {
             let mut gpu_quad = GpuQuad {
-                rel_x: buffer_quad.get_rel_x(),
-                rel_y: buffer_quad.get_rel_y(),
-                rel_z: buffer_quad.get_rel_z(),
+                x: buffer_quad.get_rel_x(),
+                y: buffer_quad.get_rel_y(),
+                z: buffer_quad.get_rel_z(),
                 normal: buffer_quad.get_normal(),
                 width: buffer_quad.get_width(),
                 height: buffer_quad.get_height(),
@@ -64,13 +64,13 @@ impl StagingBuffer {
             };
             match gpu_quad.normal {
                 South | North => {
-                    (gpu_quad.rel_x, gpu_quad.rel_y, gpu_quad.rel_z) = (gpu_quad.rel_x, gpu_quad.rel_y, gpu_quad.rel_z);
+                    (gpu_quad.x, gpu_quad.y, gpu_quad.z) = (gpu_quad.x, gpu_quad.y, gpu_quad.z);
                 }
                 West | East => {
-                    (gpu_quad.rel_x, gpu_quad.rel_y, gpu_quad.rel_z) = (gpu_quad.rel_z, gpu_quad.rel_y, gpu_quad.rel_x);
+                    (gpu_quad.x, gpu_quad.y, gpu_quad.z) = (gpu_quad.z, gpu_quad.y, gpu_quad.x);
                 }
                 Down | Up => {
-                    (gpu_quad.rel_x, gpu_quad.rel_y, gpu_quad.rel_z) = (gpu_quad.rel_y, gpu_quad.rel_z, gpu_quad.rel_x);
+                    (gpu_quad.x, gpu_quad.y, gpu_quad.z) = (gpu_quad.y, gpu_quad.z, gpu_quad.x);
                 }
                 _ => {}
             }
