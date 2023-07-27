@@ -59,3 +59,17 @@ impl Add for BlockPos {
         return BlockPos { index: self.index + rhs.index };
     }
 }
+
+impl From<BlockPos> for usize {
+    fn from(value: BlockPos) -> usize {
+        return value.index;
+    }
+}
+
+impl Deref for BlockPos {
+    type Target = usize;
+
+    fn deref(&self) -> &usize {
+        return &self.index;
+    }
+}

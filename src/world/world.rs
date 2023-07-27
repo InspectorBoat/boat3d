@@ -1,6 +1,6 @@
 use core::slice;
 use std::cell::{Ref, RefCell, UnsafeCell};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::hint::unreachable_unchecked;
 use std::mem::MaybeUninit;
 use std::ops::{Deref, Add};
@@ -22,7 +22,7 @@ use crate::mesh::byte_buffer::StagingBuffer;
 use crate::world::{section, self};
 use cgmath::Vector3;
 use cgmath_culling::{Intersection, BoundingBox, FrustumCuller};
-use gl::types::__GLsync;
+use gl::types::GLsync;
 use glfw::Key;
 use simdnoise::NoiseBuilder;
 
@@ -46,7 +46,7 @@ pub struct World {
     pub counts: Vec<i32>,
     pub indices: Vec<*const c_void>,
     pub base_vertices: Vec<i32>,
-    pub fences: Vec<*const __GLsync>
+    pub fences: Vec<GLsync>
 }
 
 impl World {
@@ -84,7 +84,7 @@ impl World {
         gl::ActiveTexture(gl::TEXTURE0);
         let block_texture = Texture::create();
         block_texture.bind(gl::TEXTURE_2D_ARRAY);
-        let mut image: [u8; 16 * 4 * 64] = [0; 16 * 4 * 64].map(|_| rand::random());
+        let mut image: [u8; 16 * 4 * 64] = [0; 16 * 4 * 64].map(|_| rand::random::<u8>() & 127);
         image[0] = 127;
         image[1] = 127;
         image[2] = 127;
@@ -201,7 +201,8 @@ impl World {
                 for z in 0..World::MAX_SECTION_Z {
                     let mut section = Box::<Section>::new_zeroed().assume_init();
                     section.set_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
-                    section.make_terrain(&noise);
+                    // section.make_terrain(&noise);
+                    section.make_terrain_alt();
                     self.add_section(section);
                 }
             }
@@ -239,7 +240,14 @@ impl World {
         let sections_per_sec = (1000.0 / elapsed as f64 * total_sections as f64) as u64;
         let ms_per_section = elapsed as f64 / total_sections as f64;
         let quads_per_section = total_quads as u64 / total_sections as u64;
-        println!("[6/6 axes] [merged] {total_sections} sections | {elapsed}ms | {sections_per_sec} sections/s | {ms_per_section}ms/section | {total_quads} quads | {quads_per_section} quads/section");
+
+        let elapsed_nanos = start.elapsed().as_nanos() as f64;
+        const NANOSECONDS_PER_CYCLE: f64 = 0.4;
+        let nano_per_section = elapsed_nanos / total_sections as f64;
+        let nanos_per_pair = nano_per_section / 4096.0 / 3.0;
+        let cycles_per_pair = nanos_per_pair / 0.4;
+
+        println!("[6/6 axes] [merged] {total_sections} sections | {elapsed}ms | {sections_per_sec} sections/s | {ms_per_section:.4}ms/section | {cycles_per_pair:.1} cycles/face pair | {total_quads} quads | {quads_per_section} quads/section");
         let geometry_pool_bytes_used = self.geometry_pool.furthest * self.geometry_pool.block_size();
         let light_pool_bytes_used = self.light_pool.furthest * self.light_pool.block_size();
         let total_pool_megabytes_used = (geometry_pool_bytes_used + light_pool_bytes_used) / 1024 / 1024;
@@ -411,9 +419,9 @@ impl World {
         }
     }
 
-    pub const MAX_SECTION_X: usize = 32;
-    pub const MAX_SECTION_Y: usize = 32;
-    pub const MAX_SECTION_Z: usize = 32;
+    pub const MAX_SECTION_X: usize = 1;
+    pub const MAX_SECTION_Y: usize = 1;
+    pub const MAX_SECTION_Z: usize = 1;
 }
 
 pub enum SectionType {

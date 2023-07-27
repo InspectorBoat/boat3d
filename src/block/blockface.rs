@@ -1,6 +1,8 @@
-use std::simd::{Simd, SimdPartialOrd};
-use super::normal::Normal;
+use std::{simd::{Simd, SimdPartialOrd}, f32::consts::E, intrinsics::unreachable, hint::unreachable_unchecked};
+use super::{normal::Normal, block::Block};
 use Normal::*;
+use HalfFaceType::*;
+use QuarterFaceType::*;
 
 
 /*
@@ -14,7 +16,7 @@ use Normal::*;
  * 
  */
 
-#[derive(Clone, Debug)]
+#[derive(Debug)]
 #[repr(C, align(8))]
 pub struct BlockFace {
     pub lef: u8,
@@ -45,10 +47,180 @@ impl BlockFace {
     pub fn as_u32(&self) -> u32 { unsafe {
         return *(&raw const *self as *const u32);
     } }
-    pub const NONE: BlockFace = BlockFace {
-        lef: 0x0f, bot: 0x0f, dep: 0x0, nor: Unaligned,
-        rig: 0x0f, top: 0x0f, tex: u16::MAX
-    };
+    
+    pub const fn full(normal: Normal, texture: u16) -> BlockFace { unsafe {
+        let depth = match normal {
+            South | West | Down => { 0 },
+            North | East | Up => { 15 },
+            _ => { 0 }
+        };
+        return BlockFace {
+            lef: 0,
+            bot: 0,
+            rig: 0,
+            top: 0,
+            dep: depth,
+            nor: normal,
+            tex: texture,
+        }
+    } }
+
+    pub const fn half(normal: Normal, half: HalfFaceType, texture: u16) -> BlockFace { unsafe {
+        let depth = match normal {
+            South | West | Down => { 0 },
+            North | East | Up => { 15 },
+            _ => { unreachable_unchecked() }
+        };
+        match half {
+            HalfFaceType::Left => {
+                return BlockFace {
+                    lef: 0,
+                    bot: 0,
+                    rig: 8,
+                    top: 0,
+                    dep: depth,
+                    nor: normal,
+                    tex: texture,
+                };
+            },
+            HalfFaceType::Right => {
+                return BlockFace {
+                    lef: 8,
+                    bot: 0,
+                    rig: 0,
+                    top: 0,
+                    dep: depth,
+                    nor: normal,
+                    tex: texture,
+                };
+
+            },
+            HalfFaceType::Top => {
+                return BlockFace {
+                    lef: 0,
+                    bot: 8,
+                    rig: 0,
+                    top: 0,
+                    dep: depth,
+                    nor: normal,
+                    tex: texture,
+                };
+
+
+            },
+            HalfFaceType::Bottom => {
+                return BlockFace {
+                    lef: 0,
+                    bot: 0,
+                    rig: 0,
+                    top: 8,
+                    dep: depth,
+                    nor: normal,
+                    tex: texture,
+                };
+            },
+        }
+    } }
+    
+    pub const fn quarter(normal: Normal, quarter: QuarterFaceType, texture: u16) -> BlockFace { unsafe {
+        let depth = match normal {
+            South | West | Down => { 0 },
+            North | East | Up => { 15 },
+            _ => { unreachable_unchecked() }
+        };
+        match quarter {
+            TopLeft => {
+                return BlockFace {
+                    lef: 0,
+                    bot: 8,
+                    rig: 8,
+                    top: 0,
+                    dep: depth,
+                    nor: normal,
+                    tex: texture,
+                };
+            },
+            TopRight => {
+                return BlockFace {
+                    lef: 8,
+                    bot: 8,
+                    rig: 0,
+                    top: 0,
+                    dep: depth,
+                    nor: normal,
+                    tex: texture,
+                };
+
+            },
+            BottomLeft => {
+                return BlockFace {
+                    lef: 0,
+                    bot: 0,
+                    rig: 8,
+                    top: 8,
+                    dep: depth,
+                    nor: normal,
+                    tex: texture,
+                };
+
+
+            },
+            BottomRight => {
+                return BlockFace {
+                    lef: 8,
+                    bot: 0,
+                    rig: 0,
+                    top: 8,
+                    dep: depth,
+                    nor: normal,
+                    tex: texture,
+                };
+            },
+        }
+    } }
+
+    pub const fn none() -> BlockFace {
+        return BlockFace {
+            lef: 0x0f, bot: 0x0f, dep: 0x0, nor: Unaligned,
+            rig: 0x0f, top: 0x0f, tex: u16::MAX
+        };
+    }
+
+    pub const fn set_depth(self, depth: u8) -> BlockFace {
+        return BlockFace { 
+            dep: depth,
+            ..self
+        };
+    }
+
+    pub const fn set_texture(self, texture: u16) -> BlockFace {
+        return BlockFace { 
+            tex: texture,
+            ..self
+        };
+    }
+}
+
+impl Clone for BlockFace {
+    fn clone(&self) -> BlockFace {
+        return BlockFace {
+            lef: self.lef,
+            bot: self.bot,
+            rig: self.rig,
+            top: self.top,
+            dep: self.dep,
+            nor: self.nor,
+            tex: self.tex 
+        };
+    }
+}
+
+pub enum HalfFaceType {
+    Left, Right, Top, Bottom
+}
+
+pub enum QuarterFaceType {
+    TopLeft, TopRight, BottomLeft, BottomRight
 }
 
 impl PartialEq for BlockFace {

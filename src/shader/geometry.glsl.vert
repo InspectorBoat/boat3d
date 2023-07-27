@@ -1,5 +1,7 @@
 #version 460
 
+#define PI 3.1415926535897932384626433832795
+
 const mat4[] pos_transforms = {
         // south
         mat4(
@@ -41,6 +43,13 @@ const mat4[] pos_transforms = {
         0, 1, 0, 0,
         0, 0, 1, -15,
         1, 0, 0, 0,
+        0, 0, 0, 1
+        ),
+        // diagonal
+        mat4(
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
         0, 0, 0, 1
         ),
 };
@@ -127,12 +136,12 @@ void main() {
         uint normal = get_normal(face_index);
 
         vec4 vertex_pos = get_relative_pos(face_index);
-        vec4 offset = get_size(face_index) * corner_transforms[corner_index];
-        vertex_pos += offset;
+        vec4 corner_offset = get_size(face_index) * corner_transforms[corner_index] * pos_transforms[normal];
+        vertex_pos += corner_offset;
         
-        gl_Position = u_transform * (vertex_pos * pos_transforms[normal] + get_chunk_pos() * 256);
+        gl_Position = u_transform * (vertex_pos + get_chunk_pos() * 256);
         
-        texture_pos = offset.xy / 16;
+        texture_pos = (get_size(face_index) * corner_transforms[corner_index]).xy / 16;
         texture_id = get_texture(face_index);
         light_index = light[get_light_page_index_offset() + base_face_index] + get_light_page_index_offset();
         quad_width = uint(ceil(get_size(face_index).x / 16));

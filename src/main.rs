@@ -17,6 +17,7 @@
 #![feature(portable_simd)]
 #![feature(maybe_uninit_uninit_array, maybe_uninit_slice, maybe_uninit_array_assume_init)]
 #![feature(slice_from_ptr_range)]
+#![feature(const_trait_impl)]
 
 mod block;
 mod world;
@@ -26,109 +27,13 @@ mod mesh;
 use std::collections::HashMap;
 use std::env;
 use block::{blockstate::BlockState, blockface::BlockFace, block::Block, normal::Normal, blockmodel::BlockModel};
-use gl::types::__GLsync;
+use gl::types::GLsync;
 use glfw::{Context, Window, Action, Key};
 use gl_util::gl_helper::*;
 use world::{world::World, section::Section};
 
 use Normal::*;
 use crate::gl_util::gl_helper;
-
-pub const BLOCKS: [BlockState; 3] = [
-    BlockState {
-        block: Block { name: "air" },
-        model: BlockModel {
-            south: BlockFace::NONE,
-            west: BlockFace::NONE,
-            down: BlockFace::NONE,
-            north: BlockFace::NONE,
-            east: BlockFace::NONE,
-            up: BlockFace::NONE
-        },
-        otherFaces: BlockState::NONE
-    },
-    BlockState {
-        block: Block { name: "bricks" },
-        model: BlockModel {
-            south: BlockFace {
-                lef: 0x00, bot: 0x00, dep: 0x0, nor: South,
-                rig: 0x00, top: 0x00, tex: 1
-            },
-            west: BlockFace {
-                lef: 0x00, bot: 0x00, dep: 0x0, nor: West,
-                rig: 0x00, top: 0x00, tex: 1
-            },
-            down: BlockFace {
-                lef: 0x00, bot: 0x00, dep: 0x0, nor: Down,
-                rig: 0x00, top: 0x00, tex: 1
-            },
-            north: BlockFace {
-                lef: 0x00, bot: 0x00, dep: 0xf, nor: North,
-                rig: 0x00, top: 0x00, tex: 1
-            },
-            east: BlockFace {
-                lef: 0x00, bot: 0x00, dep: 0xf, nor: East,
-                rig: 0x00, top: 0x00, tex: 1
-            },
-            up: BlockFace {
-                lef: 0x00, bot: 0x00, dep: 0xf, nor: Up,
-                rig: 0x00, top: 0x00, tex: 1
-            },
-        },
-        otherFaces: BlockState::NONE
-    },
-    BlockState {
-        block: Block { name: "brick_stairs" },
-        model: BlockModel {
-            south: BlockFace {
-                lef: 0x00, bot: 0x00, dep: 0x0, nor: South,
-                rig: 0x00, top: 0x08, tex: 2
-            },
-            west: BlockFace {
-                lef: 0x00, bot: 0x00, dep: 0x0, nor: West,
-                rig: 0x00, top: 0x08, tex: 2
-            },
-            down: BlockFace {
-                lef: 0x00, bot: 0x00, dep: 0x0, nor: Down,
-                rig: 0x00, top: 0x00, tex: 2
-            },
-            north: BlockFace {
-                lef: 0x00, bot: 0x00, dep: 0xf, nor: North,
-                rig: 0x00, top: 0x00, tex: 2
-            },
-            east: BlockFace {
-                lef: 0x00, bot: 0x00, dep: 0xf, nor: East,
-                rig: 0x00, top: 0x08, tex: 2
-            },
-            up: BlockFace {
-                lef: 0x08, bot: 0x00, dep: 0xf, nor: Up,
-                rig: 0x00, top: 0x00, tex: 2
-            },
-        },
-        otherFaces: [
-            0, 1, 0xffff, 0xffff, 2, 3
-        ]
-    }
-];
-
-pub const OTHER_FACES: [(BlockFace, bool); 4] = [
-    (BlockFace {
-        lef: 0x00, bot: 0x08, dep: 0x8, nor: South,
-        rig: 0x00, top: 0x00, tex: 1
-    }, false),
-    (BlockFace {
-        lef: 0x08, bot: 0x08, dep: 0x0, nor: West,
-        rig: 0x00, top: 0x00, tex: 1
-    }, false),
-    (BlockFace {
-        lef: 0x08, bot: 0x08, dep: 0xf, nor: East,
-        rig: 0x00, top: 0x00, tex: 1
-    }, false),
-    (BlockFace {
-        lef: 0x00, bot: 0x00, dep: 0x7, nor: Up,
-        rig: 0x08, top: 0x00, tex: 1
-    }, false),
-];
 
 fn main() { unsafe {
     env::set_var("RUST_BACKTRACE", "1");
@@ -175,7 +80,7 @@ fn main() { unsafe {
         world.render();
         
         let fence = gl::FenceSync(gl::SYNC_GPU_COMMANDS_COMPLETE, 0);
-        if fence == 0 as *const __GLsync { panic!(); }
+        if fence == 0 as GLsync { panic!(); }
         world.fences.push(fence);
         
         if frames % 100 == 0 {

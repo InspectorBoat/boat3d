@@ -11,6 +11,7 @@ pub enum Normal {
     North = 3,
     East = 4,
     Up = 5,
+    Diagonal = 6,
     Unaligned = u8::MAX
 }
 

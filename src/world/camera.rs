@@ -59,23 +59,23 @@ impl Camera {
     }
     
     pub fn new() -> Camera {
-        // return Camera { 
-        //     prev_mouse: (f64::MAX, f64::MAX),
-        //     ratio: 1.0,
-        //     camera_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 2.0 },
-        //     camera_rot: Rot { pitch: 0.0, yaw: 180.0 },
-        //     frustum_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 2.0 },
-        //     frustum_rot: Rot { pitch: 0.0, yaw: 180.0 },
-        //     frustum_frozen: false
-        // };
-        Camera {
-            prev_mouse: (-1193.0, -110.0),
+        return Camera { 
+            prev_mouse: (f64::MAX, f64::MAX),
             ratio: 1.0,
-            camera_pos: Vector3 { x: -465.77737, y: 0.0, z: -670.4167 },
-            camera_rot: Rot { yaw: 176.76808, pitch: -0.7279996 },
-            frustum_pos: Vector3 { x: -465.77737, y: 0.0, z: -670.4167 },
-            frustum_rot: Rot { yaw: 176.76808, pitch: -0.7279996 },
+            camera_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 2.0 },
+            camera_rot: Rot { pitch: 0.0, yaw: 0.0 },
+            frustum_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 2.0 },
+            frustum_rot: Rot { pitch: 0.0, yaw: 0.0 },
             frustum_frozen: false
-        }
+        };
+        // Camera {
+        //     prev_mouse: (-1193.0, -110.0),
+        //     ratio: 1.0,
+        //     camera_pos: Vector3 { x: -465.77737, y: 0.0, z: -670.4167 },
+        //     camera_rot: Rot { yaw: 176.76808, pitch: -0.7279996 },
+        //     frustum_pos: Vector3 { x: -465.77737, y: 0.0, z: -670.4167 },
+        //     frustum_rot: Rot { yaw: 176.76808, pitch: -0.7279996 },
+        //     frustum_frozen: false
+        // }
     }
 }

@@ -1,5 +1,5 @@
 use std::{ops::{IndexMut, Index}, mem};
-use crate::{block::blockface::BlockFace, world::section::Section, mesh::{buffer_quad::BufferQuad, gpu_quad::GpuQuad}};
+use crate::{block::{blockface::BlockFace, normal::Normal::*}, world::section::Section, mesh::{buffer_quad::BufferQuad, gpu_quad::GpuQuad}};
 #[repr(C, align(8))]
 #[derive(Debug)]
 pub struct StagingBuffer {
@@ -53,7 +53,7 @@ impl StagingBuffer {
     
     pub fn format_quads(&mut self) { unsafe {
         for buffer_quad in self.iter_mut().map(|quad| mem::transmute::<&mut [u8; 8], &mut BufferQuad>(quad)) {
-            let gpu_quad = GpuQuad {
+            let mut gpu_quad = GpuQuad {
                 rel_x: buffer_quad.get_rel_x(),
                 rel_y: buffer_quad.get_rel_y(),
                 rel_z: buffer_quad.get_rel_z(),
@@ -62,6 +62,18 @@ impl StagingBuffer {
                 height: buffer_quad.get_height(),
                 texture: buffer_quad.get_texture(),
             };
+            match gpu_quad.normal {
+                South | North => {
+                    (gpu_quad.rel_x, gpu_quad.rel_y, gpu_quad.rel_z) = (gpu_quad.rel_x, gpu_quad.rel_y, gpu_quad.rel_z);
+                }
+                West | East => {
+                    (gpu_quad.rel_x, gpu_quad.rel_y, gpu_quad.rel_z) = (gpu_quad.rel_z, gpu_quad.rel_y, gpu_quad.rel_x);
+                }
+                Down | Up => {
+                    (gpu_quad.rel_x, gpu_quad.rel_y, gpu_quad.rel_z) = (gpu_quad.rel_y, gpu_quad.rel_z, gpu_quad.rel_x);
+                }
+                _ => {}
+            }
             *buffer_quad = mem::transmute::<GpuQuad, BufferQuad>(gpu_quad);
         }
     } }

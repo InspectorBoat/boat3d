@@ -84,7 +84,7 @@ impl <const S: usize, const P: usize> BufferPoolAllocator<S, P> {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Page<const P: usize> {
     pub start: usize,
     pub size: NonZeroUsize,

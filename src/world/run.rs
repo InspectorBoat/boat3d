@@ -145,19 +145,21 @@ impl Run {
     /**
      * Directly adds a face
      */
-    pub fn add_face<const N: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, index: BlockPos) { unsafe {
+    pub fn add_face<const N: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, pos: BlockPos) { unsafe {
         let offset: u32;
         match N {
             South | North => {
-                offset = Section::INDICES_ZYX[index.index];
+                offset = Section::INDICES_ZYX[pos.index];
             }
             West | East => {
-                offset = Section::INDICES_XYZ[index.index];
+                offset = Section::INDICES_XYZ[pos.index];
             }
             Down | Up => {
-                offset = Section::INDICES_YXZ[index.index];
+                offset = Section::INDICES_YXZ[pos.index];
             }
-            _ => { hint::unreachable_unchecked(); }
+            _ => {
+                offset = Section::INDICES_ZYX[pos.index];
+            }
         }
         buffer.put_u64(face.as_u64() + offset as u64);
     } }

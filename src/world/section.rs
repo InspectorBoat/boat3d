@@ -1,12 +1,14 @@
 use std::hint;
+use std::hint::unreachable_unchecked;
+use std::intrinsics;
 use std::mem;
 use std::ptr::NonNull;
 use cgmath::Vector3;
 use cgmath_culling::BoundingBox;
 use cgmath_culling::Sphere;
+use gl::Disable;
 
-use crate::BLOCKS;
-use crate::OTHER_FACES;
+use crate::block::blockstate::BLOCKS;
 use crate::block::normal::Normal::{self, *};
 use crate::gl_util::buffer_allocator::BufferPoolAllocator;
 use crate::gl_util::buffer_allocator::Page;
@@ -20,7 +22,7 @@ use super::world::World;
 
 /// A 16x16x16 volume of blocks
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Section {
     // block ids
     pub blocks: [u16; 4096],
@@ -41,7 +43,7 @@ pub struct Section {
     pub light_page: Option<Page<1024>>
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Neighbors {
     pub south: Option<NonNull<Section>>,
     pub west: Option<NonNull<Section>>,
@@ -167,25 +169,45 @@ impl Section {
         return (self.get_face::<N>(pos), self.get_opposing_face::<N>(pos))
     }
 
-    pub fn has_extra_face<const N: Normal>(&self, pos: BlockPos) -> bool {
-        return self.get_block(pos).otherFaces[N as usize] != 0xffff;
-    }
-    pub fn has_opposing_extra_face<const N: Normal>(&self, pos: BlockPos) -> bool {
-        return self.get_opposing_block::<N>(pos).otherFaces[N.reverse() as usize] != 0xffff;
-    }
+    pub fn has_extra_face<const N: Normal>(&self, pos: BlockPos) -> bool { unsafe {
+        match N {
+            South => { return self.get_block(pos).model.extra_south.len() > 0; }
+            West => { return self.get_block(pos).model.extra_west.len() > 0; }
+            Down => { return self.get_block(pos).model.extra_down.len() > 0; }
+            _ => { hint::unreachable_unchecked(); }
+        }
+    } }
+    pub fn has_opposing_extra_face<const N: Normal>(&self, pos: BlockPos) -> bool { unsafe {
+        match N {
+            South => { return self.get_opposing_block::<N>(pos).model.extra_north.len() > 0; }
+            West => { return self.get_opposing_block::<N>(pos).model.extra_east.len() > 0; }
+            Down => { return self.get_opposing_block::<N>(pos).model.extra_up.len() > 0; }
+            _ => { hint::unreachable_unchecked(); }
+        }
+    } }
     
-    pub fn get_extra_face<const N: Normal>(&self, pos: BlockPos) -> Option<&(BlockFace, bool)> {
-        if self.has_extra_face::<N>(pos) {
-            return Some(&OTHER_FACES[self.get_block(pos).otherFaces[N as usize] as usize]);
+    pub fn get_extra_face<const N: Normal>(&self, pos: BlockPos) -> &[BlockFace] { unsafe {
+        match N {
+            South => { return self.get_block(pos).model.extra_south; }
+            West => { return self.get_block(pos).model.extra_west; }
+            Down => { return self.get_block(pos).model.extra_down; }
+            North => { return self.get_block(pos).model.extra_north; }
+            East => { return self.get_block(pos).model.extra_east; }
+            Up => { return self.get_block(pos).model.extra_up; }
+            _ => { unreachable_unchecked(); }
         }
-        return None;
-    }
-    pub fn get_opposing_extra_face<const N: Normal>(&self, pos: BlockPos) -> Option<&(BlockFace, bool)> {
-        if self.has_opposing_extra_face::<N>(pos) {
-            return Some(&OTHER_FACES[self.get_opposing_block::<N>(pos).otherFaces[N.reverse() as usize] as usize]);
+    } }
+    pub fn get_opposing_extra_face<const N: Normal>(&self, pos: BlockPos) -> &[BlockFace] { unsafe {
+        match N {
+            South => { return self.get_opposing_block::<N>(pos).model.extra_north; }
+            West => { return self.get_opposing_block::<N>(pos).model.extra_east; }
+            Down => { return self.get_opposing_block::<N>(pos).model.extra_up; }
+            North => { return self.get_opposing_block::<N>(pos).model.extra_south; }
+            East => { return self.get_opposing_block::<N>(pos).model.extra_west; }
+            Up => { return self.get_opposing_block::<N>(pos).model.extra_down; }
+            _ => { unreachable_unchecked(); }
         }
-        return None;
-    }
+    } }
 
     pub fn make_terrain(&mut self, noise: &Vec<f32>) { unsafe {
         for x in 0..16 { for y in 0..16 { for z in 0..16 {
@@ -205,11 +227,11 @@ impl Section {
                 self.light.get_unchecked_mut(Section::index(x, y, z)),
             );
             *block = match *noise_val {
-                // val if val < 0.49 => {
-                //     1
-                // },
-                val if val < 0.50 => {
+                val if val < 0.5 => {
                     1
+                },
+                val if val < 0.51 => {
+                    3
                 },
                 _ => {
                     0
@@ -221,17 +243,22 @@ impl Section {
     } }
     pub fn make_terrain_alt(&mut self) {
         for i in 0..4096 {
-            self.blocks[i] = rand::random::<u16>() % 2;
+            let pos = BlockPos { index: i };
+            if pos.y() == 0 {
+                self.blocks[i] = 1;
+            }
             self.light[i] = rand::random::<u8>() % 16;
         }
+        self.blocks[BlockPos::new(1, 1, 1).index] = 3;
     }
-    
+
     pub fn set_pos(&mut self, pos: Vector3<i32>) {
         self.pos = pos;
     }
     
     // rel_x, rel_y, rel_z = x, y, z
     pub fn mesh_south_north(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
+        hint::black_box(0x1312ACAB);
         let mut row_s: [Run; 16] = Default::default();
         let mut run_s: &mut Run = &mut row_s[0];
         let mut active_run_s: bool = false;
@@ -252,8 +279,8 @@ impl Section {
                     let (face_s, face_n) = self.get_face_pair::<{South}>(index);
                     let compare = BlockFace::should_cull(face_s, face_n);
                     'south: {
-                        if let Some(face) = self.get_extra_face::<{South}>(index) {
-                            Run::add_face::<{South}>(geometry_staging_buffer, &face.0, index);
+                        for face in self.get_extra_face::<{South}>(index) {
+                            Run::add_face::<{South}>(geometry_staging_buffer, face, index);
                         }
             
                         if compare.0 {
@@ -309,9 +336,8 @@ impl Section {
                     }
                     'north: {
                         // break 'north;
-
-                        if let Some(face) = self.get_opposing_extra_face::<{South}>(index) {
-                            Run::add_face::<{North}>(geometry_staging_buffer, &face.0, index);
+                        for face in self.get_opposing_extra_face::<{South}>(index) {
+                            Run::add_face::<{South}>(geometry_staging_buffer, &face, index);
                         }
 
                         if compare.1 {
@@ -395,9 +421,10 @@ impl Section {
                     let (face_w, face_e) = self.get_face_pair::<{West}>(index);
                     let compare = BlockFace::should_cull(face_w, face_e);
                     'west: {
-                        if let Some(face) = self.get_extra_face::<{West}>(index) {
-                            Run::add_face::<{West}>(geometry_staging_buffer, &face.0, index);
+                        for face in self.get_extra_face::<{West}>(index) {
+                            Run::add_face::<{West}>(geometry_staging_buffer, face, index);
                         }
+            
             
                         if compare.0 {
                             active_run_w = false;
@@ -454,8 +481,8 @@ impl Section {
                     'east: {
                         // break 'east;
 
-                        if let Some(face) = self.get_opposing_extra_face::<{West}>(index) {
-                            Run::add_face::<{East}>(geometry_staging_buffer, &face.0, index);
+                        for face in self.get_opposing_extra_face::<{West}>(index) {
+                            Run::add_face::<{East}>(geometry_staging_buffer, face, index);
                         }
                         if compare.1 {
                             active_run_e = false;
@@ -538,8 +565,8 @@ impl Section {
                     let (face_d, face_u) = self.get_face_pair::<{Down}>(index);
                     let compare = BlockFace::should_cull(face_d, face_u);
                     'down: {
-                        if let Some(face) = self.get_extra_face::<{Down}>(index) {
-                            Run::add_face::<{Down}>(geometry_staging_buffer, &face.0, index);
+                        for face in self.get_extra_face::<{Down}>(index) {
+                            Run::add_face::<{Down}>(geometry_staging_buffer, &face, index);
                         }
             
                         if compare.0 {
@@ -597,8 +624,8 @@ impl Section {
                     'up: {
                         // break 'up;
 
-                        if let Some(face) = self.get_opposing_extra_face::<{Down}>(index) {
-                            Run::add_face::<{Up}>(geometry_staging_buffer, &face.0, index);
+                        for face in self.get_opposing_extra_face::<{Down}>(index) {
+                            Run::add_face::<{Up}>(geometry_staging_buffer, &face, index);
                         }
 
                         if compare.1 {
@@ -683,12 +710,12 @@ impl Section {
                         Run::add_face::<{North}>(geometry_staging_buffer, face_n, index);
                     }
                     
-                    // if let Some(face) = self.get_extra_face::<{South}>(index) {
-                    //     Run::add_face::<{South}>(geometry_staging_buffer, &face.0, index);
-                    // }
-                    // if let Some(face) = self.get_opposing_extra_face::<{South}>(index) {
-                    //     Run::add_face::<{North}>(geometry_staging_buffer, &face.0, index);
-                    // }
+                    for face in self.get_extra_face::<{South}>(index) {
+                        Run::add_face::<{South}>(geometry_staging_buffer, &face, index);
+                    }
+                    for face in self.get_opposing_extra_face::<{South}>(index) {
+                        Run::add_face::<{North}>(geometry_staging_buffer, &face, index);
+                    }
                 }
             }
         }
@@ -715,13 +742,13 @@ impl Section {
                         Run::add_face::<{East}>(geometry_staging_buffer, face_e, index);
                     }
 
-                    // if let Some(face) = self.get_extra_face::<{West}>(index) {
-                    //     Run::add_face::<{West}>(geometry_staging_buffer, &face.0, index);
-                    // }
+                    for face in self.get_extra_face::<{West}>(index) {
+                        Run::add_face::<{West}>(geometry_staging_buffer, &face, index);
+                    }
 
-                    // if let Some(face) = self.get_opposing_extra_face::<{West}>(index) {
-                    //     Run::add_face::<{East}>(geometry_staging_buffer, &face.0, index);
-                    // }
+                    for face in self.get_opposing_extra_face::<{West}>(index) {
+                        Run::add_face::<{East}>(geometry_staging_buffer, &face, index);
+                    }
                 }
             }
         }
@@ -748,12 +775,25 @@ impl Section {
                         Run::add_face::<{Up}>(geometry_staging_buffer, face_u, index);
                     }
 
-                    if let Some(face) = self.get_extra_face::<{Down}>(index) {
-                        Run::add_face::<{Down}>(geometry_staging_buffer, &face.0, index);
+                    for face in self.get_extra_face::<{Down}>(index) {
+                        Run::add_face::<{Down}>(geometry_staging_buffer, &face, index);
                     }
                 
-                    if let Some(face) = self.get_opposing_extra_face::<{Down}>(index) {
-                        Run::add_face::<{Up}>(geometry_staging_buffer, &face.0, index);
+                    for face in self.get_opposing_extra_face::<{Down}>(index) {
+                        Run::add_face::<{Up}>(geometry_staging_buffer, &face, index);
+                    }
+                }
+            }
+        }
+    }
+
+    pub fn mesh_unaligned(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
+        for x in 0..16 {
+            for y in 0..16 {
+                for z in 0..16 {
+                    let pos = BlockPos::new(x, y, z);
+                    for face in self.get_block(pos).model.unaligned {
+                        Run::add_face::<{Diagonal}>(geometry_staging_buffer, face, pos);
                     }
                 }
             }
@@ -761,19 +801,22 @@ impl Section {
     }
 
     pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<1048576, 1024>) { unsafe {
-        // self.mesh_south_north(geometry_staging_buffer);
-        // self.mesh_west_east(geometry_staging_buffer);
-        // self.mesh_down_up(geometry_staging_buffer);
+        self.mesh_south_north(geometry_staging_buffer);
+        self.mesh_west_east(geometry_staging_buffer);
+        self.mesh_down_up(geometry_staging_buffer);
 
-        self.mesh_south_north_no_merge(geometry_staging_buffer);
-        self.mesh_west_east_no_merge(geometry_staging_buffer);
-        self.mesh_down_up_no_merge(geometry_staging_buffer);
+        // self.mesh_south_north_no_merge(geometry_staging_buffer);
+        // self.mesh_west_east_no_merge(geometry_staging_buffer);
+        // self.mesh_down_up_no_merge(geometry_staging_buffer);
+
+        self.mesh_unaligned(geometry_staging_buffer);
 
         geometry_staging_buffer.format_quads();
 
         self.quad_count = geometry_staging_buffer.idx as u32 / 8;
         
         self.geometry_page = geometry_buffer_allocator.allocate(geometry_staging_buffer.idx + 4 * mem::size_of::<u32>());
+
         if let Some(page) = &self.geometry_page {
             geometry_buffer_allocator.upload_offset(page, &geometry_staging_buffer.buffer.0.as_slice(), geometry_staging_buffer.idx, 4 * mem::size_of::<u32>());
             geometry_buffer_allocator.upload(page, &[self.pos.x, self.pos.y, self.pos.z], 3 * mem::size_of::<u32>());
@@ -910,7 +953,16 @@ impl Section {
                         }
                     }
                 }
-                _ => { hint::unreachable_unchecked(); }
+                _ => {
+                    let x = quad.rel_x / 16;
+                    
+                    let y = quad.rel_y / 16;
+                    
+                    let z = (quad.rel_z + 1) / 16;
+
+                    light_staging_buffer.put_u32(self.get_face_light::<{South}>(BlockPos::new(x, y, z)) as u32);
+
+                }
             }
         }
         
