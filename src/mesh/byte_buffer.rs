@@ -50,7 +50,6 @@ impl StagingBuffer {
         *loc = face.as_u64() + Section::INDICES_ZYX[pos] as u64;
         self.idx += 8;
     } }
-    
     pub fn format_quads(&mut self) { unsafe {
         for buffer_quad in self.iter_mut().map(|quad| mem::transmute::<&mut [u8; 8], &mut BufferQuad>(quad)) {
             let mut gpu_quad = GpuQuad {

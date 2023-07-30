@@ -1,23 +1,19 @@
 #![allow(incomplete_features)]
 #![allow(dead_code)]
 #![allow(unused_variables)]
-#![allow(unused_imports)]
-#![allow(unused_must_use)]
 #![allow(non_snake_case)]
 #![allow(unused_parens)]
 #![allow(unused_unsafe)]
 #![feature(slice_as_chunks)]
 #![feature(pointer_byte_offsets)]
 #![feature(adt_const_params)]
-#![feature(core_intrinsics)]
 #![feature(new_uninit)]
 #![feature(raw_ref_op)]
 #![feature(result_option_inspect)]
 #![feature(int_roundings)]
 #![feature(portable_simd)]
-#![feature(maybe_uninit_uninit_array, maybe_uninit_slice, maybe_uninit_array_assume_init)]
 #![feature(slice_from_ptr_range)]
-#![feature(const_trait_impl)]
+
 
 mod block;
 mod world;
@@ -26,21 +22,18 @@ mod mesh;
 
 use std::collections::HashMap;
 use std::env;
-use block::{blockstate::BlockState, blockface::BlockFace, block::Block, normal::Normal, blockmodel::BlockModel};
 use gl::types::GLsync;
 use glfw::{Context, Window, Action, Key};
 use gl_util::gl_helper::*;
-use world::{world::World, section::Section};
-
-use Normal::*;
+use world::world::World;
 use crate::gl_util::gl_helper;
 
 fn main() { unsafe {
     env::set_var("RUST_BACKTRACE", "1");
+
     let mut glfw = gl_helper::init_glfw();
     let mut status = WindowStatus::new();
     let (mut window, events) = gl_helper::create_window(&status);
-
     gl_helper::init_gl(&mut window);
 
     let mut world = World::new();
@@ -53,8 +46,8 @@ fn main() { unsafe {
     world.make_shader_programs();
     world.make_screen_buffer();
     
-    world.geometry_pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
-    world.light_pool.buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
+    world.geometry_pool.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
+    world.light_pool.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
     
     glfw.set_swap_interval(glfw::SwapInterval::None);
 
@@ -157,3 +150,12 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
         _ => {}
     }
 } }
+
+
+fn summer_69(arr: &[usize]) {
+    let total = 0;
+    let should_add = false;
+    for num in arr {
+        if should_add {}
+    }
+}

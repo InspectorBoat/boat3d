@@ -1,7 +1,6 @@
-use std::{simd::{Simd, SimdPartialOrd}, f32::consts::E, intrinsics::unreachable, hint::unreachable_unchecked};
-use super::{normal::Normal, block::Block};
+use std::{simd::{Simd, SimdPartialOrd}, hint::unreachable_unchecked};
+use super::normal::Normal;
 use Normal::*;
-use HalfFaceType::*;
 use QuarterFaceType::*;
 
 

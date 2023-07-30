@@ -1,27 +1,8 @@
-use core::slice;
-use std::cell::{Ref, RefCell, UnsafeCell};
-use std::collections::{HashMap, HashSet};
-use std::hint::unreachable_unchecked;
-use std::mem::MaybeUninit;
-use std::ops::{Deref, Add};
-use std::os::raw::c_void;
-use std::ptr::NonNull;
-use std::str::CharIndices;
-use std::{ptr, hint};
-use std::{time, hint::black_box, alloc, mem};
-use crate::block::{blockface::BlockFace, normal::Normal};
-use crate::gl_util::buffer::Buffer;
-use crate::gl_util::buffer_allocator::BufferPoolAllocator;
-use crate::gl_util::framebuffer::FrameBuffer;
-use crate::gl_util::gl_helper::{WindowStatus, log_if_error};
-use crate::gl_util::program::Program;
-use crate::gl_util::renderbuffer::RenderBuffer;
-use crate::gl_util::shader::Shader;
-use crate::gl_util::texture::Texture;
+use std::{collections::HashMap, mem, os::raw::c_void, ptr::NonNull, time};
+use crate::gl_util::{buffer::Buffer, buffer_allocator::BufferAllocator, framebuffer::FrameBuffer, gl_helper::{WindowStatus, log_if_error}, program::Program, renderbuffer::RenderBuffer, shader::Shader, texture::Texture};
 use crate::mesh::byte_buffer::StagingBuffer;
-use crate::world::{section, self};
 use cgmath::Vector3;
-use cgmath_culling::{Intersection, BoundingBox, FrustumCuller};
+use cgmath_culling::Intersection;
 use gl::types::GLsync;
 use glfw::Key;
 use simdnoise::NoiseBuilder;
@@ -31,8 +12,8 @@ use super::{section::Section, camera::Camera};
 pub struct World {
     pub sections: HashMap::<Vector3<i32>, Box::<Section>>,
     pub camera: Camera,
-    pub geometry_pool: BufferPoolAllocator<1048576, 1024>,
-    pub light_pool: BufferPoolAllocator<1048576, 1024>,
+    pub geometry_pool: BufferAllocator,
+    pub light_pool: BufferAllocator,
     pub geometry_staging_buffer: StagingBuffer,
     pub light_staging_buffer: StagingBuffer,
     pub framebuffer: Option<FrameBuffer>,
@@ -54,8 +35,8 @@ impl World {
         let mut world = World {
             sections: HashMap::<Vector3<i32>, Box::<Section>>::new(),
             camera: Camera::new(),
-            geometry_pool: BufferPoolAllocator::new(),
-            light_pool: BufferPoolAllocator::new(),
+            geometry_pool: BufferAllocator::new(1073741824),
+            light_pool: BufferAllocator::new(1073741824),
             geometry_staging_buffer: StagingBuffer::new(),
             light_staging_buffer: StagingBuffer::new(),
             framebuffer: None,
@@ -73,10 +54,9 @@ impl World {
         };
 
         // reserve space for the sky
-        let sky_page = world.light_pool.allocate(world.light_pool.block_size());
-        let sky_data: [(u32, u32, u32, u32); 1024 / 4 / 4] = [(15, 0, 0, 0); 1024 / 4 / 4];
-        world.light_pool.upload(&sky_page.unwrap(), &sky_data, 1024);
-
+        let sky_segment = world.light_pool.alloc(1024);
+        let sky_data: [(u32, u32, u32, u32); 1024 / 4 / 4] = [(15, 15, 15, 15); 1024 / 4 / 4];
+        world.light_pool.upload_offset(&sky_segment.unwrap(), &sky_data, 1024, 0);
         return world;
     } }
 
@@ -117,7 +97,7 @@ impl World {
         let texture_attachment = Texture::create();
         gl::ActiveTexture(gl::TEXTURE0);
         texture_attachment.bind(gl::TEXTURE_2D);
-        gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32UI as i32, status.width as i32, status.height as i32, 0, gl::RGBA_INTEGER, gl::INT, ptr::null());
+        gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32UI as i32, status.width as i32, status.height as i32, 0, gl::RGBA_INTEGER, gl::INT, 0  as *const c_void);
         // gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32UI as i32, status.width as i32, status.height as i32, 0, gl::RGBA_INTEGER, gl::INT, ptr::null());
         gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
         gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
@@ -188,7 +168,7 @@ impl World {
         screen_buffer.upload(&screen_vertices, mem::size_of::<[f32; 24]>() as isize, gl::STATIC_DRAW);
         screen_buffer.bind_target(gl::ARRAY_BUFFER);
         gl::EnableVertexAttribArray(0);
-        gl::VertexAttribPointer(0, 2, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, ptr::null());
+        gl::VertexAttribPointer(0, 2, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, 0 as *const c_void);
         gl::EnableVertexAttribArray(1);
         gl::VertexAttribPointer(1, 2, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, (2 * mem::size_of::<f32>()) as *const c_void);
         self.screen_buffer = Some(screen_buffer);
@@ -201,8 +181,8 @@ impl World {
                 for z in 0..World::MAX_SECTION_Z {
                     let mut section = Box::<Section>::new_zeroed().assume_init();
                     section.set_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
-                    // section.make_terrain(&noise);
-                    section.make_terrain_alt();
+                    section.make_terrain(&noise);
+                    // section.make_terrain_alt();
                     self.add_section(section);
                 }
             }
@@ -216,7 +196,7 @@ impl World {
         let mut exact_geometry_bytes = 0;
         let mut exact_light_bytes = 0;
 
-        // let mut j = 0;
+        let mut j = 0;
         let total = self.sections.len();
         for (i, section) in self.sections.values_mut().enumerate() {
             section.generate_geometry_buffer(&mut self.geometry_staging_buffer, &mut self.geometry_pool);
@@ -232,7 +212,7 @@ impl World {
             //     j = 0;
             //     continue;
             // }
-            // j += 1;
+            j += 1;
         }
         
         let total_sections = self.sections.len();
@@ -248,12 +228,10 @@ impl World {
         let cycles_per_pair = nanos_per_pair / 0.4;
 
         println!("[6/6 axes] [merged] {total_sections} sections | {elapsed}ms | {sections_per_sec} sections/s | {ms_per_section:.4}ms/section | {cycles_per_pair:.1} cycles/face pair | {total_quads} quads | {quads_per_section} quads/section");
-        let geometry_pool_bytes_used = self.geometry_pool.furthest * self.geometry_pool.block_size();
-        let light_pool_bytes_used = self.light_pool.furthest * self.light_pool.block_size();
-        let total_pool_megabytes_used = (geometry_pool_bytes_used + light_pool_bytes_used) / 1024 / 1024;
-        println!("{geometry_pool_bytes_used} pooled geometry bytes | {light_pool_bytes_used} pooled light bytes | {total_pool_megabytes_used} pooled megabytes");
-        let total_exact_megabytes_used = (exact_geometry_bytes + exact_light_bytes) / 1024 / 1024;
-        println!("{exact_geometry_bytes} exact geometry bytes | {exact_light_bytes} exact light bytes | {total_exact_megabytes_used} megabytes");
+        let geometry_bytes_used = self.geometry_pool.used;
+        let light_bytes_used = self.light_pool.used;
+        let total_megabytes_used = (geometry_bytes_used + light_bytes_used) / 1024 / 1024;
+        println!("{geometry_bytes_used} geometry bytes | {light_bytes_used} light bytes | {total_megabytes_used} megabytes");
     } }
 
     pub fn mesh(&mut self, pos: Vector3<i32>) {
@@ -319,8 +297,8 @@ impl World {
             if let Some(mut up) = section.neighbors.up {
                 up.as_mut().neighbors.down = None;
             }
-            self.geometry_pool.deallocate(section.geometry_page.take());
-            self.light_pool.deallocate(section.light_page.take());
+            self.geometry_pool.free(section.geometry_page.take());
+            self.light_pool.free(section.light_page.take());
         }
     } }
 
@@ -342,8 +320,8 @@ impl World {
     
         let frustum = self.camera.get_frustum();
         const ELEMENT_INDICES_PER_QUAD: i32 = 5;
-        const BYTES_PER_QUAD: usize = 8;
-        const ELEMENTS_PER_QUAD: usize = 4;
+        const BYTES_PER_QUAD: i32 = 8;
+        const ELEMENTS_PER_QUAD: i32 = 4;
         
         // do chunked frustum culling
         let mut drawnSections = 0;
@@ -351,9 +329,9 @@ impl World {
         for section in self.sections.values() {
             // only render section if it has a geometry and light page
             if let (Some(geometry_page), Some(light_page)) = (&section.geometry_page, &section.light_page) {
-                // if frustum.test_sphere(section.get_bounding_sphere(&self.camera)) == Intersection::Outside { continue; }
+                if frustum.test_sphere(section.get_bounding_sphere(&self.camera)) == Intersection::Outside { continue; }
                 let count = section.quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
-                let base_vertex = (geometry_page.start * geometry_page.block_size() / BYTES_PER_QUAD * ELEMENTS_PER_QUAD) as i32;
+                let base_vertex = geometry_page.offset as i32 / BYTES_PER_QUAD * ELEMENTS_PER_QUAD;
                 self.counts.push(count);
                 self.indices.push(0 as *const c_void);
                 self.base_vertices.push(base_vertex);
@@ -419,13 +397,7 @@ impl World {
         }
     }
 
-    pub const MAX_SECTION_X: usize = 1;
-    pub const MAX_SECTION_Y: usize = 1;
-    pub const MAX_SECTION_Z: usize = 1;
-}
-
-pub enum SectionType {
-    Filled(Box<Section>),
-    Empty,
-    Unloaded,
+    pub const MAX_SECTION_X: usize = 32;
+    pub const MAX_SECTION_Y: usize = 32;
+    pub const MAX_SECTION_Z: usize = 32;
 }

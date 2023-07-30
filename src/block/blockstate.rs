@@ -39,7 +39,7 @@ pub const BLOCKS: [BlockState; 4] = [
     BlockState {
         block: Block { name: "tall_grass" },
         model: BlockModel {
-            unaligned: &[BlockFace::full(Diagonal, 4)],
+            unaligned: &[BlockFace::full(Diagonal, 4), BlockFace::full(OtherDiagonal, 4)],
             ..BlockModel::none()
         },
     },

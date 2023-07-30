@@ -1,17 +1,15 @@
 use std::hint;
 use std::hint::unreachable_unchecked;
-use std::intrinsics;
 use std::mem;
 use std::ptr::NonNull;
 use cgmath::Vector3;
 use cgmath_culling::BoundingBox;
 use cgmath_culling::Sphere;
-use gl::Disable;
 
 use crate::block::blockstate::BLOCKS;
 use crate::block::normal::Normal::{self, *};
-use crate::gl_util::buffer_allocator::BufferPoolAllocator;
-use crate::gl_util::buffer_allocator::Page;
+use crate::gl_util::buffer_allocator::{BufferAllocator, SortType::*};
+use crate::gl_util::buffer_allocator::BufferSegment;
 use crate::mesh::byte_buffer::StagingBuffer;
 use crate::mesh::gpu_quad::GpuQuad;
 use crate::block::{blockstate::BlockState, blockface::BlockFace};
@@ -39,8 +37,8 @@ pub struct Section {
     // if the chunk needs to be remeshed
     pub dirty: bool,
 
-    pub geometry_page: Option<Page<1024>>,
-    pub light_page: Option<Page<1024>>
+    pub geometry_page: Option<BufferSegment<{Length}>>,
+    pub light_page: Option<BufferSegment<{Length}>>
 }
 
 #[derive(Debug, Clone)]
@@ -230,9 +228,9 @@ impl Section {
                 val if val < 0.5 => {
                     1
                 },
-                val if val < 0.51 => {
-                    3
-                },
+                // val if val < 0.51 => {
+                //     3
+                // },
                 _ => {
                     0
                 }
@@ -800,7 +798,7 @@ impl Section {
         }
     }
 
-    pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<1048576, 1024>) { unsafe {
+    pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
         self.mesh_south_north(geometry_staging_buffer);
         self.mesh_west_east(geometry_staging_buffer);
         self.mesh_down_up(geometry_staging_buffer);
@@ -815,7 +813,7 @@ impl Section {
 
         self.quad_count = geometry_staging_buffer.idx as u32 / 8;
         
-        self.geometry_page = geometry_buffer_allocator.allocate(geometry_staging_buffer.idx + 4 * mem::size_of::<u32>());
+        self.geometry_page = geometry_buffer_allocator.alloc(geometry_staging_buffer.idx + 4 * mem::size_of::<u32>());
 
         if let Some(page) = &self.geometry_page {
             geometry_buffer_allocator.upload_offset(page, &geometry_staging_buffer.buffer.0.as_slice(), geometry_staging_buffer.idx, 4 * mem::size_of::<u32>());
@@ -823,7 +821,7 @@ impl Section {
         }
     } }
 
-    pub fn generate_light_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferPoolAllocator<1048576, 1024>, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferPoolAllocator<1048576, 1024>) { unsafe {
+    pub fn generate_light_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) { unsafe {
         const BYTES_PER_QUAD: usize = 8;
 
         // bytes reserved to index a light chunk for each quad
@@ -966,16 +964,15 @@ impl Section {
             }
         }
         
-        self.light_page = light_buffer_allocator.allocate(light_staging_buffer.idx);
+        self.light_page = light_buffer_allocator.alloc(light_staging_buffer.idx);
         if self.light_page.is_none() { return; }
 
         if let Some(light_page) = &self.light_page {
             light_buffer_allocator.upload(light_page, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.idx);
             if let Some(page) = &self.geometry_page {
-                geometry_buffer_allocator.upload_offset(page, &[(light_page.start * light_page.block_size() / mem::size_of::<u32>()) as u32], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
+                geometry_buffer_allocator.upload_offset(page, &[(light_page.offset as usize / mem::size_of::<u32>()) as u32], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
             }
         }
-
     } }
 
     pub fn get_bounding_box(&self, camera: &Camera) -> BoundingBox<f32> {

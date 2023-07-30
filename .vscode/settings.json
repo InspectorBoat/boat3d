@@ -22,4 +22,7 @@
     "C_Cpp.intelliSenseEngineFallback": "disabled",
     "zig.formattingProvider": "off",
     "git.ignoreLimitWarning": true,
+    "rust-analyzer.diagnostics.disabled": [
+        "redundant_field_names"
+    ],
 }

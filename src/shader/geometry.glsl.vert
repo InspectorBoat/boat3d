@@ -1,7 +1,7 @@
 #version 460
 
-#define PI 3.1415926535897932384626433832795
-
+#define PI    3.1415926535897932384626433832795
+#define SQRT2 1.4142135623730950488016887242096
 const mat4[] pos_transforms = {
         // south
         mat4(
@@ -47,9 +47,16 @@ const mat4[] pos_transforms = {
         ),
         // diagonal
         mat4(
-        1, 0, 0, 0,
+        sin(PI / 4), 0, cos(PI / 4), (1 - 1 / SQRT2) / 2 * 16,
         0, 1, 0, 0,
-        0, 0, 1, 0,
+        cos(PI / 4), 0, sin(PI / 4), (1 - 1 / SQRT2) / 2 * 16,
+        0, 0, 0, 1
+        ),
+        // other diagonal
+        mat4(
+        sin(-PI / 4), 0, cos(-PI / 4), 16 - (1 - 1 / SQRT2) / 2 * 16,
+        0, 1, 0, 0,
+        cos(-PI / 4), 0, sin(-PI / 4), (1 - 1 / SQRT2) / 2 * 16,
         0, 0, 0, 1
         ),
 };
@@ -121,8 +128,6 @@ uint get_texture(int face_index) {
 }
 
 layout(location = 0) uniform mat4 u_transform;
-
-// chunk pos, padding, light page index offset, face index i32 * 3 + i32 + u32 + u32
 
 out uint light_index;
 out uint quad_width;

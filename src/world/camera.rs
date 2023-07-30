@@ -1,7 +1,6 @@
-use core::str;
 use std::f32::consts::PI;
 
-use cgmath::{Matrix4, Perspective, PerspectiveFov, Rad, Vector3};
+use cgmath::{Matrix4, PerspectiveFov, Rad, Vector3};
 use cgmath_culling::FrustumCuller;
 #[derive(Debug, Clone, Copy)]
 pub struct Rot {
