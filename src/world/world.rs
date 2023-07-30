@@ -1,6 +1,7 @@
 use std::{collections::HashMap, mem, os::raw::c_void, ptr::NonNull, time};
-use crate::gl_util::{buffer::Buffer, buffer_allocator::BufferAllocator, framebuffer::FrameBuffer, gl_helper::{WindowStatus, log_if_error}, program::Program, renderbuffer::RenderBuffer, shader::Shader, texture::Texture};
-use crate::mesh::byte_buffer::StagingBuffer;
+use crate::gl_util::{buffer::Buffer, buffer_allocator::BufferAllocator, framebuffer::FrameBuffer, gl_helper::WindowStatus, program::Program, renderbuffer::RenderBuffer, shader::Shader, texture::Texture};
+use crate::render::byte_buffer::StagingBuffer;
+use crate::render::world_renderer::WorldRenderer;
 use cgmath::Vector3;
 use cgmath_culling::Intersection;
 use gl::types::GLsync;
@@ -27,7 +28,8 @@ pub struct World {
     pub counts: Vec<i32>,
     pub indices: Vec<*const c_void>,
     pub base_vertices: Vec<i32>,
-    pub fences: Vec<GLsync>
+    pub fences: Vec<GLsync>,
+    pub renderer: WorldRenderer
 }
 
 impl World {
@@ -51,6 +53,7 @@ impl World {
             indices: Vec::new(),
             base_vertices: Vec::new(),
             fences: Vec::new(),
+            renderer: WorldRenderer::new(),
         };
 
         // reserve space for the sky
@@ -64,19 +67,18 @@ impl World {
         gl::ActiveTexture(gl::TEXTURE0);
         let block_texture = Texture::create();
         block_texture.bind(gl::TEXTURE_2D_ARRAY);
-        let mut image: [u8; 16 * 4 * 64] = [0; 16 * 4 * 64].map(|_| rand::random::<u8>() & 127);
+        let mut image: [u8; 16 * 16 * 4 * 64] = [0; 16 * 16 * 4 * 64].map(|_| rand::random::<u8>() & 127);
         image[0] = 127;
         image[1] = 127;
         image[2] = 127;
         image[3] = 0;
 
-        gl::TexImage3D(gl::TEXTURE_2D_ARRAY, 0, gl::RGBA as i32, 4, 4, 64, 0, gl::RGBA, gl::BYTE, &raw const image as *const c_void);
+        gl::TexImage3D(gl::TEXTURE_2D_ARRAY, 0, gl::RGBA as i32, 16, 16, 64, 0, gl::RGBA, gl::BYTE, &raw const image as *const c_void);
         gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_WRAP_S, gl::REPEAT as i32);
         gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_WRAP_T, gl::REPEAT as i32);
         // set texture filtering parameters
         gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
         gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
-        log_if_error();
         self.block_texture = Some(block_texture);
     } }
     
@@ -148,6 +150,7 @@ impl World {
         );
         post_program.uniform1i(0, 0);
         post_program.uniform1i(1, 1);
+        geometry_program.uniform1i(1, 1);
     
         self.geometry_program = Some(geometry_program);
         self.post_program = Some(post_program);
@@ -181,8 +184,8 @@ impl World {
                 for z in 0..World::MAX_SECTION_Z {
                     let mut section = Box::<Section>::new_zeroed().assume_init();
                     section.set_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
-                    section.make_terrain(&noise);
-                    // section.make_terrain_alt();
+                    // section.make_terrain(&noise);
+                    section.make_terrain_alt();
                     self.add_section(section);
                 }
             }
@@ -308,6 +311,9 @@ impl World {
         self.geometry_program.as_ref().unwrap().bind();
         self.framebuffer.as_ref().unwrap().bind(gl::FRAMEBUFFER);
     
+        gl::ActiveTexture(gl::TEXTURE1);
+        self.block_texture.as_ref().unwrap().bind(gl::TEXTURE_2D_ARRAY);
+
         let clear_color: [u32; 4] = [0, 0, 0, 0];
         gl::ClearNamedFramebufferuiv(framebuffer.id, gl::COLOR, 0, &raw const clear_color as *const u32);
 

@@ -18,7 +18,7 @@
 mod block;
 mod world;
 mod gl_util;
-mod mesh;
+mod render;
 
 use std::collections::HashMap;
 use std::env;

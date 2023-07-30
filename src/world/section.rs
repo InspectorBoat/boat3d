@@ -10,8 +10,8 @@ use crate::block::blockstate::BLOCKS;
 use crate::block::normal::Normal::{self, *};
 use crate::gl_util::buffer_allocator::{BufferAllocator, SortType::*};
 use crate::gl_util::buffer_allocator::BufferSegment;
-use crate::mesh::byte_buffer::StagingBuffer;
-use crate::mesh::gpu_quad::GpuQuad;
+use crate::render::byte_buffer::StagingBuffer;
+use crate::render::gpu_quad::GpuQuad;
 use crate::block::{blockstate::BlockState, blockface::BlockFace};
 use super::blockpos::BlockPos;
 use super::camera::Camera;
@@ -228,9 +228,9 @@ impl Section {
                 val if val < 0.5 => {
                     1
                 },
-                // val if val < 0.51 => {
-                //     3
-                // },
+                val if val < 0.51 => {
+                    3
+                },
                 _ => {
                     0
                 }

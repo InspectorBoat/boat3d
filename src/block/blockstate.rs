@@ -1,5 +1,3 @@
-use std::f32::consts::E;
-
 use super::{blockmodel::BlockModel, block::Block, blockface::{BlockFace, HalfFaceType::*, QuarterFaceType::*}};
 use crate::block::normal::Normal::*;
 

@@ -1,5 +1,4 @@
-use core::slice;
-use std::{hint::{self, unreachable_unchecked}, f32::consts::E};
+use std::hint;
 
 use super::{blockface::BlockFace, normal::Normal::{self, *}};
 
