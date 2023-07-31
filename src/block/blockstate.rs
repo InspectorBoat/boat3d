@@ -2,22 +2,28 @@ use super::{blockmodel::BlockModel, block::Block, blockface::{BlockFace, HalfFac
 use crate::block::normal::Normal::*;
 
 #[derive(Clone, Debug)]
+#[repr(C)]
 pub struct BlockState {
     pub model: BlockModel,
-    pub block: Block,
 }
 
-pub const BLOCKS: [BlockState; 4] = [
+pub static BLOCKS: [BlockState; 5] = [
+    // air
     BlockState {
-        block: Block { name: "air" },
         model: BlockModel::none(),
     },
+    // full
     BlockState {
-        block: Block { name: "bricks" },
-        model: BlockModel::full(1).set_texture(North, 1).set_texture(West, 2).set_texture(Down, 3).set_texture(South, 4).set_texture(East, 5).set_texture(Up, 6),
+        model: BlockModel::full(1)
+            .set_texture(North, 1)
+            .set_texture(West, 2)
+            .set_texture(Down, 3)
+            .set_texture(South, 4)
+            .set_texture(East, 5)
+            .set_texture(Up, 6),
     },
+    // stair
     BlockState {
-        block: Block { name: "brick_stairs" },
         model: BlockModel {
             south: BlockFace::half(South, Bottom, 2),
             west: BlockFace::half(West, Bottom, 2),
@@ -31,14 +37,32 @@ pub const BLOCKS: [BlockState; 4] = [
             extra_north: &[],
             extra_east: &[BlockFace::quarter(East, TopRight, 2)],
             extra_up: &[BlockFace::half(Up, Left, 2).set_depth(7)],
+            transparent_south: &[],
+            transparent_west: &[],
+            transparent_down: &[],
+            transparent_north: &[],
+            transparent_east: &[],
+            transparent_up: &[],
             unaligned: &[],
         },
     },
+    // tall grass
     BlockState {
-        block: Block { name: "tall_grass" },
         model: BlockModel {
             unaligned: &[BlockFace::full(Diagonal, 4), BlockFace::full(OtherDiagonal, 4)],
             ..BlockModel::none()
         },
     },
+    // glass
+    BlockState {
+        model: BlockModel {
+            transparent_south: &[BlockFace::full(South, 1)],
+            transparent_west: &[BlockFace::full(West, 1)],
+            transparent_down: &[BlockFace::full(Down, 1)],
+            transparent_north: &[BlockFace::full(North, 1)],
+            transparent_east: &[BlockFace::full(East, 1)],
+            transparent_up: &[BlockFace::full(Up, 1)],
+            ..BlockModel::none()
+        },
+    }
 ];

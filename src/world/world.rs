@@ -111,7 +111,7 @@ impl World {
     }
 
     pub fn add_section(&mut self, section: Box<Section>) { unsafe {
-        let (x, y, z) = (section.pos.x, section.pos.y, section.pos.z);
+        let (x, y, z) = (section.section_pos.x, section.section_pos.y, section.section_pos.z);
 
         let section = Box::<Section>::into_raw(section) as usize as *mut Section;
         if let Some(south) = self.sections.get_mut(&Vector3 { x, y, z: z - 1 }) {
@@ -140,12 +140,12 @@ impl World {
         }
 
         let section = Box::from_raw(*(&raw const section as *mut *mut Section));
-        self.sections.insert(section.pos, section);
+        self.sections.insert(section.section_pos, section);
     } }
 
-    pub fn remove_section(&mut self, pos: Vector3<i32>) { unsafe {
-        if let Some(mut section) = self.sections.remove(&pos) {
-            println!("removing section at {} {} {}", pos.x, pos.y, pos.z);
+    pub fn remove_section(&mut self, section_pos: Vector3<i32>) { unsafe {
+        if let Some(mut section) = self.sections.remove(&section_pos) {
+            println!("removing section at {} {} {}", section_pos.x, section_pos.y, section_pos.z);
             if let Some(mut south) = section.neighbors.south {
                 south.as_mut().neighbors.north = None;
             }
@@ -167,6 +167,10 @@ impl World {
             self.geometry_buffer_allocator.free(section.geometry_page.take());
             self.light_buffer_allocator.free(section.light_page.take());
         }
+    } }
+
+    pub fn set_block(&mut self, world_pos: Vector3<i32>) { unsafe {
+        // let section_pos
     } }
 
     pub fn render(&self) { unsafe {
@@ -202,16 +206,6 @@ impl World {
         if !self.camera.frustum_frozen {
             self.camera.frustum_pos = self.camera.camera_pos;
             self.camera.frustum_rot = self.camera.camera_rot;
-        }
-    }
-
-    pub fn iter(&mut self) {
-        for x in 0..32 {
-            for y in 0..32 {
-                for z in 0..32 {
-                    hint::black_box(self.sections.get(&Vector3 { x: x, y: y, z: z }).unwrap());
-                }
-            }
         }
     }
 

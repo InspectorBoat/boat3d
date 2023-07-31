@@ -40,11 +40,6 @@ fn main() { unsafe {
     let mut world = World::new();
     
     world.renderer.init(&status);
-    // world.make_block_texture();
-    // world.make_framebuffer(&status);
-    // world.make_index_buffer();
-    // world.make_shader_programs();
-    // world.make_screen_buffer();
     world.generate();
     world.mesh_all();
     
@@ -64,18 +59,18 @@ fn main() { unsafe {
 
         gl::PolygonMode(gl::FRONT_AND_BACK, status.fill_mode);
         
-        while world.renderer.fences.len() > 9 {
-            if let Some(fence) = world.renderer.fences.pop() {
-                gl::ClientWaitSync(fence, gl::SYNC_FLUSH_COMMANDS_BIT, u64::MAX);
-                gl::DeleteSync(fence);
-            }
-        }
+        // while world.renderer.fences.len() > 9 {
+        //     if let Some(fence) = world.renderer.fences.pop() {
+        //         gl::ClientWaitSync(fence, gl::SYNC_FLUSH_COMMANDS_BIT, u64::MAX);
+        //         gl::DeleteSync(fence);
+        //     }
+        // }
 
         world.render();
         
-        let fence = gl::FenceSync(gl::SYNC_GPU_COMMANDS_COMPLETE, 0);
-        if fence == 0 as GLsync { panic!(); }
-        world.renderer.fences.push(fence);
+        // let fence = gl::FenceSync(gl::SYNC_GPU_COMMANDS_COMPLETE, 0);
+        // if fence == 0 as GLsync { panic!(); }
+        // world.renderer.fences.push(fence);
         
         if frames % 100 == 0 {
             frames = 1;

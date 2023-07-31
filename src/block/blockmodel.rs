@@ -17,6 +17,12 @@ pub struct BlockModel {
     pub extra_north: &'static [BlockFace],
     pub extra_east: &'static [BlockFace],
     pub extra_up: &'static [BlockFace],
+    pub transparent_south: &'static [BlockFace],
+    pub transparent_west: &'static [BlockFace],
+    pub transparent_down: &'static [BlockFace],
+    pub transparent_north: &'static [BlockFace],
+    pub transparent_east: &'static [BlockFace],
+    pub transparent_up: &'static [BlockFace],
     pub unaligned: &'static [BlockFace],
 }
 
@@ -47,6 +53,12 @@ impl BlockModel {
             extra_north: &[],
             extra_east: &[],
             extra_up: &[],
+            transparent_south: &[],
+            transparent_west: &[],
+            transparent_down: &[],
+            transparent_north: &[],
+            transparent_east: &[],
+            transparent_up: &[],
             unaligned: &[],
         }
     }
@@ -90,6 +102,12 @@ impl BlockModel {
             extra_north: &[],
             extra_east: &[],
             extra_up: &[],
+            transparent_south: &[],
+            transparent_west: &[],
+            transparent_down: &[],
+            transparent_north: &[],
+            transparent_east: &[],
+            transparent_up: &[],
             unaligned: &[]
         };
     }

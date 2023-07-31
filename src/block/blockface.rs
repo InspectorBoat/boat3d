@@ -28,7 +28,7 @@ pub struct BlockFace {
 }
 
 impl BlockFace {
-    pub fn should_cull(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+    pub fn should_cull_pair(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX) }
 
         let a = Simd::from_array([a.lef, a.bot, a.rig, a.top]);

@@ -30,7 +30,7 @@ impl BufferAllocator {
             used: 0
         };
     } }
-    pub fn alloc(&mut self, size: usize) -> Option<BufferSegment<{Length}>> { unsafe {
+    pub fn alloc(&mut self, size: usize) -> Option<BufferSegment> { unsafe {
         let size = size as u32;
         if let Some(free_segment) = self.free_segments_by_length.iter().find(|segment| segment.length.get() >= size) {
             self.used += size;
@@ -54,7 +54,7 @@ impl BufferAllocator {
         }
         return None;
     } }
-    pub fn free(&mut self, segment: Option<BufferSegment<{Length}>>) { unsafe {
+    pub fn free(&mut self, segment: Option<BufferSegment>) { unsafe {
         if let Some(mut segment) = segment {
             self.used -= segment.length.get();
             let prev_segment_index: usize;
@@ -80,10 +80,10 @@ impl BufferAllocator {
                 }
             }
             self.free_segments_by_length.insert(segment.into());
-            self.free_segments_by_offset.insert(segment);
+            self.free_segments_by_offset.insert(segment.into());
         }
     } }
-    pub fn upload<T>(&mut self, segment: &BufferSegment<{Length}>, data: &[T], length: usize) { unsafe {
+    pub fn upload<T>(&mut self, segment: &BufferSegment, data: &[T], length: usize) { unsafe {
         if length > segment.length.get() as usize {
             panic!("exceeded allocation size");
         }
@@ -93,7 +93,7 @@ impl BufferAllocator {
         // self.buffer.upload_slice(data, (page.start * P) as isize, length);
     } }
 
-    pub fn upload_offset<T>(&mut self, segment: &BufferSegment<{Length}>, data: &[T], length: usize, offset: usize) { unsafe {
+    pub fn upload_offset<T>(&mut self, segment: &BufferSegment, data: &[T], length: usize, offset: usize) { unsafe {
         if length + offset > segment.length.get() as usize {
             panic!("exceeded allocation size");
         }
@@ -105,7 +105,7 @@ impl BufferAllocator {
 }
 
 #[derive(PartialEq, PartialOrd, Eq, Clone, Copy, Debug)]
-pub struct BufferSegment<const S: SortType> {
+pub struct BufferSegment<const S: SortType = Unsorted> {
     pub offset: u32,
     pub length: NonZeroU32
 }
@@ -115,11 +115,32 @@ impl From<BufferSegment<{Offset}>> for BufferSegment<{Length}> {
         return mem::transmute(value);
     } }
 }
+impl From<BufferSegment<{Unsorted}>> for BufferSegment<{Length}> {
+    fn from(value: BufferSegment<{Unsorted}>) -> Self { unsafe {
+        return mem::transmute(value);
+    } }
+}
 impl From<BufferSegment<{Length}>> for BufferSegment<{Offset}> {
     fn from(value: BufferSegment<{Length}>) -> Self { unsafe {
         return mem::transmute(value);
     } }
 }
+impl From<BufferSegment<{Unsorted}>> for BufferSegment<{Offset}> {
+    fn from(value: BufferSegment<{Unsorted}>) -> Self { unsafe {
+        return mem::transmute(value);
+    } }
+}
+impl From<BufferSegment<{Length}>> for BufferSegment<{Unsorted}> {
+    fn from(value: BufferSegment<{Length}>) -> Self { unsafe {
+        return mem::transmute(value);
+    } }
+}
+impl From<BufferSegment<{Offset}>> for BufferSegment<{Unsorted}> {
+    fn from(value: BufferSegment<{Offset}>) -> Self { unsafe {
+        return mem::transmute(value);
+    } }
+}
+
 
 impl Ord for BufferSegment<{Offset}> {
     fn cmp(&self, other: &BufferSegment<{Offset}>) -> Ordering {
@@ -139,6 +160,7 @@ impl Ord for BufferSegment<{Length}> {
 pub enum SortType {
     Length,
     Offset,
+    Unsorted
 }
 /*
 GLusize capacityInBytes; // the number of bytes to allocate for the staging buffer
