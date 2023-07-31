@@ -1,9 +1,7 @@
 {
     // "rust-analyzer.linkedProjects": [
-
     //     "C:\\Users\\inspe\\Documents\\Code\\Boat3d\\rust\\Cargo.toml"
     // ],
-    "rust-analyzer.rustc.source": "C:\\Users\\inspe\\Documents\\Code\\Boat3d\\rust\\Cargo.toml",
     "rust-analyzer.lens.implementations.enable": false,
     "rust-analyzer.inlayHints.typeHints.enable": false,
     "rust-analyzer.inlayHints.parameterHints.enable": false,
@@ -25,4 +23,5 @@
     "rust-analyzer.diagnostics.disabled": [
         "redundant_field_names"
     ],
+    "rust-analyzer.check.noDefaultFeatures": null,
 }

@@ -235,8 +235,8 @@ impl Section {
                     0
                 }
             };
-            *light = rand::random::<u8>() & 0xf;
-            // *light = (*noise_val * 64.0 - 32.0) as u8;
+            // *light = rand::random::<u8>() & 0xf;
+            *light = (*noise_val * 64.0 - 32.0) as u8 & 0xf;
         } } }
     } }
     pub fn make_terrain_alt(&mut self) {

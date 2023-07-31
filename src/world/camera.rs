@@ -18,7 +18,7 @@ pub struct Camera {
     pub frustum_frozen: bool,
 }
 impl Camera {
-    pub fn get_matrix(&self) -> Matrix4<f32> {
+    pub fn get_matrix(&self) -> [f32; 16] {
         let perspective = Matrix4::from(PerspectiveFov {
             fovy: Rad(PI / 2.0),
             aspect: self.ratio,
@@ -30,7 +30,7 @@ impl Camera {
             * Matrix4::from_angle_y(Rad(- self.camera_rot.yaw))
             * Matrix4::from_translation(Vector3 { x: -self.camera_pos.x, y: self.camera_pos.y, z: -self.camera_pos.z })
             * Matrix4::from_nonuniform_scale(1.0, -1.0, 1.0);
-        return perspective * modelview;
+        return *(perspective * modelview).as_ref();
     }
 
     pub fn get_frustum(&self) -> FrustumCuller<f32> {

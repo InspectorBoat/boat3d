@@ -175,8 +175,8 @@ impl WorldRenderer {
     
             gl::Enable(gl::DEPTH_TEST);
     
-            let camera_matrix: [f32; 16] = *(world.camera.get_matrix().as_ref());
-            gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_ptr());
+            let camera_matrix: [f32; 16] = world.camera.get_matrix();
+            gl::UniformMatrix4fv(0, 1, gl::FALSE, &raw const camera_matrix as *const f32);
             
             let frustum = world.camera.get_frustum();
             const ELEMENT_INDICES_PER_QUAD: i32 = 5;
