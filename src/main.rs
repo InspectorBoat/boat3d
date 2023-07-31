@@ -4,6 +4,7 @@
 #![allow(non_snake_case)]
 #![allow(unused_parens)]
 #![allow(unused_unsafe)]
+#![allow(unused_imports)]
 #![feature(slice_as_chunks)]
 #![feature(pointer_byte_offsets)]
 #![feature(adt_const_params)]
@@ -38,13 +39,14 @@ fn main() { unsafe {
 
     let mut world = World::new();
     
+    world.renderer.init(&status);
+    // world.make_block_texture();
+    // world.make_framebuffer(&status);
+    // world.make_index_buffer();
+    // world.make_shader_programs();
+    // world.make_screen_buffer();
     world.generate();
     world.mesh_all();
-    world.make_block_texture();
-    world.make_framebuffer(&status);
-    world.make_index_buffer();
-    world.make_shader_programs();
-    world.make_screen_buffer();
     
     world.geometry_pool.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
     world.light_pool.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
@@ -58,13 +60,12 @@ fn main() { unsafe {
         glfw.poll_events();
         glfw::flush_messages(&events).for_each(|(_, event)| handle_window_event(&mut window, &mut world, event, &mut keys, &mut status));
         
-        
         world.update(&mut keys);
 
         gl::PolygonMode(gl::FRONT_AND_BACK, status.fill_mode);
         
-        while world.fences.len() > 9 {
-            if let Some(fence) = world.fences.pop() {
+        while world.renderer.fences.len() > 9 {
+            if let Some(fence) = world.renderer.fences.pop() {
                 gl::ClientWaitSync(fence, gl::SYNC_FLUSH_COMMANDS_BIT, u64::MAX);
                 gl::DeleteSync(fence);
             }
@@ -74,11 +75,11 @@ fn main() { unsafe {
         
         let fence = gl::FenceSync(gl::SYNC_GPU_COMMANDS_COMPLETE, 0);
         if fence == 0 as GLsync { panic!(); }
-        world.fences.push(fence);
+        world.renderer.fences.push(fence);
         
         if frames % 100 == 0 {
             frames = 1;
-            println!("fps: {}", 1000.0 / (start.elapsed().as_millis() as f64 / 100.0));
+            println!("fps: {}", 1_000_000_000.0 / (start.elapsed().as_nanos() as f64 / 100.0));
             start = std::time::Instant::now();
         } else {
             frames += 1;
@@ -93,7 +94,7 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
             gl::Viewport(0, 0, width, height);
             (status.width, status.height) = (width, height);
             world.camera.ratio = width as f32 / height as f32;
-            world.make_framebuffer(status);
+            world.renderer.make_framebuffer(status);
         }
         glfw::WindowEvent::CursorPos(x, y) => {
             if !status.mouse_captured { return }

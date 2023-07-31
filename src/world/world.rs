@@ -1,3 +1,5 @@
+use std::collections::hash_map::RandomState;
+use std::hint;
 use std::{collections::HashMap, mem, os::raw::c_void, ptr::NonNull, time};
 use crate::gl_util::{buffer::Buffer, buffer_allocator::BufferAllocator, framebuffer::FrameBuffer, gl_helper::WindowStatus, program::Program, renderbuffer::RenderBuffer, shader::Shader, texture::Texture};
 use crate::render::byte_buffer::StagingBuffer;
@@ -8,6 +10,7 @@ use gl::types::GLsync;
 use glfw::Key;
 use simdnoise::NoiseBuilder;
 
+use super::section;
 use super::{section::Section, camera::Camera};
 #[derive(Debug)]
 pub struct World {
@@ -17,18 +20,6 @@ pub struct World {
     pub light_pool: BufferAllocator,
     pub geometry_staging_buffer: StagingBuffer,
     pub light_staging_buffer: StagingBuffer,
-    pub framebuffer: Option<FrameBuffer>,
-    pub texture_attachment: Option<Texture>,
-    pub renderbuffer_attachment: Option<RenderBuffer>,
-    pub index_buffer: Option<Buffer>,
-    pub geometry_program: Option<Program>,
-    pub post_program: Option<Program>,
-    pub screen_buffer: Option<Buffer>,
-    pub block_texture: Option<Texture>,
-    pub counts: Vec<i32>,
-    pub indices: Vec<*const c_void>,
-    pub base_vertices: Vec<i32>,
-    pub fences: Vec<GLsync>,
     pub renderer: WorldRenderer
 }
 
@@ -41,18 +32,6 @@ impl World {
             light_pool: BufferAllocator::new(1073741824),
             geometry_staging_buffer: StagingBuffer::new(),
             light_staging_buffer: StagingBuffer::new(),
-            framebuffer: None,
-            texture_attachment: None,
-            renderbuffer_attachment: None,
-            index_buffer: None,
-            geometry_program: None,
-            post_program: None,
-            screen_buffer: None,
-            block_texture: None,
-            counts: Vec::new(),
-            indices: Vec::new(),
-            base_vertices: Vec::new(),
-            fences: Vec::new(),
             renderer: WorldRenderer::new(),
         };
 
@@ -61,120 +40,6 @@ impl World {
         let sky_data: [(u32, u32, u32, u32); 1024 / 4 / 4] = [(15, 15, 15, 15); 1024 / 4 / 4];
         world.light_pool.upload_offset(&sky_segment.unwrap(), &sky_data, 1024, 0);
         return world;
-    } }
-
-    pub fn make_block_texture(&mut self) { unsafe {
-        gl::ActiveTexture(gl::TEXTURE0);
-        let block_texture = Texture::create();
-        block_texture.bind(gl::TEXTURE_2D_ARRAY);
-        let mut image: [u8; 16 * 16 * 4 * 64] = [0; 16 * 16 * 4 * 64].map(|_| rand::random::<u8>() & 127);
-        image[0] = 127;
-        image[1] = 127;
-        image[2] = 127;
-        image[3] = 0;
-
-        gl::TexImage3D(gl::TEXTURE_2D_ARRAY, 0, gl::RGBA as i32, 16, 16, 64, 0, gl::RGBA, gl::BYTE, &raw const image as *const c_void);
-        gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_WRAP_S, gl::REPEAT as i32);
-        gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_WRAP_T, gl::REPEAT as i32);
-        // set texture filtering parameters
-        gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
-        gl::TexParameteri(gl::TEXTURE_2D_ARRAY, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
-        self.block_texture = Some(block_texture);
-    } }
-    
-    pub fn make_framebuffer(&mut self, status: &WindowStatus) { unsafe {
-        if let Some(framebuffer) = self.framebuffer.take() {
-            framebuffer.kill();
-        }
-        if let Some(texture_attachment) = self.texture_attachment.take() {
-            texture_attachment.kill();
-        }
-        if let Some(renderbuffer_attachment) = self.renderbuffer_attachment.take() {
-            renderbuffer_attachment.kill();
-        }
-
-        let framebuffer = FrameBuffer::create();
-        framebuffer.bind(gl::FRAMEBUFFER);
-    
-        let texture_attachment = Texture::create();
-        gl::ActiveTexture(gl::TEXTURE0);
-        texture_attachment.bind(gl::TEXTURE_2D);
-        gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32UI as i32, status.width as i32, status.height as i32, 0, gl::RGBA_INTEGER, gl::INT, 0  as *const c_void);
-        // gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA32UI as i32, status.width as i32, status.height as i32, 0, gl::RGBA_INTEGER, gl::INT, ptr::null());
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
-        FrameBuffer::texture2d_attachment(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT0, gl::TEXTURE_2D, &texture_attachment, 0);
-    
-        let renderbuffer_attachment = RenderBuffer::create();
-        renderbuffer_attachment.bind(gl::RENDERBUFFER);
-        gl::RenderbufferStorage(gl::RENDERBUFFER, gl::DEPTH_COMPONENT32F, status.width as i32, status.height as i32);  
-        FrameBuffer::renderbuffer_attachment(gl::FRAMEBUFFER, gl::DEPTH_ATTACHMENT, gl::RENDERBUFFER, &renderbuffer_attachment);
-        
-        let attachments: [u32; 1] = [gl::COLOR_ATTACHMENT0];
-        gl::DrawBuffers(1, &raw const attachments as *const u32);
-
-        self.framebuffer = Some(framebuffer);
-        self.texture_attachment = Some(texture_attachment);
-        self.renderbuffer_attachment = Some(renderbuffer_attachment);
-    } }
-
-    pub fn make_index_buffer(&mut self) { unsafe {
-        gl::Enable(gl::PRIMITIVE_RESTART);
-        gl::PrimitiveRestartIndex(u32::MAX as u32);
-        let mut index_array = Vec::<u32>::with_capacity(1024 * 1024 / 4);
-        let mut j = 0;
-        for i in 0..(1024 * 1024 / 4) {
-            if i % 5 == 4 {
-                index_array.push(u32::MAX);
-            }
-            else {
-                index_array.push(j);
-                j += 1;
-            }
-        }
-        let index_buffer = Buffer::create();
-        index_buffer.bind_target(gl::ELEMENT_ARRAY_BUFFER);
-        index_buffer.storage(1024 * 1024, gl::DYNAMIC_STORAGE_BIT);
-        index_buffer.upload_slice(&index_array.as_slice(), 0, 1024 * 1024);
-        self.index_buffer = Some(index_buffer);    
-    } }
-
-    pub fn make_shader_programs(&mut self) { unsafe {
-        let geometry_program = Program::create(
-            Shader::create(gl::VERTEX_SHADER, include_str!("../shader/geometry.glsl.vert")),
-            Shader::create(gl::FRAGMENT_SHADER, include_str!("../shader/geometry.glsl.frag"))
-        );
-        let post_program = Program::create(
-            Shader::create(gl::VERTEX_SHADER, include_str!("../shader/post.glsl.vert")),
-            Shader::create(gl::FRAGMENT_SHADER, include_str!("../shader/post.glsl.frag"))
-        );
-        post_program.uniform1i(0, 0);
-        post_program.uniform1i(1, 1);
-        geometry_program.uniform1i(1, 1);
-    
-        self.geometry_program = Some(geometry_program);
-        self.post_program = Some(post_program);
-    } }
-
-    pub fn make_screen_buffer(&mut self) { unsafe {
-        let screen_vertices: [f32; 24] = [
-            -1.0,  1.0,  0.0, 1.0,
-            -1.0, -1.0,  0.0, 0.0,
-             1.0, -1.0,  1.0, 0.0,
-    
-            -1.0,  1.0,  0.0, 1.0,
-             1.0, -1.0,  1.0, 0.0,
-             1.0,  1.0,  1.0, 1.0,
-        ];
-    
-        let screen_buffer = Buffer::create();
-        screen_buffer.upload(&screen_vertices, mem::size_of::<[f32; 24]>() as isize, gl::STATIC_DRAW);
-        screen_buffer.bind_target(gl::ARRAY_BUFFER);
-        gl::EnableVertexAttribArray(0);
-        gl::VertexAttribPointer(0, 2, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, 0 as *const c_void);
-        gl::EnableVertexAttribArray(1);
-        gl::VertexAttribPointer(1, 2, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, (2 * mem::size_of::<f32>()) as *const c_void);
-        self.screen_buffer = Some(screen_buffer);
     } }
 
     pub fn generate(&mut self) { unsafe {
@@ -305,74 +170,8 @@ impl World {
         }
     } }
 
-    pub fn render(&mut self) { unsafe {
-        let framebuffer = self.framebuffer.as_ref().unwrap();
-
-        self.geometry_program.as_ref().unwrap().bind();
-        self.framebuffer.as_ref().unwrap().bind(gl::FRAMEBUFFER);
-    
-        gl::ActiveTexture(gl::TEXTURE1);
-        self.block_texture.as_ref().unwrap().bind(gl::TEXTURE_2D_ARRAY);
-
-        let clear_color: [u32; 4] = [0, 0, 0, 0];
-        gl::ClearNamedFramebufferuiv(framebuffer.id, gl::COLOR, 0, &raw const clear_color as *const u32);
-
-        gl::ClearNamedFramebufferfi(framebuffer.id, gl::DEPTH_STENCIL, 0, 1.0, 0);
-
-        gl::Enable(gl::DEPTH_TEST);
-
-        let camera_matrix: [f32; 16] = *(self.camera.get_matrix().as_ref());
-        gl::UniformMatrix4fv(0, 1, gl::FALSE, camera_matrix.as_ptr());
-    
-        let frustum = self.camera.get_frustum();
-        const ELEMENT_INDICES_PER_QUAD: i32 = 5;
-        const BYTES_PER_QUAD: i32 = 8;
-        const ELEMENTS_PER_QUAD: i32 = 4;
-        
-        // do chunked frustum culling
-        let mut drawnSections = 0;
-
-        for section in self.sections.values() {
-            // only render section if it has a geometry and light page
-            if let (Some(geometry_page), Some(light_page)) = (&section.geometry_page, &section.light_page) {
-                if frustum.test_sphere(section.get_bounding_sphere(&self.camera)) == Intersection::Outside { continue; }
-                let count = section.quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
-                let base_vertex = geometry_page.offset as i32 / BYTES_PER_QUAD * ELEMENTS_PER_QUAD;
-                self.counts.push(count);
-                self.indices.push(0 as *const c_void);
-                self.base_vertices.push(base_vertex);
-                drawnSections += 1;
-            }
-        }
-        if drawnSections >= 1 {
-            gl::MultiDrawElementsBaseVertex(
-                gl::TRIANGLE_STRIP,
-                self.counts.as_ptr(),
-                gl::UNSIGNED_INT,
-                self.indices.as_ptr(),
-                drawnSections as i32,
-                self.base_vertices.as_ptr()
-            );
-        }
-        
-        self.counts.set_len(0);
-        self.indices.set_len(0);
-        self.base_vertices.set_len(0);
-
-        self.post_program.as_ref().unwrap().bind();
-
-        gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
-        FrameBuffer::clear_bind(gl::FRAMEBUFFER);
-        gl::ClearColor(1.0, 1.0, 1.0, 1.0);
-        gl::Clear(gl::COLOR_BUFFER_BIT);
-        gl::Disable(gl::DEPTH_TEST);
-        
-        gl::ActiveTexture(gl::TEXTURE0);
-        self.texture_attachment.as_ref().unwrap().bind(gl::TEXTURE_2D);
-        gl::ActiveTexture(gl::TEXTURE1);
-        self.block_texture.as_ref().unwrap().bind(gl::TEXTURE_2D_ARRAY);
-        
-        gl::DrawArrays(gl::TRIANGLES, 0, 6);
+    pub fn render(&self) { unsafe {
+        self.renderer.render(self);
     } }
     
     pub fn update(&mut self, keys: &mut HashMap<Key, bool>) {
@@ -399,6 +198,20 @@ impl World {
                     self.camera.step(0.0, - speed as f64, 0.0);
                 }
                 _ => {}
+            }
+        }
+        if !self.camera.frustum_frozen {
+            self.camera.frustum_pos = self.camera.camera_pos;
+            self.camera.frustum_rot = self.camera.camera_rot;
+        }
+    }
+
+    pub fn iter(&mut self) {
+        for x in 0..32 {
+            for y in 0..32 {
+                for z in 0..32 {
+                    hint::black_box(self.sections.get(&Vector3 { x: x, y: y, z: z }).unwrap());
+                }
             }
         }
     }
