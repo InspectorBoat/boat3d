@@ -48,8 +48,8 @@ fn main() { unsafe {
     world.generate();
     world.mesh_all();
     
-    world.geometry_pool.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
-    world.light_pool.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
+    world.geometry_buffer_allocator.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
+    world.light_buffer_allocator.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
     
     glfw.set_swap_interval(glfw::SwapInterval::None);
 

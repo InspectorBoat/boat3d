@@ -16,8 +16,8 @@ use super::{section::Section, camera::Camera};
 pub struct World {
     pub sections: HashMap::<Vector3<i32>, Box::<Section>>,
     pub camera: Camera,
-    pub geometry_pool: BufferAllocator,
-    pub light_pool: BufferAllocator,
+    pub geometry_buffer_allocator: BufferAllocator,
+    pub light_buffer_allocator: BufferAllocator,
     pub geometry_staging_buffer: StagingBuffer,
     pub light_staging_buffer: StagingBuffer,
     pub renderer: WorldRenderer
@@ -28,17 +28,17 @@ impl World {
         let mut world = World {
             sections: HashMap::<Vector3<i32>, Box::<Section>>::new(),
             camera: Camera::new(),
-            geometry_pool: BufferAllocator::new(1073741824),
-            light_pool: BufferAllocator::new(1073741824),
+            geometry_buffer_allocator: BufferAllocator::new(1073741824),
+            light_buffer_allocator: BufferAllocator::new(1073741824),
             geometry_staging_buffer: StagingBuffer::new(),
             light_staging_buffer: StagingBuffer::new(),
             renderer: WorldRenderer::new(),
         };
 
         // reserve space for the sky
-        let sky_segment = world.light_pool.alloc(1024);
+        let sky_segment = world.light_buffer_allocator.alloc(1024);
         let sky_data: [(u32, u32, u32, u32); 1024 / 4 / 4] = [(15, 15, 15, 15); 1024 / 4 / 4];
-        world.light_pool.upload_offset(&sky_segment.unwrap(), &sky_data, 1024, 0);
+        world.light_buffer_allocator.upload_offset(&sky_segment.unwrap(), &sky_data, 1024, 0);
         return world;
     } }
 
@@ -67,8 +67,7 @@ impl World {
         let mut j = 0;
         let total = self.sections.len();
         for (i, section) in self.sections.values_mut().enumerate() {
-            section.generate_geometry_buffer(&mut self.geometry_staging_buffer, &mut self.geometry_pool);
-            section.generate_light_buffer(&mut self.geometry_staging_buffer, &mut self.geometry_pool, &mut self.light_staging_buffer, &mut self.light_pool);
+            section.mesh(&mut self.geometry_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
             exact_geometry_bytes += self.geometry_staging_buffer.idx;
             exact_light_bytes += self.light_staging_buffer.idx;
             self.geometry_staging_buffer.reset();
@@ -96,16 +95,16 @@ impl World {
         let cycles_per_pair = nanos_per_pair / 0.4;
 
         println!("[6/6 axes] [merged] {total_sections} sections | {elapsed}ms | {sections_per_sec} sections/s | {ms_per_section:.4}ms/section | {cycles_per_pair:.1} cycles/face pair | {total_quads} quads | {quads_per_section} quads/section");
-        let geometry_bytes_used = self.geometry_pool.used;
-        let light_bytes_used = self.light_pool.used;
+        let geometry_bytes_used = self.geometry_buffer_allocator.used;
+        let light_bytes_used = self.light_buffer_allocator.used;
         let total_megabytes_used = (geometry_bytes_used + light_bytes_used) / 1024 / 1024;
         println!("{geometry_bytes_used} geometry bytes | {light_bytes_used} light bytes | {total_megabytes_used} megabytes");
     } }
 
     pub fn mesh(&mut self, pos: Vector3<i32>) {
         if let Some(section) = self.sections.get_mut(&pos) {
-            section.generate_geometry_buffer(&mut self.geometry_staging_buffer, &mut self.geometry_pool);
-            section.generate_light_buffer(&mut self.geometry_staging_buffer, &mut self.geometry_pool, &mut self.light_staging_buffer, &mut self.light_pool);
+            section.mesh_geometry(&mut self.geometry_staging_buffer, &mut self.geometry_buffer_allocator);
+            section.mesh_light(&mut self.geometry_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
             self.geometry_staging_buffer.reset();
             self.light_staging_buffer.reset();
         }
@@ -165,8 +164,8 @@ impl World {
             if let Some(mut up) = section.neighbors.up {
                 up.as_mut().neighbors.down = None;
             }
-            self.geometry_pool.free(section.geometry_page.take());
-            self.light_pool.free(section.light_page.take());
+            self.geometry_buffer_allocator.free(section.geometry_page.take());
+            self.light_buffer_allocator.free(section.light_page.take());
         }
     } }
 

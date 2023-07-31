@@ -798,7 +798,7 @@ impl Section {
         }
     }
 
-    pub fn generate_geometry_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
+    pub fn mesh_geometry(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
         self.mesh_south_north(geometry_staging_buffer);
         self.mesh_west_east(geometry_staging_buffer);
         self.mesh_down_up(geometry_staging_buffer);
@@ -821,7 +821,7 @@ impl Section {
         }
     } }
 
-    pub fn generate_light_buffer(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) { unsafe {
+    pub fn mesh_light(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) { unsafe {
         const BYTES_PER_QUAD: usize = 8;
 
         // bytes reserved to index a light chunk for each quad
@@ -974,6 +974,11 @@ impl Section {
             }
         }
     } }
+
+    pub fn mesh(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) {
+        self.mesh_geometry(geometry_staging_buffer, geometry_buffer_allocator);
+        self.mesh_light(geometry_staging_buffer, geometry_buffer_allocator, light_staging_buffer, light_buffer_allocator);
+    }
 
     pub fn get_bounding_box(&self, camera: &Camera) -> BoundingBox<f32> {
         return BoundingBox {
