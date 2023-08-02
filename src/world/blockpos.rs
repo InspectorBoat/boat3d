@@ -3,7 +3,7 @@ use std::fmt::Debug;
 
 
 #[repr(transparent)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy)]
 pub struct BlockPos {
     pub index: usize
 }
@@ -65,10 +65,12 @@ impl From<BlockPos> for usize {
     }
 }
 
-impl Deref for BlockPos {
-    type Target = usize;
-
-    fn deref(&self) -> &usize {
-        return &self.index;
+impl Debug for BlockPos {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("BlockPos")
+            .field("x", &self.x())
+            .field("y", &self.y())
+            .field("z", &self.z())
+            .finish()
     }
 }

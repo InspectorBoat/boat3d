@@ -13,6 +13,7 @@ pub struct WorldRenderer {
     pub index_buffer: Option<Buffer>,
     pub geometry_program: Option<Program>,
     pub post_program: Option<Program>,
+    pub translucent_program: Option<Program>,
     pub screen_buffer: Option<Buffer>,
     pub block_texture: Option<Texture>,
     pub counts: UnsafeCell<Vec<i32>>,
@@ -30,6 +31,7 @@ impl WorldRenderer {
             index_buffer: None,
             geometry_program: None,
             post_program: None,
+            translucent_program: None,
             screen_buffer: None,
             block_texture: None,
             counts: UnsafeCell::new(Vec::new()),
@@ -130,12 +132,18 @@ impl WorldRenderer {
             Shader::create(gl::VERTEX_SHADER, include_str!("../shader/post.glsl.vert")),
             Shader::create(gl::FRAGMENT_SHADER, include_str!("../shader/post.glsl.frag"))
         );
+        let translucent_program = Program::create(
+            Shader::create(gl::VERTEX_SHADER, include_str!("../shader/translucent.glsl.vert")),
+            Shader::create(gl::FRAGMENT_SHADER, include_str!("../shader/translucent.glsl.frag"))
+        );
         post_program.uniform1i(0, 0);
         post_program.uniform1i(1, 1);
         geometry_program.uniform1i(1, 1);
+        translucent_program.uniform1i(1, 1);
     
         self.geometry_program = Some(geometry_program);
         self.post_program = Some(post_program);
+        self.translucent_program = Some(translucent_program);
     } }
 
     pub fn make_screen_buffer(&mut self) { unsafe {
@@ -159,8 +167,17 @@ impl WorldRenderer {
         self.screen_buffer = Some(screen_buffer);
     } }
 
+    pub fn pre_render(&mut self) { unsafe {
+        while self.fences.len() > 9 {
+            if let Some(fence) = self.fences.pop() {
+                gl::ClientWaitSync(fence, gl::SYNC_FLUSH_COMMANDS_BIT, u64::MAX);
+                gl::DeleteSync(fence);
+            }
+        }
+    } }
+
     pub fn render(&self, world: &World) { unsafe {
-        if let (Some(framebuffer), Some(geometry_program), Some(post_program), Some(block_texture), Some(texture_attachment)) = (&self.framebuffer, &self.geometry_program, &self.post_program, &self.block_texture, &self.texture_attachment) {
+        if let (Some(framebuffer), Some(geometry_program), Some(post_program), Some(translucent_program), Some(block_texture), Some(texture_attachment)) = (&self.framebuffer, &self.geometry_program, &self.post_program, &self.translucent_program, &self.block_texture, &self.texture_attachment) {
             geometry_program.bind();
             framebuffer.bind(gl::FRAMEBUFFER);
         
@@ -184,7 +201,10 @@ impl WorldRenderer {
             
             // do chunked frustum culling
             let mut drawnSections = 0;
-    
+            (*self.counts.get()).set_len(0);
+            (*self.indices.get()).set_len(0);
+            (*self.base_vertices.get()).set_len(0);
+
             for section in world.sections.values() {
                 // only render section if it has a geometry and light page
                 if let (Some(geometry_page), Some(light_page)) = (&section.geometry_page, &section.light_page) {
@@ -197,35 +217,56 @@ impl WorldRenderer {
                     drawnSections += 1;
                 }
             }
-            if drawnSections >= 1 {
-                gl::MultiDrawElementsBaseVertex(
-                    gl::TRIANGLE_STRIP,
-                    (*self.counts.get()).as_ptr(),
-                    gl::UNSIGNED_INT,
-                    (*self.indices.get()).as_ptr(),
-                    drawnSections as i32,
-                    (*self.base_vertices.get()).as_ptr()
-                );
-            }
             
-            (*self.counts.get()).set_len(0);
-            (*self.indices.get()).set_len(0);
-            (*self.base_vertices.get()).set_len(0);
+            // gl::MultiDrawElementsBaseVertex(
+            //     gl::TRIANGLE_STRIP,
+            //     (*self.counts.get()).as_ptr(),
+            //     gl::UNSIGNED_INT,
+            //     (*self.indices.get()).as_ptr(),
+            //     drawnSections as i32,
+            //     (*self.base_vertices.get()).as_ptr()
+            // );
+
     
             post_program.bind();
-    
+
             gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
             FrameBuffer::clear_bind(gl::FRAMEBUFFER);
+
             gl::ClearColor(1.0, 1.0, 1.0, 1.0);
-            gl::Clear(gl::COLOR_BUFFER_BIT);
-            gl::Disable(gl::DEPTH_TEST);
+            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
             
             gl::ActiveTexture(gl::TEXTURE0);
             texture_attachment.bind(gl::TEXTURE_2D);
             gl::ActiveTexture(gl::TEXTURE1);
             block_texture.bind(gl::TEXTURE_2D_ARRAY);
+
+            // gl::DrawArrays(gl::TRIANGLES, 0, 6);  
+
+            gl::Enable(gl::BLEND);
+            gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
             
-            gl::DrawArrays(gl::TRIANGLES, 0, 6);    
+            translucent_program.bind();
+
+            gl::UniformMatrix4fv(0, 1, gl::FALSE, &raw const camera_matrix as *const f32);
+
+            gl::ActiveTexture(gl::TEXTURE1);
+            block_texture.bind(gl::TEXTURE_2D_ARRAY);
+
+            gl::MultiDrawElementsBaseVertex(
+                gl::TRIANGLE_STRIP,
+                (*self.counts.get()).as_ptr(),
+                gl::UNSIGNED_INT,
+                (*self.indices.get()).as_ptr(),
+                drawnSections as i32,
+                (*self.base_vertices.get()).as_ptr()
+            );
         }
-    }
-} }
+    } }
+
+    pub fn post_render(&mut self) { unsafe {
+        let fence = gl::FenceSync(gl::SYNC_GPU_COMMANDS_COMPLETE, 0);
+        if fence == 0 as GLsync { panic!(); }
+        self.fences.push(fence);
+    } } 
+}

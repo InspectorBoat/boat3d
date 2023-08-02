@@ -1,7 +1,6 @@
 #version 450
 
 layout(location = 0) out vec4 framebuffer;
-layout(location = 1) out vec4 unused;
 layout(location = 1) uniform sampler2DArray block_texture;
 
 // texture pos, texture id, quad width, light index f32 * 2 + u16 + u16 + u32

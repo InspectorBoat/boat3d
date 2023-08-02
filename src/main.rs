@@ -14,7 +14,7 @@
 #![feature(int_roundings)]
 #![feature(portable_simd)]
 #![feature(slice_from_ptr_range)]
-
+#![feature(let_chains)]
 
 mod block;
 mod world;
@@ -23,6 +23,7 @@ mod render;
 
 use std::collections::HashMap;
 use std::env;
+use cgmath::Vector3;
 use gl::types::GLsync;
 use glfw::{Context, Window, Action, Key};
 use gl_util::gl_helper::*;
@@ -59,18 +60,11 @@ fn main() { unsafe {
 
         gl::PolygonMode(gl::FRONT_AND_BACK, status.fill_mode);
         
-        // while world.renderer.fences.len() > 9 {
-        //     if let Some(fence) = world.renderer.fences.pop() {
-        //         gl::ClientWaitSync(fence, gl::SYNC_FLUSH_COMMANDS_BIT, u64::MAX);
-        //         gl::DeleteSync(fence);
-        //     }
-        // }
+        // world.renderer.pre_render();
 
         world.render();
         
-        // let fence = gl::FenceSync(gl::SYNC_GPU_COMMANDS_COMPLETE, 0);
-        // if fence == 0 as GLsync { panic!(); }
-        // world.renderer.fences.push(fence);
+        // world.renderer.post_render();
         
         if frames % 100 == 0 {
             frames = 1;
@@ -146,12 +140,3 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
         _ => {}
     }
 } }
-
-
-fn summer_69(arr: &[usize]) {
-    let total = 0;
-    let should_add = false;
-    for num in arr {
-        if should_add {}
-    }
-}

@@ -10,6 +10,7 @@ use gl::types::GLsync;
 use glfw::Key;
 use simdnoise::NoiseBuilder;
 
+use super::blockpos::BlockPos;
 use super::section;
 use super::{section::Section, camera::Camera};
 #[derive(Debug)]
@@ -48,9 +49,9 @@ impl World {
             for y in 0..World::MAX_SECTION_Y {
                 for z in 0..World::MAX_SECTION_Z {
                     let mut section = Box::<Section>::new_zeroed().assume_init();
-                    section.set_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
-                    section.make_terrain(&noise);
-                    // section.make_terrain_alt();
+                    section.set_chunk_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
+                    // section.make_terrain(&noise);
+                    section.make_terrain_alt();
                     self.add_section(section);
                 }
             }
@@ -101,8 +102,8 @@ impl World {
         println!("{geometry_bytes_used} geometry bytes | {light_bytes_used} light bytes | {total_megabytes_used} megabytes");
     } }
 
-    pub fn mesh(&mut self, pos: Vector3<i32>) {
-        if let Some(section) = self.sections.get_mut(&pos) {
+    pub fn mesh(&mut self, section_pos: Vector3<i32>) {
+        if let Some(section) = self.sections.get_mut(&section_pos) {
             section.mesh_geometry(&mut self.geometry_staging_buffer, &mut self.geometry_buffer_allocator);
             section.mesh_light(&mut self.geometry_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
             self.geometry_staging_buffer.reset();
@@ -169,14 +170,23 @@ impl World {
         }
     } }
 
-    pub fn set_block(&mut self, world_pos: Vector3<i32>) { unsafe {
-        // let section_pos
+    pub fn set_block(&mut self, world_pos: Vector3<i32>, block_id: u16) { unsafe {
+        let section_pos = Vector3 {
+            x: world_pos.x / 16,
+            y: world_pos.y / 16,
+            z: world_pos.z / 16,
+        };
+        let section = self.sections.get_mut(&section_pos);
+        if let Some(section) = section {
+            let block_pos = BlockPos::new(world_pos.x & 15, world_pos.y & 15, world_pos.z & 15);
+            section.set_block(block_pos, block_id)
+        }
     } }
 
     pub fn render(&self) { unsafe {
         self.renderer.render(self);
     } }
-    
+
     pub fn update(&mut self, keys: &mut HashMap<Key, bool>) {
         let speed = 5.0 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
         for (key, pressed) in keys.iter() {
@@ -209,7 +219,7 @@ impl World {
         }
     }
 
-    pub const MAX_SECTION_X: usize = 32;
-    pub const MAX_SECTION_Y: usize = 32;
-    pub const MAX_SECTION_Z: usize = 32;
+    pub const MAX_SECTION_X: usize = 1;
+    pub const MAX_SECTION_Y: usize = 1;
+    pub const MAX_SECTION_Z: usize = 1;
 }

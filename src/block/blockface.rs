@@ -1,4 +1,4 @@
-use std::{simd::{Simd, SimdPartialOrd}, hint::unreachable_unchecked};
+use std::{simd::{Simd, SimdPartialOrd}, hint::{unreachable_unchecked, self}};
 use super::normal::Normal;
 use Normal::*;
 use QuarterFaceType::*;
@@ -40,6 +40,22 @@ impl BlockFace {
         return (cull_a, cull_b);
     }
     
+    pub fn culled_by<const N: Normal>(&self, b: &BlockFace) -> bool { unsafe {
+        match N {
+            South | West | Down => {
+                if self.dep != 0 || b.dep != 15 { return false; }
+            },
+            North | East | Up => {
+                if self.dep != 15 || b.dep != 0 { return false; }
+            }
+            _ => { hint::unreachable_unchecked(); }
+        }
+        let a = Simd::from_array([self.lef, self.bot, self.rig, self.top]);
+        let b = Simd::from_array([b.lef, b.bot, b.rig, b.top]);
+
+        return a.simd_ge(b).all();
+    } }
+
     pub fn as_u64(&self) -> u64 { unsafe {
         return *(&raw const *self as *const u64);
     } }
