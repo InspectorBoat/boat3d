@@ -884,9 +884,10 @@ impl Section {
 
     pub fn mesh_geometry(&mut self, solid_staging_buffer: &mut StagingBuffer, translucent_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
         self.mesh_translucent(translucent_staging_buffer);
-
         translucent_staging_buffer.format_quads();
         self.translucent_quad_count = translucent_staging_buffer.idx as u32 / 8;
+        self.translucent_segment = geometry_buffer_allocator.alloc(translucent_staging_buffer.idx + 4 * mem::size_of::<u32>());
+        println!("{} {}", translucent_staging_buffer.idx, self.translucent_segment.unwrap().length.get());
 
         self.mesh_south_north(solid_staging_buffer);
         self.mesh_west_east(solid_staging_buffer);
@@ -895,9 +896,7 @@ impl Section {
 
         solid_staging_buffer.format_quads();
         self.solid_quad_count = solid_staging_buffer.idx as u32 / 8;
-        
         self.solid_segment = geometry_buffer_allocator.alloc(solid_staging_buffer.idx + 4 * mem::size_of::<u32>());
-        self.translucent_segment = geometry_buffer_allocator.alloc(translucent_staging_buffer.idx + 4 * mem::size_of::<u32>());
     } }
 
     pub fn mesh_light(&mut self, solid_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) { unsafe {
@@ -1060,11 +1059,10 @@ impl Section {
 
             light_buffer_allocator.upload(light_segment, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.idx);
         }
-        if let (Some(translucent_segment)) = (&self.solid_segment) {
+        if let (Some(translucent_segment)) = (&self.translucent_segment) {
             geometry_buffer_allocator.upload_offset(translucent_segment, &[self.section_pos.x, self.section_pos.y, self.section_pos.z], 3 * mem::size_of::<u32>(), 0);
-            geometry_buffer_allocator.upload_offset(translucent_segment, &translucent_staging_buffer.buffer.0.as_slice(), solid_staging_buffer.idx, 4 * mem::size_of::<u32>());
+            geometry_buffer_allocator.upload_offset(translucent_segment, &translucent_staging_buffer.buffer.0.as_slice(), translucent_staging_buffer.idx, 4 * mem::size_of::<u32>());
             geometry_buffer_allocator.upload_offset(translucent_segment, &[0], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
-            println!("{} {:?}", translucent_segment.length.get(), geometry_buffer_allocator.device_buffer.get_sub_data::<u8>(translucent_segment.offset as isize, translucent_segment.length.get() as isize));
         }
         solid_staging_buffer.reset();
         light_staging_buffer.reset();
