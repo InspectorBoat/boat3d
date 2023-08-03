@@ -16,9 +16,11 @@ pub struct WorldRenderer {
     pub translucent_program: Option<Program>,
     pub screen_buffer: Option<Buffer>,
     pub block_texture: Option<Texture>,
-    pub counts: UnsafeCell<Vec<i32>>,
     pub indices: UnsafeCell<Vec<*const c_void>>,
-    pub base_vertices: UnsafeCell<Vec<i32>>,
+    pub solid_counts: UnsafeCell<Vec<i32>>,
+    pub solid_base_vertices: UnsafeCell<Vec<i32>>,
+    pub translucent_counts: UnsafeCell<Vec<i32>>,
+    pub translucent_base_vertices: UnsafeCell<Vec<i32>>,
     pub fences: Vec<GLsync>,
 }
 
@@ -34,9 +36,11 @@ impl WorldRenderer {
             translucent_program: None,
             screen_buffer: None,
             block_texture: None,
-            counts: UnsafeCell::new(Vec::new()),
+            solid_counts: UnsafeCell::new(Vec::new()),
             indices: UnsafeCell::new(Vec::new()),
-            base_vertices: UnsafeCell::new(Vec::new()),
+            translucent_counts: UnsafeCell::new(Vec::new()),
+            translucent_base_vertices: UnsafeCell::new(Vec::new()),
+            solid_base_vertices: UnsafeCell::new(Vec::new()),
             fences: Vec::new(),
         };
     }
@@ -178,6 +182,8 @@ impl WorldRenderer {
 
     pub fn render(&self, world: &World) { unsafe {
         if let (Some(framebuffer), Some(geometry_program), Some(post_program), Some(translucent_program), Some(block_texture), Some(texture_attachment)) = (&self.framebuffer, &self.geometry_program, &self.post_program, &self.translucent_program, &self.block_texture, &self.texture_attachment) {
+            gl::Disable(gl::BLEND);
+            
             geometry_program.bind();
             framebuffer.bind(gl::FRAMEBUFFER);
         
@@ -195,36 +201,50 @@ impl WorldRenderer {
             gl::UniformMatrix4fv(0, 1, gl::FALSE, &raw const camera_matrix as *const f32);
             
             let frustum = world.camera.get_frustum();
+
             const ELEMENT_INDICES_PER_QUAD: i32 = 5;
             const BYTES_PER_QUAD: i32 = 8;
             const ELEMENTS_PER_QUAD: i32 = 4;
             
-            // do chunked frustum culling
-            let mut drawnSections = 0;
-            (*self.counts.get()).set_len(0);
+            let mut solid_drawn_sections = 0;
+            let mut translucent_drawn_sections = 0;
+
             (*self.indices.get()).set_len(0);
-            (*self.base_vertices.get()).set_len(0);
+            (*self.solid_counts.get()).set_len(0);
+            (*self.solid_base_vertices.get()).set_len(0);
+            (*self.translucent_counts.get()).set_len(0);
+            (*self.translucent_base_vertices.get()).set_len(0);
 
             for section in world.sections.values() {
+                if section.solid_segment.is_none() && section.translucent_segment.is_none() { continue; }
+                if frustum.test_sphere(section.get_bounding_sphere(&world.camera)) == Intersection::Outside { continue; }
+                
+                (*self.indices.get()).push(0 as *const c_void);
+
                 // only render section if it has a geometry and light page
-                if let (Some(geometry_page), Some(light_page)) = (&section.geometry_page, &section.light_page) {
-                    if frustum.test_sphere(section.get_bounding_sphere(&world.camera)) == Intersection::Outside { continue; }
-                    let count = section.quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
-                    let base_vertex = geometry_page.offset as i32 / BYTES_PER_QUAD * ELEMENTS_PER_QUAD;
-                    (*self.counts.get()).push(count);
-                    (*self.indices.get()).push(0 as *const c_void);
-                    (*self.base_vertices.get()).push(base_vertex);
-                    drawnSections += 1;
+                if let (Some(geometry_page), Some(light_page)) = (&section.solid_segment, &section.light_segment) {
+                    let solid_count = section.solid_quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
+                    let solid_base_vertex = geometry_page.offset as i32 / BYTES_PER_QUAD * ELEMENTS_PER_QUAD;
+                    (*self.solid_counts.get()).push(solid_count);
+                    (*self.solid_base_vertices.get()).push(solid_base_vertex);
+                    solid_drawn_sections += 1;
+                }
+                if let (Some(translucent_page)) = (&section.translucent_segment) {
+                    let translucent_count = section.translucent_quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
+                    let translucent_base_vertex = translucent_page.offset as i32 / BYTES_PER_QUAD * ELEMENTS_PER_QUAD;
+                    (*self.translucent_counts.get()).push(translucent_count);
+                    (*self.translucent_base_vertices.get()).push(translucent_base_vertex);
+                    translucent_drawn_sections += 1;
                 }
             }
-            
+
             // gl::MultiDrawElementsBaseVertex(
             //     gl::TRIANGLE_STRIP,
-            //     (*self.counts.get()).as_ptr(),
+            //     (*self.solid_counts.get()).as_ptr(),
             //     gl::UNSIGNED_INT,
             //     (*self.indices.get()).as_ptr(),
-            //     drawnSections as i32,
-            //     (*self.base_vertices.get()).as_ptr()
+            //     solid_drawn_sections as i32,
+            //     (*self.solid_base_vertices.get()).as_ptr()
             // );
 
     
@@ -243,10 +263,11 @@ impl WorldRenderer {
 
             // gl::DrawArrays(gl::TRIANGLES, 0, 6);  
 
+            translucent_program.bind();
+
+            gl::Disable(gl::DEPTH_TEST);
             gl::Enable(gl::BLEND);
             gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
-            
-            translucent_program.bind();
 
             gl::UniformMatrix4fv(0, 1, gl::FALSE, &raw const camera_matrix as *const f32);
 
@@ -255,11 +276,11 @@ impl WorldRenderer {
 
             gl::MultiDrawElementsBaseVertex(
                 gl::TRIANGLE_STRIP,
-                (*self.counts.get()).as_ptr(),
+                (*self.translucent_counts.get()).as_ptr(),
                 gl::UNSIGNED_INT,
                 (*self.indices.get()).as_ptr(),
-                drawnSections as i32,
-                (*self.base_vertices.get()).as_ptr()
+                translucent_drawn_sections as i32,
+                (*self.translucent_base_vertices.get()).as_ptr()
             );
         }
     } }

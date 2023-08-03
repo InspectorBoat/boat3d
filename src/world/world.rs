@@ -19,7 +19,8 @@ pub struct World {
     pub camera: Camera,
     pub geometry_buffer_allocator: BufferAllocator,
     pub light_buffer_allocator: BufferAllocator,
-    pub geometry_staging_buffer: StagingBuffer,
+    pub solid_staging_buffer: StagingBuffer,
+    pub translucent_staging_buffer: StagingBuffer,
     pub light_staging_buffer: StagingBuffer,
     pub renderer: WorldRenderer
 }
@@ -31,7 +32,8 @@ impl World {
             camera: Camera::new(),
             geometry_buffer_allocator: BufferAllocator::new(1073741824),
             light_buffer_allocator: BufferAllocator::new(1073741824),
-            geometry_staging_buffer: StagingBuffer::new(),
+            solid_staging_buffer: StagingBuffer::new(),
+            translucent_staging_buffer: StagingBuffer::new(),
             light_staging_buffer: StagingBuffer::new(),
             renderer: WorldRenderer::new(),
         };
@@ -62,18 +64,12 @@ impl World {
         let start = time::Instant::now();
         let mut total_quads: usize = 0;
 
-        let mut exact_geometry_bytes = 0;
-        let mut exact_light_bytes = 0;
-
         let mut j = 0;
         let total = self.sections.len();
         for (i, section) in self.sections.values_mut().enumerate() {
-            section.mesh(&mut self.geometry_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
-            exact_geometry_bytes += self.geometry_staging_buffer.idx;
-            exact_light_bytes += self.light_staging_buffer.idx;
-            self.geometry_staging_buffer.reset();
-            self.light_staging_buffer.reset();
-            total_quads += section.quad_count as usize;
+            section.mesh(&mut self.solid_staging_buffer, &mut self.translucent_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
+            
+            total_quads += section.solid_quad_count as usize;
 
             // if j == 100 {
             //     println!("meshed {i}/{total} : {}%", i as f32 / total as f32 * 100.0);
@@ -104,9 +100,9 @@ impl World {
 
     pub fn mesh(&mut self, section_pos: Vector3<i32>) {
         if let Some(section) = self.sections.get_mut(&section_pos) {
-            section.mesh_geometry(&mut self.geometry_staging_buffer, &mut self.geometry_buffer_allocator);
-            section.mesh_light(&mut self.geometry_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
-            self.geometry_staging_buffer.reset();
+            section.mesh_geometry(&mut self.solid_staging_buffer, &mut self.translucent_staging_buffer, &mut self.geometry_buffer_allocator);
+            section.mesh_light(&mut self.solid_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
+            self.solid_staging_buffer.reset();
             self.light_staging_buffer.reset();
         }
     }
@@ -165,8 +161,8 @@ impl World {
             if let Some(mut up) = section.neighbors.up {
                 up.as_mut().neighbors.down = None;
             }
-            self.geometry_buffer_allocator.free(section.geometry_page.take());
-            self.light_buffer_allocator.free(section.light_page.take());
+            self.geometry_buffer_allocator.free(section.solid_segment.take());
+            self.light_buffer_allocator.free(section.light_segment.take());
         }
     } }
 

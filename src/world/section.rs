@@ -33,9 +33,11 @@ pub struct Section {
     // if the chunk needs to be remeshed
     pub dirty: bool,
     // number of rectangular block faces in a section
-    pub quad_count: u32,
-    pub geometry_page: Option<BufferSegment>,
-    pub light_page: Option<BufferSegment>
+    pub solid_quad_count: u32,
+    pub translucent_quad_count: u32,
+    pub solid_segment: Option<BufferSegment>,
+    pub translucent_segment: Option<BufferSegment>,
+    pub light_segment: Option<BufferSegment>
 }
 
 #[derive(Debug, Clone)]
@@ -288,7 +290,7 @@ impl Section {
     }
     
     // rel_x, rel_y, rel_z = x, y, z
-    pub fn mesh_south_north(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_south_north(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         hint::black_box(0x1312ACAB);
         let mut row_s: [Run; 16] = Default::default();
         let mut run_s: &mut Run = &mut row_s[0];
@@ -311,7 +313,7 @@ impl Section {
                     let compare = BlockFace::should_cull_pair(face_s, face_n);
                     'south: {
                         for face in self.get_extra_face::<{South}>(block_pos) {
-                            Run::add_face::<{South}>(geometry_staging_buffer, face, block_pos);
+                            Run::add_face::<{South}>(solid_staging_buffer, face, block_pos);
                         }
             
                         if compare.0 {
@@ -321,7 +323,7 @@ impl Section {
                         // /*
                         if active_run_s && same_row_s {
                             if run_s.match_right(&face_s) {
-                                run_s.merge_face(geometry_staging_buffer, &face_s);
+                                run_s.merge_face(solid_staging_buffer, &face_s);
                                 break 'south
                             } else {
                                 active_run_s = false;
@@ -338,11 +340,11 @@ impl Section {
                         if active_run_s {
                             if run_s.end == rel_x {
                                 if run_s.match_top_right(&face_s) {
-                                    run_s.pull(geometry_staging_buffer, &face_s, rel_x, rel_y, rel_z);
+                                    run_s.pull(solid_staging_buffer, &face_s, rel_x, rel_y, rel_z);
                                     active_run_s = false;
                                 }
                                 else {
-                                    run_s.pull_partial(geometry_staging_buffer, &face_s, rel_x, rel_y, rel_z);
+                                    run_s.pull_partial(solid_staging_buffer, &face_s, rel_x, rel_y, rel_z);
                                     same_row_s = true;
                                 }
                             }
@@ -352,7 +354,7 @@ impl Section {
                                 let compare = BlockFace::should_cull_pair(next_face_s, next_face_n);
 
                                 if compare.0 || !Run::match_faces(face_s, next_face_s) {
-                                    run_s.pull_partial(geometry_staging_buffer, &face_s, rel_x, rel_y, rel_z);
+                                    run_s.pull_partial(solid_staging_buffer, &face_s, rel_x, rel_y, rel_z);
                                     active_run_s = false;
                                 }
                             }
@@ -363,12 +365,12 @@ impl Section {
                         run_s = &mut row_s[rel_x as usize];
                         same_row_s = true;
                         active_run_s = true;
-                        run_s.begin::<{South}>(geometry_staging_buffer, &face_s, block_pos, rel_x, row_id);
+                        run_s.begin::<{South}>(solid_staging_buffer, &face_s, block_pos, rel_x, row_id);
                     }
                     'north: {
                         // break 'north;
                         for face in self.get_opposing_extra_face::<{South}>(block_pos) {
-                            Run::add_face::<{South}>(geometry_staging_buffer, &face, block_pos);
+                            Run::add_face::<{South}>(solid_staging_buffer, &face, block_pos);
                         }
 
                         if compare.1 {
@@ -378,7 +380,7 @@ impl Section {
                         // /*
                         if active_run_n && same_row_n {
                             if run_n.match_right(&face_n) {
-                                run_n.merge_face(geometry_staging_buffer, &face_n);
+                                run_n.merge_face(solid_staging_buffer, &face_n);
                                 break 'north;
                             } else {
                                 active_run_n = false;
@@ -395,11 +397,11 @@ impl Section {
                         if active_run_n {
                             if run_n.end == rel_x {
                                 if run_n.match_top_right(&face_n) {
-                                    run_n.pull(geometry_staging_buffer, &face_n, rel_x, rel_y, rel_z);
+                                    run_n.pull(solid_staging_buffer, &face_n, rel_x, rel_y, rel_z);
                                     active_run_n = false;
                                 }
                                 else {
-                                    run_n.pull_partial(geometry_staging_buffer, &face_n, rel_x, rel_y, rel_z);
+                                    run_n.pull_partial(solid_staging_buffer, &face_n, rel_x, rel_y, rel_z);
                                     same_row_n = true;
                                 }
                             }
@@ -409,7 +411,7 @@ impl Section {
                                 let compare = BlockFace::should_cull_pair(next_face_s, next_face_n);
 
                                 if compare.1 || !Run::match_faces(face_n, next_face_n) {
-                                    run_n.pull_partial(geometry_staging_buffer, &face_n, rel_x, rel_y, rel_z);
+                                    run_n.pull_partial(solid_staging_buffer, &face_n, rel_x, rel_y, rel_z);
                                     active_run_n = false;
                                 }
                             }
@@ -420,7 +422,7 @@ impl Section {
                         run_n = &mut row_n[rel_x as usize];
                         active_run_n = true;
                         same_row_n = true;
-                        run_n.begin::<{North}>(geometry_staging_buffer, &face_n, block_pos, rel_x, row_id);
+                        run_n.begin::<{North}>(solid_staging_buffer, &face_n, block_pos, rel_x, row_id);
                     }
                 }
                 (active_run_s, active_run_n) = (false, false);
@@ -431,7 +433,7 @@ impl Section {
     }
     
     // rel_x, rel_y, rel_z = z, y, x
-    pub fn mesh_west_east(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_west_east(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         let mut row_w: [Run; 16] = Default::default();
         let mut run_w: &mut Run = &mut row_w[0];
         let mut active_run_w: bool = false;
@@ -453,7 +455,7 @@ impl Section {
                     let compare = BlockFace::should_cull_pair(face_w, face_e);
                     'west: {
                         for face in self.get_extra_face::<{West}>(block_pos) {
-                            Run::add_face::<{West}>(geometry_staging_buffer, face, block_pos);
+                            Run::add_face::<{West}>(solid_staging_buffer, face, block_pos);
                         }
             
             
@@ -465,7 +467,7 @@ impl Section {
                         // /*
                         if active_run_w && same_row_w {
                             if run_w.match_right(&face_w) {
-                                run_w.merge_face(geometry_staging_buffer, &face_w);
+                                run_w.merge_face(solid_staging_buffer, &face_w);
                                 break 'west
                             } else {
                                 active_run_w = false;
@@ -482,11 +484,11 @@ impl Section {
                         if active_run_w {
                             if run_w.end == rel_x {
                                 if run_w.match_top_right(&face_w) {
-                                    run_w.pull(geometry_staging_buffer, &face_w, rel_x, rel_y, rel_z);
+                                    run_w.pull(solid_staging_buffer, &face_w, rel_x, rel_y, rel_z);
                                     active_run_w = false;
                                 }
                                 else {
-                                    run_w.pull_partial(geometry_staging_buffer, &face_w, rel_x, rel_y, rel_z);
+                                    run_w.pull_partial(solid_staging_buffer, &face_w, rel_x, rel_y, rel_z);
                                     same_row_w = true;
                                 }
                             }
@@ -496,7 +498,7 @@ impl Section {
                                 let compare = BlockFace::should_cull_pair(next_face_w, next_face_e);
 
                                 if compare.0 || !Run::match_faces(face_w, next_face_w) {
-                                    run_w.pull_partial(geometry_staging_buffer, &face_w, rel_x, rel_y, rel_z);
+                                    run_w.pull_partial(solid_staging_buffer, &face_w, rel_x, rel_y, rel_z);
                                     active_run_w = false;
                                 }
                             }
@@ -507,13 +509,13 @@ impl Section {
                         run_w = &mut row_w[rel_x as usize];
                         same_row_w = true;
                         active_run_w = true;
-                        run_w.begin::<{West}>(geometry_staging_buffer, &face_w, block_pos, rel_x, row_id);
+                        run_w.begin::<{West}>(solid_staging_buffer, &face_w, block_pos, rel_x, row_id);
                     }
                     'east: {
                         // break 'east;
 
                         for face in self.get_opposing_extra_face::<{West}>(block_pos) {
-                            Run::add_face::<{East}>(geometry_staging_buffer, face, block_pos);
+                            Run::add_face::<{East}>(solid_staging_buffer, face, block_pos);
                         }
                         if compare.1 {
                             active_run_e = false;
@@ -522,7 +524,7 @@ impl Section {
                         // /*
                         if active_run_e && same_row_e {
                             if run_e.match_right(&face_e) {
-                                run_e.merge_face(geometry_staging_buffer, &face_e);
+                                run_e.merge_face(solid_staging_buffer, &face_e);
                                 break 'east
                             } else {
                                 active_run_e = false;
@@ -540,11 +542,11 @@ impl Section {
                         if active_run_e {
                             if run_e.end == rel_x {
                                 if run_e.match_top_right(&face_e) {
-                                    run_e.pull(geometry_staging_buffer, &face_e, rel_x, rel_y, rel_z);
+                                    run_e.pull(solid_staging_buffer, &face_e, rel_x, rel_y, rel_z);
                                     active_run_e = false;
                                 }
                                 else {
-                                    run_e.pull_partial(geometry_staging_buffer, &face_e, rel_x, rel_y, rel_z);
+                                    run_e.pull_partial(solid_staging_buffer, &face_e, rel_x, rel_y, rel_z);
                                     same_row_e = true;
                                 }
                             }
@@ -554,7 +556,7 @@ impl Section {
                                 let compare = BlockFace::should_cull_pair(next_face_w, next_face_e);
 
                                 if compare.1 || !Run::match_faces(face_e, next_face_e) {
-                                    run_e.pull_partial(geometry_staging_buffer, &face_e, rel_x, rel_y, rel_z);
+                                    run_e.pull_partial(solid_staging_buffer, &face_e, rel_x, rel_y, rel_z);
                                     active_run_e = false;
                                 }
                             }
@@ -565,7 +567,7 @@ impl Section {
                         run_e = &mut row_e[rel_x as usize];
                         active_run_e = true;
                         same_row_e = true;
-                        run_e.begin::<{East}>(geometry_staging_buffer, &face_e, block_pos, rel_x, row_id);
+                        run_e.begin::<{East}>(solid_staging_buffer, &face_e, block_pos, rel_x, row_id);
                     }
                 }
                 (active_run_w, active_run_e) = (false, false); row_id += 1;
@@ -575,7 +577,7 @@ impl Section {
     }
     
     // rel_x, rel_y, rel_z = z, x, y
-    pub fn mesh_down_up(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_down_up(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         let mut row_d: [Run; 16] = Default::default();
         let mut run_d: &mut Run = &mut row_d[0];
         let mut active_run_d: bool = false;
@@ -597,7 +599,7 @@ impl Section {
                     let compare = BlockFace::should_cull_pair(face_d, face_u);
                     'down: {
                         for face in self.get_extra_face::<{Down}>(block_pos) {
-                            Run::add_face::<{Down}>(geometry_staging_buffer, &face, block_pos);
+                            Run::add_face::<{Down}>(solid_staging_buffer, &face, block_pos);
                         }
             
                         if compare.0 {
@@ -608,7 +610,7 @@ impl Section {
                         // /*
                         if active_run_d && same_row_d {
                             if run_d.match_right(&face_d) {
-                                run_d.merge_face(geometry_staging_buffer, &face_d);
+                                run_d.merge_face(solid_staging_buffer, &face_d);
                                 break 'down
                             } else {
                                 active_run_d = false;
@@ -625,11 +627,11 @@ impl Section {
                         if active_run_d {
                             if run_d.end == rel_x {
                                 if run_d.match_top_right(&face_d) {
-                                    run_d.pull(geometry_staging_buffer, &face_d, rel_x, rel_y, rel_z);
+                                    run_d.pull(solid_staging_buffer, &face_d, rel_x, rel_y, rel_z);
                                     active_run_d = false;
                                 }
                                 else {
-                                    run_d.pull_partial(geometry_staging_buffer, &face_d, rel_x, rel_y, rel_z);
+                                    run_d.pull_partial(solid_staging_buffer, &face_d, rel_x, rel_y, rel_z);
                                     same_row_d = true;
                                 }
                             }
@@ -639,7 +641,7 @@ impl Section {
                                 let compare = BlockFace::should_cull_pair(next_face_d, next_face_u);
 
                                 if compare.0 || !Run::match_faces(face_d, next_face_d) {
-                                    run_d.pull_partial(geometry_staging_buffer, &face_d, rel_x, rel_y, rel_z);
+                                    run_d.pull_partial(solid_staging_buffer, &face_d, rel_x, rel_y, rel_z);
                                     active_run_d = false;
                                 }
                             }
@@ -650,13 +652,13 @@ impl Section {
                         run_d = &mut row_d[rel_x as usize];
                         same_row_d = true;
                         active_run_d = true;
-                        run_d.begin::<{Down}>(geometry_staging_buffer, &face_d, block_pos, rel_x, row_id);
+                        run_d.begin::<{Down}>(solid_staging_buffer, &face_d, block_pos, rel_x, row_id);
                     }
                     'up: {
                         // break 'up;
 
                         for face in self.get_opposing_extra_face::<{Down}>(block_pos) {
-                            Run::add_face::<{Up}>(geometry_staging_buffer, &face, block_pos);
+                            Run::add_face::<{Up}>(solid_staging_buffer, &face, block_pos);
                         }
 
                         if compare.1 {
@@ -666,7 +668,7 @@ impl Section {
                         // /*
                         if active_run_u && same_row_u {
                             if run_u.match_right(&face_u) {
-                                run_u.merge_face(geometry_staging_buffer, &face_u);
+                                run_u.merge_face(solid_staging_buffer, &face_u);
                                 break 'up
                             } else {
                                 active_run_u = false;
@@ -684,11 +686,11 @@ impl Section {
                         if active_run_u {
                             if run_u.end == rel_x {
                                 if run_u.match_top_right(&face_u) {
-                                    run_u.pull(geometry_staging_buffer, &face_u, rel_x, rel_y, rel_z);
+                                    run_u.pull(solid_staging_buffer, &face_u, rel_x, rel_y, rel_z);
                                     active_run_u = false;
                                 }
                                 else {
-                                    run_u.pull_partial(geometry_staging_buffer, &face_u, rel_x, rel_y, rel_z);
+                                    run_u.pull_partial(solid_staging_buffer, &face_u, rel_x, rel_y, rel_z);
                                     same_row_u = true;
                                 }
                             }
@@ -698,7 +700,7 @@ impl Section {
                                 let compare = BlockFace::should_cull_pair(next_face_d, next_face_u);
 
                                 if compare.1 || !Run::match_faces(face_u, next_face_u) {
-                                    run_u.pull_partial(geometry_staging_buffer, &face_u, rel_x, rel_y, rel_z);
+                                    run_u.pull_partial(solid_staging_buffer, &face_u, rel_x, rel_y, rel_z);
                                     active_run_u = false;
                                 }
                             }
@@ -709,7 +711,7 @@ impl Section {
                         run_u = &mut row_u[rel_x as usize];
                         active_run_u = true;
                         same_row_u = true;
-                        run_u.begin::<{Up}>(geometry_staging_buffer, &face_u, block_pos, rel_x, row_id);
+                        run_u.begin::<{Up}>(solid_staging_buffer, &face_u, block_pos, rel_x, row_id);
                     }
                 }
                 (active_run_d, active_run_u) = (false, false); row_id += 1;
@@ -718,7 +720,7 @@ impl Section {
         }
     }
     
-    pub fn mesh_south_north_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_south_north_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
                 for z in 0..16_u8 {
@@ -734,23 +736,23 @@ impl Section {
                     let offset = Section::INDICES_ZYX[block_pos.index] as u64;
                     
                     if compare < 0x10101010 {
-                        Run::add_face::<{South}>(geometry_staging_buffer, face_s, block_pos);
+                        Run::add_face::<{South}>(solid_staging_buffer, face_s, block_pos);
                     }
                     if compare > 0x10101010 {
-                        Run::add_face::<{North}>(geometry_staging_buffer, face_n, block_pos);
+                        Run::add_face::<{North}>(solid_staging_buffer, face_n, block_pos);
                     }
                     
                     for face in self.get_extra_face::<{South}>(block_pos) {
-                        Run::add_face::<{South}>(geometry_staging_buffer, &face, block_pos);
+                        Run::add_face::<{South}>(solid_staging_buffer, &face, block_pos);
                     }
                     for face in self.get_opposing_extra_face::<{South}>(block_pos) {
-                        Run::add_face::<{North}>(geometry_staging_buffer, &face, block_pos);
+                        Run::add_face::<{North}>(solid_staging_buffer, &face, block_pos);
                     }
                 }
             }
         }
     }
-    pub fn mesh_west_east_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_west_east_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
                 for z in 0..16_u8 {
@@ -765,24 +767,24 @@ impl Section {
                     let offset = Section::INDICES_XYZ[block_pos.index] as u64;
                     
                     if compare < 0x10101010 {
-                        Run::add_face::<{West}>(geometry_staging_buffer, face_w, block_pos);
+                        Run::add_face::<{West}>(solid_staging_buffer, face_w, block_pos);
                     }
                     if compare > 0x10101010 {
-                        Run::add_face::<{East}>(geometry_staging_buffer, face_e, block_pos);
+                        Run::add_face::<{East}>(solid_staging_buffer, face_e, block_pos);
                     }
 
                     for face in self.get_extra_face::<{West}>(block_pos) {
-                        Run::add_face::<{West}>(geometry_staging_buffer, &face, block_pos);
+                        Run::add_face::<{West}>(solid_staging_buffer, &face, block_pos);
                     }
 
                     for face in self.get_opposing_extra_face::<{West}>(block_pos) {
-                        Run::add_face::<{East}>(geometry_staging_buffer, &face, block_pos);
+                        Run::add_face::<{East}>(solid_staging_buffer, &face, block_pos);
                     }
                 }
             }
         }
     }
-    pub fn mesh_down_up_no_merge(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_down_up_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
                 for z in 0..16_u8 {
@@ -797,38 +799,38 @@ impl Section {
                     let offset = Section::INDICES_YXZ[block_pos.index] as u64;
 
                     if compare < 0x10101010 {
-                        Run::add_face::<{Down}>(geometry_staging_buffer, face_d, block_pos);
+                        Run::add_face::<{Down}>(solid_staging_buffer, face_d, block_pos);
                     }
                     if compare > 0x10101010 {
-                        Run::add_face::<{Up}>(geometry_staging_buffer, face_u, block_pos);
+                        Run::add_face::<{Up}>(solid_staging_buffer, face_u, block_pos);
                     }
 
                     for face in self.get_extra_face::<{Down}>(block_pos) {
-                        Run::add_face::<{Down}>(geometry_staging_buffer, &face, block_pos);
+                        Run::add_face::<{Down}>(solid_staging_buffer, &face, block_pos);
                     }
                 
                     for face in self.get_opposing_extra_face::<{Down}>(block_pos) {
-                        Run::add_face::<{Up}>(geometry_staging_buffer, &face, block_pos);
+                        Run::add_face::<{Up}>(solid_staging_buffer, &face, block_pos);
                     }
                 }
             }
         }
     }
 
-    pub fn mesh_unaligned(&mut self, geometry_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_unaligned(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         for x in 0..16 {
             for y in 0..16 {
                 for z in 0..16 {
                     let pos = BlockPos::new(x, y, z);
                     for face in self.get_block(pos).model.unaligned {
-                        Run::add_face::<{Diagonal}>(geometry_staging_buffer, face, pos);
+                        Run::add_face::<{Diagonal}>(solid_staging_buffer, face, pos);
                     }
                 }
             }
         }
     }
 
-    pub fn mesh_transparent(&mut self, transparent_geometry_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_translucent(&mut self, transparent_solid_staging_buffer: &mut StagingBuffer) {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
                 for z in 0..16_u8 {
@@ -843,71 +845,70 @@ impl Section {
                         for opposing_face in opposing_block_south.model.transparent_north {
                             if face.culled_by::<{South}>(opposing_face) { continue 'south; }
                         }
-                        Run::add_face::<{South}>(transparent_geometry_staging_buffer, &face, block_pos);
+                        Run::add_face::<{South}>(transparent_solid_staging_buffer, &face, block_pos);
                     }
                     'west: for face in block.model.transparent_west {
                         for opposing_face in opposing_block_west.model.transparent_east {
                             if face.culled_by::<{West}>(opposing_face) { continue 'west; }
                         }
-                        Run::add_face::<{West}>(transparent_geometry_staging_buffer, &face, block_pos);
+                        Run::add_face::<{West}>(transparent_solid_staging_buffer, &face, block_pos);
                     }
                     'down: for face in block.model.transparent_down {
                         for opposing_face in opposing_block_down.model.transparent_up {
                             if face.culled_by::<{Down}>(opposing_face) { continue 'down; }
                         }
-                        Run::add_face::<{Down}>(transparent_geometry_staging_buffer, &face, block_pos);
+                        Run::add_face::<{Down}>(transparent_solid_staging_buffer, &face, block_pos);
                     }
                     'north: for face in opposing_block_south.model.transparent_north {
                         for opposing_face in block.model.transparent_south {
                             if face.culled_by::<{North}>(opposing_face) { continue 'north; }
                         }
-                        Run::add_face::<{North}>(transparent_geometry_staging_buffer, &face, block_pos);
+                        Run::add_face::<{North}>(transparent_solid_staging_buffer, &face, block_pos);
                     }
                     'east: for face in opposing_block_west.model.transparent_east {
                         for opposing_face in block.model.transparent_west {
                             if face.culled_by::<{East}>(opposing_face) { continue 'east; }
                         }
-                        Run::add_face::<{East}>(transparent_geometry_staging_buffer, &face, block_pos);
+                        Run::add_face::<{East}>(transparent_solid_staging_buffer, &face, block_pos);
                     }
                     'up: for face in opposing_block_down.model.transparent_up {
                         for opposing_face in block.model.transparent_down {
                             if face.culled_by::<{Up}>(opposing_face) { continue 'up; }
                         }
-                        Run::add_face::<{Up}>(transparent_geometry_staging_buffer, &face, block_pos);
+                        Run::add_face::<{Up}>(transparent_solid_staging_buffer, &face, block_pos);
                     }
                 }
             }
         }
     }
 
-    pub fn mesh_geometry(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
-        self.mesh_south_north(geometry_staging_buffer);
-        self.mesh_west_east(geometry_staging_buffer);
-        self.mesh_down_up(geometry_staging_buffer);
-        // self.mesh_south_north_no_merge(geometry_staging_buffer);
-        // self.mesh_west_east_no_merge(geometry_staging_buffer);
-        // self.mesh_down_up_no_merge(geometry_staging_buffer);
+    pub fn mesh_geometry(&mut self, solid_staging_buffer: &mut StagingBuffer, translucent_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
+        self.mesh_translucent(translucent_staging_buffer);
 
-        self.mesh_unaligned(geometry_staging_buffer);
+        translucent_staging_buffer.format_quads();
+        self.translucent_quad_count = translucent_staging_buffer.idx as u32 / 8;
 
-        self.mesh_transparent(geometry_staging_buffer);
+        self.mesh_south_north(solid_staging_buffer);
+        self.mesh_west_east(solid_staging_buffer);
+        self.mesh_down_up(solid_staging_buffer);
+        self.mesh_unaligned(solid_staging_buffer);
 
-        geometry_staging_buffer.format_quads();
-
-        self.quad_count = geometry_staging_buffer.idx as u32 / 8;
+        solid_staging_buffer.format_quads();
+        self.solid_quad_count = solid_staging_buffer.idx as u32 / 8;
         
-        self.geometry_page = geometry_buffer_allocator.alloc(geometry_staging_buffer.idx + 4 * mem::size_of::<u32>());
+        self.solid_segment = geometry_buffer_allocator.alloc(solid_staging_buffer.idx + 4 * mem::size_of::<u32>());
+        self.translucent_segment = geometry_buffer_allocator.alloc(translucent_staging_buffer.idx + 4 * mem::size_of::<u32>());
     } }
 
-    pub fn mesh_light(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) { unsafe {
+    pub fn mesh_light(&mut self, solid_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) { unsafe {
         const BYTES_PER_QUAD: usize = 8;
 
         // bytes reserved to index a light chunk for each quad
         // need 1 u32 per quad
-        let reserved_bytes = geometry_staging_buffer.idx / BYTES_PER_QUAD * mem::size_of::<u32>();
+        let reserved_bytes = solid_staging_buffer.idx / BYTES_PER_QUAD * mem::size_of::<u32>();
         light_staging_buffer.idx = reserved_bytes;
 
-        for (i, quad) in geometry_staging_buffer.iter().map(|quad| mem::transmute::<&[u8; 8], &GpuQuad>(quad)).enumerate() {
+        for (i, quad) in solid_staging_buffer.iter().map(|quad| mem::transmute::<&[u8; 8], &GpuQuad>(quad)).enumerate() {
             // insert the index offset of the light section
             light_staging_buffer.set_u32(i * mem::size_of::<u32>(), (light_staging_buffer.idx / mem::size_of::<u32>()) as u32);
             
@@ -1042,23 +1043,32 @@ impl Section {
             }
         }
         
-        self.light_page = light_buffer_allocator.alloc(light_staging_buffer.idx);
+        self.light_segment = light_buffer_allocator.alloc(light_staging_buffer.idx);
     } }
 
-    pub fn mesh(&mut self, geometry_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) {
-        geometry_buffer_allocator.free(self.geometry_page.take());
-        light_buffer_allocator.free(self.light_page.take());
+    pub fn mesh(&mut self, solid_staging_buffer: &mut StagingBuffer, translucent_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) {
+        geometry_buffer_allocator.free(self.solid_segment.take());
+        geometry_buffer_allocator.free(self.translucent_segment.take());
+        light_buffer_allocator.free(self.light_segment.take());
 
-        self.mesh_geometry(geometry_staging_buffer, geometry_buffer_allocator);
-        self.mesh_light(geometry_staging_buffer, geometry_buffer_allocator, light_staging_buffer, light_buffer_allocator);
-        if let (Some(geometry_segment), Some(light_segment)) = (&self.geometry_page, &self.light_page) {
+        self.mesh_geometry(solid_staging_buffer, translucent_staging_buffer, geometry_buffer_allocator);
+        self.mesh_light(solid_staging_buffer, geometry_buffer_allocator, light_staging_buffer, light_buffer_allocator);
+        if let (Some(geometry_segment), Some(light_segment)) = (&self.solid_segment, &self.light_segment) {
             geometry_buffer_allocator.upload_offset(geometry_segment, &[self.section_pos.x, self.section_pos.y, self.section_pos.z], 3 * mem::size_of::<u32>(), 0);
-            geometry_buffer_allocator.upload_offset(geometry_segment, &geometry_staging_buffer.buffer.0.as_slice(), geometry_staging_buffer.idx, 4 * mem::size_of::<u32>());
+            geometry_buffer_allocator.upload_offset(geometry_segment, &solid_staging_buffer.buffer.0.as_slice(), solid_staging_buffer.idx, 4 * mem::size_of::<u32>());
             geometry_buffer_allocator.upload_offset(geometry_segment, &[(light_segment.offset as usize / mem::size_of::<u32>()) as u32], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
+
             light_buffer_allocator.upload(light_segment, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.idx);
         }
-        geometry_staging_buffer.reset();
+        if let (Some(translucent_segment)) = (&self.solid_segment) {
+            geometry_buffer_allocator.upload_offset(translucent_segment, &[self.section_pos.x, self.section_pos.y, self.section_pos.z], 3 * mem::size_of::<u32>(), 0);
+            geometry_buffer_allocator.upload_offset(translucent_segment, &translucent_staging_buffer.buffer.0.as_slice(), solid_staging_buffer.idx, 4 * mem::size_of::<u32>());
+            geometry_buffer_allocator.upload_offset(translucent_segment, &[0], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
+            println!("{} {:?}", translucent_segment.length.get(), geometry_buffer_allocator.device_buffer.get_sub_data::<u8>(translucent_segment.offset as isize, translucent_segment.length.get() as isize));
+        }
+        solid_staging_buffer.reset();
         light_staging_buffer.reset();
+        translucent_staging_buffer.reset();
     }
 
     pub fn get_bounding_box(&self, camera: &Camera) -> BoundingBox<f32> {
