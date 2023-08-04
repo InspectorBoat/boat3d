@@ -62,7 +62,7 @@ fn main() { unsafe {
         
         // world.renderer.pre_render();
 
-        world.render();
+        world.render(&status);
         
         // world.renderer.post_render();
         

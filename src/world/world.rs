@@ -20,7 +20,7 @@ pub struct World {
     pub geometry_buffer_allocator: BufferAllocator,
     pub light_buffer_allocator: BufferAllocator,
     pub solid_staging_buffer: StagingBuffer,
-    pub translucent_staging_buffer: StagingBuffer,
+    pub trans_staging_buffer: StagingBuffer,
     pub light_staging_buffer: StagingBuffer,
     pub renderer: WorldRenderer
 }
@@ -33,7 +33,7 @@ impl World {
             geometry_buffer_allocator: BufferAllocator::new(1073741824),
             light_buffer_allocator: BufferAllocator::new(1073741824),
             solid_staging_buffer: StagingBuffer::new(),
-            translucent_staging_buffer: StagingBuffer::new(),
+            trans_staging_buffer: StagingBuffer::new(),
             light_staging_buffer: StagingBuffer::new(),
             renderer: WorldRenderer::new(),
         };
@@ -52,8 +52,8 @@ impl World {
                 for z in 0..World::MAX_SECTION_Z {
                     let mut section = Box::<Section>::new_zeroed().assume_init();
                     section.set_chunk_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
-                    // section.make_terrain(&noise);
-                    section.make_terrain_alt();
+                    section.make_terrain(&noise);
+                    // section.make_terrain_alt();
                     self.add_section(section);
                 }
             }
@@ -67,7 +67,7 @@ impl World {
         let mut j = 0;
         let total = self.sections.len();
         for (i, section) in self.sections.values_mut().enumerate() {
-            section.mesh(&mut self.solid_staging_buffer, &mut self.translucent_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
+            section.mesh(&mut self.solid_staging_buffer, &mut self.trans_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
             
             total_quads += section.solid_quad_count as usize;
 
@@ -100,8 +100,8 @@ impl World {
 
     pub fn mesh(&mut self, section_pos: Vector3<i32>) {
         if let Some(section) = self.sections.get_mut(&section_pos) {
-            section.mesh_geometry(&mut self.solid_staging_buffer, &mut self.translucent_staging_buffer, &mut self.geometry_buffer_allocator);
-            section.mesh_light(&mut self.solid_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
+            section.mesh_geometry(&mut self.solid_staging_buffer, &mut self.trans_staging_buffer, &mut self.geometry_buffer_allocator);
+            section.mesh_solid_light(&mut self.solid_staging_buffer, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
             self.solid_staging_buffer.reset();
             self.light_staging_buffer.reset();
         }
@@ -162,7 +162,7 @@ impl World {
                 up.as_mut().neighbors.down = None;
             }
             self.geometry_buffer_allocator.free(section.solid_segment.take());
-            self.light_buffer_allocator.free(section.light_segment.take());
+            self.light_buffer_allocator.free(section.solid_light_segment.take());
         }
     } }
 
@@ -179,8 +179,8 @@ impl World {
         }
     } }
 
-    pub fn render(&self) { unsafe {
-        self.renderer.render(self);
+    pub fn render(&self, status: &WindowStatus) { unsafe {
+        self.renderer.render(self, status);
     } }
 
     pub fn update(&mut self, keys: &mut HashMap<Key, bool>) {
@@ -215,7 +215,7 @@ impl World {
         }
     }
 
-    pub const MAX_SECTION_X: usize = 1;
-    pub const MAX_SECTION_Y: usize = 1;
-    pub const MAX_SECTION_Z: usize = 1;
+    pub const MAX_SECTION_X: usize = 2;
+    pub const MAX_SECTION_Y: usize = 2;
+    pub const MAX_SECTION_Z: usize = 2;
 }
