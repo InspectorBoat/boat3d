@@ -239,15 +239,16 @@ impl WorldRenderer {
                 }
             }
 
-            // gl::MultiDrawElementsBaseVertex(
-            //     gl::TRIANGLE_STRIP,
-            //     (*self.solid_counts.get()).as_ptr(),
-            //     gl::UNSIGNED_INT,
-            //     (*self.indices.get()).as_ptr(),
-            //     solid_drawn_sections as i32,
-            //     (*self.solid_base_vertices.get()).as_ptr()
-            // );
-
+            if solid_drawn_sections > 0 {
+                gl::MultiDrawElementsBaseVertex(
+                    gl::TRIANGLE_STRIP,
+                    (*self.solid_counts.get()).as_ptr(),
+                    gl::UNSIGNED_INT,
+                    (*self.indices.get()).as_ptr(),
+                    solid_drawn_sections as i32,
+                    (*self.solid_base_vertices.get()).as_ptr()
+                );
+            }
     
             post_program.bind();
 
@@ -283,14 +284,16 @@ impl WorldRenderer {
             block_texture.bind(gl::TEXTURE_2D_ARRAY);
             world.light_buffer_allocator.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
 
-            gl::MultiDrawElementsBaseVertex(
-                gl::TRIANGLE_STRIP,
-                (*self.trans_counts.get()).as_ptr(),
-                gl::UNSIGNED_INT,
-                (*self.indices.get()).as_ptr(),
-                trans_drawn_sections as i32,
-                (*self.trans_base_vertices.get()).as_ptr()
-            );
+            if trans_drawn_sections > 0 {
+                gl::MultiDrawElementsBaseVertex(
+                    gl::TRIANGLE_STRIP,
+                    (*self.trans_counts.get()).as_ptr(),
+                    gl::UNSIGNED_INT,
+                    (*self.indices.get()).as_ptr(),
+                    trans_drawn_sections as i32,
+                    (*self.trans_base_vertices.get()).as_ptr()
+                );
+            }
         }
     } }
 

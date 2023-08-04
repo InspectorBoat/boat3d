@@ -136,7 +136,10 @@ out vec2 texture_pos;
 
 void main() {
         int corner_index = gl_VertexID % 4;
+        // index from which to retrieve face from faces array
+        // two offset for 4 uints used to store chunk pos / light index
         int face_index = gl_VertexID / 4 + 4 / 2;
+        // base face index starting from 0
         uint base_face_index = gl_VertexID / 4 - gl_BaseVertex / 4;
         uint normal = get_normal(face_index);
 

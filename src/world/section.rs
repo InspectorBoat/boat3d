@@ -293,7 +293,6 @@ impl Section {
     
     // rel_x, rel_y, rel_z = x, y, z
     pub fn mesh_south_north(&mut self, solid_staging_buffer: &mut StagingBuffer) {
-        hint::black_box(0x1312ACAB);
         let mut row_s: [Run; 16] = Default::default();
         let mut run_s: &mut Run = &mut row_s[0];
         let mut active_run_s: bool = false;
@@ -1052,8 +1051,6 @@ impl Section {
         for (i, quad) in trans_staging_buffer.iter().map(|quad| mem::transmute::<&[u8; 8], &GpuQuad>(quad)).enumerate() {
             // insert the index offset of the light section
             light_staging_buffer.set_u32(i * mem::size_of::<u32>(), (light_staging_buffer.idx / mem::size_of::<u32>()) as u32);
-            light_staging_buffer.put_u32(0xACAB1312);
-            continue;
             match quad.normal {
                 South => {
                     let start_x = quad.x / 16;
@@ -1211,17 +1208,13 @@ impl Section {
         if let (Some(trans_segment), Some(trans_light_segment)) = (&self.trans_segment, &self.trans_light_segment) {
             geometry_buffer_allocator.upload_offset(trans_segment, &[self.section_pos.x, self.section_pos.y, self.section_pos.z], 3 * mem::size_of::<u32>(), 0);
             geometry_buffer_allocator.upload_offset(trans_segment, &trans_staging_buffer.buffer.0.as_slice(), trans_staging_buffer.idx, 4 * mem::size_of::<u32>());
-            geometry_buffer_allocator.upload_offset(trans_segment, &[0], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
+            geometry_buffer_allocator.upload_offset(trans_segment, &[(trans_light_segment.offset as usize / mem::size_of::<u32>()) as u32], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
 
             light_buffer_allocator.upload(trans_light_segment, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.idx);
         }
         trans_staging_buffer.reset();
         light_staging_buffer.reset();
-
-        println!("{:?}", light_buffer_allocator.device_buffer.get_sub_data::<u32>(self.trans_light_segment.unwrap().offset as isize, self.trans_light_segment.unwrap().length.get() as isize));
-        // println!("{:?}", light_buffer_allocator.device_buffer.get_sub_data::<u32>(self.solid_light_segment.unwrap().offset as isize, self.solid_light_segment.unwrap().length.get() as isize));
     }
-
     pub fn get_bounding_box(&self, camera: &Camera) -> BoundingBox<f32> {
         return BoundingBox {
             min: Vector3 {
