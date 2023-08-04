@@ -161,37 +161,37 @@ impl Section {
         match N {
             North => {
                 if block_pos.z() == 15 {
-                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(block_pos.set_z(0)));
+                    return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_z(0)));
                 }
                 return self.get_light(block_pos + BlockPos::new(0, 0, 1));
             }
             South => {
                 if block_pos.z() == 0 {
-                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(block_pos.set_z(15)));
+                    return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_z(15)));
                 }
                 return self.get_light(block_pos - BlockPos::new(0, 0, 1));
             }
             East => {
                 if block_pos.x() == 15 {
-                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(block_pos.set_x(0)));
+                    return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_x(0)));
                 }
                 return self.get_light(block_pos + BlockPos::new(1, 0, 0));
             }
             West => {
                 if block_pos.x() == 0 {
-                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(block_pos.set_x(15)));
+                    return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_x(15)));
                 }
                 return self.get_light(block_pos - BlockPos::new(1, 0, 0));
             }
             Up => {
                 if block_pos.y() == 15 {
-                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(block_pos.set_y(0)));
+                    return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_y(0)));
                 }
                 return self.get_light(block_pos + BlockPos::new(0, 1, 0));
             }
             Down => {
                 if block_pos.y() == 0 {
-                    return self.get_neighbor::<N>().map_or(0, |section| section.get_light(block_pos.set_y(15)));
+                    return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_y(15)));
                 }
                 return self.get_light(block_pos - BlockPos::new(0, 1, 0));
             }
@@ -832,7 +832,7 @@ impl Section {
         }
     }
 
-    pub fn mesh_translucent(&mut self, transparent_solid_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_trans(&mut self, trans_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
                 for z in 0..16_u8 {
@@ -847,49 +847,46 @@ impl Section {
                         for opposing_face in opposing_block_south.model.transparent_north {
                             if face.culled_by::<{South}>(opposing_face) { continue 'south; }
                         }
-                        Run::add_face::<{South}>(transparent_solid_staging_buffer, &face, block_pos);
+                        Run::add_face::<{South}>(trans_staging_buffer, &face, block_pos);
                     }
                     'west: for face in block.model.transparent_west {
                         for opposing_face in opposing_block_west.model.transparent_east {
                             if face.culled_by::<{West}>(opposing_face) { continue 'west; }
                         }
-                        Run::add_face::<{West}>(transparent_solid_staging_buffer, &face, block_pos);
+                        Run::add_face::<{West}>(trans_staging_buffer, &face, block_pos);
                     }
                     'down: for face in block.model.transparent_down {
                         for opposing_face in opposing_block_down.model.transparent_up {
                             if face.culled_by::<{Down}>(opposing_face) { continue 'down; }
                         }
-                        Run::add_face::<{Down}>(transparent_solid_staging_buffer, &face, block_pos);
+                        Run::add_face::<{Down}>(trans_staging_buffer, &face, block_pos);
                     }
                     'north: for face in opposing_block_south.model.transparent_north {
                         for opposing_face in block.model.transparent_south {
                             if face.culled_by::<{North}>(opposing_face) { continue 'north; }
                         }
-                        Run::add_face::<{North}>(transparent_solid_staging_buffer, &face, block_pos);
+                        Run::add_face::<{North}>(trans_staging_buffer, &face, block_pos);
                     }
                     'east: for face in opposing_block_west.model.transparent_east {
                         for opposing_face in block.model.transparent_west {
                             if face.culled_by::<{East}>(opposing_face) { continue 'east; }
                         }
-                        Run::add_face::<{East}>(transparent_solid_staging_buffer, &face, block_pos);
+                        Run::add_face::<{East}>(trans_staging_buffer, &face, block_pos);
                     }
                     'up: for face in opposing_block_down.model.transparent_up {
                         for opposing_face in block.model.transparent_down {
                             if face.culled_by::<{Up}>(opposing_face) { continue 'up; }
                         }
-                        Run::add_face::<{Up}>(transparent_solid_staging_buffer, &face, block_pos);
+                        Run::add_face::<{Up}>(trans_staging_buffer, &face, block_pos);
                     }
                 }
             }
         }
+        trans_staging_buffer.format_quads();
+        self.trans_quad_count = trans_staging_buffer.idx as u32 / 8;
+        self.trans_segment = geometry_buffer_allocator.alloc(trans_staging_buffer.idx + 4 * mem::size_of::<u32>());
     }
-
-    pub fn mesh_geometry(&mut self, solid_staging_buffer: &mut StagingBuffer, translucent_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
-        self.mesh_translucent(translucent_staging_buffer);
-        translucent_staging_buffer.format_quads();
-        self.trans_quad_count = translucent_staging_buffer.idx as u32 / 8;
-        self.trans_segment = geometry_buffer_allocator.alloc(translucent_staging_buffer.idx + 4 * mem::size_of::<u32>());
-
+    pub fn mesh_solid(&mut self, solid_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
         self.mesh_south_north(solid_staging_buffer);
         self.mesh_west_east(solid_staging_buffer);
         self.mesh_down_up(solid_staging_buffer);
@@ -945,7 +942,7 @@ impl Section {
                                     light_staging_buffer.put_u32(south.get_face_light::<{North}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
-                                    light_staging_buffer.put_u32(0);
+                                    light_staging_buffer.put_u32(rand::random::<u32>() & 15);
                                 }
                             }
                             light_staging_buffer.put_u32(self.get_face_light::<{North}>(BlockPos::new(x, y, z)) as u32);
@@ -984,7 +981,7 @@ impl Section {
                                     light_staging_buffer.put_u32(west.get_face_light::<{East}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
-                                    light_staging_buffer.put_u32(0);
+                                    light_staging_buffer.put_u32(rand::random::<u32>() & 15);
                                 }
                             }
                             light_staging_buffer.put_u32(self.get_face_light::<{East}>(BlockPos::new(x, y, z)) as u32);
@@ -1023,7 +1020,7 @@ impl Section {
                                     light_staging_buffer.put_u32(down.get_face_light::<{Up}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
-                                    light_staging_buffer.put_u32(0);
+                                    light_staging_buffer.put_u32(rand::random::<u32>() & 15);
                                 }
                             }
                             light_staging_buffer.put_u32(self.get_face_light::<{Up}>(BlockPos::new(x, y, z)) as u32);
@@ -1052,11 +1049,11 @@ impl Section {
         // need 1 u32 per quad
         let reserved_bytes = trans_staging_buffer.idx / BYTES_PER_QUAD * mem::size_of::<u32>();
         light_staging_buffer.idx = reserved_bytes;
-
         for (i, quad) in trans_staging_buffer.iter().map(|quad| mem::transmute::<&[u8; 8], &GpuQuad>(quad)).enumerate() {
             // insert the index offset of the light section
             light_staging_buffer.set_u32(i * mem::size_of::<u32>(), (light_staging_buffer.idx / mem::size_of::<u32>()) as u32);
-            
+            light_staging_buffer.put_u32(0xACAB1312);
+            continue;
             match quad.normal {
                 South => {
                     let start_x = quad.x / 16;
@@ -1090,7 +1087,7 @@ impl Section {
                                     light_staging_buffer.put_u32(south.get_face_light::<{North}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
-                                    light_staging_buffer.put_u32(0);
+                                    light_staging_buffer.put_u32(rand::random::<u32>() & 15);
                                 }
                             }
                             light_staging_buffer.put_u32(self.get_face_light::<{North}>(BlockPos::new(x, y, z)) as u32);
@@ -1129,7 +1126,7 @@ impl Section {
                                     light_staging_buffer.put_u32(west.get_face_light::<{East}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
-                                    light_staging_buffer.put_u32(0);
+                                    light_staging_buffer.put_u32(rand::random::<u32>() & 15);
                                 }
                             }
                             light_staging_buffer.put_u32(self.get_face_light::<{East}>(BlockPos::new(x, y, z)) as u32);
@@ -1168,7 +1165,7 @@ impl Section {
                                     light_staging_buffer.put_u32(down.get_face_light::<{Up}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
-                                    light_staging_buffer.put_u32(0);
+                                    light_staging_buffer.put_u32(rand::random::<u32>() & 15);
                                 }
                             }
                             light_staging_buffer.put_u32(self.get_face_light::<{Up}>(BlockPos::new(x, y, z)) as u32);
@@ -1188,37 +1185,41 @@ impl Section {
             }
         }
         
-        self.solid_light_segment = light_buffer_allocator.alloc(light_staging_buffer.idx);
-    } }
-
-    pub fn mesh_light(&mut self, solid_staging_buffer: &mut StagingBuffer, trans_staging_buffer: &mut StagingBuffer, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) { unsafe {
-        self.mesh_solid_light(solid_staging_buffer, light_staging_buffer, light_buffer_allocator);
-        self.mesh_trans_light(trans_staging_buffer, light_staging_buffer, light_buffer_allocator);
+        self.trans_light_segment = light_buffer_allocator.alloc(light_staging_buffer.idx);
     } }
 
     pub fn mesh(&mut self, solid_staging_buffer: &mut StagingBuffer, trans_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) {
         geometry_buffer_allocator.free(self.solid_segment.take());
         geometry_buffer_allocator.free(self.trans_segment.take());
         light_buffer_allocator.free(self.solid_light_segment.take());
+        light_buffer_allocator.free(self.trans_light_segment.take());
 
-        self.mesh_geometry(solid_staging_buffer, trans_staging_buffer, geometry_buffer_allocator);
+        self.mesh_solid(solid_staging_buffer, geometry_buffer_allocator);
         self.mesh_solid_light(solid_staging_buffer, light_staging_buffer, light_buffer_allocator);
-        if let (Some(geometry_segment), Some(solid_light_segment)) = (&self.solid_segment, &self.solid_light_segment) {
-            geometry_buffer_allocator.upload_offset(geometry_segment, &[self.section_pos.x, self.section_pos.y, self.section_pos.z], 3 * mem::size_of::<u32>(), 0);
-            geometry_buffer_allocator.upload_offset(geometry_segment, &solid_staging_buffer.buffer.0.as_slice(), solid_staging_buffer.idx, 4 * mem::size_of::<u32>());
-            geometry_buffer_allocator.upload_offset(geometry_segment, &[(solid_light_segment.offset as usize / mem::size_of::<u32>()) as u32], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
+        if let (Some(solid_segment), Some(solid_light_segment)) = (&self.solid_segment, &self.solid_light_segment) {
+            geometry_buffer_allocator.upload_offset(solid_segment, &[self.section_pos.x, self.section_pos.y, self.section_pos.z], 3 * mem::size_of::<u32>(), 0);
+            geometry_buffer_allocator.upload_offset(solid_segment, &solid_staging_buffer.buffer.0.as_slice(), solid_staging_buffer.idx, 4 * mem::size_of::<u32>());
+            geometry_buffer_allocator.upload_offset(solid_segment, &[(solid_light_segment.offset as usize / mem::size_of::<u32>()) as u32], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
 
             light_buffer_allocator.upload(solid_light_segment, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.idx);
         }
-        
-        if let (Some(trans_segment)) = (&self.trans_segment) {
+        solid_staging_buffer.reset();
+        light_staging_buffer.reset();
+
+        self.mesh_trans(trans_staging_buffer, geometry_buffer_allocator);
+        self.mesh_trans_light(trans_staging_buffer, light_staging_buffer, light_buffer_allocator);
+        if let (Some(trans_segment), Some(trans_light_segment)) = (&self.trans_segment, &self.trans_light_segment) {
             geometry_buffer_allocator.upload_offset(trans_segment, &[self.section_pos.x, self.section_pos.y, self.section_pos.z], 3 * mem::size_of::<u32>(), 0);
             geometry_buffer_allocator.upload_offset(trans_segment, &trans_staging_buffer.buffer.0.as_slice(), trans_staging_buffer.idx, 4 * mem::size_of::<u32>());
             geometry_buffer_allocator.upload_offset(trans_segment, &[0], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
+
+            light_buffer_allocator.upload(trans_light_segment, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.idx);
         }
-        solid_staging_buffer.reset();
-        light_staging_buffer.reset();
         trans_staging_buffer.reset();
+        light_staging_buffer.reset();
+
+        println!("{:?}", light_buffer_allocator.device_buffer.get_sub_data::<u32>(self.trans_light_segment.unwrap().offset as isize, self.trans_light_segment.unwrap().length.get() as isize));
+        // println!("{:?}", light_buffer_allocator.device_buffer.get_sub_data::<u32>(self.solid_light_segment.unwrap().offset as isize, self.solid_light_segment.unwrap().length.get() as isize));
     }
 
     pub fn get_bounding_box(&self, camera: &Camera) -> BoundingBox<f32> {

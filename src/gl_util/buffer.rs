@@ -1,4 +1,4 @@
-use std::ffi::c_void;
+use std::{ffi::c_void, mem};
 
 #[derive(Debug)]
 pub struct Buffer {
@@ -58,7 +58,7 @@ impl Buffer {
     } }
     // length and offset in bytes
     pub fn get_sub_data<T: Sized + Clone + Default>(&self, offset: isize, length: isize) -> Vec<T> { unsafe {
-        let mut data = vec![Default::default(); (length as usize) * std::mem::size_of::<T>()];
+        let mut data = vec![Default::default(); length as usize / mem::size_of::<T>()];
         gl::GetNamedBufferSubData(
             self.id,
             offset,

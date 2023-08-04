@@ -5,6 +5,7 @@
 #![allow(unused_parens)]
 #![allow(unused_unsafe)]
 #![allow(unused_imports)]
+#![allow(unreachable_code)]
 #![feature(slice_as_chunks)]
 #![feature(pointer_byte_offsets)]
 #![feature(adt_const_params)]

@@ -100,10 +100,7 @@ impl World {
 
     pub fn mesh(&mut self, section_pos: Vector3<i32>) {
         if let Some(section) = self.sections.get_mut(&section_pos) {
-            section.mesh_geometry(&mut self.solid_staging_buffer, &mut self.trans_staging_buffer, &mut self.geometry_buffer_allocator);
-            section.mesh_solid_light(&mut self.solid_staging_buffer, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
-            self.solid_staging_buffer.reset();
-            self.light_staging_buffer.reset();
+            section.mesh(&mut self.solid_staging_buffer, &mut self.trans_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator)
         }
     }
 
@@ -215,7 +212,7 @@ impl World {
         }
     }
 
-    pub const MAX_SECTION_X: usize = 2;
-    pub const MAX_SECTION_Y: usize = 2;
-    pub const MAX_SECTION_Z: usize = 2;
+    pub const MAX_SECTION_X: usize = 1;
+    pub const MAX_SECTION_Y: usize = 1;
+    pub const MAX_SECTION_Z: usize = 1;
 }

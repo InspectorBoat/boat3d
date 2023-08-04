@@ -221,31 +221,31 @@ impl WorldRenderer {
                 
                 (*self.indices.get()).push(0 as *const c_void);
 
-                // only render section if it has a geometry and light page
-                if let (Some(geometry_page), Some(light_page)) = (&section.solid_segment, &section.solid_light_segment) {
+                // only render section if it has a geometry and light segment
+                if let (Some(solid_segment), Some(solid_light_segment)) = (&section.solid_segment, &section.solid_light_segment) {
                     let solid_count = section.solid_quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
-                    let solid_base_vertex = geometry_page.offset as i32 / BYTES_PER_QUAD * ELEMENTS_PER_QUAD;
+                    let solid_base_vertex = solid_segment.offset as i32 / BYTES_PER_QUAD * ELEMENTS_PER_QUAD;
                     (*self.solid_counts.get()).push(solid_count);
                     (*self.solid_base_vertices.get()).push(solid_base_vertex);
                     solid_drawn_sections += 1;
                 }
-                if let (Some(trans_page)) = (&section.trans_segment) {
+                if let (Some(trans_segment), Some(solid_light_segment)) = (&section.trans_segment, &section.trans_light_segment) {
                     let trans_count = section.trans_quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
-                    let trans_base_vertex = trans_page.offset as i32 / BYTES_PER_QUAD * ELEMENTS_PER_QUAD;
+                    let trans_base_vertex = trans_segment.offset as i32 / BYTES_PER_QUAD * ELEMENTS_PER_QUAD;
                     (*self.trans_counts.get()).push(trans_count);
                     (*self.trans_base_vertices.get()).push(trans_base_vertex);
                     trans_drawn_sections += 1;
                 }
             }
 
-            gl::MultiDrawElementsBaseVertex(
-                gl::TRIANGLE_STRIP,
-                (*self.solid_counts.get()).as_ptr(),
-                gl::UNSIGNED_INT,
-                (*self.indices.get()).as_ptr(),
-                solid_drawn_sections as i32,
-                (*self.solid_base_vertices.get()).as_ptr()
-            );
+            // gl::MultiDrawElementsBaseVertex(
+            //     gl::TRIANGLE_STRIP,
+            //     (*self.solid_counts.get()).as_ptr(),
+            //     gl::UNSIGNED_INT,
+            //     (*self.indices.get()).as_ptr(),
+            //     solid_drawn_sections as i32,
+            //     (*self.solid_base_vertices.get()).as_ptr()
+            // );
 
     
             post_program.bind();
@@ -280,6 +280,7 @@ impl WorldRenderer {
 
             gl::ActiveTexture(gl::TEXTURE1);
             block_texture.bind(gl::TEXTURE_2D_ARRAY);
+            world.light_buffer_allocator.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
 
             gl::MultiDrawElementsBaseVertex(
                 gl::TRIANGLE_STRIP,
