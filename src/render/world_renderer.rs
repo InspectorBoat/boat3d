@@ -229,6 +229,7 @@ impl WorldRenderer {
                     (*self.solid_base_vertices.get()).push(solid_base_vertex);
                     solid_drawn_sections += 1;
                 }
+                
                 if let (Some(trans_segment), Some(solid_light_segment)) = (&section.trans_segment, &section.trans_light_segment) {
                     let trans_count = section.trans_quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
                     let trans_base_vertex = trans_segment.offset as i32 / BYTES_PER_QUAD * ELEMENTS_PER_QUAD;
