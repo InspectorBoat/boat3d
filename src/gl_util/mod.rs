@@ -6,3 +6,4 @@ pub mod program;
 pub mod shader;
 pub mod texture;
 pub mod renderbuffer;
+pub mod fps_tracker;

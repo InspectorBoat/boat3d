@@ -1,5 +1,6 @@
 use std::{ffi::c_void, mem, cell::UnsafeCell};
 
+use cgmath::Vector4;
 use cgmath_culling::Intersection;
 use gl::types::GLsync;
 
@@ -197,7 +198,7 @@ impl WorldRenderer {
     
             gl::Enable(gl::DEPTH_TEST);
     
-            let camera_matrix: [f32; 16] = world.camera.get_matrix();
+            let camera_matrix: [f32; 16] = world.camera.get_matrix_array();
             gl::UniformMatrix4fv(0, 1, gl::FALSE, &raw const camera_matrix as *const f32);
             
             let frustum = world.camera.get_frustum();

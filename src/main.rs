@@ -21,19 +21,23 @@ mod block;
 mod world;
 mod gl_util;
 mod render;
+mod entity;
 
-use std::collections::HashMap;
+use std::hint::black_box;
+use std::time::Instant;
+use std::{collections::HashMap, hint};
 use std::env;
-use cgmath::Vector3;
+use cgmath::{Vector3, Vector4};
+use cgmath_culling::BoundingBox;
 use gl::types::GLsync;
+use gl_util::fps_tracker::FpsTracker;
 use glfw::{Context, Window, Action, Key};
 use gl_util::gl_helper::*;
 use world::world::World;
 use crate::gl_util::gl_helper;
 
 fn main() { unsafe {
-    env::set_var("RUST_BACKTRACE", "1");
-
+    // env::set_var("RUST_BACKTRACE", "1");
     let mut glfw = gl_helper::init_glfw();
     let mut status = WindowStatus::new();
     let (mut window, events) = gl_helper::create_window(&status);
@@ -49,10 +53,9 @@ fn main() { unsafe {
     world.light_buffer_allocator.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
     
     glfw.set_swap_interval(glfw::SwapInterval::None);
-
+    
     let mut keys: HashMap<glfw::Key, bool> = HashMap::new();
-    let mut start = std::time::Instant::now();
-    let mut frames = 1;
+    let mut fps = FpsTracker::new();
     while !window.should_close() {
         glfw.poll_events();
         glfw::flush_messages(&events).for_each(|(_, event)| handle_window_event(&mut window, &mut world, event, &mut keys, &mut status));
@@ -67,13 +70,7 @@ fn main() { unsafe {
         
         // world.renderer.post_render();
         
-        if frames % 100 == 0 {
-            frames = 1;
-            println!("fps: {}", 1_000_000_000.0 / (start.elapsed().as_nanos() as f64 / 100.0));
-            start = std::time::Instant::now();
-        } else {
-            frames += 1;
-        }
+        fps.tick();
         window.swap_buffers();
     }
 } }
