@@ -176,8 +176,10 @@ impl World {
         }
     } }
 
-    pub fn render(&self, status: &WindowStatus) { unsafe {
+    pub fn render(&mut self, status: &WindowStatus) { unsafe {
+        // self.renderer.pre_render();
         self.renderer.render(self, status);
+        // self.renderer.post_render();
     } }
 
     pub fn update(&mut self, keys: &mut HashMap<Key, bool>) {
@@ -212,7 +214,7 @@ impl World {
         }
     }
 
-    pub const MAX_SECTION_X: usize = 1;
-    pub const MAX_SECTION_Y: usize = 1;
-    pub const MAX_SECTION_Z: usize = 1;
+    pub const MAX_SECTION_X: usize = 32;
+    pub const MAX_SECTION_Y: usize = 32;
+    pub const MAX_SECTION_Z: usize = 32;
 }

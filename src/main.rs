@@ -42,7 +42,7 @@ fn main() { unsafe {
     let mut status = WindowStatus::new();
     let (mut window, events) = gl_helper::create_window(&status);
     gl_helper::init_gl(&mut window);
-
+    
     let mut world = World::new();
     
     world.renderer.init(&status);
@@ -61,17 +61,9 @@ fn main() { unsafe {
         glfw::flush_messages(&events).for_each(|(_, event)| handle_window_event(&mut window, &mut world, event, &mut keys, &mut status));
         
         world.update(&mut keys);
-
-        gl::PolygonMode(gl::FRONT_AND_BACK, status.fill_mode);
-        
-        // world.renderer.pre_render();
-
         world.render(&status);
-        
-        // world.renderer.post_render();
-        
-        fps.tick();
         window.swap_buffers();
+        fps.tick();
     }
 } }
 
@@ -97,9 +89,11 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
             
             if action != Action::Press { return }
             match key {
-                Key::Escape => { window.set_should_close(true) }
+                Key::Escape => {
+                    window.set_should_close(true);
+                }
                 Key::X => {
-                    status.fill_mode = if status.fill_mode == gl::LINE { gl::FILL } else { gl::LINE };
+                    status.fill_mode = if status.fill_mode == gl::LINE { gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL); gl::FILL } else { gl::LINE };
                 }
                 Key::Tab => {
                     if status.maximized { window.restore() }

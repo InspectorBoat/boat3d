@@ -141,10 +141,10 @@ impl WorldRenderer {
             Shader::create(gl::VERTEX_SHADER, include_str!("../shader/translucent.glsl.vert")),
             Shader::create(gl::FRAGMENT_SHADER, include_str!("../shader/translucent.glsl.frag"))
         );
-        post_program.uniform1i(0, 0);
-        post_program.uniform1i(1, 1);
-        solid_program.uniform1i(1, 1);
-        trans_program.uniform1i(1, 1);
+        post_program.uniform_1i(0, 0);
+        post_program.uniform_1i(1, 1);
+        solid_program.uniform_1i(1, 1);
+        trans_program.uniform_1i(1, 1);
     
         self.solid_program = Some(solid_program);
         self.post_program = Some(post_program);
@@ -183,30 +183,11 @@ impl WorldRenderer {
 
     pub fn render(&self, world: &World, status: &WindowStatus) { unsafe {
         if let (Some(framebuffer), Some(solid_program), Some(post_program), Some(trans_program), Some(block_texture), Some(texture_attachment)) = (&self.framebuffer, &self.solid_program, &self.post_program, &self.trans_program, &self.block_texture, &self.texture_attachment) {
-            gl::Disable(gl::BLEND);
-            
-            solid_program.bind();
-            framebuffer.bind(gl::FRAMEBUFFER);
-        
-            gl::ActiveTexture(gl::TEXTURE1);
-            block_texture.bind(gl::TEXTURE_2D_ARRAY);
-    
-            let clear_color: [u32; 4] = [0, 0, 0, 0];
-            gl::ClearNamedFramebufferuiv(framebuffer.id, gl::COLOR, 0, &raw const clear_color as *const u32);
-    
-            gl::ClearNamedFramebufferfi(framebuffer.id, gl::DEPTH_STENCIL, 0, 1.0, 0);
-    
-            gl::Enable(gl::DEPTH_TEST);
-    
             let camera_matrix: [f32; 16] = world.camera.get_matrix_array();
-            gl::UniformMatrix4fv(0, 1, gl::FALSE, &raw const camera_matrix as *const f32);
+            solid_program.uniform_matrix_4fv(0, 1, false, &raw const camera_matrix as *const f32);
+            trans_program.uniform_matrix_4fv(0, 1, false, &raw const camera_matrix as *const f32);
             
             let frustum = world.camera.get_frustum();
-
-            const ELEMENT_INDICES_PER_QUAD: i32 = 5;
-            const BYTES_PER_QUAD: i32 = 8;
-            const ELEMENTS_PER_QUAD: i32 = 4;
-            
             let mut solid_drawn_sections = 0;
             let mut trans_drawn_sections = 0;
 
@@ -240,7 +221,25 @@ impl WorldRenderer {
                 }
             }
 
+            solid_program.bind();
+            gl::Disable(gl::BLEND);
+            framebuffer.bind(gl::FRAMEBUFFER);
+            gl::ActiveTexture(gl::TEXTURE1);
+            block_texture.bind(gl::TEXTURE_2D_ARRAY);
+    
+            let CLEAR_COLOR: [u32; 4] = [0, 0, 0, 0];
+            gl::ClearNamedFramebufferuiv(framebuffer.id, gl::COLOR, 0, &raw const CLEAR_COLOR as *const u32);
+            gl::ClearNamedFramebufferfi(framebuffer.id, gl::DEPTH_STENCIL, 0, 1.0, 0);
+            gl::Enable(gl::DEPTH_TEST);
+    
+            const ELEMENT_INDICES_PER_QUAD: i32 = 5;
+            const BYTES_PER_QUAD: i32 = 8;
+            const ELEMENTS_PER_QUAD: i32 = 4;
+            
             if solid_drawn_sections > 0 {
+                if status.fill_mode == gl::LINE {
+                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
+                }
                 gl::MultiDrawElementsBaseVertex(
                     gl::TRIANGLE_STRIP,
                     (*self.solid_counts.get()).as_ptr(),
@@ -252,8 +251,9 @@ impl WorldRenderer {
             }
     
             post_program.bind();
-
-            gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
+            if status.fill_mode == gl::LINE {
+                gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
+            }
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
 
             gl::ClearColor(1.0, 1.0, 1.0, 1.0);
@@ -279,13 +279,14 @@ impl WorldRenderer {
             gl::Enable(gl::BLEND);
             gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
 
-            gl::UniformMatrix4fv(0, 1, gl::FALSE, &raw const camera_matrix as *const f32);
-
             gl::ActiveTexture(gl::TEXTURE1);
             block_texture.bind(gl::TEXTURE_2D_ARRAY);
             world.light_buffer_allocator.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
 
             if trans_drawn_sections > 0 {
+                if status.fill_mode == gl::LINE {
+                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
+                }    
                 gl::MultiDrawElementsBaseVertex(
                     gl::TRIANGLE_STRIP,
                     (*self.trans_counts.get()).as_ptr(),

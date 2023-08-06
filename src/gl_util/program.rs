@@ -30,8 +30,12 @@ impl Program {
         gl::UseProgram(self.id);
     } }
 
-    pub fn uniform1i(&self, location: i32, v0: i32) { unsafe {
+    pub fn uniform_1i(&self, location: i32, v0: i32) { unsafe {
         gl::ProgramUniform1i(self.id, location, v0);
+    } }
+
+    pub fn uniform_matrix_4fv(&self, location: i32, count: i32, transpose: bool, v0: *const f32) { unsafe {
+        gl::ProgramUniformMatrix4fv(self.id, location, count, transpose as u8, v0);
     } }
 }
 
