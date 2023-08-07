@@ -51,7 +51,7 @@ impl World {
             for y in 0..World::MAX_SECTION_Y {
                 for z in 0..World::MAX_SECTION_Z {
                     let mut section = Box::<Section>::new_zeroed().assume_init();
-                    section.set_chunk_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
+                    section.set_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
                     section.make_terrain(&noise);
                     // section.make_terrain_alt();
                     self.add_section(section);
@@ -98,7 +98,7 @@ impl World {
         println!("{geometry_bytes_used} geometry bytes | {light_bytes_used} light bytes | {total_megabytes_used} megabytes");
     } }
 
-    pub fn mesh(&mut self, section_pos: Vector3<i32>) {
+    pub fn mesh_section(&mut self, section_pos: Vector3<i32>) {
         if let Some(section) = self.sections.get_mut(&section_pos) {
             section.mesh(&mut self.solid_staging_buffer, &mut self.trans_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator)
         }

@@ -287,8 +287,8 @@ impl Section {
         // self.blocks[BlockPos::new(1, 2, 1).index] = 3;
     }
 
-    pub fn set_chunk_pos(&mut self, chunk_pos: Vector3<i32>) {
-        self.section_pos = chunk_pos;
+    pub fn set_pos(&mut self, section_pos: Vector3<i32>) {
+        self.section_pos = section_pos;
     }
     
     // rel_x, rel_y, rel_z = x, y, z
