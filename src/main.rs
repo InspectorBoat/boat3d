@@ -29,10 +29,9 @@ use std::{collections::HashMap, hint};
 use std::env;
 use cgmath::{Vector3, Vector4};
 use cgmath_culling::BoundingBox;
-use gl::types::GLsync;
 use gl_util::fps_tracker::FpsTracker;
 use glfw::{Context, Window, Action, Key};
-use gl_util::gl_helper::*;
+use gl_util::{gl_helper::*, gl_wrapper};
 use world::world::World;
 use crate::gl_util::gl_helper;
 
@@ -49,8 +48,8 @@ fn main() { unsafe {
     world.generate();
     world.mesh_all();
     
-    world.geometry_buffer_allocator.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 0);
-    world.light_buffer_allocator.device_buffer.bind_indexed_target_base(gl::SHADER_STORAGE_BUFFER, 1);
+    world.geometry_buffer_allocator.device_buffer.bind_indexed_target_base(gl_wrapper::SHADER_STORAGE_BUFFER, 0);
+    world.light_buffer_allocator.device_buffer.bind_indexed_target_base(gl_wrapper::SHADER_STORAGE_BUFFER, 1);
     
     glfw.set_swap_interval(glfw::SwapInterval::None);
     
@@ -70,7 +69,7 @@ fn main() { unsafe {
 fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::WindowEvent, keys: &mut HashMap<Key, bool>, status: &mut WindowStatus) { unsafe {
     match event {
         glfw::WindowEvent::Size(width, height) => {
-            gl::Viewport(0, 0, width, height);
+            gl_wrapper::Viewport(0, 0, width, height);
             (status.width, status.height) = (width, height);
             world.camera.ratio = width as f32 / height as f32;
             world.renderer.make_framebuffer(status);
@@ -93,7 +92,7 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
                     window.set_should_close(true);
                 }
                 Key::X => {
-                    status.fill_mode = if status.fill_mode == gl::LINE { gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL); gl::FILL } else { gl::LINE };
+                    status.fill_mode = if status.fill_mode == gl_wrapper::LINE { gl_wrapper::PolygonMode(gl_wrapper::FRONT_AND_BACK, gl_wrapper::FILL); gl_wrapper::FILL } else { gl_wrapper::LINE };
                 }
                 Key::Tab => {
                     if status.maximized { window.restore() }

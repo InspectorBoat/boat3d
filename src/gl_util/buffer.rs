@@ -1,5 +1,7 @@
 use std::{ffi::c_void, mem};
 
+use super::gl_wrapper;
+
 #[derive(Debug)]
 pub struct Buffer {
     pub id: u32
@@ -8,48 +10,49 @@ pub struct Buffer {
 impl Buffer {
     pub fn create() -> Buffer { unsafe {
         let mut id: u32 = 0;
-        gl::CreateBuffers(1, &mut id);
+        gl_wrapper::CreateBuffers(1, &mut id);
         return Buffer {
             id: id
         };
     } }
     pub fn generate() -> Buffer { unsafe {
         let mut id: u32 = 0;
-        gl::GenBuffers(1, &mut id);
+        gl_wrapper::GenBuffers(1, &mut id);
         return Buffer { id };
     } }
     pub fn bind_target(&self, target: u32) { unsafe {
-        gl::BindBuffer(target, self.id);
+        gl_wrapper::BindBuffer(target, self.id);
     } }
     pub fn bind_indexed_target_base(&self, target: u32, index: u32) { unsafe {
-        gl::BindBufferBase(target, index, self.id);
+        gl_wrapper::BindBufferBase(target, index, self.id);
     } }
     pub fn bind_indexed_target(&self, target: u32, index: u32, offset: isize, length: isize) { unsafe {
-        gl::BindBufferRange(target, index, self.id, offset, length);
+        gl_wrapper::BindBufferRange(target, index, self.id, offset, length);
     } }
     pub fn valid(&self) -> bool { unsafe {
-        return gl::IsBuffer(self.id) == gl::TRUE;
+        return gl_wrapper::IsBuffer(self.id) == gl_wrapper::TRUE;
     } }
     pub fn kill(self) { unsafe {
-        gl::DeleteBuffers(1, &self.id);
+        gl_wrapper::DeleteBuffers(1, &self.id);
     } } 
     pub fn storage(&self, length: isize, flags: u32) { unsafe {
-        gl::NamedBufferStorage(
+        gl_wrapper::NamedBufferStorage(
             self.id,
             length,
             0 as *const c_void,
             flags
         );
     } }
-    pub fn upload<T>(&self, data: &[T], length: isize, usage: gl::types::GLenum) { unsafe {
-        gl::NamedBufferData(
+    pub fn upload<T>(&self, data: &[T], length: isize, usage: u32) { unsafe {
+        gl_wrapper::NamedBufferData(
             self.id,
             length,
-            data.as_ptr() as *const c_void, usage
+            data.as_ptr() as *const c_void,
+            usage
         );
     } }
     pub fn upload_slice<T>(&self, data: &[T], buffer_start: isize, length: isize) { unsafe {
-        gl::NamedBufferSubData(
+        gl_wrapper::NamedBufferSubData(
             self.id,
             buffer_start,
             length,
@@ -59,7 +62,7 @@ impl Buffer {
     // length and offset in bytes
     pub fn get_sub_data<T: Sized + Clone + Default>(&self, offset: isize, length: isize) -> Vec<T> { unsafe {
         let mut data = vec![Default::default(); length as usize / mem::size_of::<T>()];
-        gl::GetNamedBufferSubData(
+        gl_wrapper::GetNamedBufferSubData(
             self.id,
             offset,
             length,
@@ -68,7 +71,7 @@ impl Buffer {
         return data;
     } }
     pub fn unbind(target: u32) { unsafe {
-        gl::BindBuffer(gl::NONE, target);
+        gl_wrapper::BindBuffer(gl_wrapper::NONE, target);
     } }
     pub fn fake() -> Buffer {
         return Buffer { id: u32::MAX };

@@ -2,7 +2,7 @@
 
 use std::{num::NonZeroU32, collections::BTreeSet, marker::ConstParamTy, mem, cmp::Ordering};
 use self::SortType::*;
-use super::buffer::Buffer;
+use super::{buffer::Buffer, gl_wrapper};
 
 #[derive(Debug)]
 pub struct BufferAllocator {
@@ -16,9 +16,9 @@ pub struct BufferAllocator {
 impl BufferAllocator {
     pub fn new(size: usize) -> BufferAllocator { unsafe {
         let device_buffer = Buffer::create();
-        device_buffer.storage(size as isize, gl::DYNAMIC_STORAGE_BIT);
+        device_buffer.storage(size as isize, gl_wrapper::DYNAMIC_STORAGE_BIT);
         let staging_buffer = Buffer::create();
-        staging_buffer.storage(1024 * 1024, gl::DYNAMIC_STORAGE_BIT);
+        staging_buffer.storage(1024 * 1024, gl_wrapper::DYNAMIC_STORAGE_BIT);
 
         let segment = BufferSegment { offset: 0, length: NonZeroU32::new_unchecked(size as u32) };
 
@@ -89,7 +89,7 @@ impl BufferAllocator {
         }
         self.staging_buffer.upload_slice(data, 0, length as isize);
         
-        gl::CopyNamedBufferSubData(self.staging_buffer.id, self.device_buffer.id, 0, segment.offset as isize, length as isize);
+        gl_wrapper::CopyNamedBufferSubData(self.staging_buffer.id, self.device_buffer.id, 0, segment.offset as isize, length as isize);
         // self.buffer.upload_slice(data, (page.start * P) as isize, length);
     } }
 
@@ -99,7 +99,7 @@ impl BufferAllocator {
         }
         self.staging_buffer.upload_slice(data, 0, length as isize);
         
-        gl::CopyNamedBufferSubData(self.staging_buffer.id, self.device_buffer.id, 0, (segment.offset as usize + offset) as isize, length as isize);
+        gl_wrapper::CopyNamedBufferSubData(self.staging_buffer.id, self.device_buffer.id, 0, (segment.offset as usize + offset) as isize, length as isize);
         // self.device_buffer.upload_slice(data, (segment.offset + offset) as isize, length as isize);
     } }
 }
