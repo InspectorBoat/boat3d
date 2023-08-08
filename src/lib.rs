@@ -7,6 +7,7 @@
 #![allow(unused_imports)]
 #![allow(unreachable_code)]
 #![allow(unused_mut)]
+#![allow(non_upper_case_globals)]
 #![feature(slice_as_chunks)]
 #![feature(pointer_byte_offsets)]
 #![feature(adt_const_params)]
@@ -24,14 +25,15 @@ mod gl_util;
 mod render;
 mod entity;
 
-use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem, slice, cell::RefCell, fs::File};
+use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem, slice, cell::RefCell, fs::File, str::FromStr};
 use std::env;
 use cgmath::Vector3;
 use cgmath_culling::{BoundingBox, Intersection};
 use gl::{types, FramebufferParameteri};
-use glfw::{Context, Window, Action, Key};
-use jni::{JNIEnv, objects::{JClass, JByteBuffer, ReleaseMode, JPrimitiveArray, JObject}, sys::{jlong, jint, jchar, jcharArray, jshort, jobject}};
+use glfw::{Context, Window, Action, Key, Glfw, ffi::glfwGetCurrentContext};
+use jni::{JNIEnv, objects::{JClass, JByteBuffer, ReleaseMode, JPrimitiveArray, JObject, JString, JValueOwned, JFieldID}, sys::{jlong, jint, jchar, jcharArray, jshort, jobject}, strings::JNIString, signature::ReturnType, descriptors::Desc};
 use world::{world::World, section::Section, blockpos::BlockPos};
+use jni::errors::Result;
 
 // Loads a 16-tall chunk column
 #[no_mangle]
@@ -125,7 +127,6 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUpdateBlock<'local>(
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeCreateWorld<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
-    worldWrapper: JObject
 ) -> jlong { unsafe {
     let mut world: Box<World> = Box::from(World::new());
 
@@ -170,3 +171,35 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeGenerateDrawCommands<'l
 ) { unsafe {
     let world = &*(world as *const World);
 } }
+
+#[no_mangle]
+pub extern "system" fn Java_net_boat3d_NativeWorld_nativeGetPointers<'local>(
+    mut env: JNIEnv<'local>,
+    class: JClass<'local>,
+    capabilities: jobject
+) { unsafe {
+    gl::load_with(|symbol| {
+        if let Ok(jobject) = env.get_field(mem::transmute::<_, JObject>(capabilities), symbol, "J") {
+            if let Ok(j) = jobject.j() {
+                return j as *const c_void;
+            } else {
+                return 0 as *const c_void;
+            }
+        } else {
+            return 0 as *const c_void;
+        }
+    });
+    env.exception_clear();
+} }
+
+/*
+    let boolean = token('Z').map(|_| Primitive::Boolean);
+    let byte = token('B').map(|_| Primitive::Byte);
+    let char_type = token('C').map(|_| Primitive::Char);
+    let double = token('D').map(|_| Primitive::Double);
+    let float = token('F').map(|_| Primitive::Float);
+    let int = token('I').map(|_| Primitive::Int);
+    let long = token('J').map(|_| Primitive::Long);
+    let short = token('S').map(|_| Primitive::Short);
+    let void = token('V').map(|_| Primitive::Void);
+ */

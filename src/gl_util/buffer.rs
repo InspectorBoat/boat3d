@@ -22,17 +22,17 @@ impl Buffer {
         gl::BindBuffer(target, self.id);
     } }
     pub fn bind_indexed_target_base(&self, target: u32, index: u32) { unsafe {
-            gl::BindBufferBase(target, index, self.id);
-    } }   
+        gl::BindBufferBase(target, index, self.id);
+    } }
     pub fn bind_indexed_target(&self, target: u32, index: u32, offset: isize, length: isize) { unsafe {
-            gl::BindBufferRange(target, index, self.id, offset, length);
+        gl::BindBufferRange(target, index, self.id, offset, length);
     } }
     pub fn valid(&self) -> bool { unsafe {
         return gl::IsBuffer(self.id) == gl::TRUE;
     } }
     pub fn kill(self) { unsafe {
         gl::DeleteBuffers(1, &self.id);
-    } }
+    } } 
     pub fn storage(&self, length: isize, flags: u32) { unsafe {
         gl::NamedBufferStorage(
             self.id,

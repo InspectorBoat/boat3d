@@ -7,3 +7,4 @@ pub mod shader;
 pub mod texture;
 pub mod renderbuffer;
 pub mod fps_tracker;
+pub mod gl_wrapper;
