@@ -698,6 +698,10432 @@ pub unsafe fn ViewportIndexedf(index: GLuint, x: GLfloat, y: GLfloat, w: GLfloat
 pub unsafe fn ViewportIndexedfv(index: GLuint, v: *const GLfloat) -> () { if EXTERNAL_POINTERS { mem::transmute::<_, extern "system" fn(GLuint, *const GLfloat) -> ()>((*STORAGE).ViewportIndexedfv.f)(index, v) } else { gl::ViewportIndexedfv(index, v) } }
 pub unsafe fn WaitSync(sync: GLsync, flags: GLbitfield, timeout: GLuint64) -> () { if EXTERNAL_POINTERS { mem::transmute::<_, extern "system" fn(GLsync, GLbitfield, GLuint64) -> ()>((*STORAGE).WaitSync.f)(sync, flags, timeout) } else { gl::WaitSync(sync, flags, timeout) } }
 
+pub mod ActiveShaderProgram {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ActiveShaderProgram::is_loaded() }
+        else { (*STORAGE).ActiveShaderProgram.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ActiveShaderProgram = FnPtr::new(metaloadfn(&mut loadfn, "glActiveShaderProgram", &[]))
+    } }
+}
+pub mod ActiveTexture {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ActiveTexture::is_loaded() }
+        else { (*STORAGE).ActiveTexture.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ActiveTexture = FnPtr::new(metaloadfn(&mut loadfn, "glActiveTexture", &["glActiveTextureARB"]))
+    } }
+}
+pub mod AttachShader {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::AttachShader::is_loaded() }
+        else { (*STORAGE).AttachShader.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).AttachShader = FnPtr::new(metaloadfn(&mut loadfn, "glAttachShader", &["glAttachObjectARB"]))
+    } }
+}
+pub mod BeginConditionalRender {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BeginConditionalRender::is_loaded() }
+        else { (*STORAGE).BeginConditionalRender.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BeginConditionalRender = FnPtr::new(metaloadfn(&mut loadfn, "glBeginConditionalRender", &["glBeginConditionalRenderNV"]))
+    } }
+}
+pub mod BeginQuery {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BeginQuery::is_loaded() }
+        else { (*STORAGE).BeginQuery.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BeginQuery = FnPtr::new(metaloadfn(&mut loadfn, "glBeginQuery", &["glBeginQueryARB"]))
+    } }
+}
+pub mod BeginQueryIndexed {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BeginQueryIndexed::is_loaded() }
+        else { (*STORAGE).BeginQueryIndexed.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BeginQueryIndexed = FnPtr::new(metaloadfn(&mut loadfn, "glBeginQueryIndexed", &[]))
+    } }
+}
+pub mod BeginTransformFeedback {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BeginTransformFeedback::is_loaded() }
+        else { (*STORAGE).BeginTransformFeedback.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BeginTransformFeedback = FnPtr::new(metaloadfn(&mut loadfn, "glBeginTransformFeedback", &["glBeginTransformFeedbackEXT", "glBeginTransformFeedbackNV"]))
+    } }
+}
+pub mod BindAttribLocation {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindAttribLocation::is_loaded() }
+        else { (*STORAGE).BindAttribLocation.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindAttribLocation = FnPtr::new(metaloadfn(&mut loadfn, "glBindAttribLocation", &["glBindAttribLocationARB"]))
+    } }
+}
+pub mod BindBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindBuffer::is_loaded() }
+        else { (*STORAGE).BindBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glBindBuffer", &["glBindBufferARB"]))
+    } }
+}
+pub mod BindBufferBase {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindBufferBase::is_loaded() }
+        else { (*STORAGE).BindBufferBase.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindBufferBase = FnPtr::new(metaloadfn(&mut loadfn, "glBindBufferBase", &["glBindBufferBaseEXT", "glBindBufferBaseNV"]))
+    } }
+}
+pub mod BindBufferRange {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindBufferRange::is_loaded() }
+        else { (*STORAGE).BindBufferRange.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindBufferRange = FnPtr::new(metaloadfn(&mut loadfn, "glBindBufferRange", &["glBindBufferRangeEXT", "glBindBufferRangeNV"]))
+    } }
+}
+pub mod BindBuffersBase {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindBuffersBase::is_loaded() }
+        else { (*STORAGE).BindBuffersBase.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindBuffersBase = FnPtr::new(metaloadfn(&mut loadfn, "glBindBuffersBase", &[]))
+    } }
+}
+pub mod BindBuffersRange {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindBuffersRange::is_loaded() }
+        else { (*STORAGE).BindBuffersRange.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindBuffersRange = FnPtr::new(metaloadfn(&mut loadfn, "glBindBuffersRange", &[]))
+    } }
+}
+pub mod BindFragDataLocation {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindFragDataLocation::is_loaded() }
+        else { (*STORAGE).BindFragDataLocation.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindFragDataLocation = FnPtr::new(metaloadfn(&mut loadfn, "glBindFragDataLocation", &["glBindFragDataLocationEXT"]))
+    } }
+}
+pub mod BindFragDataLocationIndexed {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindFragDataLocationIndexed::is_loaded() }
+        else { (*STORAGE).BindFragDataLocationIndexed.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindFragDataLocationIndexed = FnPtr::new(metaloadfn(&mut loadfn, "glBindFragDataLocationIndexed", &["glBindFragDataLocationIndexedEXT"]))
+    } }
+}
+pub mod BindFramebuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindFramebuffer::is_loaded() }
+        else { (*STORAGE).BindFramebuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindFramebuffer = FnPtr::new(metaloadfn(&mut loadfn, "glBindFramebuffer", &[]))
+    } }
+}
+pub mod BindImageTexture {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindImageTexture::is_loaded() }
+        else { (*STORAGE).BindImageTexture.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindImageTexture = FnPtr::new(metaloadfn(&mut loadfn, "glBindImageTexture", &[]))
+    } }
+}
+pub mod BindImageTextures {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindImageTextures::is_loaded() }
+        else { (*STORAGE).BindImageTextures.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindImageTextures = FnPtr::new(metaloadfn(&mut loadfn, "glBindImageTextures", &[]))
+    } }
+}
+pub mod BindProgramPipeline {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindProgramPipeline::is_loaded() }
+        else { (*STORAGE).BindProgramPipeline.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindProgramPipeline = FnPtr::new(metaloadfn(&mut loadfn, "glBindProgramPipeline", &[]))
+    } }
+}
+pub mod BindRenderbuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindRenderbuffer::is_loaded() }
+        else { (*STORAGE).BindRenderbuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindRenderbuffer = FnPtr::new(metaloadfn(&mut loadfn, "glBindRenderbuffer", &[]))
+    } }
+}
+pub mod BindSampler {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindSampler::is_loaded() }
+        else { (*STORAGE).BindSampler.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindSampler = FnPtr::new(metaloadfn(&mut loadfn, "glBindSampler", &[]))
+    } }
+}
+pub mod BindSamplers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindSamplers::is_loaded() }
+        else { (*STORAGE).BindSamplers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindSamplers = FnPtr::new(metaloadfn(&mut loadfn, "glBindSamplers", &[]))
+    } }
+}
+pub mod BindTexture {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindTexture::is_loaded() }
+        else { (*STORAGE).BindTexture.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindTexture = FnPtr::new(metaloadfn(&mut loadfn, "glBindTexture", &["glBindTextureEXT"]))
+    } }
+}
+pub mod BindTextureUnit {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindTextureUnit::is_loaded() }
+        else { (*STORAGE).BindTextureUnit.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindTextureUnit = FnPtr::new(metaloadfn(&mut loadfn, "glBindTextureUnit", &[]))
+    } }
+}
+pub mod BindTextures {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindTextures::is_loaded() }
+        else { (*STORAGE).BindTextures.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindTextures = FnPtr::new(metaloadfn(&mut loadfn, "glBindTextures", &[]))
+    } }
+}
+pub mod BindTransformFeedback {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindTransformFeedback::is_loaded() }
+        else { (*STORAGE).BindTransformFeedback.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindTransformFeedback = FnPtr::new(metaloadfn(&mut loadfn, "glBindTransformFeedback", &[]))
+    } }
+}
+pub mod BindVertexArray {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindVertexArray::is_loaded() }
+        else { (*STORAGE).BindVertexArray.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindVertexArray = FnPtr::new(metaloadfn(&mut loadfn, "glBindVertexArray", &["glBindVertexArrayOES"]))
+    } }
+}
+pub mod BindVertexBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindVertexBuffer::is_loaded() }
+        else { (*STORAGE).BindVertexBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindVertexBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glBindVertexBuffer", &[]))
+    } }
+}
+pub mod BindVertexBuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BindVertexBuffers::is_loaded() }
+        else { (*STORAGE).BindVertexBuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BindVertexBuffers = FnPtr::new(metaloadfn(&mut loadfn, "glBindVertexBuffers", &[]))
+    } }
+}
+pub mod BlendColor {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BlendColor::is_loaded() }
+        else { (*STORAGE).BlendColor.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BlendColor = FnPtr::new(metaloadfn(&mut loadfn, "glBlendColor", &["glBlendColorEXT"]))
+    } }
+}
+pub mod BlendEquation {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BlendEquation::is_loaded() }
+        else { (*STORAGE).BlendEquation.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BlendEquation = FnPtr::new(metaloadfn(&mut loadfn, "glBlendEquation", &["glBlendEquationEXT"]))
+    } }
+}
+pub mod BlendEquationSeparate {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BlendEquationSeparate::is_loaded() }
+        else { (*STORAGE).BlendEquationSeparate.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BlendEquationSeparate = FnPtr::new(metaloadfn(&mut loadfn, "glBlendEquationSeparate", &["glBlendEquationSeparateEXT"]))
+    } }
+}
+pub mod BlendEquationSeparatei {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BlendEquationSeparatei::is_loaded() }
+        else { (*STORAGE).BlendEquationSeparatei.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BlendEquationSeparatei = FnPtr::new(metaloadfn(&mut loadfn, "glBlendEquationSeparatei", &["glBlendEquationSeparateIndexedAMD", "glBlendEquationSeparateiARB", "glBlendEquationSeparateiEXT", "glBlendEquationSeparateiOES"]))
+    } }
+}
+pub mod BlendEquationi {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BlendEquationi::is_loaded() }
+        else { (*STORAGE).BlendEquationi.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BlendEquationi = FnPtr::new(metaloadfn(&mut loadfn, "glBlendEquationi", &["glBlendEquationIndexedAMD", "glBlendEquationiARB", "glBlendEquationiEXT", "glBlendEquationiOES"]))
+    } }
+}
+pub mod BlendFunc {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BlendFunc::is_loaded() }
+        else { (*STORAGE).BlendFunc.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BlendFunc = FnPtr::new(metaloadfn(&mut loadfn, "glBlendFunc", &[]))
+    } }
+}
+pub mod BlendFuncSeparate {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BlendFuncSeparate::is_loaded() }
+        else { (*STORAGE).BlendFuncSeparate.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BlendFuncSeparate = FnPtr::new(metaloadfn(&mut loadfn, "glBlendFuncSeparate", &["glBlendFuncSeparateEXT", "glBlendFuncSeparateINGR"]))
+    } }
+}
+pub mod BlendFuncSeparatei {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BlendFuncSeparatei::is_loaded() }
+        else { (*STORAGE).BlendFuncSeparatei.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BlendFuncSeparatei = FnPtr::new(metaloadfn(&mut loadfn, "glBlendFuncSeparatei", &["glBlendFuncSeparateIndexedAMD", "glBlendFuncSeparateiARB", "glBlendFuncSeparateiEXT", "glBlendFuncSeparateiOES"]))
+    } }
+}
+pub mod BlendFunci {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BlendFunci::is_loaded() }
+        else { (*STORAGE).BlendFunci.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BlendFunci = FnPtr::new(metaloadfn(&mut loadfn, "glBlendFunci", &["glBlendFuncIndexedAMD", "glBlendFunciARB", "glBlendFunciEXT", "glBlendFunciOES"]))
+    } }
+}
+pub mod BlitFramebuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BlitFramebuffer::is_loaded() }
+        else { (*STORAGE).BlitFramebuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BlitFramebuffer = FnPtr::new(metaloadfn(&mut loadfn, "glBlitFramebuffer", &["glBlitFramebufferEXT", "glBlitFramebufferNV"]))
+    } }
+}
+pub mod BlitNamedFramebuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BlitNamedFramebuffer::is_loaded() }
+        else { (*STORAGE).BlitNamedFramebuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BlitNamedFramebuffer = FnPtr::new(metaloadfn(&mut loadfn, "glBlitNamedFramebuffer", &[]))
+    } }
+}
+pub mod BufferData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BufferData::is_loaded() }
+        else { (*STORAGE).BufferData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BufferData = FnPtr::new(metaloadfn(&mut loadfn, "glBufferData", &["glBufferDataARB"]))
+    } }
+}
+pub mod BufferStorage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BufferStorage::is_loaded() }
+        else { (*STORAGE).BufferStorage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BufferStorage = FnPtr::new(metaloadfn(&mut loadfn, "glBufferStorage", &["glBufferStorageEXT"]))
+    } }
+}
+pub mod BufferSubData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::BufferSubData::is_loaded() }
+        else { (*STORAGE).BufferSubData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).BufferSubData = FnPtr::new(metaloadfn(&mut loadfn, "glBufferSubData", &["glBufferSubDataARB"]))
+    } }
+}
+pub mod CheckFramebufferStatus {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CheckFramebufferStatus::is_loaded() }
+        else { (*STORAGE).CheckFramebufferStatus.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CheckFramebufferStatus = FnPtr::new(metaloadfn(&mut loadfn, "glCheckFramebufferStatus", &["glCheckFramebufferStatusEXT"]))
+    } }
+}
+pub mod CheckNamedFramebufferStatus {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CheckNamedFramebufferStatus::is_loaded() }
+        else { (*STORAGE).CheckNamedFramebufferStatus.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CheckNamedFramebufferStatus = FnPtr::new(metaloadfn(&mut loadfn, "glCheckNamedFramebufferStatus", &[]))
+    } }
+}
+pub mod ClampColor {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClampColor::is_loaded() }
+        else { (*STORAGE).ClampColor.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClampColor = FnPtr::new(metaloadfn(&mut loadfn, "glClampColor", &["glClampColorARB"]))
+    } }
+}
+pub mod Clear {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Clear::is_loaded() }
+        else { (*STORAGE).Clear.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Clear = FnPtr::new(metaloadfn(&mut loadfn, "glClear", &[]))
+    } }
+}
+pub mod ClearBufferData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearBufferData::is_loaded() }
+        else { (*STORAGE).ClearBufferData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearBufferData = FnPtr::new(metaloadfn(&mut loadfn, "glClearBufferData", &[]))
+    } }
+}
+pub mod ClearBufferSubData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearBufferSubData::is_loaded() }
+        else { (*STORAGE).ClearBufferSubData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearBufferSubData = FnPtr::new(metaloadfn(&mut loadfn, "glClearBufferSubData", &[]))
+    } }
+}
+pub mod ClearBufferfi {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearBufferfi::is_loaded() }
+        else { (*STORAGE).ClearBufferfi.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearBufferfi = FnPtr::new(metaloadfn(&mut loadfn, "glClearBufferfi", &[]))
+    } }
+}
+pub mod ClearBufferfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearBufferfv::is_loaded() }
+        else { (*STORAGE).ClearBufferfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearBufferfv = FnPtr::new(metaloadfn(&mut loadfn, "glClearBufferfv", &[]))
+    } }
+}
+pub mod ClearBufferiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearBufferiv::is_loaded() }
+        else { (*STORAGE).ClearBufferiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearBufferiv = FnPtr::new(metaloadfn(&mut loadfn, "glClearBufferiv", &[]))
+    } }
+}
+pub mod ClearBufferuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearBufferuiv::is_loaded() }
+        else { (*STORAGE).ClearBufferuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearBufferuiv = FnPtr::new(metaloadfn(&mut loadfn, "glClearBufferuiv", &[]))
+    } }
+}
+pub mod ClearColor {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearColor::is_loaded() }
+        else { (*STORAGE).ClearColor.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearColor = FnPtr::new(metaloadfn(&mut loadfn, "glClearColor", &[]))
+    } }
+}
+pub mod ClearDepth {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearDepth::is_loaded() }
+        else { (*STORAGE).ClearDepth.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearDepth = FnPtr::new(metaloadfn(&mut loadfn, "glClearDepth", &[]))
+    } }
+}
+pub mod ClearDepthf {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearDepthf::is_loaded() }
+        else { (*STORAGE).ClearDepthf.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearDepthf = FnPtr::new(metaloadfn(&mut loadfn, "glClearDepthf", &["glClearDepthfOES"]))
+    } }
+}
+pub mod ClearNamedBufferData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearNamedBufferData::is_loaded() }
+        else { (*STORAGE).ClearNamedBufferData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearNamedBufferData = FnPtr::new(metaloadfn(&mut loadfn, "glClearNamedBufferData", &[]))
+    } }
+}
+pub mod ClearNamedBufferSubData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearNamedBufferSubData::is_loaded() }
+        else { (*STORAGE).ClearNamedBufferSubData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearNamedBufferSubData = FnPtr::new(metaloadfn(&mut loadfn, "glClearNamedBufferSubData", &[]))
+    } }
+}
+pub mod ClearNamedFramebufferfi {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearNamedFramebufferfi::is_loaded() }
+        else { (*STORAGE).ClearNamedFramebufferfi.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearNamedFramebufferfi = FnPtr::new(metaloadfn(&mut loadfn, "glClearNamedFramebufferfi", &[]))
+    } }
+}
+pub mod ClearNamedFramebufferfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearNamedFramebufferfv::is_loaded() }
+        else { (*STORAGE).ClearNamedFramebufferfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearNamedFramebufferfv = FnPtr::new(metaloadfn(&mut loadfn, "glClearNamedFramebufferfv", &[]))
+    } }
+}
+pub mod ClearNamedFramebufferiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearNamedFramebufferiv::is_loaded() }
+        else { (*STORAGE).ClearNamedFramebufferiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearNamedFramebufferiv = FnPtr::new(metaloadfn(&mut loadfn, "glClearNamedFramebufferiv", &[]))
+    } }
+}
+pub mod ClearNamedFramebufferuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearNamedFramebufferuiv::is_loaded() }
+        else { (*STORAGE).ClearNamedFramebufferuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearNamedFramebufferuiv = FnPtr::new(metaloadfn(&mut loadfn, "glClearNamedFramebufferuiv", &[]))
+    } }
+}
+pub mod ClearStencil {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearStencil::is_loaded() }
+        else { (*STORAGE).ClearStencil.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearStencil = FnPtr::new(metaloadfn(&mut loadfn, "glClearStencil", &[]))
+    } }
+}
+pub mod ClearTexImage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearTexImage::is_loaded() }
+        else { (*STORAGE).ClearTexImage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearTexImage = FnPtr::new(metaloadfn(&mut loadfn, "glClearTexImage", &["glClearTexImageEXT"]))
+    } }
+}
+pub mod ClearTexSubImage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClearTexSubImage::is_loaded() }
+        else { (*STORAGE).ClearTexSubImage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClearTexSubImage = FnPtr::new(metaloadfn(&mut loadfn, "glClearTexSubImage", &["glClearTexSubImageEXT"]))
+    } }
+}
+pub mod ClientWaitSync {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClientWaitSync::is_loaded() }
+        else { (*STORAGE).ClientWaitSync.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClientWaitSync = FnPtr::new(metaloadfn(&mut loadfn, "glClientWaitSync", &["glClientWaitSyncAPPLE"]))
+    } }
+}
+pub mod ClipControl {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ClipControl::is_loaded() }
+        else { (*STORAGE).ClipControl.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ClipControl = FnPtr::new(metaloadfn(&mut loadfn, "glClipControl", &["glClipControlEXT"]))
+    } }
+}
+pub mod ColorMask {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ColorMask::is_loaded() }
+        else { (*STORAGE).ColorMask.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ColorMask = FnPtr::new(metaloadfn(&mut loadfn, "glColorMask", &[]))
+    } }
+}
+pub mod ColorMaski {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ColorMaski::is_loaded() }
+        else { (*STORAGE).ColorMaski.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ColorMaski = FnPtr::new(metaloadfn(&mut loadfn, "glColorMaski", &["glColorMaskIndexedEXT", "glColorMaskiEXT", "glColorMaskiOES"]))
+    } }
+}
+pub mod ColorP3ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ColorP3ui::is_loaded() }
+        else { (*STORAGE).ColorP3ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ColorP3ui = FnPtr::new(metaloadfn(&mut loadfn, "glColorP3ui", &[]))
+    } }
+}
+pub mod ColorP3uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ColorP3uiv::is_loaded() }
+        else { (*STORAGE).ColorP3uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ColorP3uiv = FnPtr::new(metaloadfn(&mut loadfn, "glColorP3uiv", &[]))
+    } }
+}
+pub mod ColorP4ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ColorP4ui::is_loaded() }
+        else { (*STORAGE).ColorP4ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ColorP4ui = FnPtr::new(metaloadfn(&mut loadfn, "glColorP4ui", &[]))
+    } }
+}
+pub mod ColorP4uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ColorP4uiv::is_loaded() }
+        else { (*STORAGE).ColorP4uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ColorP4uiv = FnPtr::new(metaloadfn(&mut loadfn, "glColorP4uiv", &[]))
+    } }
+}
+pub mod CompileShader {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CompileShader::is_loaded() }
+        else { (*STORAGE).CompileShader.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CompileShader = FnPtr::new(metaloadfn(&mut loadfn, "glCompileShader", &["glCompileShaderARB"]))
+    } }
+}
+pub mod CompressedTexImage1D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CompressedTexImage1D::is_loaded() }
+        else { (*STORAGE).CompressedTexImage1D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CompressedTexImage1D = FnPtr::new(metaloadfn(&mut loadfn, "glCompressedTexImage1D", &["glCompressedTexImage1DARB"]))
+    } }
+}
+pub mod CompressedTexImage2D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CompressedTexImage2D::is_loaded() }
+        else { (*STORAGE).CompressedTexImage2D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CompressedTexImage2D = FnPtr::new(metaloadfn(&mut loadfn, "glCompressedTexImage2D", &["glCompressedTexImage2DARB"]))
+    } }
+}
+pub mod CompressedTexImage3D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CompressedTexImage3D::is_loaded() }
+        else { (*STORAGE).CompressedTexImage3D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CompressedTexImage3D = FnPtr::new(metaloadfn(&mut loadfn, "glCompressedTexImage3D", &["glCompressedTexImage3DARB"]))
+    } }
+}
+pub mod CompressedTexSubImage1D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CompressedTexSubImage1D::is_loaded() }
+        else { (*STORAGE).CompressedTexSubImage1D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CompressedTexSubImage1D = FnPtr::new(metaloadfn(&mut loadfn, "glCompressedTexSubImage1D", &["glCompressedTexSubImage1DARB"]))
+    } }
+}
+pub mod CompressedTexSubImage2D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CompressedTexSubImage2D::is_loaded() }
+        else { (*STORAGE).CompressedTexSubImage2D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CompressedTexSubImage2D = FnPtr::new(metaloadfn(&mut loadfn, "glCompressedTexSubImage2D", &["glCompressedTexSubImage2DARB"]))
+    } }
+}
+pub mod CompressedTexSubImage3D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CompressedTexSubImage3D::is_loaded() }
+        else { (*STORAGE).CompressedTexSubImage3D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CompressedTexSubImage3D = FnPtr::new(metaloadfn(&mut loadfn, "glCompressedTexSubImage3D", &["glCompressedTexSubImage3DARB"]))
+    } }
+}
+pub mod CompressedTextureSubImage1D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CompressedTextureSubImage1D::is_loaded() }
+        else { (*STORAGE).CompressedTextureSubImage1D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CompressedTextureSubImage1D = FnPtr::new(metaloadfn(&mut loadfn, "glCompressedTextureSubImage1D", &[]))
+    } }
+}
+pub mod CompressedTextureSubImage2D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CompressedTextureSubImage2D::is_loaded() }
+        else { (*STORAGE).CompressedTextureSubImage2D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CompressedTextureSubImage2D = FnPtr::new(metaloadfn(&mut loadfn, "glCompressedTextureSubImage2D", &[]))
+    } }
+}
+pub mod CompressedTextureSubImage3D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CompressedTextureSubImage3D::is_loaded() }
+        else { (*STORAGE).CompressedTextureSubImage3D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CompressedTextureSubImage3D = FnPtr::new(metaloadfn(&mut loadfn, "glCompressedTextureSubImage3D", &[]))
+    } }
+}
+pub mod CopyBufferSubData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CopyBufferSubData::is_loaded() }
+        else { (*STORAGE).CopyBufferSubData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CopyBufferSubData = FnPtr::new(metaloadfn(&mut loadfn, "glCopyBufferSubData", &["glCopyBufferSubDataNV"]))
+    } }
+}
+pub mod CopyImageSubData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CopyImageSubData::is_loaded() }
+        else { (*STORAGE).CopyImageSubData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CopyImageSubData = FnPtr::new(metaloadfn(&mut loadfn, "glCopyImageSubData", &["glCopyImageSubDataEXT", "glCopyImageSubDataOES"]))
+    } }
+}
+pub mod CopyNamedBufferSubData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CopyNamedBufferSubData::is_loaded() }
+        else { (*STORAGE).CopyNamedBufferSubData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CopyNamedBufferSubData = FnPtr::new(metaloadfn(&mut loadfn, "glCopyNamedBufferSubData", &[]))
+    } }
+}
+pub mod CopyTexImage1D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CopyTexImage1D::is_loaded() }
+        else { (*STORAGE).CopyTexImage1D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CopyTexImage1D = FnPtr::new(metaloadfn(&mut loadfn, "glCopyTexImage1D", &["glCopyTexImage1DEXT"]))
+    } }
+}
+pub mod CopyTexImage2D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CopyTexImage2D::is_loaded() }
+        else { (*STORAGE).CopyTexImage2D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CopyTexImage2D = FnPtr::new(metaloadfn(&mut loadfn, "glCopyTexImage2D", &["glCopyTexImage2DEXT"]))
+    } }
+}
+pub mod CopyTexSubImage1D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CopyTexSubImage1D::is_loaded() }
+        else { (*STORAGE).CopyTexSubImage1D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CopyTexSubImage1D = FnPtr::new(metaloadfn(&mut loadfn, "glCopyTexSubImage1D", &["glCopyTexSubImage1DEXT"]))
+    } }
+}
+pub mod CopyTexSubImage2D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CopyTexSubImage2D::is_loaded() }
+        else { (*STORAGE).CopyTexSubImage2D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CopyTexSubImage2D = FnPtr::new(metaloadfn(&mut loadfn, "glCopyTexSubImage2D", &["glCopyTexSubImage2DEXT"]))
+    } }
+}
+pub mod CopyTexSubImage3D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CopyTexSubImage3D::is_loaded() }
+        else { (*STORAGE).CopyTexSubImage3D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CopyTexSubImage3D = FnPtr::new(metaloadfn(&mut loadfn, "glCopyTexSubImage3D", &["glCopyTexSubImage3DEXT"]))
+    } }
+}
+pub mod CopyTextureSubImage1D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CopyTextureSubImage1D::is_loaded() }
+        else { (*STORAGE).CopyTextureSubImage1D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CopyTextureSubImage1D = FnPtr::new(metaloadfn(&mut loadfn, "glCopyTextureSubImage1D", &[]))
+    } }
+}
+pub mod CopyTextureSubImage2D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CopyTextureSubImage2D::is_loaded() }
+        else { (*STORAGE).CopyTextureSubImage2D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CopyTextureSubImage2D = FnPtr::new(metaloadfn(&mut loadfn, "glCopyTextureSubImage2D", &[]))
+    } }
+}
+pub mod CopyTextureSubImage3D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CopyTextureSubImage3D::is_loaded() }
+        else { (*STORAGE).CopyTextureSubImage3D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CopyTextureSubImage3D = FnPtr::new(metaloadfn(&mut loadfn, "glCopyTextureSubImage3D", &[]))
+    } }
+}
+pub mod CreateBuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CreateBuffers::is_loaded() }
+        else { (*STORAGE).CreateBuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CreateBuffers = FnPtr::new(metaloadfn(&mut loadfn, "glCreateBuffers", &[]))
+    } }
+}
+pub mod CreateFramebuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CreateFramebuffers::is_loaded() }
+        else { (*STORAGE).CreateFramebuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CreateFramebuffers = FnPtr::new(metaloadfn(&mut loadfn, "glCreateFramebuffers", &[]))
+    } }
+}
+pub mod CreateProgram {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CreateProgram::is_loaded() }
+        else { (*STORAGE).CreateProgram.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CreateProgram = FnPtr::new(metaloadfn(&mut loadfn, "glCreateProgram", &["glCreateProgramObjectARB"]))
+    } }
+}
+pub mod CreateProgramPipelines {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CreateProgramPipelines::is_loaded() }
+        else { (*STORAGE).CreateProgramPipelines.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CreateProgramPipelines = FnPtr::new(metaloadfn(&mut loadfn, "glCreateProgramPipelines", &[]))
+    } }
+}
+pub mod CreateQueries {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CreateQueries::is_loaded() }
+        else { (*STORAGE).CreateQueries.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CreateQueries = FnPtr::new(metaloadfn(&mut loadfn, "glCreateQueries", &[]))
+    } }
+}
+pub mod CreateRenderbuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CreateRenderbuffers::is_loaded() }
+        else { (*STORAGE).CreateRenderbuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CreateRenderbuffers = FnPtr::new(metaloadfn(&mut loadfn, "glCreateRenderbuffers", &[]))
+    } }
+}
+pub mod CreateSamplers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CreateSamplers::is_loaded() }
+        else { (*STORAGE).CreateSamplers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CreateSamplers = FnPtr::new(metaloadfn(&mut loadfn, "glCreateSamplers", &[]))
+    } }
+}
+pub mod CreateShader {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CreateShader::is_loaded() }
+        else { (*STORAGE).CreateShader.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CreateShader = FnPtr::new(metaloadfn(&mut loadfn, "glCreateShader", &["glCreateShaderObjectARB"]))
+    } }
+}
+pub mod CreateShaderProgramv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CreateShaderProgramv::is_loaded() }
+        else { (*STORAGE).CreateShaderProgramv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CreateShaderProgramv = FnPtr::new(metaloadfn(&mut loadfn, "glCreateShaderProgramv", &[]))
+    } }
+}
+pub mod CreateTextures {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CreateTextures::is_loaded() }
+        else { (*STORAGE).CreateTextures.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CreateTextures = FnPtr::new(metaloadfn(&mut loadfn, "glCreateTextures", &[]))
+    } }
+}
+pub mod CreateTransformFeedbacks {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CreateTransformFeedbacks::is_loaded() }
+        else { (*STORAGE).CreateTransformFeedbacks.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CreateTransformFeedbacks = FnPtr::new(metaloadfn(&mut loadfn, "glCreateTransformFeedbacks", &[]))
+    } }
+}
+pub mod CreateVertexArrays {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CreateVertexArrays::is_loaded() }
+        else { (*STORAGE).CreateVertexArrays.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CreateVertexArrays = FnPtr::new(metaloadfn(&mut loadfn, "glCreateVertexArrays", &[]))
+    } }
+}
+pub mod CullFace {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::CullFace::is_loaded() }
+        else { (*STORAGE).CullFace.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).CullFace = FnPtr::new(metaloadfn(&mut loadfn, "glCullFace", &[]))
+    } }
+}
+pub mod DebugMessageCallback {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DebugMessageCallback::is_loaded() }
+        else { (*STORAGE).DebugMessageCallback.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DebugMessageCallback = FnPtr::new(metaloadfn(&mut loadfn, "glDebugMessageCallback", &["glDebugMessageCallbackARB", "glDebugMessageCallbackKHR"]))
+    } }
+}
+pub mod DebugMessageControl {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DebugMessageControl::is_loaded() }
+        else { (*STORAGE).DebugMessageControl.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DebugMessageControl = FnPtr::new(metaloadfn(&mut loadfn, "glDebugMessageControl", &["glDebugMessageControlARB", "glDebugMessageControlKHR"]))
+    } }
+}
+pub mod DebugMessageInsert {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DebugMessageInsert::is_loaded() }
+        else { (*STORAGE).DebugMessageInsert.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DebugMessageInsert = FnPtr::new(metaloadfn(&mut loadfn, "glDebugMessageInsert", &["glDebugMessageInsertARB", "glDebugMessageInsertKHR"]))
+    } }
+}
+pub mod DeleteBuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DeleteBuffers::is_loaded() }
+        else { (*STORAGE).DeleteBuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DeleteBuffers = FnPtr::new(metaloadfn(&mut loadfn, "glDeleteBuffers", &["glDeleteBuffersARB"]))
+    } }
+}
+pub mod DeleteFramebuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DeleteFramebuffers::is_loaded() }
+        else { (*STORAGE).DeleteFramebuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DeleteFramebuffers = FnPtr::new(metaloadfn(&mut loadfn, "glDeleteFramebuffers", &["glDeleteFramebuffersEXT"]))
+    } }
+}
+pub mod DeleteProgram {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DeleteProgram::is_loaded() }
+        else { (*STORAGE).DeleteProgram.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DeleteProgram = FnPtr::new(metaloadfn(&mut loadfn, "glDeleteProgram", &[]))
+    } }
+}
+pub mod DeleteProgramPipelines {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DeleteProgramPipelines::is_loaded() }
+        else { (*STORAGE).DeleteProgramPipelines.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DeleteProgramPipelines = FnPtr::new(metaloadfn(&mut loadfn, "glDeleteProgramPipelines", &[]))
+    } }
+}
+pub mod DeleteQueries {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DeleteQueries::is_loaded() }
+        else { (*STORAGE).DeleteQueries.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DeleteQueries = FnPtr::new(metaloadfn(&mut loadfn, "glDeleteQueries", &["glDeleteQueriesARB"]))
+    } }
+}
+pub mod DeleteRenderbuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DeleteRenderbuffers::is_loaded() }
+        else { (*STORAGE).DeleteRenderbuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DeleteRenderbuffers = FnPtr::new(metaloadfn(&mut loadfn, "glDeleteRenderbuffers", &["glDeleteRenderbuffersEXT"]))
+    } }
+}
+pub mod DeleteSamplers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DeleteSamplers::is_loaded() }
+        else { (*STORAGE).DeleteSamplers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DeleteSamplers = FnPtr::new(metaloadfn(&mut loadfn, "glDeleteSamplers", &[]))
+    } }
+}
+pub mod DeleteShader {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DeleteShader::is_loaded() }
+        else { (*STORAGE).DeleteShader.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DeleteShader = FnPtr::new(metaloadfn(&mut loadfn, "glDeleteShader", &[]))
+    } }
+}
+pub mod DeleteSync {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DeleteSync::is_loaded() }
+        else { (*STORAGE).DeleteSync.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DeleteSync = FnPtr::new(metaloadfn(&mut loadfn, "glDeleteSync", &["glDeleteSyncAPPLE"]))
+    } }
+}
+pub mod DeleteTextures {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DeleteTextures::is_loaded() }
+        else { (*STORAGE).DeleteTextures.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DeleteTextures = FnPtr::new(metaloadfn(&mut loadfn, "glDeleteTextures", &[]))
+    } }
+}
+pub mod DeleteTransformFeedbacks {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DeleteTransformFeedbacks::is_loaded() }
+        else { (*STORAGE).DeleteTransformFeedbacks.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DeleteTransformFeedbacks = FnPtr::new(metaloadfn(&mut loadfn, "glDeleteTransformFeedbacks", &["glDeleteTransformFeedbacksNV"]))
+    } }
+}
+pub mod DeleteVertexArrays {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DeleteVertexArrays::is_loaded() }
+        else { (*STORAGE).DeleteVertexArrays.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DeleteVertexArrays = FnPtr::new(metaloadfn(&mut loadfn, "glDeleteVertexArrays", &["glDeleteVertexArraysAPPLE", "glDeleteVertexArraysOES"]))
+    } }
+}
+pub mod DepthFunc {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DepthFunc::is_loaded() }
+        else { (*STORAGE).DepthFunc.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DepthFunc = FnPtr::new(metaloadfn(&mut loadfn, "glDepthFunc", &[]))
+    } }
+}
+pub mod DepthMask {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DepthMask::is_loaded() }
+        else { (*STORAGE).DepthMask.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DepthMask = FnPtr::new(metaloadfn(&mut loadfn, "glDepthMask", &[]))
+    } }
+}
+pub mod DepthRange {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DepthRange::is_loaded() }
+        else { (*STORAGE).DepthRange.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DepthRange = FnPtr::new(metaloadfn(&mut loadfn, "glDepthRange", &[]))
+    } }
+}
+pub mod DepthRangeArrayv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DepthRangeArrayv::is_loaded() }
+        else { (*STORAGE).DepthRangeArrayv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DepthRangeArrayv = FnPtr::new(metaloadfn(&mut loadfn, "glDepthRangeArrayv", &[]))
+    } }
+}
+pub mod DepthRangeIndexed {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DepthRangeIndexed::is_loaded() }
+        else { (*STORAGE).DepthRangeIndexed.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DepthRangeIndexed = FnPtr::new(metaloadfn(&mut loadfn, "glDepthRangeIndexed", &[]))
+    } }
+}
+pub mod DepthRangef {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DepthRangef::is_loaded() }
+        else { (*STORAGE).DepthRangef.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DepthRangef = FnPtr::new(metaloadfn(&mut loadfn, "glDepthRangef", &["glDepthRangefOES"]))
+    } }
+}
+pub mod DetachShader {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DetachShader::is_loaded() }
+        else { (*STORAGE).DetachShader.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DetachShader = FnPtr::new(metaloadfn(&mut loadfn, "glDetachShader", &["glDetachObjectARB"]))
+    } }
+}
+pub mod Disable {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Disable::is_loaded() }
+        else { (*STORAGE).Disable.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Disable = FnPtr::new(metaloadfn(&mut loadfn, "glDisable", &[]))
+    } }
+}
+pub mod DisableVertexArrayAttrib {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DisableVertexArrayAttrib::is_loaded() }
+        else { (*STORAGE).DisableVertexArrayAttrib.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DisableVertexArrayAttrib = FnPtr::new(metaloadfn(&mut loadfn, "glDisableVertexArrayAttrib", &[]))
+    } }
+}
+pub mod DisableVertexAttribArray {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DisableVertexAttribArray::is_loaded() }
+        else { (*STORAGE).DisableVertexAttribArray.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DisableVertexAttribArray = FnPtr::new(metaloadfn(&mut loadfn, "glDisableVertexAttribArray", &["glDisableVertexAttribArrayARB"]))
+    } }
+}
+pub mod Disablei {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Disablei::is_loaded() }
+        else { (*STORAGE).Disablei.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Disablei = FnPtr::new(metaloadfn(&mut loadfn, "glDisablei", &["glDisableIndexedEXT", "glDisableiEXT", "glDisableiNV", "glDisableiOES"]))
+    } }
+}
+pub mod DispatchCompute {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DispatchCompute::is_loaded() }
+        else { (*STORAGE).DispatchCompute.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DispatchCompute = FnPtr::new(metaloadfn(&mut loadfn, "glDispatchCompute", &[]))
+    } }
+}
+pub mod DispatchComputeIndirect {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DispatchComputeIndirect::is_loaded() }
+        else { (*STORAGE).DispatchComputeIndirect.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DispatchComputeIndirect = FnPtr::new(metaloadfn(&mut loadfn, "glDispatchComputeIndirect", &[]))
+    } }
+}
+pub mod DrawArrays {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawArrays::is_loaded() }
+        else { (*STORAGE).DrawArrays.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawArrays = FnPtr::new(metaloadfn(&mut loadfn, "glDrawArrays", &["glDrawArraysEXT"]))
+    } }
+}
+pub mod DrawArraysIndirect {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawArraysIndirect::is_loaded() }
+        else { (*STORAGE).DrawArraysIndirect.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawArraysIndirect = FnPtr::new(metaloadfn(&mut loadfn, "glDrawArraysIndirect", &[]))
+    } }
+}
+pub mod DrawArraysInstanced {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawArraysInstanced::is_loaded() }
+        else { (*STORAGE).DrawArraysInstanced.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawArraysInstanced = FnPtr::new(metaloadfn(&mut loadfn, "glDrawArraysInstanced", &["glDrawArraysInstancedANGLE", "glDrawArraysInstancedARB", "glDrawArraysInstancedEXT", "glDrawArraysInstancedNV"]))
+    } }
+}
+pub mod DrawArraysInstancedBaseInstance {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawArraysInstancedBaseInstance::is_loaded() }
+        else { (*STORAGE).DrawArraysInstancedBaseInstance.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawArraysInstancedBaseInstance = FnPtr::new(metaloadfn(&mut loadfn, "glDrawArraysInstancedBaseInstance", &["glDrawArraysInstancedBaseInstanceEXT"]))
+    } }
+}
+pub mod DrawBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawBuffer::is_loaded() }
+        else { (*STORAGE).DrawBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glDrawBuffer", &[]))
+    } }
+}
+pub mod DrawBuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawBuffers::is_loaded() }
+        else { (*STORAGE).DrawBuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawBuffers = FnPtr::new(metaloadfn(&mut loadfn, "glDrawBuffers", &["glDrawBuffersARB", "glDrawBuffersATI", "glDrawBuffersEXT"]))
+    } }
+}
+pub mod DrawElements {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawElements::is_loaded() }
+        else { (*STORAGE).DrawElements.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawElements = FnPtr::new(metaloadfn(&mut loadfn, "glDrawElements", &[]))
+    } }
+}
+pub mod DrawElementsBaseVertex {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawElementsBaseVertex::is_loaded() }
+        else { (*STORAGE).DrawElementsBaseVertex.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawElementsBaseVertex = FnPtr::new(metaloadfn(&mut loadfn, "glDrawElementsBaseVertex", &["glDrawElementsBaseVertexEXT", "glDrawElementsBaseVertexOES"]))
+    } }
+}
+pub mod DrawElementsIndirect {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawElementsIndirect::is_loaded() }
+        else { (*STORAGE).DrawElementsIndirect.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawElementsIndirect = FnPtr::new(metaloadfn(&mut loadfn, "glDrawElementsIndirect", &[]))
+    } }
+}
+pub mod DrawElementsInstanced {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawElementsInstanced::is_loaded() }
+        else { (*STORAGE).DrawElementsInstanced.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawElementsInstanced = FnPtr::new(metaloadfn(&mut loadfn, "glDrawElementsInstanced", &["glDrawElementsInstancedANGLE", "glDrawElementsInstancedARB", "glDrawElementsInstancedEXT", "glDrawElementsInstancedNV"]))
+    } }
+}
+pub mod DrawElementsInstancedBaseInstance {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawElementsInstancedBaseInstance::is_loaded() }
+        else { (*STORAGE).DrawElementsInstancedBaseInstance.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawElementsInstancedBaseInstance = FnPtr::new(metaloadfn(&mut loadfn, "glDrawElementsInstancedBaseInstance", &["glDrawElementsInstancedBaseInstanceEXT"]))
+    } }
+}
+pub mod DrawElementsInstancedBaseVertex {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawElementsInstancedBaseVertex::is_loaded() }
+        else { (*STORAGE).DrawElementsInstancedBaseVertex.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawElementsInstancedBaseVertex = FnPtr::new(metaloadfn(&mut loadfn, "glDrawElementsInstancedBaseVertex", &["glDrawElementsInstancedBaseVertexEXT", "glDrawElementsInstancedBaseVertexOES"]))
+    } }
+}
+pub mod DrawElementsInstancedBaseVertexBaseInstance {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawElementsInstancedBaseVertexBaseInstance::is_loaded() }
+        else { (*STORAGE).DrawElementsInstancedBaseVertexBaseInstance.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawElementsInstancedBaseVertexBaseInstance = FnPtr::new(metaloadfn(&mut loadfn, "glDrawElementsInstancedBaseVertexBaseInstance", &["glDrawElementsInstancedBaseVertexBaseInstanceEXT"]))
+    } }
+}
+pub mod DrawRangeElements {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawRangeElements::is_loaded() }
+        else { (*STORAGE).DrawRangeElements.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawRangeElements = FnPtr::new(metaloadfn(&mut loadfn, "glDrawRangeElements", &["glDrawRangeElementsEXT"]))
+    } }
+}
+pub mod DrawRangeElementsBaseVertex {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawRangeElementsBaseVertex::is_loaded() }
+        else { (*STORAGE).DrawRangeElementsBaseVertex.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawRangeElementsBaseVertex = FnPtr::new(metaloadfn(&mut loadfn, "glDrawRangeElementsBaseVertex", &["glDrawRangeElementsBaseVertexEXT", "glDrawRangeElementsBaseVertexOES"]))
+    } }
+}
+pub mod DrawTransformFeedback {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawTransformFeedback::is_loaded() }
+        else { (*STORAGE).DrawTransformFeedback.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawTransformFeedback = FnPtr::new(metaloadfn(&mut loadfn, "glDrawTransformFeedback", &["glDrawTransformFeedbackEXT", "glDrawTransformFeedbackNV"]))
+    } }
+}
+pub mod DrawTransformFeedbackInstanced {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawTransformFeedbackInstanced::is_loaded() }
+        else { (*STORAGE).DrawTransformFeedbackInstanced.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawTransformFeedbackInstanced = FnPtr::new(metaloadfn(&mut loadfn, "glDrawTransformFeedbackInstanced", &["glDrawTransformFeedbackInstancedEXT"]))
+    } }
+}
+pub mod DrawTransformFeedbackStream {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawTransformFeedbackStream::is_loaded() }
+        else { (*STORAGE).DrawTransformFeedbackStream.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawTransformFeedbackStream = FnPtr::new(metaloadfn(&mut loadfn, "glDrawTransformFeedbackStream", &[]))
+    } }
+}
+pub mod DrawTransformFeedbackStreamInstanced {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::DrawTransformFeedbackStreamInstanced::is_loaded() }
+        else { (*STORAGE).DrawTransformFeedbackStreamInstanced.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).DrawTransformFeedbackStreamInstanced = FnPtr::new(metaloadfn(&mut loadfn, "glDrawTransformFeedbackStreamInstanced", &[]))
+    } }
+}
+pub mod Enable {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Enable::is_loaded() }
+        else { (*STORAGE).Enable.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Enable = FnPtr::new(metaloadfn(&mut loadfn, "glEnable", &[]))
+    } }
+}
+pub mod EnableVertexArrayAttrib {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::EnableVertexArrayAttrib::is_loaded() }
+        else { (*STORAGE).EnableVertexArrayAttrib.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).EnableVertexArrayAttrib = FnPtr::new(metaloadfn(&mut loadfn, "glEnableVertexArrayAttrib", &[]))
+    } }
+}
+pub mod EnableVertexAttribArray {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::EnableVertexAttribArray::is_loaded() }
+        else { (*STORAGE).EnableVertexAttribArray.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).EnableVertexAttribArray = FnPtr::new(metaloadfn(&mut loadfn, "glEnableVertexAttribArray", &["glEnableVertexAttribArrayARB"]))
+    } }
+}
+pub mod Enablei {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Enablei::is_loaded() }
+        else { (*STORAGE).Enablei.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Enablei = FnPtr::new(metaloadfn(&mut loadfn, "glEnablei", &["glEnableIndexedEXT", "glEnableiEXT", "glEnableiNV", "glEnableiOES"]))
+    } }
+}
+pub mod EndConditionalRender {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::EndConditionalRender::is_loaded() }
+        else { (*STORAGE).EndConditionalRender.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).EndConditionalRender = FnPtr::new(metaloadfn(&mut loadfn, "glEndConditionalRender", &["glEndConditionalRenderNV", "glEndConditionalRenderNVX"]))
+    } }
+}
+pub mod EndQuery {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::EndQuery::is_loaded() }
+        else { (*STORAGE).EndQuery.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).EndQuery = FnPtr::new(metaloadfn(&mut loadfn, "glEndQuery", &["glEndQueryARB"]))
+    } }
+}
+pub mod EndQueryIndexed {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::EndQueryIndexed::is_loaded() }
+        else { (*STORAGE).EndQueryIndexed.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).EndQueryIndexed = FnPtr::new(metaloadfn(&mut loadfn, "glEndQueryIndexed", &[]))
+    } }
+}
+pub mod EndTransformFeedback {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::EndTransformFeedback::is_loaded() }
+        else { (*STORAGE).EndTransformFeedback.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).EndTransformFeedback = FnPtr::new(metaloadfn(&mut loadfn, "glEndTransformFeedback", &["glEndTransformFeedbackEXT", "glEndTransformFeedbackNV"]))
+    } }
+}
+pub mod FenceSync {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::FenceSync::is_loaded() }
+        else { (*STORAGE).FenceSync.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).FenceSync = FnPtr::new(metaloadfn(&mut loadfn, "glFenceSync", &["glFenceSyncAPPLE"]))
+    } }
+}
+pub mod Finish {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Finish::is_loaded() }
+        else { (*STORAGE).Finish.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Finish = FnPtr::new(metaloadfn(&mut loadfn, "glFinish", &[]))
+    } }
+}
+pub mod Flush {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Flush::is_loaded() }
+        else { (*STORAGE).Flush.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Flush = FnPtr::new(metaloadfn(&mut loadfn, "glFlush", &[]))
+    } }
+}
+pub mod FlushMappedBufferRange {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::FlushMappedBufferRange::is_loaded() }
+        else { (*STORAGE).FlushMappedBufferRange.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).FlushMappedBufferRange = FnPtr::new(metaloadfn(&mut loadfn, "glFlushMappedBufferRange", &["glFlushMappedBufferRangeAPPLE", "glFlushMappedBufferRangeEXT"]))
+    } }
+}
+pub mod FlushMappedNamedBufferRange {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::FlushMappedNamedBufferRange::is_loaded() }
+        else { (*STORAGE).FlushMappedNamedBufferRange.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).FlushMappedNamedBufferRange = FnPtr::new(metaloadfn(&mut loadfn, "glFlushMappedNamedBufferRange", &[]))
+    } }
+}
+pub mod FramebufferParameteri {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::FramebufferParameteri::is_loaded() }
+        else { (*STORAGE).FramebufferParameteri.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).FramebufferParameteri = FnPtr::new(metaloadfn(&mut loadfn, "glFramebufferParameteri", &[]))
+    } }
+}
+pub mod FramebufferRenderbuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::FramebufferRenderbuffer::is_loaded() }
+        else { (*STORAGE).FramebufferRenderbuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).FramebufferRenderbuffer = FnPtr::new(metaloadfn(&mut loadfn, "glFramebufferRenderbuffer", &["glFramebufferRenderbufferEXT"]))
+    } }
+}
+pub mod FramebufferTexture {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::FramebufferTexture::is_loaded() }
+        else { (*STORAGE).FramebufferTexture.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).FramebufferTexture = FnPtr::new(metaloadfn(&mut loadfn, "glFramebufferTexture", &["glFramebufferTextureARB", "glFramebufferTextureEXT", "glFramebufferTextureOES"]))
+    } }
+}
+pub mod FramebufferTexture1D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::FramebufferTexture1D::is_loaded() }
+        else { (*STORAGE).FramebufferTexture1D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).FramebufferTexture1D = FnPtr::new(metaloadfn(&mut loadfn, "glFramebufferTexture1D", &["glFramebufferTexture1DEXT"]))
+    } }
+}
+pub mod FramebufferTexture2D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::FramebufferTexture2D::is_loaded() }
+        else { (*STORAGE).FramebufferTexture2D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).FramebufferTexture2D = FnPtr::new(metaloadfn(&mut loadfn, "glFramebufferTexture2D", &["glFramebufferTexture2DEXT"]))
+    } }
+}
+pub mod FramebufferTexture3D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::FramebufferTexture3D::is_loaded() }
+        else { (*STORAGE).FramebufferTexture3D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).FramebufferTexture3D = FnPtr::new(metaloadfn(&mut loadfn, "glFramebufferTexture3D", &["glFramebufferTexture3DEXT"]))
+    } }
+}
+pub mod FramebufferTextureLayer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::FramebufferTextureLayer::is_loaded() }
+        else { (*STORAGE).FramebufferTextureLayer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).FramebufferTextureLayer = FnPtr::new(metaloadfn(&mut loadfn, "glFramebufferTextureLayer", &["glFramebufferTextureLayerARB", "glFramebufferTextureLayerEXT"]))
+    } }
+}
+pub mod FrontFace {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::FrontFace::is_loaded() }
+        else { (*STORAGE).FrontFace.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).FrontFace = FnPtr::new(metaloadfn(&mut loadfn, "glFrontFace", &[]))
+    } }
+}
+pub mod GenBuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GenBuffers::is_loaded() }
+        else { (*STORAGE).GenBuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GenBuffers = FnPtr::new(metaloadfn(&mut loadfn, "glGenBuffers", &["glGenBuffersARB"]))
+    } }
+}
+pub mod GenFramebuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GenFramebuffers::is_loaded() }
+        else { (*STORAGE).GenFramebuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GenFramebuffers = FnPtr::new(metaloadfn(&mut loadfn, "glGenFramebuffers", &["glGenFramebuffersEXT"]))
+    } }
+}
+pub mod GenProgramPipelines {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GenProgramPipelines::is_loaded() }
+        else { (*STORAGE).GenProgramPipelines.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GenProgramPipelines = FnPtr::new(metaloadfn(&mut loadfn, "glGenProgramPipelines", &[]))
+    } }
+}
+pub mod GenQueries {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GenQueries::is_loaded() }
+        else { (*STORAGE).GenQueries.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GenQueries = FnPtr::new(metaloadfn(&mut loadfn, "glGenQueries", &["glGenQueriesARB"]))
+    } }
+}
+pub mod GenRenderbuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GenRenderbuffers::is_loaded() }
+        else { (*STORAGE).GenRenderbuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GenRenderbuffers = FnPtr::new(metaloadfn(&mut loadfn, "glGenRenderbuffers", &["glGenRenderbuffersEXT"]))
+    } }
+}
+pub mod GenSamplers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GenSamplers::is_loaded() }
+        else { (*STORAGE).GenSamplers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GenSamplers = FnPtr::new(metaloadfn(&mut loadfn, "glGenSamplers", &[]))
+    } }
+}
+pub mod GenTextures {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GenTextures::is_loaded() }
+        else { (*STORAGE).GenTextures.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GenTextures = FnPtr::new(metaloadfn(&mut loadfn, "glGenTextures", &[]))
+    } }
+}
+pub mod GenTransformFeedbacks {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GenTransformFeedbacks::is_loaded() }
+        else { (*STORAGE).GenTransformFeedbacks.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GenTransformFeedbacks = FnPtr::new(metaloadfn(&mut loadfn, "glGenTransformFeedbacks", &["glGenTransformFeedbacksNV"]))
+    } }
+}
+pub mod GenVertexArrays {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GenVertexArrays::is_loaded() }
+        else { (*STORAGE).GenVertexArrays.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GenVertexArrays = FnPtr::new(metaloadfn(&mut loadfn, "glGenVertexArrays", &["glGenVertexArraysAPPLE", "glGenVertexArraysOES"]))
+    } }
+}
+pub mod GenerateMipmap {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GenerateMipmap::is_loaded() }
+        else { (*STORAGE).GenerateMipmap.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GenerateMipmap = FnPtr::new(metaloadfn(&mut loadfn, "glGenerateMipmap", &["glGenerateMipmapEXT"]))
+    } }
+}
+pub mod GenerateTextureMipmap {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GenerateTextureMipmap::is_loaded() }
+        else { (*STORAGE).GenerateTextureMipmap.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GenerateTextureMipmap = FnPtr::new(metaloadfn(&mut loadfn, "glGenerateTextureMipmap", &[]))
+    } }
+}
+pub mod GetActiveAtomicCounterBufferiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetActiveAtomicCounterBufferiv::is_loaded() }
+        else { (*STORAGE).GetActiveAtomicCounterBufferiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetActiveAtomicCounterBufferiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetActiveAtomicCounterBufferiv", &[]))
+    } }
+}
+pub mod GetActiveAttrib {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetActiveAttrib::is_loaded() }
+        else { (*STORAGE).GetActiveAttrib.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetActiveAttrib = FnPtr::new(metaloadfn(&mut loadfn, "glGetActiveAttrib", &["glGetActiveAttribARB"]))
+    } }
+}
+pub mod GetActiveSubroutineName {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetActiveSubroutineName::is_loaded() }
+        else { (*STORAGE).GetActiveSubroutineName.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetActiveSubroutineName = FnPtr::new(metaloadfn(&mut loadfn, "glGetActiveSubroutineName", &[]))
+    } }
+}
+pub mod GetActiveSubroutineUniformName {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetActiveSubroutineUniformName::is_loaded() }
+        else { (*STORAGE).GetActiveSubroutineUniformName.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetActiveSubroutineUniformName = FnPtr::new(metaloadfn(&mut loadfn, "glGetActiveSubroutineUniformName", &[]))
+    } }
+}
+pub mod GetActiveSubroutineUniformiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetActiveSubroutineUniformiv::is_loaded() }
+        else { (*STORAGE).GetActiveSubroutineUniformiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetActiveSubroutineUniformiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetActiveSubroutineUniformiv", &[]))
+    } }
+}
+pub mod GetActiveUniform {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetActiveUniform::is_loaded() }
+        else { (*STORAGE).GetActiveUniform.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetActiveUniform = FnPtr::new(metaloadfn(&mut loadfn, "glGetActiveUniform", &["glGetActiveUniformARB"]))
+    } }
+}
+pub mod GetActiveUniformBlockName {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetActiveUniformBlockName::is_loaded() }
+        else { (*STORAGE).GetActiveUniformBlockName.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetActiveUniformBlockName = FnPtr::new(metaloadfn(&mut loadfn, "glGetActiveUniformBlockName", &[]))
+    } }
+}
+pub mod GetActiveUniformBlockiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetActiveUniformBlockiv::is_loaded() }
+        else { (*STORAGE).GetActiveUniformBlockiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetActiveUniformBlockiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetActiveUniformBlockiv", &[]))
+    } }
+}
+pub mod GetActiveUniformName {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetActiveUniformName::is_loaded() }
+        else { (*STORAGE).GetActiveUniformName.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetActiveUniformName = FnPtr::new(metaloadfn(&mut loadfn, "glGetActiveUniformName", &[]))
+    } }
+}
+pub mod GetActiveUniformsiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetActiveUniformsiv::is_loaded() }
+        else { (*STORAGE).GetActiveUniformsiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetActiveUniformsiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetActiveUniformsiv", &[]))
+    } }
+}
+pub mod GetAttachedShaders {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetAttachedShaders::is_loaded() }
+        else { (*STORAGE).GetAttachedShaders.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetAttachedShaders = FnPtr::new(metaloadfn(&mut loadfn, "glGetAttachedShaders", &[]))
+    } }
+}
+pub mod GetAttribLocation {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetAttribLocation::is_loaded() }
+        else { (*STORAGE).GetAttribLocation.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetAttribLocation = FnPtr::new(metaloadfn(&mut loadfn, "glGetAttribLocation", &["glGetAttribLocationARB"]))
+    } }
+}
+pub mod GetBooleani_v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetBooleani_v::is_loaded() }
+        else { (*STORAGE).GetBooleani_v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetBooleani_v = FnPtr::new(metaloadfn(&mut loadfn, "glGetBooleani_v", &["glGetBooleanIndexedvEXT"]))
+    } }
+}
+pub mod GetBooleanv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetBooleanv::is_loaded() }
+        else { (*STORAGE).GetBooleanv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetBooleanv = FnPtr::new(metaloadfn(&mut loadfn, "glGetBooleanv", &[]))
+    } }
+}
+pub mod GetBufferParameteri64v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetBufferParameteri64v::is_loaded() }
+        else { (*STORAGE).GetBufferParameteri64v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetBufferParameteri64v = FnPtr::new(metaloadfn(&mut loadfn, "glGetBufferParameteri64v", &[]))
+    } }
+}
+pub mod GetBufferParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetBufferParameteriv::is_loaded() }
+        else { (*STORAGE).GetBufferParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetBufferParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetBufferParameteriv", &["glGetBufferParameterivARB"]))
+    } }
+}
+pub mod GetBufferPointerv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetBufferPointerv::is_loaded() }
+        else { (*STORAGE).GetBufferPointerv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetBufferPointerv = FnPtr::new(metaloadfn(&mut loadfn, "glGetBufferPointerv", &["glGetBufferPointervARB", "glGetBufferPointervOES"]))
+    } }
+}
+pub mod GetBufferSubData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetBufferSubData::is_loaded() }
+        else { (*STORAGE).GetBufferSubData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetBufferSubData = FnPtr::new(metaloadfn(&mut loadfn, "glGetBufferSubData", &["glGetBufferSubDataARB"]))
+    } }
+}
+pub mod GetCompressedTexImage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetCompressedTexImage::is_loaded() }
+        else { (*STORAGE).GetCompressedTexImage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetCompressedTexImage = FnPtr::new(metaloadfn(&mut loadfn, "glGetCompressedTexImage", &["glGetCompressedTexImageARB"]))
+    } }
+}
+pub mod GetCompressedTextureImage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetCompressedTextureImage::is_loaded() }
+        else { (*STORAGE).GetCompressedTextureImage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetCompressedTextureImage = FnPtr::new(metaloadfn(&mut loadfn, "glGetCompressedTextureImage", &[]))
+    } }
+}
+pub mod GetCompressedTextureSubImage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetCompressedTextureSubImage::is_loaded() }
+        else { (*STORAGE).GetCompressedTextureSubImage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetCompressedTextureSubImage = FnPtr::new(metaloadfn(&mut loadfn, "glGetCompressedTextureSubImage", &[]))
+    } }
+}
+pub mod GetDebugMessageLog {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetDebugMessageLog::is_loaded() }
+        else { (*STORAGE).GetDebugMessageLog.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetDebugMessageLog = FnPtr::new(metaloadfn(&mut loadfn, "glGetDebugMessageLog", &["glGetDebugMessageLogARB", "glGetDebugMessageLogKHR"]))
+    } }
+}
+pub mod GetDoublei_v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetDoublei_v::is_loaded() }
+        else { (*STORAGE).GetDoublei_v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetDoublei_v = FnPtr::new(metaloadfn(&mut loadfn, "glGetDoublei_v", &["glGetDoubleIndexedvEXT", "glGetDoublei_vEXT"]))
+    } }
+}
+pub mod GetDoublev {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetDoublev::is_loaded() }
+        else { (*STORAGE).GetDoublev.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetDoublev = FnPtr::new(metaloadfn(&mut loadfn, "glGetDoublev", &[]))
+    } }
+}
+pub mod GetError {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetError::is_loaded() }
+        else { (*STORAGE).GetError.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetError = FnPtr::new(metaloadfn(&mut loadfn, "glGetError", &[]))
+    } }
+}
+pub mod GetFloati_v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetFloati_v::is_loaded() }
+        else { (*STORAGE).GetFloati_v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetFloati_v = FnPtr::new(metaloadfn(&mut loadfn, "glGetFloati_v", &["glGetFloatIndexedvEXT", "glGetFloati_vEXT", "glGetFloati_vNV", "glGetFloati_vOES"]))
+    } }
+}
+pub mod GetFloatv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetFloatv::is_loaded() }
+        else { (*STORAGE).GetFloatv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetFloatv = FnPtr::new(metaloadfn(&mut loadfn, "glGetFloatv", &[]))
+    } }
+}
+pub mod GetFragDataIndex {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetFragDataIndex::is_loaded() }
+        else { (*STORAGE).GetFragDataIndex.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetFragDataIndex = FnPtr::new(metaloadfn(&mut loadfn, "glGetFragDataIndex", &["glGetFragDataIndexEXT"]))
+    } }
+}
+pub mod GetFragDataLocation {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetFragDataLocation::is_loaded() }
+        else { (*STORAGE).GetFragDataLocation.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetFragDataLocation = FnPtr::new(metaloadfn(&mut loadfn, "glGetFragDataLocation", &["glGetFragDataLocationEXT"]))
+    } }
+}
+pub mod GetFramebufferAttachmentParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetFramebufferAttachmentParameteriv::is_loaded() }
+        else { (*STORAGE).GetFramebufferAttachmentParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetFramebufferAttachmentParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetFramebufferAttachmentParameteriv", &["glGetFramebufferAttachmentParameterivEXT"]))
+    } }
+}
+pub mod GetFramebufferParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetFramebufferParameteriv::is_loaded() }
+        else { (*STORAGE).GetFramebufferParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetFramebufferParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetFramebufferParameteriv", &[]))
+    } }
+}
+pub mod GetGraphicsResetStatus {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetGraphicsResetStatus::is_loaded() }
+        else { (*STORAGE).GetGraphicsResetStatus.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetGraphicsResetStatus = FnPtr::new(metaloadfn(&mut loadfn, "glGetGraphicsResetStatus", &["glGetGraphicsResetStatusEXT", "glGetGraphicsResetStatusKHR"]))
+    } }
+}
+pub mod GetInteger64i_v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetInteger64i_v::is_loaded() }
+        else { (*STORAGE).GetInteger64i_v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetInteger64i_v = FnPtr::new(metaloadfn(&mut loadfn, "glGetInteger64i_v", &[]))
+    } }
+}
+pub mod GetInteger64v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetInteger64v::is_loaded() }
+        else { (*STORAGE).GetInteger64v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetInteger64v = FnPtr::new(metaloadfn(&mut loadfn, "glGetInteger64v", &["glGetInteger64vAPPLE"]))
+    } }
+}
+pub mod GetIntegeri_v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetIntegeri_v::is_loaded() }
+        else { (*STORAGE).GetIntegeri_v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetIntegeri_v = FnPtr::new(metaloadfn(&mut loadfn, "glGetIntegeri_v", &["glGetIntegerIndexedvEXT"]))
+    } }
+}
+pub mod GetIntegerv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetIntegerv::is_loaded() }
+        else { (*STORAGE).GetIntegerv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetIntegerv = FnPtr::new(metaloadfn(&mut loadfn, "glGetIntegerv", &[]))
+    } }
+}
+pub mod GetInternalformati64v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetInternalformati64v::is_loaded() }
+        else { (*STORAGE).GetInternalformati64v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetInternalformati64v = FnPtr::new(metaloadfn(&mut loadfn, "glGetInternalformati64v", &[]))
+    } }
+}
+pub mod GetInternalformativ {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetInternalformativ::is_loaded() }
+        else { (*STORAGE).GetInternalformativ.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetInternalformativ = FnPtr::new(metaloadfn(&mut loadfn, "glGetInternalformativ", &[]))
+    } }
+}
+pub mod GetMultisamplefv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetMultisamplefv::is_loaded() }
+        else { (*STORAGE).GetMultisamplefv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetMultisamplefv = FnPtr::new(metaloadfn(&mut loadfn, "glGetMultisamplefv", &["glGetMultisamplefvNV"]))
+    } }
+}
+pub mod GetNamedBufferParameteri64v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetNamedBufferParameteri64v::is_loaded() }
+        else { (*STORAGE).GetNamedBufferParameteri64v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetNamedBufferParameteri64v = FnPtr::new(metaloadfn(&mut loadfn, "glGetNamedBufferParameteri64v", &[]))
+    } }
+}
+pub mod GetNamedBufferParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetNamedBufferParameteriv::is_loaded() }
+        else { (*STORAGE).GetNamedBufferParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetNamedBufferParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetNamedBufferParameteriv", &[]))
+    } }
+}
+pub mod GetNamedBufferPointerv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetNamedBufferPointerv::is_loaded() }
+        else { (*STORAGE).GetNamedBufferPointerv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetNamedBufferPointerv = FnPtr::new(metaloadfn(&mut loadfn, "glGetNamedBufferPointerv", &[]))
+    } }
+}
+pub mod GetNamedBufferSubData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetNamedBufferSubData::is_loaded() }
+        else { (*STORAGE).GetNamedBufferSubData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetNamedBufferSubData = FnPtr::new(metaloadfn(&mut loadfn, "glGetNamedBufferSubData", &[]))
+    } }
+}
+pub mod GetNamedFramebufferAttachmentParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetNamedFramebufferAttachmentParameteriv::is_loaded() }
+        else { (*STORAGE).GetNamedFramebufferAttachmentParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetNamedFramebufferAttachmentParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetNamedFramebufferAttachmentParameteriv", &[]))
+    } }
+}
+pub mod GetNamedFramebufferParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetNamedFramebufferParameteriv::is_loaded() }
+        else { (*STORAGE).GetNamedFramebufferParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetNamedFramebufferParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetNamedFramebufferParameteriv", &[]))
+    } }
+}
+pub mod GetNamedRenderbufferParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetNamedRenderbufferParameteriv::is_loaded() }
+        else { (*STORAGE).GetNamedRenderbufferParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetNamedRenderbufferParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetNamedRenderbufferParameteriv", &[]))
+    } }
+}
+pub mod GetObjectLabel {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetObjectLabel::is_loaded() }
+        else { (*STORAGE).GetObjectLabel.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetObjectLabel = FnPtr::new(metaloadfn(&mut loadfn, "glGetObjectLabel", &["glGetObjectLabelKHR"]))
+    } }
+}
+pub mod GetObjectPtrLabel {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetObjectPtrLabel::is_loaded() }
+        else { (*STORAGE).GetObjectPtrLabel.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetObjectPtrLabel = FnPtr::new(metaloadfn(&mut loadfn, "glGetObjectPtrLabel", &["glGetObjectPtrLabelKHR"]))
+    } }
+}
+pub mod GetPointerv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetPointerv::is_loaded() }
+        else { (*STORAGE).GetPointerv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetPointerv = FnPtr::new(metaloadfn(&mut loadfn, "glGetPointerv", &["glGetPointervEXT", "glGetPointervKHR"]))
+    } }
+}
+pub mod GetProgramBinary {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetProgramBinary::is_loaded() }
+        else { (*STORAGE).GetProgramBinary.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetProgramBinary = FnPtr::new(metaloadfn(&mut loadfn, "glGetProgramBinary", &["glGetProgramBinaryOES"]))
+    } }
+}
+pub mod GetProgramInfoLog {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetProgramInfoLog::is_loaded() }
+        else { (*STORAGE).GetProgramInfoLog.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetProgramInfoLog = FnPtr::new(metaloadfn(&mut loadfn, "glGetProgramInfoLog", &[]))
+    } }
+}
+pub mod GetProgramInterfaceiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetProgramInterfaceiv::is_loaded() }
+        else { (*STORAGE).GetProgramInterfaceiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetProgramInterfaceiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetProgramInterfaceiv", &[]))
+    } }
+}
+pub mod GetProgramPipelineInfoLog {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetProgramPipelineInfoLog::is_loaded() }
+        else { (*STORAGE).GetProgramPipelineInfoLog.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetProgramPipelineInfoLog = FnPtr::new(metaloadfn(&mut loadfn, "glGetProgramPipelineInfoLog", &[]))
+    } }
+}
+pub mod GetProgramPipelineiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetProgramPipelineiv::is_loaded() }
+        else { (*STORAGE).GetProgramPipelineiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetProgramPipelineiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetProgramPipelineiv", &[]))
+    } }
+}
+pub mod GetProgramResourceIndex {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetProgramResourceIndex::is_loaded() }
+        else { (*STORAGE).GetProgramResourceIndex.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetProgramResourceIndex = FnPtr::new(metaloadfn(&mut loadfn, "glGetProgramResourceIndex", &[]))
+    } }
+}
+pub mod GetProgramResourceLocation {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetProgramResourceLocation::is_loaded() }
+        else { (*STORAGE).GetProgramResourceLocation.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetProgramResourceLocation = FnPtr::new(metaloadfn(&mut loadfn, "glGetProgramResourceLocation", &[]))
+    } }
+}
+pub mod GetProgramResourceLocationIndex {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetProgramResourceLocationIndex::is_loaded() }
+        else { (*STORAGE).GetProgramResourceLocationIndex.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetProgramResourceLocationIndex = FnPtr::new(metaloadfn(&mut loadfn, "glGetProgramResourceLocationIndex", &[]))
+    } }
+}
+pub mod GetProgramResourceName {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetProgramResourceName::is_loaded() }
+        else { (*STORAGE).GetProgramResourceName.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetProgramResourceName = FnPtr::new(metaloadfn(&mut loadfn, "glGetProgramResourceName", &[]))
+    } }
+}
+pub mod GetProgramResourceiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetProgramResourceiv::is_loaded() }
+        else { (*STORAGE).GetProgramResourceiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetProgramResourceiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetProgramResourceiv", &[]))
+    } }
+}
+pub mod GetProgramStageiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetProgramStageiv::is_loaded() }
+        else { (*STORAGE).GetProgramStageiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetProgramStageiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetProgramStageiv", &[]))
+    } }
+}
+pub mod GetProgramiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetProgramiv::is_loaded() }
+        else { (*STORAGE).GetProgramiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetProgramiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetProgramiv", &[]))
+    } }
+}
+pub mod GetQueryBufferObjecti64v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetQueryBufferObjecti64v::is_loaded() }
+        else { (*STORAGE).GetQueryBufferObjecti64v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetQueryBufferObjecti64v = FnPtr::new(metaloadfn(&mut loadfn, "glGetQueryBufferObjecti64v", &[]))
+    } }
+}
+pub mod GetQueryBufferObjectiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetQueryBufferObjectiv::is_loaded() }
+        else { (*STORAGE).GetQueryBufferObjectiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetQueryBufferObjectiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetQueryBufferObjectiv", &[]))
+    } }
+}
+pub mod GetQueryBufferObjectui64v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetQueryBufferObjectui64v::is_loaded() }
+        else { (*STORAGE).GetQueryBufferObjectui64v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetQueryBufferObjectui64v = FnPtr::new(metaloadfn(&mut loadfn, "glGetQueryBufferObjectui64v", &[]))
+    } }
+}
+pub mod GetQueryBufferObjectuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetQueryBufferObjectuiv::is_loaded() }
+        else { (*STORAGE).GetQueryBufferObjectuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetQueryBufferObjectuiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetQueryBufferObjectuiv", &[]))
+    } }
+}
+pub mod GetQueryIndexediv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetQueryIndexediv::is_loaded() }
+        else { (*STORAGE).GetQueryIndexediv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetQueryIndexediv = FnPtr::new(metaloadfn(&mut loadfn, "glGetQueryIndexediv", &[]))
+    } }
+}
+pub mod GetQueryObjecti64v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetQueryObjecti64v::is_loaded() }
+        else { (*STORAGE).GetQueryObjecti64v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetQueryObjecti64v = FnPtr::new(metaloadfn(&mut loadfn, "glGetQueryObjecti64v", &["glGetQueryObjecti64vEXT"]))
+    } }
+}
+pub mod GetQueryObjectiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetQueryObjectiv::is_loaded() }
+        else { (*STORAGE).GetQueryObjectiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetQueryObjectiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetQueryObjectiv", &["glGetQueryObjectivARB", "glGetQueryObjectivEXT"]))
+    } }
+}
+pub mod GetQueryObjectui64v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetQueryObjectui64v::is_loaded() }
+        else { (*STORAGE).GetQueryObjectui64v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetQueryObjectui64v = FnPtr::new(metaloadfn(&mut loadfn, "glGetQueryObjectui64v", &["glGetQueryObjectui64vEXT"]))
+    } }
+}
+pub mod GetQueryObjectuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetQueryObjectuiv::is_loaded() }
+        else { (*STORAGE).GetQueryObjectuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetQueryObjectuiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetQueryObjectuiv", &["glGetQueryObjectuivARB"]))
+    } }
+}
+pub mod GetQueryiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetQueryiv::is_loaded() }
+        else { (*STORAGE).GetQueryiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetQueryiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetQueryiv", &["glGetQueryivARB"]))
+    } }
+}
+pub mod GetRenderbufferParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetRenderbufferParameteriv::is_loaded() }
+        else { (*STORAGE).GetRenderbufferParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetRenderbufferParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetRenderbufferParameteriv", &["glGetRenderbufferParameterivEXT"]))
+    } }
+}
+pub mod GetSamplerParameterIiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetSamplerParameterIiv::is_loaded() }
+        else { (*STORAGE).GetSamplerParameterIiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetSamplerParameterIiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetSamplerParameterIiv", &["glGetSamplerParameterIivEXT", "glGetSamplerParameterIivOES"]))
+    } }
+}
+pub mod GetSamplerParameterIuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetSamplerParameterIuiv::is_loaded() }
+        else { (*STORAGE).GetSamplerParameterIuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetSamplerParameterIuiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetSamplerParameterIuiv", &["glGetSamplerParameterIuivEXT", "glGetSamplerParameterIuivOES"]))
+    } }
+}
+pub mod GetSamplerParameterfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetSamplerParameterfv::is_loaded() }
+        else { (*STORAGE).GetSamplerParameterfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetSamplerParameterfv = FnPtr::new(metaloadfn(&mut loadfn, "glGetSamplerParameterfv", &[]))
+    } }
+}
+pub mod GetSamplerParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetSamplerParameteriv::is_loaded() }
+        else { (*STORAGE).GetSamplerParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetSamplerParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetSamplerParameteriv", &[]))
+    } }
+}
+pub mod GetShaderInfoLog {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetShaderInfoLog::is_loaded() }
+        else { (*STORAGE).GetShaderInfoLog.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetShaderInfoLog = FnPtr::new(metaloadfn(&mut loadfn, "glGetShaderInfoLog", &[]))
+    } }
+}
+pub mod GetShaderPrecisionFormat {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetShaderPrecisionFormat::is_loaded() }
+        else { (*STORAGE).GetShaderPrecisionFormat.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetShaderPrecisionFormat = FnPtr::new(metaloadfn(&mut loadfn, "glGetShaderPrecisionFormat", &[]))
+    } }
+}
+pub mod GetShaderSource {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetShaderSource::is_loaded() }
+        else { (*STORAGE).GetShaderSource.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetShaderSource = FnPtr::new(metaloadfn(&mut loadfn, "glGetShaderSource", &["glGetShaderSourceARB"]))
+    } }
+}
+pub mod GetShaderiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetShaderiv::is_loaded() }
+        else { (*STORAGE).GetShaderiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetShaderiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetShaderiv", &[]))
+    } }
+}
+pub mod GetString {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetString::is_loaded() }
+        else { (*STORAGE).GetString.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetString = FnPtr::new(metaloadfn(&mut loadfn, "glGetString", &[]))
+    } }
+}
+pub mod GetStringi {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetStringi::is_loaded() }
+        else { (*STORAGE).GetStringi.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetStringi = FnPtr::new(metaloadfn(&mut loadfn, "glGetStringi", &[]))
+    } }
+}
+pub mod GetSubroutineIndex {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetSubroutineIndex::is_loaded() }
+        else { (*STORAGE).GetSubroutineIndex.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetSubroutineIndex = FnPtr::new(metaloadfn(&mut loadfn, "glGetSubroutineIndex", &[]))
+    } }
+}
+pub mod GetSubroutineUniformLocation {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetSubroutineUniformLocation::is_loaded() }
+        else { (*STORAGE).GetSubroutineUniformLocation.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetSubroutineUniformLocation = FnPtr::new(metaloadfn(&mut loadfn, "glGetSubroutineUniformLocation", &[]))
+    } }
+}
+pub mod GetSynciv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetSynciv::is_loaded() }
+        else { (*STORAGE).GetSynciv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetSynciv = FnPtr::new(metaloadfn(&mut loadfn, "glGetSynciv", &["glGetSyncivAPPLE"]))
+    } }
+}
+pub mod GetTexImage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTexImage::is_loaded() }
+        else { (*STORAGE).GetTexImage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTexImage = FnPtr::new(metaloadfn(&mut loadfn, "glGetTexImage", &[]))
+    } }
+}
+pub mod GetTexLevelParameterfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTexLevelParameterfv::is_loaded() }
+        else { (*STORAGE).GetTexLevelParameterfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTexLevelParameterfv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTexLevelParameterfv", &[]))
+    } }
+}
+pub mod GetTexLevelParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTexLevelParameteriv::is_loaded() }
+        else { (*STORAGE).GetTexLevelParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTexLevelParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTexLevelParameteriv", &[]))
+    } }
+}
+pub mod GetTexParameterIiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTexParameterIiv::is_loaded() }
+        else { (*STORAGE).GetTexParameterIiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTexParameterIiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTexParameterIiv", &["glGetTexParameterIivEXT", "glGetTexParameterIivOES"]))
+    } }
+}
+pub mod GetTexParameterIuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTexParameterIuiv::is_loaded() }
+        else { (*STORAGE).GetTexParameterIuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTexParameterIuiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTexParameterIuiv", &["glGetTexParameterIuivEXT", "glGetTexParameterIuivOES"]))
+    } }
+}
+pub mod GetTexParameterfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTexParameterfv::is_loaded() }
+        else { (*STORAGE).GetTexParameterfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTexParameterfv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTexParameterfv", &[]))
+    } }
+}
+pub mod GetTexParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTexParameteriv::is_loaded() }
+        else { (*STORAGE).GetTexParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTexParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTexParameteriv", &[]))
+    } }
+}
+pub mod GetTextureImage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTextureImage::is_loaded() }
+        else { (*STORAGE).GetTextureImage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTextureImage = FnPtr::new(metaloadfn(&mut loadfn, "glGetTextureImage", &[]))
+    } }
+}
+pub mod GetTextureLevelParameterfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTextureLevelParameterfv::is_loaded() }
+        else { (*STORAGE).GetTextureLevelParameterfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTextureLevelParameterfv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTextureLevelParameterfv", &[]))
+    } }
+}
+pub mod GetTextureLevelParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTextureLevelParameteriv::is_loaded() }
+        else { (*STORAGE).GetTextureLevelParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTextureLevelParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTextureLevelParameteriv", &[]))
+    } }
+}
+pub mod GetTextureParameterIiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTextureParameterIiv::is_loaded() }
+        else { (*STORAGE).GetTextureParameterIiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTextureParameterIiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTextureParameterIiv", &[]))
+    } }
+}
+pub mod GetTextureParameterIuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTextureParameterIuiv::is_loaded() }
+        else { (*STORAGE).GetTextureParameterIuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTextureParameterIuiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTextureParameterIuiv", &[]))
+    } }
+}
+pub mod GetTextureParameterfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTextureParameterfv::is_loaded() }
+        else { (*STORAGE).GetTextureParameterfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTextureParameterfv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTextureParameterfv", &[]))
+    } }
+}
+pub mod GetTextureParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTextureParameteriv::is_loaded() }
+        else { (*STORAGE).GetTextureParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTextureParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTextureParameteriv", &[]))
+    } }
+}
+pub mod GetTextureSubImage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTextureSubImage::is_loaded() }
+        else { (*STORAGE).GetTextureSubImage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTextureSubImage = FnPtr::new(metaloadfn(&mut loadfn, "glGetTextureSubImage", &[]))
+    } }
+}
+pub mod GetTransformFeedbackVarying {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTransformFeedbackVarying::is_loaded() }
+        else { (*STORAGE).GetTransformFeedbackVarying.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTransformFeedbackVarying = FnPtr::new(metaloadfn(&mut loadfn, "glGetTransformFeedbackVarying", &["glGetTransformFeedbackVaryingEXT"]))
+    } }
+}
+pub mod GetTransformFeedbacki64_v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTransformFeedbacki64_v::is_loaded() }
+        else { (*STORAGE).GetTransformFeedbacki64_v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTransformFeedbacki64_v = FnPtr::new(metaloadfn(&mut loadfn, "glGetTransformFeedbacki64_v", &[]))
+    } }
+}
+pub mod GetTransformFeedbacki_v {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTransformFeedbacki_v::is_loaded() }
+        else { (*STORAGE).GetTransformFeedbacki_v.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTransformFeedbacki_v = FnPtr::new(metaloadfn(&mut loadfn, "glGetTransformFeedbacki_v", &[]))
+    } }
+}
+pub mod GetTransformFeedbackiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetTransformFeedbackiv::is_loaded() }
+        else { (*STORAGE).GetTransformFeedbackiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetTransformFeedbackiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetTransformFeedbackiv", &[]))
+    } }
+}
+pub mod GetUniformBlockIndex {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetUniformBlockIndex::is_loaded() }
+        else { (*STORAGE).GetUniformBlockIndex.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetUniformBlockIndex = FnPtr::new(metaloadfn(&mut loadfn, "glGetUniformBlockIndex", &[]))
+    } }
+}
+pub mod GetUniformIndices {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetUniformIndices::is_loaded() }
+        else { (*STORAGE).GetUniformIndices.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetUniformIndices = FnPtr::new(metaloadfn(&mut loadfn, "glGetUniformIndices", &[]))
+    } }
+}
+pub mod GetUniformLocation {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetUniformLocation::is_loaded() }
+        else { (*STORAGE).GetUniformLocation.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetUniformLocation = FnPtr::new(metaloadfn(&mut loadfn, "glGetUniformLocation", &["glGetUniformLocationARB"]))
+    } }
+}
+pub mod GetUniformSubroutineuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetUniformSubroutineuiv::is_loaded() }
+        else { (*STORAGE).GetUniformSubroutineuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetUniformSubroutineuiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetUniformSubroutineuiv", &[]))
+    } }
+}
+pub mod GetUniformdv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetUniformdv::is_loaded() }
+        else { (*STORAGE).GetUniformdv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetUniformdv = FnPtr::new(metaloadfn(&mut loadfn, "glGetUniformdv", &[]))
+    } }
+}
+pub mod GetUniformfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetUniformfv::is_loaded() }
+        else { (*STORAGE).GetUniformfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetUniformfv = FnPtr::new(metaloadfn(&mut loadfn, "glGetUniformfv", &["glGetUniformfvARB"]))
+    } }
+}
+pub mod GetUniformiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetUniformiv::is_loaded() }
+        else { (*STORAGE).GetUniformiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetUniformiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetUniformiv", &["glGetUniformivARB"]))
+    } }
+}
+pub mod GetUniformuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetUniformuiv::is_loaded() }
+        else { (*STORAGE).GetUniformuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetUniformuiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetUniformuiv", &["glGetUniformuivEXT"]))
+    } }
+}
+pub mod GetVertexArrayIndexed64iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetVertexArrayIndexed64iv::is_loaded() }
+        else { (*STORAGE).GetVertexArrayIndexed64iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetVertexArrayIndexed64iv = FnPtr::new(metaloadfn(&mut loadfn, "glGetVertexArrayIndexed64iv", &[]))
+    } }
+}
+pub mod GetVertexArrayIndexediv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetVertexArrayIndexediv::is_loaded() }
+        else { (*STORAGE).GetVertexArrayIndexediv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetVertexArrayIndexediv = FnPtr::new(metaloadfn(&mut loadfn, "glGetVertexArrayIndexediv", &[]))
+    } }
+}
+pub mod GetVertexArrayiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetVertexArrayiv::is_loaded() }
+        else { (*STORAGE).GetVertexArrayiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetVertexArrayiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetVertexArrayiv", &[]))
+    } }
+}
+pub mod GetVertexAttribIiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetVertexAttribIiv::is_loaded() }
+        else { (*STORAGE).GetVertexAttribIiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetVertexAttribIiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetVertexAttribIiv", &["glGetVertexAttribIivEXT"]))
+    } }
+}
+pub mod GetVertexAttribIuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetVertexAttribIuiv::is_loaded() }
+        else { (*STORAGE).GetVertexAttribIuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetVertexAttribIuiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetVertexAttribIuiv", &["glGetVertexAttribIuivEXT"]))
+    } }
+}
+pub mod GetVertexAttribLdv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetVertexAttribLdv::is_loaded() }
+        else { (*STORAGE).GetVertexAttribLdv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetVertexAttribLdv = FnPtr::new(metaloadfn(&mut loadfn, "glGetVertexAttribLdv", &["glGetVertexAttribLdvEXT"]))
+    } }
+}
+pub mod GetVertexAttribPointerv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetVertexAttribPointerv::is_loaded() }
+        else { (*STORAGE).GetVertexAttribPointerv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetVertexAttribPointerv = FnPtr::new(metaloadfn(&mut loadfn, "glGetVertexAttribPointerv", &["glGetVertexAttribPointervARB", "glGetVertexAttribPointervNV"]))
+    } }
+}
+pub mod GetVertexAttribdv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetVertexAttribdv::is_loaded() }
+        else { (*STORAGE).GetVertexAttribdv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetVertexAttribdv = FnPtr::new(metaloadfn(&mut loadfn, "glGetVertexAttribdv", &["glGetVertexAttribdvARB", "glGetVertexAttribdvNV"]))
+    } }
+}
+pub mod GetVertexAttribfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetVertexAttribfv::is_loaded() }
+        else { (*STORAGE).GetVertexAttribfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetVertexAttribfv = FnPtr::new(metaloadfn(&mut loadfn, "glGetVertexAttribfv", &["glGetVertexAttribfvARB", "glGetVertexAttribfvNV"]))
+    } }
+}
+pub mod GetVertexAttribiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetVertexAttribiv::is_loaded() }
+        else { (*STORAGE).GetVertexAttribiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetVertexAttribiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetVertexAttribiv", &["glGetVertexAttribivARB", "glGetVertexAttribivNV"]))
+    } }
+}
+pub mod GetnColorTable {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnColorTable::is_loaded() }
+        else { (*STORAGE).GetnColorTable.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnColorTable = FnPtr::new(metaloadfn(&mut loadfn, "glGetnColorTable", &[]))
+    } }
+}
+pub mod GetnCompressedTexImage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnCompressedTexImage::is_loaded() }
+        else { (*STORAGE).GetnCompressedTexImage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnCompressedTexImage = FnPtr::new(metaloadfn(&mut loadfn, "glGetnCompressedTexImage", &[]))
+    } }
+}
+pub mod GetnConvolutionFilter {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnConvolutionFilter::is_loaded() }
+        else { (*STORAGE).GetnConvolutionFilter.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnConvolutionFilter = FnPtr::new(metaloadfn(&mut loadfn, "glGetnConvolutionFilter", &[]))
+    } }
+}
+pub mod GetnHistogram {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnHistogram::is_loaded() }
+        else { (*STORAGE).GetnHistogram.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnHistogram = FnPtr::new(metaloadfn(&mut loadfn, "glGetnHistogram", &[]))
+    } }
+}
+pub mod GetnMapdv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnMapdv::is_loaded() }
+        else { (*STORAGE).GetnMapdv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnMapdv = FnPtr::new(metaloadfn(&mut loadfn, "glGetnMapdv", &[]))
+    } }
+}
+pub mod GetnMapfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnMapfv::is_loaded() }
+        else { (*STORAGE).GetnMapfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnMapfv = FnPtr::new(metaloadfn(&mut loadfn, "glGetnMapfv", &[]))
+    } }
+}
+pub mod GetnMapiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnMapiv::is_loaded() }
+        else { (*STORAGE).GetnMapiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnMapiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetnMapiv", &[]))
+    } }
+}
+pub mod GetnMinmax {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnMinmax::is_loaded() }
+        else { (*STORAGE).GetnMinmax.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnMinmax = FnPtr::new(metaloadfn(&mut loadfn, "glGetnMinmax", &[]))
+    } }
+}
+pub mod GetnPixelMapfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnPixelMapfv::is_loaded() }
+        else { (*STORAGE).GetnPixelMapfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnPixelMapfv = FnPtr::new(metaloadfn(&mut loadfn, "glGetnPixelMapfv", &[]))
+    } }
+}
+pub mod GetnPixelMapuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnPixelMapuiv::is_loaded() }
+        else { (*STORAGE).GetnPixelMapuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnPixelMapuiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetnPixelMapuiv", &[]))
+    } }
+}
+pub mod GetnPixelMapusv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnPixelMapusv::is_loaded() }
+        else { (*STORAGE).GetnPixelMapusv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnPixelMapusv = FnPtr::new(metaloadfn(&mut loadfn, "glGetnPixelMapusv", &[]))
+    } }
+}
+pub mod GetnPolygonStipple {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnPolygonStipple::is_loaded() }
+        else { (*STORAGE).GetnPolygonStipple.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnPolygonStipple = FnPtr::new(metaloadfn(&mut loadfn, "glGetnPolygonStipple", &[]))
+    } }
+}
+pub mod GetnSeparableFilter {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnSeparableFilter::is_loaded() }
+        else { (*STORAGE).GetnSeparableFilter.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnSeparableFilter = FnPtr::new(metaloadfn(&mut loadfn, "glGetnSeparableFilter", &[]))
+    } }
+}
+pub mod GetnTexImage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnTexImage::is_loaded() }
+        else { (*STORAGE).GetnTexImage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnTexImage = FnPtr::new(metaloadfn(&mut loadfn, "glGetnTexImage", &[]))
+    } }
+}
+pub mod GetnUniformdv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnUniformdv::is_loaded() }
+        else { (*STORAGE).GetnUniformdv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnUniformdv = FnPtr::new(metaloadfn(&mut loadfn, "glGetnUniformdv", &[]))
+    } }
+}
+pub mod GetnUniformfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnUniformfv::is_loaded() }
+        else { (*STORAGE).GetnUniformfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnUniformfv = FnPtr::new(metaloadfn(&mut loadfn, "glGetnUniformfv", &["glGetnUniformfvEXT", "glGetnUniformfvKHR"]))
+    } }
+}
+pub mod GetnUniformiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnUniformiv::is_loaded() }
+        else { (*STORAGE).GetnUniformiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnUniformiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetnUniformiv", &["glGetnUniformivEXT", "glGetnUniformivKHR"]))
+    } }
+}
+pub mod GetnUniformuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::GetnUniformuiv::is_loaded() }
+        else { (*STORAGE).GetnUniformuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).GetnUniformuiv = FnPtr::new(metaloadfn(&mut loadfn, "glGetnUniformuiv", &["glGetnUniformuivKHR"]))
+    } }
+}
+pub mod Hint {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Hint::is_loaded() }
+        else { (*STORAGE).Hint.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Hint = FnPtr::new(metaloadfn(&mut loadfn, "glHint", &[]))
+    } }
+}
+pub mod InvalidateBufferData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::InvalidateBufferData::is_loaded() }
+        else { (*STORAGE).InvalidateBufferData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).InvalidateBufferData = FnPtr::new(metaloadfn(&mut loadfn, "glInvalidateBufferData", &[]))
+    } }
+}
+pub mod InvalidateBufferSubData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::InvalidateBufferSubData::is_loaded() }
+        else { (*STORAGE).InvalidateBufferSubData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).InvalidateBufferSubData = FnPtr::new(metaloadfn(&mut loadfn, "glInvalidateBufferSubData", &[]))
+    } }
+}
+pub mod InvalidateFramebuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::InvalidateFramebuffer::is_loaded() }
+        else { (*STORAGE).InvalidateFramebuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).InvalidateFramebuffer = FnPtr::new(metaloadfn(&mut loadfn, "glInvalidateFramebuffer", &[]))
+    } }
+}
+pub mod InvalidateNamedFramebufferData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::InvalidateNamedFramebufferData::is_loaded() }
+        else { (*STORAGE).InvalidateNamedFramebufferData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).InvalidateNamedFramebufferData = FnPtr::new(metaloadfn(&mut loadfn, "glInvalidateNamedFramebufferData", &[]))
+    } }
+}
+pub mod InvalidateNamedFramebufferSubData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::InvalidateNamedFramebufferSubData::is_loaded() }
+        else { (*STORAGE).InvalidateNamedFramebufferSubData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).InvalidateNamedFramebufferSubData = FnPtr::new(metaloadfn(&mut loadfn, "glInvalidateNamedFramebufferSubData", &[]))
+    } }
+}
+pub mod InvalidateSubFramebuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::InvalidateSubFramebuffer::is_loaded() }
+        else { (*STORAGE).InvalidateSubFramebuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).InvalidateSubFramebuffer = FnPtr::new(metaloadfn(&mut loadfn, "glInvalidateSubFramebuffer", &[]))
+    } }
+}
+pub mod InvalidateTexImage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::InvalidateTexImage::is_loaded() }
+        else { (*STORAGE).InvalidateTexImage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).InvalidateTexImage = FnPtr::new(metaloadfn(&mut loadfn, "glInvalidateTexImage", &[]))
+    } }
+}
+pub mod InvalidateTexSubImage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::InvalidateTexSubImage::is_loaded() }
+        else { (*STORAGE).InvalidateTexSubImage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).InvalidateTexSubImage = FnPtr::new(metaloadfn(&mut loadfn, "glInvalidateTexSubImage", &[]))
+    } }
+}
+pub mod IsBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsBuffer::is_loaded() }
+        else { (*STORAGE).IsBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glIsBuffer", &["glIsBufferARB"]))
+    } }
+}
+pub mod IsEnabled {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsEnabled::is_loaded() }
+        else { (*STORAGE).IsEnabled.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsEnabled = FnPtr::new(metaloadfn(&mut loadfn, "glIsEnabled", &[]))
+    } }
+}
+pub mod IsEnabledi {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsEnabledi::is_loaded() }
+        else { (*STORAGE).IsEnabledi.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsEnabledi = FnPtr::new(metaloadfn(&mut loadfn, "glIsEnabledi", &["glIsEnabledIndexedEXT", "glIsEnablediEXT", "glIsEnablediNV", "glIsEnablediOES"]))
+    } }
+}
+pub mod IsFramebuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsFramebuffer::is_loaded() }
+        else { (*STORAGE).IsFramebuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsFramebuffer = FnPtr::new(metaloadfn(&mut loadfn, "glIsFramebuffer", &["glIsFramebufferEXT"]))
+    } }
+}
+pub mod IsProgram {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsProgram::is_loaded() }
+        else { (*STORAGE).IsProgram.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsProgram = FnPtr::new(metaloadfn(&mut loadfn, "glIsProgram", &[]))
+    } }
+}
+pub mod IsProgramPipeline {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsProgramPipeline::is_loaded() }
+        else { (*STORAGE).IsProgramPipeline.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsProgramPipeline = FnPtr::new(metaloadfn(&mut loadfn, "glIsProgramPipeline", &[]))
+    } }
+}
+pub mod IsQuery {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsQuery::is_loaded() }
+        else { (*STORAGE).IsQuery.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsQuery = FnPtr::new(metaloadfn(&mut loadfn, "glIsQuery", &["glIsQueryARB"]))
+    } }
+}
+pub mod IsRenderbuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsRenderbuffer::is_loaded() }
+        else { (*STORAGE).IsRenderbuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsRenderbuffer = FnPtr::new(metaloadfn(&mut loadfn, "glIsRenderbuffer", &["glIsRenderbufferEXT"]))
+    } }
+}
+pub mod IsSampler {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsSampler::is_loaded() }
+        else { (*STORAGE).IsSampler.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsSampler = FnPtr::new(metaloadfn(&mut loadfn, "glIsSampler", &[]))
+    } }
+}
+pub mod IsShader {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsShader::is_loaded() }
+        else { (*STORAGE).IsShader.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsShader = FnPtr::new(metaloadfn(&mut loadfn, "glIsShader", &[]))
+    } }
+}
+pub mod IsSync {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsSync::is_loaded() }
+        else { (*STORAGE).IsSync.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsSync = FnPtr::new(metaloadfn(&mut loadfn, "glIsSync", &["glIsSyncAPPLE"]))
+    } }
+}
+pub mod IsTexture {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsTexture::is_loaded() }
+        else { (*STORAGE).IsTexture.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsTexture = FnPtr::new(metaloadfn(&mut loadfn, "glIsTexture", &[]))
+    } }
+}
+pub mod IsTransformFeedback {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsTransformFeedback::is_loaded() }
+        else { (*STORAGE).IsTransformFeedback.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsTransformFeedback = FnPtr::new(metaloadfn(&mut loadfn, "glIsTransformFeedback", &["glIsTransformFeedbackNV"]))
+    } }
+}
+pub mod IsVertexArray {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::IsVertexArray::is_loaded() }
+        else { (*STORAGE).IsVertexArray.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).IsVertexArray = FnPtr::new(metaloadfn(&mut loadfn, "glIsVertexArray", &["glIsVertexArrayAPPLE", "glIsVertexArrayOES"]))
+    } }
+}
+pub mod LineWidth {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::LineWidth::is_loaded() }
+        else { (*STORAGE).LineWidth.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).LineWidth = FnPtr::new(metaloadfn(&mut loadfn, "glLineWidth", &[]))
+    } }
+}
+pub mod LinkProgram {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::LinkProgram::is_loaded() }
+        else { (*STORAGE).LinkProgram.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).LinkProgram = FnPtr::new(metaloadfn(&mut loadfn, "glLinkProgram", &["glLinkProgramARB"]))
+    } }
+}
+pub mod LogicOp {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::LogicOp::is_loaded() }
+        else { (*STORAGE).LogicOp.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).LogicOp = FnPtr::new(metaloadfn(&mut loadfn, "glLogicOp", &[]))
+    } }
+}
+pub mod MapBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MapBuffer::is_loaded() }
+        else { (*STORAGE).MapBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MapBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glMapBuffer", &["glMapBufferARB", "glMapBufferOES"]))
+    } }
+}
+pub mod MapBufferRange {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MapBufferRange::is_loaded() }
+        else { (*STORAGE).MapBufferRange.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MapBufferRange = FnPtr::new(metaloadfn(&mut loadfn, "glMapBufferRange", &["glMapBufferRangeEXT"]))
+    } }
+}
+pub mod MapNamedBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MapNamedBuffer::is_loaded() }
+        else { (*STORAGE).MapNamedBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MapNamedBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glMapNamedBuffer", &[]))
+    } }
+}
+pub mod MapNamedBufferRange {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MapNamedBufferRange::is_loaded() }
+        else { (*STORAGE).MapNamedBufferRange.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MapNamedBufferRange = FnPtr::new(metaloadfn(&mut loadfn, "glMapNamedBufferRange", &[]))
+    } }
+}
+pub mod MemoryBarrier {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MemoryBarrier::is_loaded() }
+        else { (*STORAGE).MemoryBarrier.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MemoryBarrier = FnPtr::new(metaloadfn(&mut loadfn, "glMemoryBarrier", &["glMemoryBarrierEXT"]))
+    } }
+}
+pub mod MemoryBarrierByRegion {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MemoryBarrierByRegion::is_loaded() }
+        else { (*STORAGE).MemoryBarrierByRegion.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MemoryBarrierByRegion = FnPtr::new(metaloadfn(&mut loadfn, "glMemoryBarrierByRegion", &[]))
+    } }
+}
+pub mod MinSampleShading {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MinSampleShading::is_loaded() }
+        else { (*STORAGE).MinSampleShading.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MinSampleShading = FnPtr::new(metaloadfn(&mut loadfn, "glMinSampleShading", &["glMinSampleShadingARB", "glMinSampleShadingOES"]))
+    } }
+}
+pub mod MultiDrawArrays {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiDrawArrays::is_loaded() }
+        else { (*STORAGE).MultiDrawArrays.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiDrawArrays = FnPtr::new(metaloadfn(&mut loadfn, "glMultiDrawArrays", &["glMultiDrawArraysEXT"]))
+    } }
+}
+pub mod MultiDrawArraysIndirect {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiDrawArraysIndirect::is_loaded() }
+        else { (*STORAGE).MultiDrawArraysIndirect.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiDrawArraysIndirect = FnPtr::new(metaloadfn(&mut loadfn, "glMultiDrawArraysIndirect", &["glMultiDrawArraysIndirectAMD", "glMultiDrawArraysIndirectEXT"]))
+    } }
+}
+pub mod MultiDrawElements {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiDrawElements::is_loaded() }
+        else { (*STORAGE).MultiDrawElements.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiDrawElements = FnPtr::new(metaloadfn(&mut loadfn, "glMultiDrawElements", &["glMultiDrawElementsEXT"]))
+    } }
+}
+pub mod MultiDrawElementsBaseVertex {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiDrawElementsBaseVertex::is_loaded() }
+        else { (*STORAGE).MultiDrawElementsBaseVertex.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiDrawElementsBaseVertex = FnPtr::new(metaloadfn(&mut loadfn, "glMultiDrawElementsBaseVertex", &["glMultiDrawElementsBaseVertexEXT"]))
+    } }
+}
+pub mod MultiDrawElementsIndirect {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiDrawElementsIndirect::is_loaded() }
+        else { (*STORAGE).MultiDrawElementsIndirect.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiDrawElementsIndirect = FnPtr::new(metaloadfn(&mut loadfn, "glMultiDrawElementsIndirect", &["glMultiDrawElementsIndirectAMD", "glMultiDrawElementsIndirectEXT"]))
+    } }
+}
+pub mod MultiTexCoordP1ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiTexCoordP1ui::is_loaded() }
+        else { (*STORAGE).MultiTexCoordP1ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiTexCoordP1ui = FnPtr::new(metaloadfn(&mut loadfn, "glMultiTexCoordP1ui", &[]))
+    } }
+}
+pub mod MultiTexCoordP1uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiTexCoordP1uiv::is_loaded() }
+        else { (*STORAGE).MultiTexCoordP1uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiTexCoordP1uiv = FnPtr::new(metaloadfn(&mut loadfn, "glMultiTexCoordP1uiv", &[]))
+    } }
+}
+pub mod MultiTexCoordP2ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiTexCoordP2ui::is_loaded() }
+        else { (*STORAGE).MultiTexCoordP2ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiTexCoordP2ui = FnPtr::new(metaloadfn(&mut loadfn, "glMultiTexCoordP2ui", &[]))
+    } }
+}
+pub mod MultiTexCoordP2uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiTexCoordP2uiv::is_loaded() }
+        else { (*STORAGE).MultiTexCoordP2uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiTexCoordP2uiv = FnPtr::new(metaloadfn(&mut loadfn, "glMultiTexCoordP2uiv", &[]))
+    } }
+}
+pub mod MultiTexCoordP3ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiTexCoordP3ui::is_loaded() }
+        else { (*STORAGE).MultiTexCoordP3ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiTexCoordP3ui = FnPtr::new(metaloadfn(&mut loadfn, "glMultiTexCoordP3ui", &[]))
+    } }
+}
+pub mod MultiTexCoordP3uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiTexCoordP3uiv::is_loaded() }
+        else { (*STORAGE).MultiTexCoordP3uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiTexCoordP3uiv = FnPtr::new(metaloadfn(&mut loadfn, "glMultiTexCoordP3uiv", &[]))
+    } }
+}
+pub mod MultiTexCoordP4ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiTexCoordP4ui::is_loaded() }
+        else { (*STORAGE).MultiTexCoordP4ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiTexCoordP4ui = FnPtr::new(metaloadfn(&mut loadfn, "glMultiTexCoordP4ui", &[]))
+    } }
+}
+pub mod MultiTexCoordP4uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::MultiTexCoordP4uiv::is_loaded() }
+        else { (*STORAGE).MultiTexCoordP4uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).MultiTexCoordP4uiv = FnPtr::new(metaloadfn(&mut loadfn, "glMultiTexCoordP4uiv", &[]))
+    } }
+}
+pub mod NamedBufferData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NamedBufferData::is_loaded() }
+        else { (*STORAGE).NamedBufferData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NamedBufferData = FnPtr::new(metaloadfn(&mut loadfn, "glNamedBufferData", &[]))
+    } }
+}
+pub mod NamedBufferStorage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NamedBufferStorage::is_loaded() }
+        else { (*STORAGE).NamedBufferStorage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NamedBufferStorage = FnPtr::new(metaloadfn(&mut loadfn, "glNamedBufferStorage", &["glNamedBufferStorageEXT"]))
+    } }
+}
+pub mod NamedBufferSubData {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NamedBufferSubData::is_loaded() }
+        else { (*STORAGE).NamedBufferSubData.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NamedBufferSubData = FnPtr::new(metaloadfn(&mut loadfn, "glNamedBufferSubData", &["glNamedBufferSubDataEXT"]))
+    } }
+}
+pub mod NamedFramebufferDrawBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NamedFramebufferDrawBuffer::is_loaded() }
+        else { (*STORAGE).NamedFramebufferDrawBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NamedFramebufferDrawBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glNamedFramebufferDrawBuffer", &[]))
+    } }
+}
+pub mod NamedFramebufferDrawBuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NamedFramebufferDrawBuffers::is_loaded() }
+        else { (*STORAGE).NamedFramebufferDrawBuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NamedFramebufferDrawBuffers = FnPtr::new(metaloadfn(&mut loadfn, "glNamedFramebufferDrawBuffers", &[]))
+    } }
+}
+pub mod NamedFramebufferParameteri {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NamedFramebufferParameteri::is_loaded() }
+        else { (*STORAGE).NamedFramebufferParameteri.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NamedFramebufferParameteri = FnPtr::new(metaloadfn(&mut loadfn, "glNamedFramebufferParameteri", &[]))
+    } }
+}
+pub mod NamedFramebufferReadBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NamedFramebufferReadBuffer::is_loaded() }
+        else { (*STORAGE).NamedFramebufferReadBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NamedFramebufferReadBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glNamedFramebufferReadBuffer", &[]))
+    } }
+}
+pub mod NamedFramebufferRenderbuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NamedFramebufferRenderbuffer::is_loaded() }
+        else { (*STORAGE).NamedFramebufferRenderbuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NamedFramebufferRenderbuffer = FnPtr::new(metaloadfn(&mut loadfn, "glNamedFramebufferRenderbuffer", &[]))
+    } }
+}
+pub mod NamedFramebufferTexture {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NamedFramebufferTexture::is_loaded() }
+        else { (*STORAGE).NamedFramebufferTexture.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NamedFramebufferTexture = FnPtr::new(metaloadfn(&mut loadfn, "glNamedFramebufferTexture", &[]))
+    } }
+}
+pub mod NamedFramebufferTextureLayer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NamedFramebufferTextureLayer::is_loaded() }
+        else { (*STORAGE).NamedFramebufferTextureLayer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NamedFramebufferTextureLayer = FnPtr::new(metaloadfn(&mut loadfn, "glNamedFramebufferTextureLayer", &[]))
+    } }
+}
+pub mod NamedRenderbufferStorage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NamedRenderbufferStorage::is_loaded() }
+        else { (*STORAGE).NamedRenderbufferStorage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NamedRenderbufferStorage = FnPtr::new(metaloadfn(&mut loadfn, "glNamedRenderbufferStorage", &[]))
+    } }
+}
+pub mod NamedRenderbufferStorageMultisample {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NamedRenderbufferStorageMultisample::is_loaded() }
+        else { (*STORAGE).NamedRenderbufferStorageMultisample.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NamedRenderbufferStorageMultisample = FnPtr::new(metaloadfn(&mut loadfn, "glNamedRenderbufferStorageMultisample", &[]))
+    } }
+}
+pub mod NormalP3ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NormalP3ui::is_loaded() }
+        else { (*STORAGE).NormalP3ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NormalP3ui = FnPtr::new(metaloadfn(&mut loadfn, "glNormalP3ui", &[]))
+    } }
+}
+pub mod NormalP3uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::NormalP3uiv::is_loaded() }
+        else { (*STORAGE).NormalP3uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).NormalP3uiv = FnPtr::new(metaloadfn(&mut loadfn, "glNormalP3uiv", &[]))
+    } }
+}
+pub mod ObjectLabel {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ObjectLabel::is_loaded() }
+        else { (*STORAGE).ObjectLabel.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ObjectLabel = FnPtr::new(metaloadfn(&mut loadfn, "glObjectLabel", &["glObjectLabelKHR"]))
+    } }
+}
+pub mod ObjectPtrLabel {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ObjectPtrLabel::is_loaded() }
+        else { (*STORAGE).ObjectPtrLabel.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ObjectPtrLabel = FnPtr::new(metaloadfn(&mut loadfn, "glObjectPtrLabel", &["glObjectPtrLabelKHR"]))
+    } }
+}
+pub mod PatchParameterfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PatchParameterfv::is_loaded() }
+        else { (*STORAGE).PatchParameterfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PatchParameterfv = FnPtr::new(metaloadfn(&mut loadfn, "glPatchParameterfv", &[]))
+    } }
+}
+pub mod PatchParameteri {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PatchParameteri::is_loaded() }
+        else { (*STORAGE).PatchParameteri.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PatchParameteri = FnPtr::new(metaloadfn(&mut loadfn, "glPatchParameteri", &["glPatchParameteriEXT", "glPatchParameteriOES"]))
+    } }
+}
+pub mod PauseTransformFeedback {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PauseTransformFeedback::is_loaded() }
+        else { (*STORAGE).PauseTransformFeedback.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PauseTransformFeedback = FnPtr::new(metaloadfn(&mut loadfn, "glPauseTransformFeedback", &["glPauseTransformFeedbackNV"]))
+    } }
+}
+pub mod PixelStoref {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PixelStoref::is_loaded() }
+        else { (*STORAGE).PixelStoref.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PixelStoref = FnPtr::new(metaloadfn(&mut loadfn, "glPixelStoref", &[]))
+    } }
+}
+pub mod PixelStorei {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PixelStorei::is_loaded() }
+        else { (*STORAGE).PixelStorei.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PixelStorei = FnPtr::new(metaloadfn(&mut loadfn, "glPixelStorei", &[]))
+    } }
+}
+pub mod PointParameterf {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PointParameterf::is_loaded() }
+        else { (*STORAGE).PointParameterf.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PointParameterf = FnPtr::new(metaloadfn(&mut loadfn, "glPointParameterf", &["glPointParameterfARB", "glPointParameterfEXT", "glPointParameterfSGIS"]))
+    } }
+}
+pub mod PointParameterfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PointParameterfv::is_loaded() }
+        else { (*STORAGE).PointParameterfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PointParameterfv = FnPtr::new(metaloadfn(&mut loadfn, "glPointParameterfv", &["glPointParameterfvARB", "glPointParameterfvEXT", "glPointParameterfvSGIS"]))
+    } }
+}
+pub mod PointParameteri {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PointParameteri::is_loaded() }
+        else { (*STORAGE).PointParameteri.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PointParameteri = FnPtr::new(metaloadfn(&mut loadfn, "glPointParameteri", &["glPointParameteriNV"]))
+    } }
+}
+pub mod PointParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PointParameteriv::is_loaded() }
+        else { (*STORAGE).PointParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PointParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glPointParameteriv", &["glPointParameterivNV"]))
+    } }
+}
+pub mod PointSize {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PointSize::is_loaded() }
+        else { (*STORAGE).PointSize.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PointSize = FnPtr::new(metaloadfn(&mut loadfn, "glPointSize", &[]))
+    } }
+}
+pub mod PolygonMode {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PolygonMode::is_loaded() }
+        else { (*STORAGE).PolygonMode.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PolygonMode = FnPtr::new(metaloadfn(&mut loadfn, "glPolygonMode", &["glPolygonModeNV"]))
+    } }
+}
+pub mod PolygonOffset {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PolygonOffset::is_loaded() }
+        else { (*STORAGE).PolygonOffset.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PolygonOffset = FnPtr::new(metaloadfn(&mut loadfn, "glPolygonOffset", &[]))
+    } }
+}
+pub mod PopDebugGroup {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PopDebugGroup::is_loaded() }
+        else { (*STORAGE).PopDebugGroup.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PopDebugGroup = FnPtr::new(metaloadfn(&mut loadfn, "glPopDebugGroup", &["glPopDebugGroupKHR"]))
+    } }
+}
+pub mod PrimitiveRestartIndex {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PrimitiveRestartIndex::is_loaded() }
+        else { (*STORAGE).PrimitiveRestartIndex.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PrimitiveRestartIndex = FnPtr::new(metaloadfn(&mut loadfn, "glPrimitiveRestartIndex", &[]))
+    } }
+}
+pub mod ProgramBinary {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramBinary::is_loaded() }
+        else { (*STORAGE).ProgramBinary.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramBinary = FnPtr::new(metaloadfn(&mut loadfn, "glProgramBinary", &["glProgramBinaryOES"]))
+    } }
+}
+pub mod ProgramParameteri {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramParameteri::is_loaded() }
+        else { (*STORAGE).ProgramParameteri.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramParameteri = FnPtr::new(metaloadfn(&mut loadfn, "glProgramParameteri", &["glProgramParameteriARB", "glProgramParameteriEXT"]))
+    } }
+}
+pub mod ProgramUniform1d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform1d::is_loaded() }
+        else { (*STORAGE).ProgramUniform1d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform1d = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform1d", &[]))
+    } }
+}
+pub mod ProgramUniform1dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform1dv::is_loaded() }
+        else { (*STORAGE).ProgramUniform1dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform1dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform1dv", &[]))
+    } }
+}
+pub mod ProgramUniform1f {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform1f::is_loaded() }
+        else { (*STORAGE).ProgramUniform1f.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform1f = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform1f", &["glProgramUniform1fEXT"]))
+    } }
+}
+pub mod ProgramUniform1fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform1fv::is_loaded() }
+        else { (*STORAGE).ProgramUniform1fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform1fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform1fv", &["glProgramUniform1fvEXT"]))
+    } }
+}
+pub mod ProgramUniform1i {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform1i::is_loaded() }
+        else { (*STORAGE).ProgramUniform1i.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform1i = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform1i", &["glProgramUniform1iEXT"]))
+    } }
+}
+pub mod ProgramUniform1iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform1iv::is_loaded() }
+        else { (*STORAGE).ProgramUniform1iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform1iv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform1iv", &["glProgramUniform1ivEXT"]))
+    } }
+}
+pub mod ProgramUniform1ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform1ui::is_loaded() }
+        else { (*STORAGE).ProgramUniform1ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform1ui = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform1ui", &["glProgramUniform1uiEXT"]))
+    } }
+}
+pub mod ProgramUniform1uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform1uiv::is_loaded() }
+        else { (*STORAGE).ProgramUniform1uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform1uiv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform1uiv", &["glProgramUniform1uivEXT"]))
+    } }
+}
+pub mod ProgramUniform2d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform2d::is_loaded() }
+        else { (*STORAGE).ProgramUniform2d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform2d = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform2d", &[]))
+    } }
+}
+pub mod ProgramUniform2dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform2dv::is_loaded() }
+        else { (*STORAGE).ProgramUniform2dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform2dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform2dv", &[]))
+    } }
+}
+pub mod ProgramUniform2f {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform2f::is_loaded() }
+        else { (*STORAGE).ProgramUniform2f.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform2f = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform2f", &["glProgramUniform2fEXT"]))
+    } }
+}
+pub mod ProgramUniform2fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform2fv::is_loaded() }
+        else { (*STORAGE).ProgramUniform2fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform2fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform2fv", &["glProgramUniform2fvEXT"]))
+    } }
+}
+pub mod ProgramUniform2i {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform2i::is_loaded() }
+        else { (*STORAGE).ProgramUniform2i.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform2i = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform2i", &["glProgramUniform2iEXT"]))
+    } }
+}
+pub mod ProgramUniform2iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform2iv::is_loaded() }
+        else { (*STORAGE).ProgramUniform2iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform2iv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform2iv", &["glProgramUniform2ivEXT"]))
+    } }
+}
+pub mod ProgramUniform2ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform2ui::is_loaded() }
+        else { (*STORAGE).ProgramUniform2ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform2ui = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform2ui", &["glProgramUniform2uiEXT"]))
+    } }
+}
+pub mod ProgramUniform2uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform2uiv::is_loaded() }
+        else { (*STORAGE).ProgramUniform2uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform2uiv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform2uiv", &["glProgramUniform2uivEXT"]))
+    } }
+}
+pub mod ProgramUniform3d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform3d::is_loaded() }
+        else { (*STORAGE).ProgramUniform3d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform3d = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform3d", &[]))
+    } }
+}
+pub mod ProgramUniform3dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform3dv::is_loaded() }
+        else { (*STORAGE).ProgramUniform3dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform3dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform3dv", &[]))
+    } }
+}
+pub mod ProgramUniform3f {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform3f::is_loaded() }
+        else { (*STORAGE).ProgramUniform3f.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform3f = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform3f", &["glProgramUniform3fEXT"]))
+    } }
+}
+pub mod ProgramUniform3fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform3fv::is_loaded() }
+        else { (*STORAGE).ProgramUniform3fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform3fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform3fv", &["glProgramUniform3fvEXT"]))
+    } }
+}
+pub mod ProgramUniform3i {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform3i::is_loaded() }
+        else { (*STORAGE).ProgramUniform3i.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform3i = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform3i", &["glProgramUniform3iEXT"]))
+    } }
+}
+pub mod ProgramUniform3iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform3iv::is_loaded() }
+        else { (*STORAGE).ProgramUniform3iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform3iv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform3iv", &["glProgramUniform3ivEXT"]))
+    } }
+}
+pub mod ProgramUniform3ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform3ui::is_loaded() }
+        else { (*STORAGE).ProgramUniform3ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform3ui = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform3ui", &["glProgramUniform3uiEXT"]))
+    } }
+}
+pub mod ProgramUniform3uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform3uiv::is_loaded() }
+        else { (*STORAGE).ProgramUniform3uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform3uiv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform3uiv", &["glProgramUniform3uivEXT"]))
+    } }
+}
+pub mod ProgramUniform4d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform4d::is_loaded() }
+        else { (*STORAGE).ProgramUniform4d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform4d = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform4d", &[]))
+    } }
+}
+pub mod ProgramUniform4dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform4dv::is_loaded() }
+        else { (*STORAGE).ProgramUniform4dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform4dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform4dv", &[]))
+    } }
+}
+pub mod ProgramUniform4f {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform4f::is_loaded() }
+        else { (*STORAGE).ProgramUniform4f.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform4f = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform4f", &["glProgramUniform4fEXT"]))
+    } }
+}
+pub mod ProgramUniform4fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform4fv::is_loaded() }
+        else { (*STORAGE).ProgramUniform4fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform4fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform4fv", &["glProgramUniform4fvEXT"]))
+    } }
+}
+pub mod ProgramUniform4i {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform4i::is_loaded() }
+        else { (*STORAGE).ProgramUniform4i.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform4i = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform4i", &["glProgramUniform4iEXT"]))
+    } }
+}
+pub mod ProgramUniform4iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform4iv::is_loaded() }
+        else { (*STORAGE).ProgramUniform4iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform4iv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform4iv", &["glProgramUniform4ivEXT"]))
+    } }
+}
+pub mod ProgramUniform4ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform4ui::is_loaded() }
+        else { (*STORAGE).ProgramUniform4ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform4ui = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform4ui", &["glProgramUniform4uiEXT"]))
+    } }
+}
+pub mod ProgramUniform4uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniform4uiv::is_loaded() }
+        else { (*STORAGE).ProgramUniform4uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniform4uiv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniform4uiv", &["glProgramUniform4uivEXT"]))
+    } }
+}
+pub mod ProgramUniformMatrix2dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix2dv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix2dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix2dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix2dv", &[]))
+    } }
+}
+pub mod ProgramUniformMatrix2fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix2fv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix2fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix2fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix2fv", &["glProgramUniformMatrix2fvEXT"]))
+    } }
+}
+pub mod ProgramUniformMatrix2x3dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix2x3dv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix2x3dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix2x3dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix2x3dv", &[]))
+    } }
+}
+pub mod ProgramUniformMatrix2x3fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix2x3fv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix2x3fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix2x3fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix2x3fv", &["glProgramUniformMatrix2x3fvEXT"]))
+    } }
+}
+pub mod ProgramUniformMatrix2x4dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix2x4dv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix2x4dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix2x4dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix2x4dv", &[]))
+    } }
+}
+pub mod ProgramUniformMatrix2x4fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix2x4fv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix2x4fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix2x4fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix2x4fv", &["glProgramUniformMatrix2x4fvEXT"]))
+    } }
+}
+pub mod ProgramUniformMatrix3dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix3dv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix3dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix3dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix3dv", &[]))
+    } }
+}
+pub mod ProgramUniformMatrix3fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix3fv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix3fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix3fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix3fv", &["glProgramUniformMatrix3fvEXT"]))
+    } }
+}
+pub mod ProgramUniformMatrix3x2dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix3x2dv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix3x2dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix3x2dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix3x2dv", &[]))
+    } }
+}
+pub mod ProgramUniformMatrix3x2fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix3x2fv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix3x2fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix3x2fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix3x2fv", &["glProgramUniformMatrix3x2fvEXT"]))
+    } }
+}
+pub mod ProgramUniformMatrix3x4dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix3x4dv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix3x4dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix3x4dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix3x4dv", &[]))
+    } }
+}
+pub mod ProgramUniformMatrix3x4fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix3x4fv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix3x4fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix3x4fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix3x4fv", &["glProgramUniformMatrix3x4fvEXT"]))
+    } }
+}
+pub mod ProgramUniformMatrix4dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix4dv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix4dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix4dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix4dv", &[]))
+    } }
+}
+pub mod ProgramUniformMatrix4fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix4fv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix4fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix4fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix4fv", &["glProgramUniformMatrix4fvEXT"]))
+    } }
+}
+pub mod ProgramUniformMatrix4x2dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix4x2dv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix4x2dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix4x2dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix4x2dv", &[]))
+    } }
+}
+pub mod ProgramUniformMatrix4x2fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix4x2fv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix4x2fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix4x2fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix4x2fv", &["glProgramUniformMatrix4x2fvEXT"]))
+    } }
+}
+pub mod ProgramUniformMatrix4x3dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix4x3dv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix4x3dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix4x3dv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix4x3dv", &[]))
+    } }
+}
+pub mod ProgramUniformMatrix4x3fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix4x3fv::is_loaded() }
+        else { (*STORAGE).ProgramUniformMatrix4x3fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProgramUniformMatrix4x3fv = FnPtr::new(metaloadfn(&mut loadfn, "glProgramUniformMatrix4x3fv", &["glProgramUniformMatrix4x3fvEXT"]))
+    } }
+}
+pub mod ProvokingVertex {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ProvokingVertex::is_loaded() }
+        else { (*STORAGE).ProvokingVertex.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ProvokingVertex = FnPtr::new(metaloadfn(&mut loadfn, "glProvokingVertex", &["glProvokingVertexEXT"]))
+    } }
+}
+pub mod PushDebugGroup {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::PushDebugGroup::is_loaded() }
+        else { (*STORAGE).PushDebugGroup.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).PushDebugGroup = FnPtr::new(metaloadfn(&mut loadfn, "glPushDebugGroup", &["glPushDebugGroupKHR"]))
+    } }
+}
+pub mod QueryCounter {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::QueryCounter::is_loaded() }
+        else { (*STORAGE).QueryCounter.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).QueryCounter = FnPtr::new(metaloadfn(&mut loadfn, "glQueryCounter", &["glQueryCounterEXT"]))
+    } }
+}
+pub mod ReadBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ReadBuffer::is_loaded() }
+        else { (*STORAGE).ReadBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ReadBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glReadBuffer", &[]))
+    } }
+}
+pub mod ReadPixels {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ReadPixels::is_loaded() }
+        else { (*STORAGE).ReadPixels.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ReadPixels = FnPtr::new(metaloadfn(&mut loadfn, "glReadPixels", &[]))
+    } }
+}
+pub mod ReadnPixels {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ReadnPixels::is_loaded() }
+        else { (*STORAGE).ReadnPixels.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ReadnPixels = FnPtr::new(metaloadfn(&mut loadfn, "glReadnPixels", &["glReadnPixelsARB", "glReadnPixelsEXT", "glReadnPixelsKHR"]))
+    } }
+}
+pub mod ReleaseShaderCompiler {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ReleaseShaderCompiler::is_loaded() }
+        else { (*STORAGE).ReleaseShaderCompiler.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ReleaseShaderCompiler = FnPtr::new(metaloadfn(&mut loadfn, "glReleaseShaderCompiler", &[]))
+    } }
+}
+pub mod RenderbufferStorage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::RenderbufferStorage::is_loaded() }
+        else { (*STORAGE).RenderbufferStorage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).RenderbufferStorage = FnPtr::new(metaloadfn(&mut loadfn, "glRenderbufferStorage", &["glRenderbufferStorageEXT"]))
+    } }
+}
+pub mod RenderbufferStorageMultisample {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::RenderbufferStorageMultisample::is_loaded() }
+        else { (*STORAGE).RenderbufferStorageMultisample.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).RenderbufferStorageMultisample = FnPtr::new(metaloadfn(&mut loadfn, "glRenderbufferStorageMultisample", &["glRenderbufferStorageMultisampleEXT", "glRenderbufferStorageMultisampleNV"]))
+    } }
+}
+pub mod ResumeTransformFeedback {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ResumeTransformFeedback::is_loaded() }
+        else { (*STORAGE).ResumeTransformFeedback.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ResumeTransformFeedback = FnPtr::new(metaloadfn(&mut loadfn, "glResumeTransformFeedback", &["glResumeTransformFeedbackNV"]))
+    } }
+}
+pub mod SampleCoverage {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::SampleCoverage::is_loaded() }
+        else { (*STORAGE).SampleCoverage.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).SampleCoverage = FnPtr::new(metaloadfn(&mut loadfn, "glSampleCoverage", &["glSampleCoverageARB"]))
+    } }
+}
+pub mod SampleMaski {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::SampleMaski::is_loaded() }
+        else { (*STORAGE).SampleMaski.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).SampleMaski = FnPtr::new(metaloadfn(&mut loadfn, "glSampleMaski", &[]))
+    } }
+}
+pub mod SamplerParameterIiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::SamplerParameterIiv::is_loaded() }
+        else { (*STORAGE).SamplerParameterIiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).SamplerParameterIiv = FnPtr::new(metaloadfn(&mut loadfn, "glSamplerParameterIiv", &["glSamplerParameterIivEXT", "glSamplerParameterIivOES"]))
+    } }
+}
+pub mod SamplerParameterIuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::SamplerParameterIuiv::is_loaded() }
+        else { (*STORAGE).SamplerParameterIuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).SamplerParameterIuiv = FnPtr::new(metaloadfn(&mut loadfn, "glSamplerParameterIuiv", &["glSamplerParameterIuivEXT", "glSamplerParameterIuivOES"]))
+    } }
+}
+pub mod SamplerParameterf {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::SamplerParameterf::is_loaded() }
+        else { (*STORAGE).SamplerParameterf.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).SamplerParameterf = FnPtr::new(metaloadfn(&mut loadfn, "glSamplerParameterf", &[]))
+    } }
+}
+pub mod SamplerParameterfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::SamplerParameterfv::is_loaded() }
+        else { (*STORAGE).SamplerParameterfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).SamplerParameterfv = FnPtr::new(metaloadfn(&mut loadfn, "glSamplerParameterfv", &[]))
+    } }
+}
+pub mod SamplerParameteri {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::SamplerParameteri::is_loaded() }
+        else { (*STORAGE).SamplerParameteri.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).SamplerParameteri = FnPtr::new(metaloadfn(&mut loadfn, "glSamplerParameteri", &[]))
+    } }
+}
+pub mod SamplerParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::SamplerParameteriv::is_loaded() }
+        else { (*STORAGE).SamplerParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).SamplerParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glSamplerParameteriv", &[]))
+    } }
+}
+pub mod Scissor {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Scissor::is_loaded() }
+        else { (*STORAGE).Scissor.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Scissor = FnPtr::new(metaloadfn(&mut loadfn, "glScissor", &[]))
+    } }
+}
+pub mod ScissorArrayv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ScissorArrayv::is_loaded() }
+        else { (*STORAGE).ScissorArrayv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ScissorArrayv = FnPtr::new(metaloadfn(&mut loadfn, "glScissorArrayv", &["glScissorArrayvNV", "glScissorArrayvOES"]))
+    } }
+}
+pub mod ScissorIndexed {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ScissorIndexed::is_loaded() }
+        else { (*STORAGE).ScissorIndexed.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ScissorIndexed = FnPtr::new(metaloadfn(&mut loadfn, "glScissorIndexed", &["glScissorIndexedNV", "glScissorIndexedOES"]))
+    } }
+}
+pub mod ScissorIndexedv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ScissorIndexedv::is_loaded() }
+        else { (*STORAGE).ScissorIndexedv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ScissorIndexedv = FnPtr::new(metaloadfn(&mut loadfn, "glScissorIndexedv", &["glScissorIndexedvNV", "glScissorIndexedvOES"]))
+    } }
+}
+pub mod SecondaryColorP3ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::SecondaryColorP3ui::is_loaded() }
+        else { (*STORAGE).SecondaryColorP3ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).SecondaryColorP3ui = FnPtr::new(metaloadfn(&mut loadfn, "glSecondaryColorP3ui", &[]))
+    } }
+}
+pub mod SecondaryColorP3uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::SecondaryColorP3uiv::is_loaded() }
+        else { (*STORAGE).SecondaryColorP3uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).SecondaryColorP3uiv = FnPtr::new(metaloadfn(&mut loadfn, "glSecondaryColorP3uiv", &[]))
+    } }
+}
+pub mod ShaderBinary {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ShaderBinary::is_loaded() }
+        else { (*STORAGE).ShaderBinary.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ShaderBinary = FnPtr::new(metaloadfn(&mut loadfn, "glShaderBinary", &[]))
+    } }
+}
+pub mod ShaderSource {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ShaderSource::is_loaded() }
+        else { (*STORAGE).ShaderSource.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ShaderSource = FnPtr::new(metaloadfn(&mut loadfn, "glShaderSource", &["glShaderSourceARB"]))
+    } }
+}
+pub mod ShaderStorageBlockBinding {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ShaderStorageBlockBinding::is_loaded() }
+        else { (*STORAGE).ShaderStorageBlockBinding.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ShaderStorageBlockBinding = FnPtr::new(metaloadfn(&mut loadfn, "glShaderStorageBlockBinding", &[]))
+    } }
+}
+pub mod StencilFunc {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::StencilFunc::is_loaded() }
+        else { (*STORAGE).StencilFunc.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).StencilFunc = FnPtr::new(metaloadfn(&mut loadfn, "glStencilFunc", &[]))
+    } }
+}
+pub mod StencilFuncSeparate {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::StencilFuncSeparate::is_loaded() }
+        else { (*STORAGE).StencilFuncSeparate.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).StencilFuncSeparate = FnPtr::new(metaloadfn(&mut loadfn, "glStencilFuncSeparate", &[]))
+    } }
+}
+pub mod StencilMask {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::StencilMask::is_loaded() }
+        else { (*STORAGE).StencilMask.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).StencilMask = FnPtr::new(metaloadfn(&mut loadfn, "glStencilMask", &[]))
+    } }
+}
+pub mod StencilMaskSeparate {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::StencilMaskSeparate::is_loaded() }
+        else { (*STORAGE).StencilMaskSeparate.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).StencilMaskSeparate = FnPtr::new(metaloadfn(&mut loadfn, "glStencilMaskSeparate", &[]))
+    } }
+}
+pub mod StencilOp {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::StencilOp::is_loaded() }
+        else { (*STORAGE).StencilOp.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).StencilOp = FnPtr::new(metaloadfn(&mut loadfn, "glStencilOp", &[]))
+    } }
+}
+pub mod StencilOpSeparate {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::StencilOpSeparate::is_loaded() }
+        else { (*STORAGE).StencilOpSeparate.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).StencilOpSeparate = FnPtr::new(metaloadfn(&mut loadfn, "glStencilOpSeparate", &["glStencilOpSeparateATI"]))
+    } }
+}
+pub mod TexBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexBuffer::is_loaded() }
+        else { (*STORAGE).TexBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glTexBuffer", &["glTexBufferARB", "glTexBufferEXT", "glTexBufferOES"]))
+    } }
+}
+pub mod TexBufferRange {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexBufferRange::is_loaded() }
+        else { (*STORAGE).TexBufferRange.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexBufferRange = FnPtr::new(metaloadfn(&mut loadfn, "glTexBufferRange", &["glTexBufferRangeEXT", "glTexBufferRangeOES"]))
+    } }
+}
+pub mod TexCoordP1ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexCoordP1ui::is_loaded() }
+        else { (*STORAGE).TexCoordP1ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexCoordP1ui = FnPtr::new(metaloadfn(&mut loadfn, "glTexCoordP1ui", &[]))
+    } }
+}
+pub mod TexCoordP1uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexCoordP1uiv::is_loaded() }
+        else { (*STORAGE).TexCoordP1uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexCoordP1uiv = FnPtr::new(metaloadfn(&mut loadfn, "glTexCoordP1uiv", &[]))
+    } }
+}
+pub mod TexCoordP2ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexCoordP2ui::is_loaded() }
+        else { (*STORAGE).TexCoordP2ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexCoordP2ui = FnPtr::new(metaloadfn(&mut loadfn, "glTexCoordP2ui", &[]))
+    } }
+}
+pub mod TexCoordP2uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexCoordP2uiv::is_loaded() }
+        else { (*STORAGE).TexCoordP2uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexCoordP2uiv = FnPtr::new(metaloadfn(&mut loadfn, "glTexCoordP2uiv", &[]))
+    } }
+}
+pub mod TexCoordP3ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexCoordP3ui::is_loaded() }
+        else { (*STORAGE).TexCoordP3ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexCoordP3ui = FnPtr::new(metaloadfn(&mut loadfn, "glTexCoordP3ui", &[]))
+    } }
+}
+pub mod TexCoordP3uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexCoordP3uiv::is_loaded() }
+        else { (*STORAGE).TexCoordP3uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexCoordP3uiv = FnPtr::new(metaloadfn(&mut loadfn, "glTexCoordP3uiv", &[]))
+    } }
+}
+pub mod TexCoordP4ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexCoordP4ui::is_loaded() }
+        else { (*STORAGE).TexCoordP4ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexCoordP4ui = FnPtr::new(metaloadfn(&mut loadfn, "glTexCoordP4ui", &[]))
+    } }
+}
+pub mod TexCoordP4uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexCoordP4uiv::is_loaded() }
+        else { (*STORAGE).TexCoordP4uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexCoordP4uiv = FnPtr::new(metaloadfn(&mut loadfn, "glTexCoordP4uiv", &[]))
+    } }
+}
+pub mod TexImage1D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexImage1D::is_loaded() }
+        else { (*STORAGE).TexImage1D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexImage1D = FnPtr::new(metaloadfn(&mut loadfn, "glTexImage1D", &[]))
+    } }
+}
+pub mod TexImage2D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexImage2D::is_loaded() }
+        else { (*STORAGE).TexImage2D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexImage2D = FnPtr::new(metaloadfn(&mut loadfn, "glTexImage2D", &[]))
+    } }
+}
+pub mod TexImage2DMultisample {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexImage2DMultisample::is_loaded() }
+        else { (*STORAGE).TexImage2DMultisample.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexImage2DMultisample = FnPtr::new(metaloadfn(&mut loadfn, "glTexImage2DMultisample", &[]))
+    } }
+}
+pub mod TexImage3D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexImage3D::is_loaded() }
+        else { (*STORAGE).TexImage3D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexImage3D = FnPtr::new(metaloadfn(&mut loadfn, "glTexImage3D", &["glTexImage3DEXT"]))
+    } }
+}
+pub mod TexImage3DMultisample {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexImage3DMultisample::is_loaded() }
+        else { (*STORAGE).TexImage3DMultisample.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexImage3DMultisample = FnPtr::new(metaloadfn(&mut loadfn, "glTexImage3DMultisample", &[]))
+    } }
+}
+pub mod TexParameterIiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexParameterIiv::is_loaded() }
+        else { (*STORAGE).TexParameterIiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexParameterIiv = FnPtr::new(metaloadfn(&mut loadfn, "glTexParameterIiv", &["glTexParameterIivEXT", "glTexParameterIivOES"]))
+    } }
+}
+pub mod TexParameterIuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexParameterIuiv::is_loaded() }
+        else { (*STORAGE).TexParameterIuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexParameterIuiv = FnPtr::new(metaloadfn(&mut loadfn, "glTexParameterIuiv", &["glTexParameterIuivEXT", "glTexParameterIuivOES"]))
+    } }
+}
+pub mod TexParameterf {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexParameterf::is_loaded() }
+        else { (*STORAGE).TexParameterf.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexParameterf = FnPtr::new(metaloadfn(&mut loadfn, "glTexParameterf", &[]))
+    } }
+}
+pub mod TexParameterfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexParameterfv::is_loaded() }
+        else { (*STORAGE).TexParameterfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexParameterfv = FnPtr::new(metaloadfn(&mut loadfn, "glTexParameterfv", &[]))
+    } }
+}
+pub mod TexParameteri {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexParameteri::is_loaded() }
+        else { (*STORAGE).TexParameteri.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexParameteri = FnPtr::new(metaloadfn(&mut loadfn, "glTexParameteri", &[]))
+    } }
+}
+pub mod TexParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexParameteriv::is_loaded() }
+        else { (*STORAGE).TexParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glTexParameteriv", &[]))
+    } }
+}
+pub mod TexStorage1D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexStorage1D::is_loaded() }
+        else { (*STORAGE).TexStorage1D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexStorage1D = FnPtr::new(metaloadfn(&mut loadfn, "glTexStorage1D", &["glTexStorage1DEXT"]))
+    } }
+}
+pub mod TexStorage2D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexStorage2D::is_loaded() }
+        else { (*STORAGE).TexStorage2D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexStorage2D = FnPtr::new(metaloadfn(&mut loadfn, "glTexStorage2D", &["glTexStorage2DEXT"]))
+    } }
+}
+pub mod TexStorage2DMultisample {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexStorage2DMultisample::is_loaded() }
+        else { (*STORAGE).TexStorage2DMultisample.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexStorage2DMultisample = FnPtr::new(metaloadfn(&mut loadfn, "glTexStorage2DMultisample", &[]))
+    } }
+}
+pub mod TexStorage3D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexStorage3D::is_loaded() }
+        else { (*STORAGE).TexStorage3D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexStorage3D = FnPtr::new(metaloadfn(&mut loadfn, "glTexStorage3D", &["glTexStorage3DEXT"]))
+    } }
+}
+pub mod TexStorage3DMultisample {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexStorage3DMultisample::is_loaded() }
+        else { (*STORAGE).TexStorage3DMultisample.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexStorage3DMultisample = FnPtr::new(metaloadfn(&mut loadfn, "glTexStorage3DMultisample", &["glTexStorage3DMultisampleOES"]))
+    } }
+}
+pub mod TexSubImage1D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexSubImage1D::is_loaded() }
+        else { (*STORAGE).TexSubImage1D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexSubImage1D = FnPtr::new(metaloadfn(&mut loadfn, "glTexSubImage1D", &["glTexSubImage1DEXT"]))
+    } }
+}
+pub mod TexSubImage2D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexSubImage2D::is_loaded() }
+        else { (*STORAGE).TexSubImage2D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexSubImage2D = FnPtr::new(metaloadfn(&mut loadfn, "glTexSubImage2D", &["glTexSubImage2DEXT"]))
+    } }
+}
+pub mod TexSubImage3D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TexSubImage3D::is_loaded() }
+        else { (*STORAGE).TexSubImage3D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TexSubImage3D = FnPtr::new(metaloadfn(&mut loadfn, "glTexSubImage3D", &["glTexSubImage3DEXT"]))
+    } }
+}
+pub mod TextureBarrier {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureBarrier::is_loaded() }
+        else { (*STORAGE).TextureBarrier.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureBarrier = FnPtr::new(metaloadfn(&mut loadfn, "glTextureBarrier", &[]))
+    } }
+}
+pub mod TextureBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureBuffer::is_loaded() }
+        else { (*STORAGE).TextureBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glTextureBuffer", &[]))
+    } }
+}
+pub mod TextureBufferRange {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureBufferRange::is_loaded() }
+        else { (*STORAGE).TextureBufferRange.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureBufferRange = FnPtr::new(metaloadfn(&mut loadfn, "glTextureBufferRange", &[]))
+    } }
+}
+pub mod TextureParameterIiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureParameterIiv::is_loaded() }
+        else { (*STORAGE).TextureParameterIiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureParameterIiv = FnPtr::new(metaloadfn(&mut loadfn, "glTextureParameterIiv", &[]))
+    } }
+}
+pub mod TextureParameterIuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureParameterIuiv::is_loaded() }
+        else { (*STORAGE).TextureParameterIuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureParameterIuiv = FnPtr::new(metaloadfn(&mut loadfn, "glTextureParameterIuiv", &[]))
+    } }
+}
+pub mod TextureParameterf {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureParameterf::is_loaded() }
+        else { (*STORAGE).TextureParameterf.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureParameterf = FnPtr::new(metaloadfn(&mut loadfn, "glTextureParameterf", &[]))
+    } }
+}
+pub mod TextureParameterfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureParameterfv::is_loaded() }
+        else { (*STORAGE).TextureParameterfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureParameterfv = FnPtr::new(metaloadfn(&mut loadfn, "glTextureParameterfv", &[]))
+    } }
+}
+pub mod TextureParameteri {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureParameteri::is_loaded() }
+        else { (*STORAGE).TextureParameteri.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureParameteri = FnPtr::new(metaloadfn(&mut loadfn, "glTextureParameteri", &[]))
+    } }
+}
+pub mod TextureParameteriv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureParameteriv::is_loaded() }
+        else { (*STORAGE).TextureParameteriv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureParameteriv = FnPtr::new(metaloadfn(&mut loadfn, "glTextureParameteriv", &[]))
+    } }
+}
+pub mod TextureStorage1D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureStorage1D::is_loaded() }
+        else { (*STORAGE).TextureStorage1D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureStorage1D = FnPtr::new(metaloadfn(&mut loadfn, "glTextureStorage1D", &[]))
+    } }
+}
+pub mod TextureStorage2D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureStorage2D::is_loaded() }
+        else { (*STORAGE).TextureStorage2D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureStorage2D = FnPtr::new(metaloadfn(&mut loadfn, "glTextureStorage2D", &[]))
+    } }
+}
+pub mod TextureStorage2DMultisample {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureStorage2DMultisample::is_loaded() }
+        else { (*STORAGE).TextureStorage2DMultisample.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureStorage2DMultisample = FnPtr::new(metaloadfn(&mut loadfn, "glTextureStorage2DMultisample", &[]))
+    } }
+}
+pub mod TextureStorage3D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureStorage3D::is_loaded() }
+        else { (*STORAGE).TextureStorage3D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureStorage3D = FnPtr::new(metaloadfn(&mut loadfn, "glTextureStorage3D", &[]))
+    } }
+}
+pub mod TextureStorage3DMultisample {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureStorage3DMultisample::is_loaded() }
+        else { (*STORAGE).TextureStorage3DMultisample.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureStorage3DMultisample = FnPtr::new(metaloadfn(&mut loadfn, "glTextureStorage3DMultisample", &[]))
+    } }
+}
+pub mod TextureSubImage1D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureSubImage1D::is_loaded() }
+        else { (*STORAGE).TextureSubImage1D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureSubImage1D = FnPtr::new(metaloadfn(&mut loadfn, "glTextureSubImage1D", &[]))
+    } }
+}
+pub mod TextureSubImage2D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureSubImage2D::is_loaded() }
+        else { (*STORAGE).TextureSubImage2D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureSubImage2D = FnPtr::new(metaloadfn(&mut loadfn, "glTextureSubImage2D", &[]))
+    } }
+}
+pub mod TextureSubImage3D {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureSubImage3D::is_loaded() }
+        else { (*STORAGE).TextureSubImage3D.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureSubImage3D = FnPtr::new(metaloadfn(&mut loadfn, "glTextureSubImage3D", &[]))
+    } }
+}
+pub mod TextureView {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TextureView::is_loaded() }
+        else { (*STORAGE).TextureView.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TextureView = FnPtr::new(metaloadfn(&mut loadfn, "glTextureView", &["glTextureViewEXT", "glTextureViewOES"]))
+    } }
+}
+pub mod TransformFeedbackBufferBase {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TransformFeedbackBufferBase::is_loaded() }
+        else { (*STORAGE).TransformFeedbackBufferBase.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TransformFeedbackBufferBase = FnPtr::new(metaloadfn(&mut loadfn, "glTransformFeedbackBufferBase", &[]))
+    } }
+}
+pub mod TransformFeedbackBufferRange {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TransformFeedbackBufferRange::is_loaded() }
+        else { (*STORAGE).TransformFeedbackBufferRange.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TransformFeedbackBufferRange = FnPtr::new(metaloadfn(&mut loadfn, "glTransformFeedbackBufferRange", &[]))
+    } }
+}
+pub mod TransformFeedbackVaryings {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::TransformFeedbackVaryings::is_loaded() }
+        else { (*STORAGE).TransformFeedbackVaryings.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).TransformFeedbackVaryings = FnPtr::new(metaloadfn(&mut loadfn, "glTransformFeedbackVaryings", &["glTransformFeedbackVaryingsEXT"]))
+    } }
+}
+pub mod Uniform1d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform1d::is_loaded() }
+        else { (*STORAGE).Uniform1d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform1d = FnPtr::new(metaloadfn(&mut loadfn, "glUniform1d", &[]))
+    } }
+}
+pub mod Uniform1dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform1dv::is_loaded() }
+        else { (*STORAGE).Uniform1dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform1dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform1dv", &[]))
+    } }
+}
+pub mod Uniform1f {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform1f::is_loaded() }
+        else { (*STORAGE).Uniform1f.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform1f = FnPtr::new(metaloadfn(&mut loadfn, "glUniform1f", &["glUniform1fARB"]))
+    } }
+}
+pub mod Uniform1fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform1fv::is_loaded() }
+        else { (*STORAGE).Uniform1fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform1fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform1fv", &["glUniform1fvARB"]))
+    } }
+}
+pub mod Uniform1i {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform1i::is_loaded() }
+        else { (*STORAGE).Uniform1i.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform1i = FnPtr::new(metaloadfn(&mut loadfn, "glUniform1i", &["glUniform1iARB"]))
+    } }
+}
+pub mod Uniform1iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform1iv::is_loaded() }
+        else { (*STORAGE).Uniform1iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform1iv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform1iv", &["glUniform1ivARB"]))
+    } }
+}
+pub mod Uniform1ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform1ui::is_loaded() }
+        else { (*STORAGE).Uniform1ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform1ui = FnPtr::new(metaloadfn(&mut loadfn, "glUniform1ui", &["glUniform1uiEXT"]))
+    } }
+}
+pub mod Uniform1uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform1uiv::is_loaded() }
+        else { (*STORAGE).Uniform1uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform1uiv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform1uiv", &["glUniform1uivEXT"]))
+    } }
+}
+pub mod Uniform2d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform2d::is_loaded() }
+        else { (*STORAGE).Uniform2d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform2d = FnPtr::new(metaloadfn(&mut loadfn, "glUniform2d", &[]))
+    } }
+}
+pub mod Uniform2dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform2dv::is_loaded() }
+        else { (*STORAGE).Uniform2dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform2dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform2dv", &[]))
+    } }
+}
+pub mod Uniform2f {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform2f::is_loaded() }
+        else { (*STORAGE).Uniform2f.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform2f = FnPtr::new(metaloadfn(&mut loadfn, "glUniform2f", &["glUniform2fARB"]))
+    } }
+}
+pub mod Uniform2fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform2fv::is_loaded() }
+        else { (*STORAGE).Uniform2fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform2fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform2fv", &["glUniform2fvARB"]))
+    } }
+}
+pub mod Uniform2i {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform2i::is_loaded() }
+        else { (*STORAGE).Uniform2i.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform2i = FnPtr::new(metaloadfn(&mut loadfn, "glUniform2i", &["glUniform2iARB"]))
+    } }
+}
+pub mod Uniform2iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform2iv::is_loaded() }
+        else { (*STORAGE).Uniform2iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform2iv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform2iv", &["glUniform2ivARB"]))
+    } }
+}
+pub mod Uniform2ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform2ui::is_loaded() }
+        else { (*STORAGE).Uniform2ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform2ui = FnPtr::new(metaloadfn(&mut loadfn, "glUniform2ui", &["glUniform2uiEXT"]))
+    } }
+}
+pub mod Uniform2uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform2uiv::is_loaded() }
+        else { (*STORAGE).Uniform2uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform2uiv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform2uiv", &["glUniform2uivEXT"]))
+    } }
+}
+pub mod Uniform3d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform3d::is_loaded() }
+        else { (*STORAGE).Uniform3d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform3d = FnPtr::new(metaloadfn(&mut loadfn, "glUniform3d", &[]))
+    } }
+}
+pub mod Uniform3dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform3dv::is_loaded() }
+        else { (*STORAGE).Uniform3dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform3dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform3dv", &[]))
+    } }
+}
+pub mod Uniform3f {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform3f::is_loaded() }
+        else { (*STORAGE).Uniform3f.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform3f = FnPtr::new(metaloadfn(&mut loadfn, "glUniform3f", &["glUniform3fARB"]))
+    } }
+}
+pub mod Uniform3fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform3fv::is_loaded() }
+        else { (*STORAGE).Uniform3fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform3fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform3fv", &["glUniform3fvARB"]))
+    } }
+}
+pub mod Uniform3i {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform3i::is_loaded() }
+        else { (*STORAGE).Uniform3i.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform3i = FnPtr::new(metaloadfn(&mut loadfn, "glUniform3i", &["glUniform3iARB"]))
+    } }
+}
+pub mod Uniform3iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform3iv::is_loaded() }
+        else { (*STORAGE).Uniform3iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform3iv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform3iv", &["glUniform3ivARB"]))
+    } }
+}
+pub mod Uniform3ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform3ui::is_loaded() }
+        else { (*STORAGE).Uniform3ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform3ui = FnPtr::new(metaloadfn(&mut loadfn, "glUniform3ui", &["glUniform3uiEXT"]))
+    } }
+}
+pub mod Uniform3uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform3uiv::is_loaded() }
+        else { (*STORAGE).Uniform3uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform3uiv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform3uiv", &["glUniform3uivEXT"]))
+    } }
+}
+pub mod Uniform4d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform4d::is_loaded() }
+        else { (*STORAGE).Uniform4d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform4d = FnPtr::new(metaloadfn(&mut loadfn, "glUniform4d", &[]))
+    } }
+}
+pub mod Uniform4dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform4dv::is_loaded() }
+        else { (*STORAGE).Uniform4dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform4dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform4dv", &[]))
+    } }
+}
+pub mod Uniform4f {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform4f::is_loaded() }
+        else { (*STORAGE).Uniform4f.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform4f = FnPtr::new(metaloadfn(&mut loadfn, "glUniform4f", &["glUniform4fARB"]))
+    } }
+}
+pub mod Uniform4fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform4fv::is_loaded() }
+        else { (*STORAGE).Uniform4fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform4fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform4fv", &["glUniform4fvARB"]))
+    } }
+}
+pub mod Uniform4i {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform4i::is_loaded() }
+        else { (*STORAGE).Uniform4i.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform4i = FnPtr::new(metaloadfn(&mut loadfn, "glUniform4i", &["glUniform4iARB"]))
+    } }
+}
+pub mod Uniform4iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform4iv::is_loaded() }
+        else { (*STORAGE).Uniform4iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform4iv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform4iv", &["glUniform4ivARB"]))
+    } }
+}
+pub mod Uniform4ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform4ui::is_loaded() }
+        else { (*STORAGE).Uniform4ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform4ui = FnPtr::new(metaloadfn(&mut loadfn, "glUniform4ui", &["glUniform4uiEXT"]))
+    } }
+}
+pub mod Uniform4uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Uniform4uiv::is_loaded() }
+        else { (*STORAGE).Uniform4uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Uniform4uiv = FnPtr::new(metaloadfn(&mut loadfn, "glUniform4uiv", &["glUniform4uivEXT"]))
+    } }
+}
+pub mod UniformBlockBinding {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformBlockBinding::is_loaded() }
+        else { (*STORAGE).UniformBlockBinding.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformBlockBinding = FnPtr::new(metaloadfn(&mut loadfn, "glUniformBlockBinding", &[]))
+    } }
+}
+pub mod UniformMatrix2dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix2dv::is_loaded() }
+        else { (*STORAGE).UniformMatrix2dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix2dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix2dv", &[]))
+    } }
+}
+pub mod UniformMatrix2fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix2fv::is_loaded() }
+        else { (*STORAGE).UniformMatrix2fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix2fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix2fv", &["glUniformMatrix2fvARB"]))
+    } }
+}
+pub mod UniformMatrix2x3dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix2x3dv::is_loaded() }
+        else { (*STORAGE).UniformMatrix2x3dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix2x3dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix2x3dv", &[]))
+    } }
+}
+pub mod UniformMatrix2x3fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix2x3fv::is_loaded() }
+        else { (*STORAGE).UniformMatrix2x3fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix2x3fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix2x3fv", &["glUniformMatrix2x3fvNV"]))
+    } }
+}
+pub mod UniformMatrix2x4dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix2x4dv::is_loaded() }
+        else { (*STORAGE).UniformMatrix2x4dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix2x4dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix2x4dv", &[]))
+    } }
+}
+pub mod UniformMatrix2x4fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix2x4fv::is_loaded() }
+        else { (*STORAGE).UniformMatrix2x4fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix2x4fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix2x4fv", &["glUniformMatrix2x4fvNV"]))
+    } }
+}
+pub mod UniformMatrix3dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix3dv::is_loaded() }
+        else { (*STORAGE).UniformMatrix3dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix3dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix3dv", &[]))
+    } }
+}
+pub mod UniformMatrix3fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix3fv::is_loaded() }
+        else { (*STORAGE).UniformMatrix3fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix3fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix3fv", &["glUniformMatrix3fvARB"]))
+    } }
+}
+pub mod UniformMatrix3x2dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix3x2dv::is_loaded() }
+        else { (*STORAGE).UniformMatrix3x2dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix3x2dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix3x2dv", &[]))
+    } }
+}
+pub mod UniformMatrix3x2fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix3x2fv::is_loaded() }
+        else { (*STORAGE).UniformMatrix3x2fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix3x2fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix3x2fv", &["glUniformMatrix3x2fvNV"]))
+    } }
+}
+pub mod UniformMatrix3x4dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix3x4dv::is_loaded() }
+        else { (*STORAGE).UniformMatrix3x4dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix3x4dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix3x4dv", &[]))
+    } }
+}
+pub mod UniformMatrix3x4fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix3x4fv::is_loaded() }
+        else { (*STORAGE).UniformMatrix3x4fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix3x4fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix3x4fv", &["glUniformMatrix3x4fvNV"]))
+    } }
+}
+pub mod UniformMatrix4dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix4dv::is_loaded() }
+        else { (*STORAGE).UniformMatrix4dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix4dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix4dv", &[]))
+    } }
+}
+pub mod UniformMatrix4fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix4fv::is_loaded() }
+        else { (*STORAGE).UniformMatrix4fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix4fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix4fv", &["glUniformMatrix4fvARB"]))
+    } }
+}
+pub mod UniformMatrix4x2dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix4x2dv::is_loaded() }
+        else { (*STORAGE).UniformMatrix4x2dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix4x2dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix4x2dv", &[]))
+    } }
+}
+pub mod UniformMatrix4x2fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix4x2fv::is_loaded() }
+        else { (*STORAGE).UniformMatrix4x2fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix4x2fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix4x2fv", &["glUniformMatrix4x2fvNV"]))
+    } }
+}
+pub mod UniformMatrix4x3dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix4x3dv::is_loaded() }
+        else { (*STORAGE).UniformMatrix4x3dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix4x3dv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix4x3dv", &[]))
+    } }
+}
+pub mod UniformMatrix4x3fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformMatrix4x3fv::is_loaded() }
+        else { (*STORAGE).UniformMatrix4x3fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformMatrix4x3fv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformMatrix4x3fv", &["glUniformMatrix4x3fvNV"]))
+    } }
+}
+pub mod UniformSubroutinesuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UniformSubroutinesuiv::is_loaded() }
+        else { (*STORAGE).UniformSubroutinesuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UniformSubroutinesuiv = FnPtr::new(metaloadfn(&mut loadfn, "glUniformSubroutinesuiv", &[]))
+    } }
+}
+pub mod UnmapBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UnmapBuffer::is_loaded() }
+        else { (*STORAGE).UnmapBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UnmapBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glUnmapBuffer", &["glUnmapBufferARB", "glUnmapBufferOES"]))
+    } }
+}
+pub mod UnmapNamedBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UnmapNamedBuffer::is_loaded() }
+        else { (*STORAGE).UnmapNamedBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UnmapNamedBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glUnmapNamedBuffer", &[]))
+    } }
+}
+pub mod UseProgram {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UseProgram::is_loaded() }
+        else { (*STORAGE).UseProgram.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UseProgram = FnPtr::new(metaloadfn(&mut loadfn, "glUseProgram", &["glUseProgramObjectARB"]))
+    } }
+}
+pub mod UseProgramStages {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::UseProgramStages::is_loaded() }
+        else { (*STORAGE).UseProgramStages.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).UseProgramStages = FnPtr::new(metaloadfn(&mut loadfn, "glUseProgramStages", &[]))
+    } }
+}
+pub mod ValidateProgram {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ValidateProgram::is_loaded() }
+        else { (*STORAGE).ValidateProgram.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ValidateProgram = FnPtr::new(metaloadfn(&mut loadfn, "glValidateProgram", &["glValidateProgramARB"]))
+    } }
+}
+pub mod ValidateProgramPipeline {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ValidateProgramPipeline::is_loaded() }
+        else { (*STORAGE).ValidateProgramPipeline.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ValidateProgramPipeline = FnPtr::new(metaloadfn(&mut loadfn, "glValidateProgramPipeline", &[]))
+    } }
+}
+pub mod VertexArrayAttribBinding {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexArrayAttribBinding::is_loaded() }
+        else { (*STORAGE).VertexArrayAttribBinding.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexArrayAttribBinding = FnPtr::new(metaloadfn(&mut loadfn, "glVertexArrayAttribBinding", &[]))
+    } }
+}
+pub mod VertexArrayAttribFormat {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexArrayAttribFormat::is_loaded() }
+        else { (*STORAGE).VertexArrayAttribFormat.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexArrayAttribFormat = FnPtr::new(metaloadfn(&mut loadfn, "glVertexArrayAttribFormat", &[]))
+    } }
+}
+pub mod VertexArrayAttribIFormat {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexArrayAttribIFormat::is_loaded() }
+        else { (*STORAGE).VertexArrayAttribIFormat.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexArrayAttribIFormat = FnPtr::new(metaloadfn(&mut loadfn, "glVertexArrayAttribIFormat", &[]))
+    } }
+}
+pub mod VertexArrayAttribLFormat {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexArrayAttribLFormat::is_loaded() }
+        else { (*STORAGE).VertexArrayAttribLFormat.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexArrayAttribLFormat = FnPtr::new(metaloadfn(&mut loadfn, "glVertexArrayAttribLFormat", &[]))
+    } }
+}
+pub mod VertexArrayBindingDivisor {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexArrayBindingDivisor::is_loaded() }
+        else { (*STORAGE).VertexArrayBindingDivisor.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexArrayBindingDivisor = FnPtr::new(metaloadfn(&mut loadfn, "glVertexArrayBindingDivisor", &[]))
+    } }
+}
+pub mod VertexArrayElementBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexArrayElementBuffer::is_loaded() }
+        else { (*STORAGE).VertexArrayElementBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexArrayElementBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glVertexArrayElementBuffer", &[]))
+    } }
+}
+pub mod VertexArrayVertexBuffer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexArrayVertexBuffer::is_loaded() }
+        else { (*STORAGE).VertexArrayVertexBuffer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexArrayVertexBuffer = FnPtr::new(metaloadfn(&mut loadfn, "glVertexArrayVertexBuffer", &[]))
+    } }
+}
+pub mod VertexArrayVertexBuffers {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexArrayVertexBuffers::is_loaded() }
+        else { (*STORAGE).VertexArrayVertexBuffers.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexArrayVertexBuffers = FnPtr::new(metaloadfn(&mut loadfn, "glVertexArrayVertexBuffers", &[]))
+    } }
+}
+pub mod VertexAttrib1d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib1d::is_loaded() }
+        else { (*STORAGE).VertexAttrib1d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib1d = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib1d", &["glVertexAttrib1dARB", "glVertexAttrib1dNV"]))
+    } }
+}
+pub mod VertexAttrib1dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib1dv::is_loaded() }
+        else { (*STORAGE).VertexAttrib1dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib1dv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib1dv", &["glVertexAttrib1dvARB", "glVertexAttrib1dvNV"]))
+    } }
+}
+pub mod VertexAttrib1f {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib1f::is_loaded() }
+        else { (*STORAGE).VertexAttrib1f.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib1f = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib1f", &["glVertexAttrib1fARB", "glVertexAttrib1fNV"]))
+    } }
+}
+pub mod VertexAttrib1fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib1fv::is_loaded() }
+        else { (*STORAGE).VertexAttrib1fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib1fv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib1fv", &["glVertexAttrib1fvARB", "glVertexAttrib1fvNV"]))
+    } }
+}
+pub mod VertexAttrib1s {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib1s::is_loaded() }
+        else { (*STORAGE).VertexAttrib1s.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib1s = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib1s", &["glVertexAttrib1sARB", "glVertexAttrib1sNV"]))
+    } }
+}
+pub mod VertexAttrib1sv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib1sv::is_loaded() }
+        else { (*STORAGE).VertexAttrib1sv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib1sv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib1sv", &["glVertexAttrib1svARB", "glVertexAttrib1svNV"]))
+    } }
+}
+pub mod VertexAttrib2d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib2d::is_loaded() }
+        else { (*STORAGE).VertexAttrib2d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib2d = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib2d", &["glVertexAttrib2dARB", "glVertexAttrib2dNV"]))
+    } }
+}
+pub mod VertexAttrib2dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib2dv::is_loaded() }
+        else { (*STORAGE).VertexAttrib2dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib2dv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib2dv", &["glVertexAttrib2dvARB", "glVertexAttrib2dvNV"]))
+    } }
+}
+pub mod VertexAttrib2f {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib2f::is_loaded() }
+        else { (*STORAGE).VertexAttrib2f.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib2f = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib2f", &["glVertexAttrib2fARB", "glVertexAttrib2fNV"]))
+    } }
+}
+pub mod VertexAttrib2fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib2fv::is_loaded() }
+        else { (*STORAGE).VertexAttrib2fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib2fv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib2fv", &["glVertexAttrib2fvARB", "glVertexAttrib2fvNV"]))
+    } }
+}
+pub mod VertexAttrib2s {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib2s::is_loaded() }
+        else { (*STORAGE).VertexAttrib2s.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib2s = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib2s", &["glVertexAttrib2sARB", "glVertexAttrib2sNV"]))
+    } }
+}
+pub mod VertexAttrib2sv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib2sv::is_loaded() }
+        else { (*STORAGE).VertexAttrib2sv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib2sv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib2sv", &["glVertexAttrib2svARB", "glVertexAttrib2svNV"]))
+    } }
+}
+pub mod VertexAttrib3d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib3d::is_loaded() }
+        else { (*STORAGE).VertexAttrib3d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib3d = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib3d", &["glVertexAttrib3dARB", "glVertexAttrib3dNV"]))
+    } }
+}
+pub mod VertexAttrib3dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib3dv::is_loaded() }
+        else { (*STORAGE).VertexAttrib3dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib3dv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib3dv", &["glVertexAttrib3dvARB", "glVertexAttrib3dvNV"]))
+    } }
+}
+pub mod VertexAttrib3f {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib3f::is_loaded() }
+        else { (*STORAGE).VertexAttrib3f.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib3f = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib3f", &["glVertexAttrib3fARB", "glVertexAttrib3fNV"]))
+    } }
+}
+pub mod VertexAttrib3fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib3fv::is_loaded() }
+        else { (*STORAGE).VertexAttrib3fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib3fv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib3fv", &["glVertexAttrib3fvARB", "glVertexAttrib3fvNV"]))
+    } }
+}
+pub mod VertexAttrib3s {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib3s::is_loaded() }
+        else { (*STORAGE).VertexAttrib3s.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib3s = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib3s", &["glVertexAttrib3sARB", "glVertexAttrib3sNV"]))
+    } }
+}
+pub mod VertexAttrib3sv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib3sv::is_loaded() }
+        else { (*STORAGE).VertexAttrib3sv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib3sv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib3sv", &["glVertexAttrib3svARB", "glVertexAttrib3svNV"]))
+    } }
+}
+pub mod VertexAttrib4Nbv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4Nbv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4Nbv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4Nbv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4Nbv", &["glVertexAttrib4NbvARB"]))
+    } }
+}
+pub mod VertexAttrib4Niv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4Niv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4Niv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4Niv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4Niv", &["glVertexAttrib4NivARB"]))
+    } }
+}
+pub mod VertexAttrib4Nsv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4Nsv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4Nsv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4Nsv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4Nsv", &["glVertexAttrib4NsvARB"]))
+    } }
+}
+pub mod VertexAttrib4Nub {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4Nub::is_loaded() }
+        else { (*STORAGE).VertexAttrib4Nub.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4Nub = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4Nub", &["glVertexAttrib4NubARB", "glVertexAttrib4ubNV"]))
+    } }
+}
+pub mod VertexAttrib4Nubv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4Nubv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4Nubv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4Nubv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4Nubv", &["glVertexAttrib4NubvARB", "glVertexAttrib4ubvNV"]))
+    } }
+}
+pub mod VertexAttrib4Nuiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4Nuiv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4Nuiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4Nuiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4Nuiv", &["glVertexAttrib4NuivARB"]))
+    } }
+}
+pub mod VertexAttrib4Nusv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4Nusv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4Nusv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4Nusv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4Nusv", &["glVertexAttrib4NusvARB"]))
+    } }
+}
+pub mod VertexAttrib4bv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4bv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4bv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4bv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4bv", &["glVertexAttrib4bvARB"]))
+    } }
+}
+pub mod VertexAttrib4d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4d::is_loaded() }
+        else { (*STORAGE).VertexAttrib4d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4d = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4d", &["glVertexAttrib4dARB", "glVertexAttrib4dNV"]))
+    } }
+}
+pub mod VertexAttrib4dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4dv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4dv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4dv", &["glVertexAttrib4dvARB", "glVertexAttrib4dvNV"]))
+    } }
+}
+pub mod VertexAttrib4f {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4f::is_loaded() }
+        else { (*STORAGE).VertexAttrib4f.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4f = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4f", &["glVertexAttrib4fARB", "glVertexAttrib4fNV"]))
+    } }
+}
+pub mod VertexAttrib4fv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4fv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4fv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4fv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4fv", &["glVertexAttrib4fvARB", "glVertexAttrib4fvNV"]))
+    } }
+}
+pub mod VertexAttrib4iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4iv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4iv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4iv", &["glVertexAttrib4ivARB"]))
+    } }
+}
+pub mod VertexAttrib4s {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4s::is_loaded() }
+        else { (*STORAGE).VertexAttrib4s.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4s = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4s", &["glVertexAttrib4sARB", "glVertexAttrib4sNV"]))
+    } }
+}
+pub mod VertexAttrib4sv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4sv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4sv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4sv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4sv", &["glVertexAttrib4svARB", "glVertexAttrib4svNV"]))
+    } }
+}
+pub mod VertexAttrib4ubv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4ubv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4ubv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4ubv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4ubv", &["glVertexAttrib4ubvARB"]))
+    } }
+}
+pub mod VertexAttrib4uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4uiv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4uiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4uiv", &["glVertexAttrib4uivARB"]))
+    } }
+}
+pub mod VertexAttrib4usv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttrib4usv::is_loaded() }
+        else { (*STORAGE).VertexAttrib4usv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttrib4usv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttrib4usv", &["glVertexAttrib4usvARB"]))
+    } }
+}
+pub mod VertexAttribBinding {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribBinding::is_loaded() }
+        else { (*STORAGE).VertexAttribBinding.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribBinding = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribBinding", &[]))
+    } }
+}
+pub mod VertexAttribDivisor {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribDivisor::is_loaded() }
+        else { (*STORAGE).VertexAttribDivisor.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribDivisor = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribDivisor", &["glVertexAttribDivisorANGLE", "glVertexAttribDivisorARB", "glVertexAttribDivisorEXT", "glVertexAttribDivisorNV"]))
+    } }
+}
+pub mod VertexAttribFormat {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribFormat::is_loaded() }
+        else { (*STORAGE).VertexAttribFormat.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribFormat = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribFormat", &[]))
+    } }
+}
+pub mod VertexAttribI1i {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI1i::is_loaded() }
+        else { (*STORAGE).VertexAttribI1i.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI1i = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI1i", &["glVertexAttribI1iEXT"]))
+    } }
+}
+pub mod VertexAttribI1iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI1iv::is_loaded() }
+        else { (*STORAGE).VertexAttribI1iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI1iv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI1iv", &["glVertexAttribI1ivEXT"]))
+    } }
+}
+pub mod VertexAttribI1ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI1ui::is_loaded() }
+        else { (*STORAGE).VertexAttribI1ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI1ui = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI1ui", &["glVertexAttribI1uiEXT"]))
+    } }
+}
+pub mod VertexAttribI1uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI1uiv::is_loaded() }
+        else { (*STORAGE).VertexAttribI1uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI1uiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI1uiv", &["glVertexAttribI1uivEXT"]))
+    } }
+}
+pub mod VertexAttribI2i {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI2i::is_loaded() }
+        else { (*STORAGE).VertexAttribI2i.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI2i = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI2i", &["glVertexAttribI2iEXT"]))
+    } }
+}
+pub mod VertexAttribI2iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI2iv::is_loaded() }
+        else { (*STORAGE).VertexAttribI2iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI2iv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI2iv", &["glVertexAttribI2ivEXT"]))
+    } }
+}
+pub mod VertexAttribI2ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI2ui::is_loaded() }
+        else { (*STORAGE).VertexAttribI2ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI2ui = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI2ui", &["glVertexAttribI2uiEXT"]))
+    } }
+}
+pub mod VertexAttribI2uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI2uiv::is_loaded() }
+        else { (*STORAGE).VertexAttribI2uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI2uiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI2uiv", &["glVertexAttribI2uivEXT"]))
+    } }
+}
+pub mod VertexAttribI3i {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI3i::is_loaded() }
+        else { (*STORAGE).VertexAttribI3i.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI3i = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI3i", &["glVertexAttribI3iEXT"]))
+    } }
+}
+pub mod VertexAttribI3iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI3iv::is_loaded() }
+        else { (*STORAGE).VertexAttribI3iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI3iv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI3iv", &["glVertexAttribI3ivEXT"]))
+    } }
+}
+pub mod VertexAttribI3ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI3ui::is_loaded() }
+        else { (*STORAGE).VertexAttribI3ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI3ui = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI3ui", &["glVertexAttribI3uiEXT"]))
+    } }
+}
+pub mod VertexAttribI3uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI3uiv::is_loaded() }
+        else { (*STORAGE).VertexAttribI3uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI3uiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI3uiv", &["glVertexAttribI3uivEXT"]))
+    } }
+}
+pub mod VertexAttribI4bv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI4bv::is_loaded() }
+        else { (*STORAGE).VertexAttribI4bv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI4bv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI4bv", &["glVertexAttribI4bvEXT"]))
+    } }
+}
+pub mod VertexAttribI4i {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI4i::is_loaded() }
+        else { (*STORAGE).VertexAttribI4i.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI4i = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI4i", &["glVertexAttribI4iEXT"]))
+    } }
+}
+pub mod VertexAttribI4iv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI4iv::is_loaded() }
+        else { (*STORAGE).VertexAttribI4iv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI4iv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI4iv", &["glVertexAttribI4ivEXT"]))
+    } }
+}
+pub mod VertexAttribI4sv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI4sv::is_loaded() }
+        else { (*STORAGE).VertexAttribI4sv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI4sv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI4sv", &["glVertexAttribI4svEXT"]))
+    } }
+}
+pub mod VertexAttribI4ubv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI4ubv::is_loaded() }
+        else { (*STORAGE).VertexAttribI4ubv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI4ubv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI4ubv", &["glVertexAttribI4ubvEXT"]))
+    } }
+}
+pub mod VertexAttribI4ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI4ui::is_loaded() }
+        else { (*STORAGE).VertexAttribI4ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI4ui = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI4ui", &["glVertexAttribI4uiEXT"]))
+    } }
+}
+pub mod VertexAttribI4uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI4uiv::is_loaded() }
+        else { (*STORAGE).VertexAttribI4uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI4uiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI4uiv", &["glVertexAttribI4uivEXT"]))
+    } }
+}
+pub mod VertexAttribI4usv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribI4usv::is_loaded() }
+        else { (*STORAGE).VertexAttribI4usv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribI4usv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribI4usv", &["glVertexAttribI4usvEXT"]))
+    } }
+}
+pub mod VertexAttribIFormat {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribIFormat::is_loaded() }
+        else { (*STORAGE).VertexAttribIFormat.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribIFormat = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribIFormat", &[]))
+    } }
+}
+pub mod VertexAttribIPointer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribIPointer::is_loaded() }
+        else { (*STORAGE).VertexAttribIPointer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribIPointer = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribIPointer", &["glVertexAttribIPointerEXT"]))
+    } }
+}
+pub mod VertexAttribL1d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribL1d::is_loaded() }
+        else { (*STORAGE).VertexAttribL1d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribL1d = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribL1d", &["glVertexAttribL1dEXT"]))
+    } }
+}
+pub mod VertexAttribL1dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribL1dv::is_loaded() }
+        else { (*STORAGE).VertexAttribL1dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribL1dv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribL1dv", &["glVertexAttribL1dvEXT"]))
+    } }
+}
+pub mod VertexAttribL2d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribL2d::is_loaded() }
+        else { (*STORAGE).VertexAttribL2d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribL2d = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribL2d", &["glVertexAttribL2dEXT"]))
+    } }
+}
+pub mod VertexAttribL2dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribL2dv::is_loaded() }
+        else { (*STORAGE).VertexAttribL2dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribL2dv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribL2dv", &["glVertexAttribL2dvEXT"]))
+    } }
+}
+pub mod VertexAttribL3d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribL3d::is_loaded() }
+        else { (*STORAGE).VertexAttribL3d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribL3d = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribL3d", &["glVertexAttribL3dEXT"]))
+    } }
+}
+pub mod VertexAttribL3dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribL3dv::is_loaded() }
+        else { (*STORAGE).VertexAttribL3dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribL3dv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribL3dv", &["glVertexAttribL3dvEXT"]))
+    } }
+}
+pub mod VertexAttribL4d {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribL4d::is_loaded() }
+        else { (*STORAGE).VertexAttribL4d.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribL4d = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribL4d", &["glVertexAttribL4dEXT"]))
+    } }
+}
+pub mod VertexAttribL4dv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribL4dv::is_loaded() }
+        else { (*STORAGE).VertexAttribL4dv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribL4dv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribL4dv", &["glVertexAttribL4dvEXT"]))
+    } }
+}
+pub mod VertexAttribLFormat {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribLFormat::is_loaded() }
+        else { (*STORAGE).VertexAttribLFormat.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribLFormat = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribLFormat", &[]))
+    } }
+}
+pub mod VertexAttribLPointer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribLPointer::is_loaded() }
+        else { (*STORAGE).VertexAttribLPointer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribLPointer = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribLPointer", &["glVertexAttribLPointerEXT"]))
+    } }
+}
+pub mod VertexAttribP1ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribP1ui::is_loaded() }
+        else { (*STORAGE).VertexAttribP1ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribP1ui = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribP1ui", &[]))
+    } }
+}
+pub mod VertexAttribP1uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribP1uiv::is_loaded() }
+        else { (*STORAGE).VertexAttribP1uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribP1uiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribP1uiv", &[]))
+    } }
+}
+pub mod VertexAttribP2ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribP2ui::is_loaded() }
+        else { (*STORAGE).VertexAttribP2ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribP2ui = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribP2ui", &[]))
+    } }
+}
+pub mod VertexAttribP2uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribP2uiv::is_loaded() }
+        else { (*STORAGE).VertexAttribP2uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribP2uiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribP2uiv", &[]))
+    } }
+}
+pub mod VertexAttribP3ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribP3ui::is_loaded() }
+        else { (*STORAGE).VertexAttribP3ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribP3ui = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribP3ui", &[]))
+    } }
+}
+pub mod VertexAttribP3uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribP3uiv::is_loaded() }
+        else { (*STORAGE).VertexAttribP3uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribP3uiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribP3uiv", &[]))
+    } }
+}
+pub mod VertexAttribP4ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribP4ui::is_loaded() }
+        else { (*STORAGE).VertexAttribP4ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribP4ui = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribP4ui", &[]))
+    } }
+}
+pub mod VertexAttribP4uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribP4uiv::is_loaded() }
+        else { (*STORAGE).VertexAttribP4uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribP4uiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribP4uiv", &[]))
+    } }
+}
+pub mod VertexAttribPointer {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexAttribPointer::is_loaded() }
+        else { (*STORAGE).VertexAttribPointer.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexAttribPointer = FnPtr::new(metaloadfn(&mut loadfn, "glVertexAttribPointer", &["glVertexAttribPointerARB"]))
+    } }
+}
+pub mod VertexBindingDivisor {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexBindingDivisor::is_loaded() }
+        else { (*STORAGE).VertexBindingDivisor.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexBindingDivisor = FnPtr::new(metaloadfn(&mut loadfn, "glVertexBindingDivisor", &[]))
+    } }
+}
+pub mod VertexP2ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexP2ui::is_loaded() }
+        else { (*STORAGE).VertexP2ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexP2ui = FnPtr::new(metaloadfn(&mut loadfn, "glVertexP2ui", &[]))
+    } }
+}
+pub mod VertexP2uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexP2uiv::is_loaded() }
+        else { (*STORAGE).VertexP2uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexP2uiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexP2uiv", &[]))
+    } }
+}
+pub mod VertexP3ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexP3ui::is_loaded() }
+        else { (*STORAGE).VertexP3ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexP3ui = FnPtr::new(metaloadfn(&mut loadfn, "glVertexP3ui", &[]))
+    } }
+}
+pub mod VertexP3uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexP3uiv::is_loaded() }
+        else { (*STORAGE).VertexP3uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexP3uiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexP3uiv", &[]))
+    } }
+}
+pub mod VertexP4ui {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexP4ui::is_loaded() }
+        else { (*STORAGE).VertexP4ui.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexP4ui = FnPtr::new(metaloadfn(&mut loadfn, "glVertexP4ui", &[]))
+    } }
+}
+pub mod VertexP4uiv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::VertexP4uiv::is_loaded() }
+        else { (*STORAGE).VertexP4uiv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).VertexP4uiv = FnPtr::new(metaloadfn(&mut loadfn, "glVertexP4uiv", &[]))
+    } }
+}
+pub mod Viewport {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::Viewport::is_loaded() }
+        else { (*STORAGE).Viewport.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).Viewport = FnPtr::new(metaloadfn(&mut loadfn, "glViewport", &[]))
+    } }
+}
+pub mod ViewportArrayv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ViewportArrayv::is_loaded() }
+        else { (*STORAGE).ViewportArrayv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ViewportArrayv = FnPtr::new(metaloadfn(&mut loadfn, "glViewportArrayv", &["glViewportArrayvNV", "glViewportArrayvOES"]))
+    } }
+}
+pub mod ViewportIndexedf {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ViewportIndexedf::is_loaded() }
+        else { (*STORAGE).ViewportIndexedf.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ViewportIndexedf = FnPtr::new(metaloadfn(&mut loadfn, "glViewportIndexedf", &["glViewportIndexedfOES", "glViewportIndexedfNV"]))
+    } }
+}
+pub mod ViewportIndexedfv {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::ViewportIndexedfv::is_loaded() }
+        else { (*STORAGE).ViewportIndexedfv.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).ViewportIndexedfv = FnPtr::new(metaloadfn(&mut loadfn, "glViewportIndexedfv", &["glViewportIndexedfvOES", "glViewportIndexedfvNV"]))
+    } }
+}
+pub mod WaitSync {
+    use crate::gl_util::gl_wrapper::metaloadfn;
+    use crate::gl_util::gl_wrapper::FnPtr;
+    use crate::gl_util::gl_wrapper::STORAGE;
+    use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
+    use std::ffi::c_void;
+    pub fn is_loaded() -> bool { unsafe { 
+        if EXTERNAL_POINTERS { gl::WaitSync::is_loaded() }
+        else { (*STORAGE).WaitSync.is_loaded }
+    } }
+
+    pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
+        (*STORAGE).WaitSync = FnPtr::new(metaloadfn(&mut loadfn, "glWaitSync", &["glWaitSyncAPPLE"]))
+    } }
+}
+
 pub struct FnPtr {
     /// The function pointer that will be used when calling the function.
     f: *const c_void,
@@ -2114,19 +12540,2090 @@ impl PointerStorage {
             WaitSync: FnPtr::new(0 as *const c_void) 
         }
     }
+    pub fn load_with() {
+        
+    }
 }
 
-pub static mut STORAGE: *const PointerStorage = 0 as *const PointerStorage;
+pub static mut STORAGE: *mut PointerStorage = 0 as *mut PointerStorage;
 
 pub fn missing_fn_panic() -> ! {
     panic!("gl function was not loaded")
 }
 
+pub fn metaloadfn(
+    loadfn: &mut dyn FnMut(&'static str) -> *const c_void,
+    symbol: &'static str,
+    fallbacks: &[&'static str]
+) -> *const c_void {
+    let mut ptr = loadfn(symbol);
+    if ptr.is_null() {
+        for &sym in fallbacks {
+            ptr = loadfn(sym);
+            if !ptr.is_null() { break; }
+        }
+    }
+    return ptr;
+}
+
+pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void {
+    #[inline(never)]
+    fn inner(loadfn: &mut dyn FnMut(&'static str) -> *const c_void) {
+        ActiveShaderProgram::load_with(&mut *loadfn);
+        ActiveTexture::load_with(&mut *loadfn);
+        AttachShader::load_with(&mut *loadfn);
+        BeginConditionalRender::load_with(&mut *loadfn);
+        BeginQuery::load_with(&mut *loadfn);
+        BeginQueryIndexed::load_with(&mut *loadfn);
+        BeginTransformFeedback::load_with(&mut *loadfn);
+        BindAttribLocation::load_with(&mut *loadfn);
+        BindBuffer::load_with(&mut *loadfn);
+        BindBufferBase::load_with(&mut *loadfn);
+        BindBufferRange::load_with(&mut *loadfn);
+        BindBuffersBase::load_with(&mut *loadfn);
+        BindBuffersRange::load_with(&mut *loadfn);
+        BindFragDataLocation::load_with(&mut *loadfn);
+        BindFragDataLocationIndexed::load_with(&mut *loadfn);
+        BindFramebuffer::load_with(&mut *loadfn);
+        BindImageTexture::load_with(&mut *loadfn);
+        BindImageTextures::load_with(&mut *loadfn);
+        BindProgramPipeline::load_with(&mut *loadfn);
+        BindRenderbuffer::load_with(&mut *loadfn);
+        BindSampler::load_with(&mut *loadfn);
+        BindSamplers::load_with(&mut *loadfn);
+        BindTexture::load_with(&mut *loadfn);
+        BindTextureUnit::load_with(&mut *loadfn);
+        BindTextures::load_with(&mut *loadfn);
+        BindTransformFeedback::load_with(&mut *loadfn);
+        BindVertexArray::load_with(&mut *loadfn);
+        BindVertexBuffer::load_with(&mut *loadfn);
+        BindVertexBuffers::load_with(&mut *loadfn);
+        BlendColor::load_with(&mut *loadfn);
+        BlendEquation::load_with(&mut *loadfn);
+        BlendEquationSeparate::load_with(&mut *loadfn);
+        BlendEquationSeparatei::load_with(&mut *loadfn);
+        BlendEquationi::load_with(&mut *loadfn);
+        BlendFunc::load_with(&mut *loadfn);
+        BlendFuncSeparate::load_with(&mut *loadfn);
+        BlendFuncSeparatei::load_with(&mut *loadfn);
+        BlendFunci::load_with(&mut *loadfn);
+        BlitFramebuffer::load_with(&mut *loadfn);
+        BlitNamedFramebuffer::load_with(&mut *loadfn);
+        BufferData::load_with(&mut *loadfn);
+        BufferStorage::load_with(&mut *loadfn);
+        BufferSubData::load_with(&mut *loadfn);
+        CheckFramebufferStatus::load_with(&mut *loadfn);
+        CheckNamedFramebufferStatus::load_with(&mut *loadfn);
+        ClampColor::load_with(&mut *loadfn);
+        Clear::load_with(&mut *loadfn);
+        ClearBufferData::load_with(&mut *loadfn);
+        ClearBufferSubData::load_with(&mut *loadfn);
+        ClearBufferfi::load_with(&mut *loadfn);
+        ClearBufferfv::load_with(&mut *loadfn);
+        ClearBufferiv::load_with(&mut *loadfn);
+        ClearBufferuiv::load_with(&mut *loadfn);
+        ClearColor::load_with(&mut *loadfn);
+        ClearDepth::load_with(&mut *loadfn);
+        ClearDepthf::load_with(&mut *loadfn);
+        ClearNamedBufferData::load_with(&mut *loadfn);
+        ClearNamedBufferSubData::load_with(&mut *loadfn);
+        ClearNamedFramebufferfi::load_with(&mut *loadfn);
+        ClearNamedFramebufferfv::load_with(&mut *loadfn);
+        ClearNamedFramebufferiv::load_with(&mut *loadfn);
+        ClearNamedFramebufferuiv::load_with(&mut *loadfn);
+        ClearStencil::load_with(&mut *loadfn);
+        ClearTexImage::load_with(&mut *loadfn);
+        ClearTexSubImage::load_with(&mut *loadfn);
+        ClientWaitSync::load_with(&mut *loadfn);
+        ClipControl::load_with(&mut *loadfn);
+        ColorMask::load_with(&mut *loadfn);
+        ColorMaski::load_with(&mut *loadfn);
+        ColorP3ui::load_with(&mut *loadfn);
+        ColorP3uiv::load_with(&mut *loadfn);
+        ColorP4ui::load_with(&mut *loadfn);
+        ColorP4uiv::load_with(&mut *loadfn);
+        CompileShader::load_with(&mut *loadfn);
+        CompressedTexImage1D::load_with(&mut *loadfn);
+        CompressedTexImage2D::load_with(&mut *loadfn);
+        CompressedTexImage3D::load_with(&mut *loadfn);
+        CompressedTexSubImage1D::load_with(&mut *loadfn);
+        CompressedTexSubImage2D::load_with(&mut *loadfn);
+        CompressedTexSubImage3D::load_with(&mut *loadfn);
+        CompressedTextureSubImage1D::load_with(&mut *loadfn);
+        CompressedTextureSubImage2D::load_with(&mut *loadfn);
+        CompressedTextureSubImage3D::load_with(&mut *loadfn);
+        CopyBufferSubData::load_with(&mut *loadfn);
+        CopyImageSubData::load_with(&mut *loadfn);
+        CopyNamedBufferSubData::load_with(&mut *loadfn);
+        CopyTexImage1D::load_with(&mut *loadfn);
+        CopyTexImage2D::load_with(&mut *loadfn);
+        CopyTexSubImage1D::load_with(&mut *loadfn);
+        CopyTexSubImage2D::load_with(&mut *loadfn);
+        CopyTexSubImage3D::load_with(&mut *loadfn);
+        CopyTextureSubImage1D::load_with(&mut *loadfn);
+        CopyTextureSubImage2D::load_with(&mut *loadfn);
+        CopyTextureSubImage3D::load_with(&mut *loadfn);
+        CreateBuffers::load_with(&mut *loadfn);
+        CreateFramebuffers::load_with(&mut *loadfn);
+        CreateProgram::load_with(&mut *loadfn);
+        CreateProgramPipelines::load_with(&mut *loadfn);
+        CreateQueries::load_with(&mut *loadfn);
+        CreateRenderbuffers::load_with(&mut *loadfn);
+        CreateSamplers::load_with(&mut *loadfn);
+        CreateShader::load_with(&mut *loadfn);
+        CreateShaderProgramv::load_with(&mut *loadfn);
+        CreateTextures::load_with(&mut *loadfn);
+        CreateTransformFeedbacks::load_with(&mut *loadfn);
+        CreateVertexArrays::load_with(&mut *loadfn);
+        CullFace::load_with(&mut *loadfn);
+        DebugMessageCallback::load_with(&mut *loadfn);
+        DebugMessageControl::load_with(&mut *loadfn);
+        DebugMessageInsert::load_with(&mut *loadfn);
+        DeleteBuffers::load_with(&mut *loadfn);
+        DeleteFramebuffers::load_with(&mut *loadfn);
+        DeleteProgram::load_with(&mut *loadfn);
+        DeleteProgramPipelines::load_with(&mut *loadfn);
+        DeleteQueries::load_with(&mut *loadfn);
+        DeleteRenderbuffers::load_with(&mut *loadfn);
+        DeleteSamplers::load_with(&mut *loadfn);
+        DeleteShader::load_with(&mut *loadfn);
+        DeleteSync::load_with(&mut *loadfn);
+        DeleteTextures::load_with(&mut *loadfn);
+        DeleteTransformFeedbacks::load_with(&mut *loadfn);
+        DeleteVertexArrays::load_with(&mut *loadfn);
+        DepthFunc::load_with(&mut *loadfn);
+        DepthMask::load_with(&mut *loadfn);
+        DepthRange::load_with(&mut *loadfn);
+        DepthRangeArrayv::load_with(&mut *loadfn);
+        DepthRangeIndexed::load_with(&mut *loadfn);
+        DepthRangef::load_with(&mut *loadfn);
+        DetachShader::load_with(&mut *loadfn);
+        Disable::load_with(&mut *loadfn);
+        DisableVertexArrayAttrib::load_with(&mut *loadfn);
+        DisableVertexAttribArray::load_with(&mut *loadfn);
+        Disablei::load_with(&mut *loadfn);
+        DispatchCompute::load_with(&mut *loadfn);
+        DispatchComputeIndirect::load_with(&mut *loadfn);
+        DrawArrays::load_with(&mut *loadfn);
+        DrawArraysIndirect::load_with(&mut *loadfn);
+        DrawArraysInstanced::load_with(&mut *loadfn);
+        DrawArraysInstancedBaseInstance::load_with(&mut *loadfn);
+        DrawBuffer::load_with(&mut *loadfn);
+        DrawBuffers::load_with(&mut *loadfn);
+        DrawElements::load_with(&mut *loadfn);
+        DrawElementsBaseVertex::load_with(&mut *loadfn);
+        DrawElementsIndirect::load_with(&mut *loadfn);
+        DrawElementsInstanced::load_with(&mut *loadfn);
+        DrawElementsInstancedBaseInstance::load_with(&mut *loadfn);
+        DrawElementsInstancedBaseVertex::load_with(&mut *loadfn);
+        DrawElementsInstancedBaseVertexBaseInstance::load_with(&mut *loadfn);
+        DrawRangeElements::load_with(&mut *loadfn);
+        DrawRangeElementsBaseVertex::load_with(&mut *loadfn);
+        DrawTransformFeedback::load_with(&mut *loadfn);
+        DrawTransformFeedbackInstanced::load_with(&mut *loadfn);
+        DrawTransformFeedbackStream::load_with(&mut *loadfn);
+        DrawTransformFeedbackStreamInstanced::load_with(&mut *loadfn);
+        Enable::load_with(&mut *loadfn);
+        EnableVertexArrayAttrib::load_with(&mut *loadfn);
+        EnableVertexAttribArray::load_with(&mut *loadfn);
+        Enablei::load_with(&mut *loadfn);
+        EndConditionalRender::load_with(&mut *loadfn);
+        EndQuery::load_with(&mut *loadfn);
+        EndQueryIndexed::load_with(&mut *loadfn);
+        EndTransformFeedback::load_with(&mut *loadfn);
+        FenceSync::load_with(&mut *loadfn);
+        Finish::load_with(&mut *loadfn);
+        Flush::load_with(&mut *loadfn);
+        FlushMappedBufferRange::load_with(&mut *loadfn);
+        FlushMappedNamedBufferRange::load_with(&mut *loadfn);
+        FramebufferParameteri::load_with(&mut *loadfn);
+        FramebufferRenderbuffer::load_with(&mut *loadfn);
+        FramebufferTexture::load_with(&mut *loadfn);
+        FramebufferTexture1D::load_with(&mut *loadfn);
+        FramebufferTexture2D::load_with(&mut *loadfn);
+        FramebufferTexture3D::load_with(&mut *loadfn);
+        FramebufferTextureLayer::load_with(&mut *loadfn);
+        FrontFace::load_with(&mut *loadfn);
+        GenBuffers::load_with(&mut *loadfn);
+        GenFramebuffers::load_with(&mut *loadfn);
+        GenProgramPipelines::load_with(&mut *loadfn);
+        GenQueries::load_with(&mut *loadfn);
+        GenRenderbuffers::load_with(&mut *loadfn);
+        GenSamplers::load_with(&mut *loadfn);
+        GenTextures::load_with(&mut *loadfn);
+        GenTransformFeedbacks::load_with(&mut *loadfn);
+        GenVertexArrays::load_with(&mut *loadfn);
+        GenerateMipmap::load_with(&mut *loadfn);
+        GenerateTextureMipmap::load_with(&mut *loadfn);
+        GetActiveAtomicCounterBufferiv::load_with(&mut *loadfn);
+        GetActiveAttrib::load_with(&mut *loadfn);
+        GetActiveSubroutineName::load_with(&mut *loadfn);
+        GetActiveSubroutineUniformName::load_with(&mut *loadfn);
+        GetActiveSubroutineUniformiv::load_with(&mut *loadfn);
+        GetActiveUniform::load_with(&mut *loadfn);
+        GetActiveUniformBlockName::load_with(&mut *loadfn);
+        GetActiveUniformBlockiv::load_with(&mut *loadfn);
+        GetActiveUniformName::load_with(&mut *loadfn);
+        GetActiveUniformsiv::load_with(&mut *loadfn);
+        GetAttachedShaders::load_with(&mut *loadfn);
+        GetAttribLocation::load_with(&mut *loadfn);
+        GetBooleani_v::load_with(&mut *loadfn);
+        GetBooleanv::load_with(&mut *loadfn);
+        GetBufferParameteri64v::load_with(&mut *loadfn);
+        GetBufferParameteriv::load_with(&mut *loadfn);
+        GetBufferPointerv::load_with(&mut *loadfn);
+        GetBufferSubData::load_with(&mut *loadfn);
+        GetCompressedTexImage::load_with(&mut *loadfn);
+        GetCompressedTextureImage::load_with(&mut *loadfn);
+        GetCompressedTextureSubImage::load_with(&mut *loadfn);
+        GetDebugMessageLog::load_with(&mut *loadfn);
+        GetDoublei_v::load_with(&mut *loadfn);
+        GetDoublev::load_with(&mut *loadfn);
+        GetError::load_with(&mut *loadfn);
+        GetFloati_v::load_with(&mut *loadfn);
+        GetFloatv::load_with(&mut *loadfn);
+        GetFragDataIndex::load_with(&mut *loadfn);
+        GetFragDataLocation::load_with(&mut *loadfn);
+        GetFramebufferAttachmentParameteriv::load_with(&mut *loadfn);
+        GetFramebufferParameteriv::load_with(&mut *loadfn);
+        GetGraphicsResetStatus::load_with(&mut *loadfn);
+        GetInteger64i_v::load_with(&mut *loadfn);
+        GetInteger64v::load_with(&mut *loadfn);
+        GetIntegeri_v::load_with(&mut *loadfn);
+        GetIntegerv::load_with(&mut *loadfn);
+        GetInternalformati64v::load_with(&mut *loadfn);
+        GetInternalformativ::load_with(&mut *loadfn);
+        GetMultisamplefv::load_with(&mut *loadfn);
+        GetNamedBufferParameteri64v::load_with(&mut *loadfn);
+        GetNamedBufferParameteriv::load_with(&mut *loadfn);
+        GetNamedBufferPointerv::load_with(&mut *loadfn);
+        GetNamedBufferSubData::load_with(&mut *loadfn);
+        GetNamedFramebufferAttachmentParameteriv::load_with(&mut *loadfn);
+        GetNamedFramebufferParameteriv::load_with(&mut *loadfn);
+        GetNamedRenderbufferParameteriv::load_with(&mut *loadfn);
+        GetObjectLabel::load_with(&mut *loadfn);
+        GetObjectPtrLabel::load_with(&mut *loadfn);
+        GetPointerv::load_with(&mut *loadfn);
+        GetProgramBinary::load_with(&mut *loadfn);
+        GetProgramInfoLog::load_with(&mut *loadfn);
+        GetProgramInterfaceiv::load_with(&mut *loadfn);
+        GetProgramPipelineInfoLog::load_with(&mut *loadfn);
+        GetProgramPipelineiv::load_with(&mut *loadfn);
+        GetProgramResourceIndex::load_with(&mut *loadfn);
+        GetProgramResourceLocation::load_with(&mut *loadfn);
+        GetProgramResourceLocationIndex::load_with(&mut *loadfn);
+        GetProgramResourceName::load_with(&mut *loadfn);
+        GetProgramResourceiv::load_with(&mut *loadfn);
+        GetProgramStageiv::load_with(&mut *loadfn);
+        GetProgramiv::load_with(&mut *loadfn);
+        GetQueryBufferObjecti64v::load_with(&mut *loadfn);
+        GetQueryBufferObjectiv::load_with(&mut *loadfn);
+        GetQueryBufferObjectui64v::load_with(&mut *loadfn);
+        GetQueryBufferObjectuiv::load_with(&mut *loadfn);
+        GetQueryIndexediv::load_with(&mut *loadfn);
+        GetQueryObjecti64v::load_with(&mut *loadfn);
+        GetQueryObjectiv::load_with(&mut *loadfn);
+        GetQueryObjectui64v::load_with(&mut *loadfn);
+        GetQueryObjectuiv::load_with(&mut *loadfn);
+        GetQueryiv::load_with(&mut *loadfn);
+        GetRenderbufferParameteriv::load_with(&mut *loadfn);
+        GetSamplerParameterIiv::load_with(&mut *loadfn);
+        GetSamplerParameterIuiv::load_with(&mut *loadfn);
+        GetSamplerParameterfv::load_with(&mut *loadfn);
+        GetSamplerParameteriv::load_with(&mut *loadfn);
+        GetShaderInfoLog::load_with(&mut *loadfn);
+        GetShaderPrecisionFormat::load_with(&mut *loadfn);
+        GetShaderSource::load_with(&mut *loadfn);
+        GetShaderiv::load_with(&mut *loadfn);
+        GetString::load_with(&mut *loadfn);
+        GetStringi::load_with(&mut *loadfn);
+        GetSubroutineIndex::load_with(&mut *loadfn);
+        GetSubroutineUniformLocation::load_with(&mut *loadfn);
+        GetSynciv::load_with(&mut *loadfn);
+        GetTexImage::load_with(&mut *loadfn);
+        GetTexLevelParameterfv::load_with(&mut *loadfn);
+        GetTexLevelParameteriv::load_with(&mut *loadfn);
+        GetTexParameterIiv::load_with(&mut *loadfn);
+        GetTexParameterIuiv::load_with(&mut *loadfn);
+        GetTexParameterfv::load_with(&mut *loadfn);
+        GetTexParameteriv::load_with(&mut *loadfn);
+        GetTextureImage::load_with(&mut *loadfn);
+        GetTextureLevelParameterfv::load_with(&mut *loadfn);
+        GetTextureLevelParameteriv::load_with(&mut *loadfn);
+        GetTextureParameterIiv::load_with(&mut *loadfn);
+        GetTextureParameterIuiv::load_with(&mut *loadfn);
+        GetTextureParameterfv::load_with(&mut *loadfn);
+        GetTextureParameteriv::load_with(&mut *loadfn);
+        GetTextureSubImage::load_with(&mut *loadfn);
+        GetTransformFeedbackVarying::load_with(&mut *loadfn);
+        GetTransformFeedbacki64_v::load_with(&mut *loadfn);
+        GetTransformFeedbacki_v::load_with(&mut *loadfn);
+        GetTransformFeedbackiv::load_with(&mut *loadfn);
+        GetUniformBlockIndex::load_with(&mut *loadfn);
+        GetUniformIndices::load_with(&mut *loadfn);
+        GetUniformLocation::load_with(&mut *loadfn);
+        GetUniformSubroutineuiv::load_with(&mut *loadfn);
+        GetUniformdv::load_with(&mut *loadfn);
+        GetUniformfv::load_with(&mut *loadfn);
+        GetUniformiv::load_with(&mut *loadfn);
+        GetUniformuiv::load_with(&mut *loadfn);
+        GetVertexArrayIndexed64iv::load_with(&mut *loadfn);
+        GetVertexArrayIndexediv::load_with(&mut *loadfn);
+        GetVertexArrayiv::load_with(&mut *loadfn);
+        GetVertexAttribIiv::load_with(&mut *loadfn);
+        GetVertexAttribIuiv::load_with(&mut *loadfn);
+        GetVertexAttribLdv::load_with(&mut *loadfn);
+        GetVertexAttribPointerv::load_with(&mut *loadfn);
+        GetVertexAttribdv::load_with(&mut *loadfn);
+        GetVertexAttribfv::load_with(&mut *loadfn);
+        GetVertexAttribiv::load_with(&mut *loadfn);
+        GetnColorTable::load_with(&mut *loadfn);
+        GetnCompressedTexImage::load_with(&mut *loadfn);
+        GetnConvolutionFilter::load_with(&mut *loadfn);
+        GetnHistogram::load_with(&mut *loadfn);
+        GetnMapdv::load_with(&mut *loadfn);
+        GetnMapfv::load_with(&mut *loadfn);
+        GetnMapiv::load_with(&mut *loadfn);
+        GetnMinmax::load_with(&mut *loadfn);
+        GetnPixelMapfv::load_with(&mut *loadfn);
+        GetnPixelMapuiv::load_with(&mut *loadfn);
+        GetnPixelMapusv::load_with(&mut *loadfn);
+        GetnPolygonStipple::load_with(&mut *loadfn);
+        GetnSeparableFilter::load_with(&mut *loadfn);
+        GetnTexImage::load_with(&mut *loadfn);
+        GetnUniformdv::load_with(&mut *loadfn);
+        GetnUniformfv::load_with(&mut *loadfn);
+        GetnUniformiv::load_with(&mut *loadfn);
+        GetnUniformuiv::load_with(&mut *loadfn);
+        Hint::load_with(&mut *loadfn);
+        InvalidateBufferData::load_with(&mut *loadfn);
+        InvalidateBufferSubData::load_with(&mut *loadfn);
+        InvalidateFramebuffer::load_with(&mut *loadfn);
+        InvalidateNamedFramebufferData::load_with(&mut *loadfn);
+        InvalidateNamedFramebufferSubData::load_with(&mut *loadfn);
+        InvalidateSubFramebuffer::load_with(&mut *loadfn);
+        InvalidateTexImage::load_with(&mut *loadfn);
+        InvalidateTexSubImage::load_with(&mut *loadfn);
+        IsBuffer::load_with(&mut *loadfn);
+        IsEnabled::load_with(&mut *loadfn);
+        IsEnabledi::load_with(&mut *loadfn);
+        IsFramebuffer::load_with(&mut *loadfn);
+        IsProgram::load_with(&mut *loadfn);
+        IsProgramPipeline::load_with(&mut *loadfn);
+        IsQuery::load_with(&mut *loadfn);
+        IsRenderbuffer::load_with(&mut *loadfn);
+        IsSampler::load_with(&mut *loadfn);
+        IsShader::load_with(&mut *loadfn);
+        IsSync::load_with(&mut *loadfn);
+        IsTexture::load_with(&mut *loadfn);
+        IsTransformFeedback::load_with(&mut *loadfn);
+        IsVertexArray::load_with(&mut *loadfn);
+        LineWidth::load_with(&mut *loadfn);
+        LinkProgram::load_with(&mut *loadfn);
+        LogicOp::load_with(&mut *loadfn);
+        MapBuffer::load_with(&mut *loadfn);
+        MapBufferRange::load_with(&mut *loadfn);
+        MapNamedBuffer::load_with(&mut *loadfn);
+        MapNamedBufferRange::load_with(&mut *loadfn);
+        MemoryBarrier::load_with(&mut *loadfn);
+        MemoryBarrierByRegion::load_with(&mut *loadfn);
+        MinSampleShading::load_with(&mut *loadfn);
+        MultiDrawArrays::load_with(&mut *loadfn);
+        MultiDrawArraysIndirect::load_with(&mut *loadfn);
+        MultiDrawElements::load_with(&mut *loadfn);
+        MultiDrawElementsBaseVertex::load_with(&mut *loadfn);
+        MultiDrawElementsIndirect::load_with(&mut *loadfn);
+        MultiTexCoordP1ui::load_with(&mut *loadfn);
+        MultiTexCoordP1uiv::load_with(&mut *loadfn);
+        MultiTexCoordP2ui::load_with(&mut *loadfn);
+        MultiTexCoordP2uiv::load_with(&mut *loadfn);
+        MultiTexCoordP3ui::load_with(&mut *loadfn);
+        MultiTexCoordP3uiv::load_with(&mut *loadfn);
+        MultiTexCoordP4ui::load_with(&mut *loadfn);
+        MultiTexCoordP4uiv::load_with(&mut *loadfn);
+        NamedBufferData::load_with(&mut *loadfn);
+        NamedBufferStorage::load_with(&mut *loadfn);
+        NamedBufferSubData::load_with(&mut *loadfn);
+        NamedFramebufferDrawBuffer::load_with(&mut *loadfn);
+        NamedFramebufferDrawBuffers::load_with(&mut *loadfn);
+        NamedFramebufferParameteri::load_with(&mut *loadfn);
+        NamedFramebufferReadBuffer::load_with(&mut *loadfn);
+        NamedFramebufferRenderbuffer::load_with(&mut *loadfn);
+        NamedFramebufferTexture::load_with(&mut *loadfn);
+        NamedFramebufferTextureLayer::load_with(&mut *loadfn);
+        NamedRenderbufferStorage::load_with(&mut *loadfn);
+        NamedRenderbufferStorageMultisample::load_with(&mut *loadfn);
+        NormalP3ui::load_with(&mut *loadfn);
+        NormalP3uiv::load_with(&mut *loadfn);
+        ObjectLabel::load_with(&mut *loadfn);
+        ObjectPtrLabel::load_with(&mut *loadfn);
+        PatchParameterfv::load_with(&mut *loadfn);
+        PatchParameteri::load_with(&mut *loadfn);
+        PauseTransformFeedback::load_with(&mut *loadfn);
+        PixelStoref::load_with(&mut *loadfn);
+        PixelStorei::load_with(&mut *loadfn);
+        PointParameterf::load_with(&mut *loadfn);
+        PointParameterfv::load_with(&mut *loadfn);
+        PointParameteri::load_with(&mut *loadfn);
+        PointParameteriv::load_with(&mut *loadfn);
+        PointSize::load_with(&mut *loadfn);
+        PolygonMode::load_with(&mut *loadfn);
+        PolygonOffset::load_with(&mut *loadfn);
+        PopDebugGroup::load_with(&mut *loadfn);
+        PrimitiveRestartIndex::load_with(&mut *loadfn);
+        ProgramBinary::load_with(&mut *loadfn);
+        ProgramParameteri::load_with(&mut *loadfn);
+        ProgramUniform1d::load_with(&mut *loadfn);
+        ProgramUniform1dv::load_with(&mut *loadfn);
+        ProgramUniform1f::load_with(&mut *loadfn);
+        ProgramUniform1fv::load_with(&mut *loadfn);
+        ProgramUniform1i::load_with(&mut *loadfn);
+        ProgramUniform1iv::load_with(&mut *loadfn);
+        ProgramUniform1ui::load_with(&mut *loadfn);
+        ProgramUniform1uiv::load_with(&mut *loadfn);
+        ProgramUniform2d::load_with(&mut *loadfn);
+        ProgramUniform2dv::load_with(&mut *loadfn);
+        ProgramUniform2f::load_with(&mut *loadfn);
+        ProgramUniform2fv::load_with(&mut *loadfn);
+        ProgramUniform2i::load_with(&mut *loadfn);
+        ProgramUniform2iv::load_with(&mut *loadfn);
+        ProgramUniform2ui::load_with(&mut *loadfn);
+        ProgramUniform2uiv::load_with(&mut *loadfn);
+        ProgramUniform3d::load_with(&mut *loadfn);
+        ProgramUniform3dv::load_with(&mut *loadfn);
+        ProgramUniform3f::load_with(&mut *loadfn);
+        ProgramUniform3fv::load_with(&mut *loadfn);
+        ProgramUniform3i::load_with(&mut *loadfn);
+        ProgramUniform3iv::load_with(&mut *loadfn);
+        ProgramUniform3ui::load_with(&mut *loadfn);
+        ProgramUniform3uiv::load_with(&mut *loadfn);
+        ProgramUniform4d::load_with(&mut *loadfn);
+        ProgramUniform4dv::load_with(&mut *loadfn);
+        ProgramUniform4f::load_with(&mut *loadfn);
+        ProgramUniform4fv::load_with(&mut *loadfn);
+        ProgramUniform4i::load_with(&mut *loadfn);
+        ProgramUniform4iv::load_with(&mut *loadfn);
+        ProgramUniform4ui::load_with(&mut *loadfn);
+        ProgramUniform4uiv::load_with(&mut *loadfn);
+        ProgramUniformMatrix2dv::load_with(&mut *loadfn);
+        ProgramUniformMatrix2fv::load_with(&mut *loadfn);
+        ProgramUniformMatrix2x3dv::load_with(&mut *loadfn);
+        ProgramUniformMatrix2x3fv::load_with(&mut *loadfn);
+        ProgramUniformMatrix2x4dv::load_with(&mut *loadfn);
+        ProgramUniformMatrix2x4fv::load_with(&mut *loadfn);
+        ProgramUniformMatrix3dv::load_with(&mut *loadfn);
+        ProgramUniformMatrix3fv::load_with(&mut *loadfn);
+        ProgramUniformMatrix3x2dv::load_with(&mut *loadfn);
+        ProgramUniformMatrix3x2fv::load_with(&mut *loadfn);
+        ProgramUniformMatrix3x4dv::load_with(&mut *loadfn);
+        ProgramUniformMatrix3x4fv::load_with(&mut *loadfn);
+        ProgramUniformMatrix4dv::load_with(&mut *loadfn);
+        ProgramUniformMatrix4fv::load_with(&mut *loadfn);
+        ProgramUniformMatrix4x2dv::load_with(&mut *loadfn);
+        ProgramUniformMatrix4x2fv::load_with(&mut *loadfn);
+        ProgramUniformMatrix4x3dv::load_with(&mut *loadfn);
+        ProgramUniformMatrix4x3fv::load_with(&mut *loadfn);
+        ProvokingVertex::load_with(&mut *loadfn);
+        PushDebugGroup::load_with(&mut *loadfn);
+        QueryCounter::load_with(&mut *loadfn);
+        ReadBuffer::load_with(&mut *loadfn);
+        ReadPixels::load_with(&mut *loadfn);
+        ReadnPixels::load_with(&mut *loadfn);
+        ReleaseShaderCompiler::load_with(&mut *loadfn);
+        RenderbufferStorage::load_with(&mut *loadfn);
+        RenderbufferStorageMultisample::load_with(&mut *loadfn);
+        ResumeTransformFeedback::load_with(&mut *loadfn);
+        SampleCoverage::load_with(&mut *loadfn);
+        SampleMaski::load_with(&mut *loadfn);
+        SamplerParameterIiv::load_with(&mut *loadfn);
+        SamplerParameterIuiv::load_with(&mut *loadfn);
+        SamplerParameterf::load_with(&mut *loadfn);
+        SamplerParameterfv::load_with(&mut *loadfn);
+        SamplerParameteri::load_with(&mut *loadfn);
+        SamplerParameteriv::load_with(&mut *loadfn);
+        Scissor::load_with(&mut *loadfn);
+        ScissorArrayv::load_with(&mut *loadfn);
+        ScissorIndexed::load_with(&mut *loadfn);
+        ScissorIndexedv::load_with(&mut *loadfn);
+        SecondaryColorP3ui::load_with(&mut *loadfn);
+        SecondaryColorP3uiv::load_with(&mut *loadfn);
+        ShaderBinary::load_with(&mut *loadfn);
+        ShaderSource::load_with(&mut *loadfn);
+        ShaderStorageBlockBinding::load_with(&mut *loadfn);
+        StencilFunc::load_with(&mut *loadfn);
+        StencilFuncSeparate::load_with(&mut *loadfn);
+        StencilMask::load_with(&mut *loadfn);
+        StencilMaskSeparate::load_with(&mut *loadfn);
+        StencilOp::load_with(&mut *loadfn);
+        StencilOpSeparate::load_with(&mut *loadfn);
+        TexBuffer::load_with(&mut *loadfn);
+        TexBufferRange::load_with(&mut *loadfn);
+        TexCoordP1ui::load_with(&mut *loadfn);
+        TexCoordP1uiv::load_with(&mut *loadfn);
+        TexCoordP2ui::load_with(&mut *loadfn);
+        TexCoordP2uiv::load_with(&mut *loadfn);
+        TexCoordP3ui::load_with(&mut *loadfn);
+        TexCoordP3uiv::load_with(&mut *loadfn);
+        TexCoordP4ui::load_with(&mut *loadfn);
+        TexCoordP4uiv::load_with(&mut *loadfn);
+        TexImage1D::load_with(&mut *loadfn);
+        TexImage2D::load_with(&mut *loadfn);
+        TexImage2DMultisample::load_with(&mut *loadfn);
+        TexImage3D::load_with(&mut *loadfn);
+        TexImage3DMultisample::load_with(&mut *loadfn);
+        TexParameterIiv::load_with(&mut *loadfn);
+        TexParameterIuiv::load_with(&mut *loadfn);
+        TexParameterf::load_with(&mut *loadfn);
+        TexParameterfv::load_with(&mut *loadfn);
+        TexParameteri::load_with(&mut *loadfn);
+        TexParameteriv::load_with(&mut *loadfn);
+        TexStorage1D::load_with(&mut *loadfn);
+        TexStorage2D::load_with(&mut *loadfn);
+        TexStorage2DMultisample::load_with(&mut *loadfn);
+        TexStorage3D::load_with(&mut *loadfn);
+        TexStorage3DMultisample::load_with(&mut *loadfn);
+        TexSubImage1D::load_with(&mut *loadfn);
+        TexSubImage2D::load_with(&mut *loadfn);
+        TexSubImage3D::load_with(&mut *loadfn);
+        TextureBarrier::load_with(&mut *loadfn);
+        TextureBuffer::load_with(&mut *loadfn);
+        TextureBufferRange::load_with(&mut *loadfn);
+        TextureParameterIiv::load_with(&mut *loadfn);
+        TextureParameterIuiv::load_with(&mut *loadfn);
+        TextureParameterf::load_with(&mut *loadfn);
+        TextureParameterfv::load_with(&mut *loadfn);
+        TextureParameteri::load_with(&mut *loadfn);
+        TextureParameteriv::load_with(&mut *loadfn);
+        TextureStorage1D::load_with(&mut *loadfn);
+        TextureStorage2D::load_with(&mut *loadfn);
+        TextureStorage2DMultisample::load_with(&mut *loadfn);
+        TextureStorage3D::load_with(&mut *loadfn);
+        TextureStorage3DMultisample::load_with(&mut *loadfn);
+        TextureSubImage1D::load_with(&mut *loadfn);
+        TextureSubImage2D::load_with(&mut *loadfn);
+        TextureSubImage3D::load_with(&mut *loadfn);
+        TextureView::load_with(&mut *loadfn);
+        TransformFeedbackBufferBase::load_with(&mut *loadfn);
+        TransformFeedbackBufferRange::load_with(&mut *loadfn);
+        TransformFeedbackVaryings::load_with(&mut *loadfn);
+        Uniform1d::load_with(&mut *loadfn);
+        Uniform1dv::load_with(&mut *loadfn);
+        Uniform1f::load_with(&mut *loadfn);
+        Uniform1fv::load_with(&mut *loadfn);
+        Uniform1i::load_with(&mut *loadfn);
+        Uniform1iv::load_with(&mut *loadfn);
+        Uniform1ui::load_with(&mut *loadfn);
+        Uniform1uiv::load_with(&mut *loadfn);
+        Uniform2d::load_with(&mut *loadfn);
+        Uniform2dv::load_with(&mut *loadfn);
+        Uniform2f::load_with(&mut *loadfn);
+        Uniform2fv::load_with(&mut *loadfn);
+        Uniform2i::load_with(&mut *loadfn);
+        Uniform2iv::load_with(&mut *loadfn);
+        Uniform2ui::load_with(&mut *loadfn);
+        Uniform2uiv::load_with(&mut *loadfn);
+        Uniform3d::load_with(&mut *loadfn);
+        Uniform3dv::load_with(&mut *loadfn);
+        Uniform3f::load_with(&mut *loadfn);
+        Uniform3fv::load_with(&mut *loadfn);
+        Uniform3i::load_with(&mut *loadfn);
+        Uniform3iv::load_with(&mut *loadfn);
+        Uniform3ui::load_with(&mut *loadfn);
+        Uniform3uiv::load_with(&mut *loadfn);
+        Uniform4d::load_with(&mut *loadfn);
+        Uniform4dv::load_with(&mut *loadfn);
+        Uniform4f::load_with(&mut *loadfn);
+        Uniform4fv::load_with(&mut *loadfn);
+        Uniform4i::load_with(&mut *loadfn);
+        Uniform4iv::load_with(&mut *loadfn);
+        Uniform4ui::load_with(&mut *loadfn);
+        Uniform4uiv::load_with(&mut *loadfn);
+        UniformBlockBinding::load_with(&mut *loadfn);
+        UniformMatrix2dv::load_with(&mut *loadfn);
+        UniformMatrix2fv::load_with(&mut *loadfn);
+        UniformMatrix2x3dv::load_with(&mut *loadfn);
+        UniformMatrix2x3fv::load_with(&mut *loadfn);
+        UniformMatrix2x4dv::load_with(&mut *loadfn);
+        UniformMatrix2x4fv::load_with(&mut *loadfn);
+        UniformMatrix3dv::load_with(&mut *loadfn);
+        UniformMatrix3fv::load_with(&mut *loadfn);
+        UniformMatrix3x2dv::load_with(&mut *loadfn);
+        UniformMatrix3x2fv::load_with(&mut *loadfn);
+        UniformMatrix3x4dv::load_with(&mut *loadfn);
+        UniformMatrix3x4fv::load_with(&mut *loadfn);
+        UniformMatrix4dv::load_with(&mut *loadfn);
+        UniformMatrix4fv::load_with(&mut *loadfn);
+        UniformMatrix4x2dv::load_with(&mut *loadfn);
+        UniformMatrix4x2fv::load_with(&mut *loadfn);
+        UniformMatrix4x3dv::load_with(&mut *loadfn);
+        UniformMatrix4x3fv::load_with(&mut *loadfn);
+        UniformSubroutinesuiv::load_with(&mut *loadfn);
+        UnmapBuffer::load_with(&mut *loadfn);
+        UnmapNamedBuffer::load_with(&mut *loadfn);
+        UseProgram::load_with(&mut *loadfn);
+        UseProgramStages::load_with(&mut *loadfn);
+        ValidateProgram::load_with(&mut *loadfn);
+        ValidateProgramPipeline::load_with(&mut *loadfn);
+        VertexArrayAttribBinding::load_with(&mut *loadfn);
+        VertexArrayAttribFormat::load_with(&mut *loadfn);
+        VertexArrayAttribIFormat::load_with(&mut *loadfn);
+        VertexArrayAttribLFormat::load_with(&mut *loadfn);
+        VertexArrayBindingDivisor::load_with(&mut *loadfn);
+        VertexArrayElementBuffer::load_with(&mut *loadfn);
+        VertexArrayVertexBuffer::load_with(&mut *loadfn);
+        VertexArrayVertexBuffers::load_with(&mut *loadfn);
+        VertexAttrib1d::load_with(&mut *loadfn);
+        VertexAttrib1dv::load_with(&mut *loadfn);
+        VertexAttrib1f::load_with(&mut *loadfn);
+        VertexAttrib1fv::load_with(&mut *loadfn);
+        VertexAttrib1s::load_with(&mut *loadfn);
+        VertexAttrib1sv::load_with(&mut *loadfn);
+        VertexAttrib2d::load_with(&mut *loadfn);
+        VertexAttrib2dv::load_with(&mut *loadfn);
+        VertexAttrib2f::load_with(&mut *loadfn);
+        VertexAttrib2fv::load_with(&mut *loadfn);
+        VertexAttrib2s::load_with(&mut *loadfn);
+        VertexAttrib2sv::load_with(&mut *loadfn);
+        VertexAttrib3d::load_with(&mut *loadfn);
+        VertexAttrib3dv::load_with(&mut *loadfn);
+        VertexAttrib3f::load_with(&mut *loadfn);
+        VertexAttrib3fv::load_with(&mut *loadfn);
+        VertexAttrib3s::load_with(&mut *loadfn);
+        VertexAttrib3sv::load_with(&mut *loadfn);
+        VertexAttrib4Nbv::load_with(&mut *loadfn);
+        VertexAttrib4Niv::load_with(&mut *loadfn);
+        VertexAttrib4Nsv::load_with(&mut *loadfn);
+        VertexAttrib4Nub::load_with(&mut *loadfn);
+        VertexAttrib4Nubv::load_with(&mut *loadfn);
+        VertexAttrib4Nuiv::load_with(&mut *loadfn);
+        VertexAttrib4Nusv::load_with(&mut *loadfn);
+        VertexAttrib4bv::load_with(&mut *loadfn);
+        VertexAttrib4d::load_with(&mut *loadfn);
+        VertexAttrib4dv::load_with(&mut *loadfn);
+        VertexAttrib4f::load_with(&mut *loadfn);
+        VertexAttrib4fv::load_with(&mut *loadfn);
+        VertexAttrib4iv::load_with(&mut *loadfn);
+        VertexAttrib4s::load_with(&mut *loadfn);
+        VertexAttrib4sv::load_with(&mut *loadfn);
+        VertexAttrib4ubv::load_with(&mut *loadfn);
+        VertexAttrib4uiv::load_with(&mut *loadfn);
+        VertexAttrib4usv::load_with(&mut *loadfn);
+        VertexAttribBinding::load_with(&mut *loadfn);
+        VertexAttribDivisor::load_with(&mut *loadfn);
+        VertexAttribFormat::load_with(&mut *loadfn);
+        VertexAttribI1i::load_with(&mut *loadfn);
+        VertexAttribI1iv::load_with(&mut *loadfn);
+        VertexAttribI1ui::load_with(&mut *loadfn);
+        VertexAttribI1uiv::load_with(&mut *loadfn);
+        VertexAttribI2i::load_with(&mut *loadfn);
+        VertexAttribI2iv::load_with(&mut *loadfn);
+        VertexAttribI2ui::load_with(&mut *loadfn);
+        VertexAttribI2uiv::load_with(&mut *loadfn);
+        VertexAttribI3i::load_with(&mut *loadfn);
+        VertexAttribI3iv::load_with(&mut *loadfn);
+        VertexAttribI3ui::load_with(&mut *loadfn);
+        VertexAttribI3uiv::load_with(&mut *loadfn);
+        VertexAttribI4bv::load_with(&mut *loadfn);
+        VertexAttribI4i::load_with(&mut *loadfn);
+        VertexAttribI4iv::load_with(&mut *loadfn);
+        VertexAttribI4sv::load_with(&mut *loadfn);
+        VertexAttribI4ubv::load_with(&mut *loadfn);
+        VertexAttribI4ui::load_with(&mut *loadfn);
+        VertexAttribI4uiv::load_with(&mut *loadfn);
+        VertexAttribI4usv::load_with(&mut *loadfn);
+        VertexAttribIFormat::load_with(&mut *loadfn);
+        VertexAttribIPointer::load_with(&mut *loadfn);
+        VertexAttribL1d::load_with(&mut *loadfn);
+        VertexAttribL1dv::load_with(&mut *loadfn);
+        VertexAttribL2d::load_with(&mut *loadfn);
+        VertexAttribL2dv::load_with(&mut *loadfn);
+        VertexAttribL3d::load_with(&mut *loadfn);
+        VertexAttribL3dv::load_with(&mut *loadfn);
+        VertexAttribL4d::load_with(&mut *loadfn);
+        VertexAttribL4dv::load_with(&mut *loadfn);
+        VertexAttribLFormat::load_with(&mut *loadfn);
+        VertexAttribLPointer::load_with(&mut *loadfn);
+        VertexAttribP1ui::load_with(&mut *loadfn);
+        VertexAttribP1uiv::load_with(&mut *loadfn);
+        VertexAttribP2ui::load_with(&mut *loadfn);
+        VertexAttribP2uiv::load_with(&mut *loadfn);
+        VertexAttribP3ui::load_with(&mut *loadfn);
+        VertexAttribP3uiv::load_with(&mut *loadfn);
+        VertexAttribP4ui::load_with(&mut *loadfn);
+        VertexAttribP4uiv::load_with(&mut *loadfn);
+        VertexAttribPointer::load_with(&mut *loadfn);
+        VertexBindingDivisor::load_with(&mut *loadfn);
+        VertexP2ui::load_with(&mut *loadfn);
+        VertexP2uiv::load_with(&mut *loadfn);
+        VertexP3ui::load_with(&mut *loadfn);
+        VertexP3uiv::load_with(&mut *loadfn);
+        VertexP4ui::load_with(&mut *loadfn);
+        VertexP4uiv::load_with(&mut *loadfn);
+        Viewport::load_with(&mut *loadfn);
+        ViewportArrayv::load_with(&mut *loadfn);
+        ViewportIndexedf::load_with(&mut *loadfn);
+        ViewportIndexedfv::load_with(&mut *loadfn);
+        WaitSync::load_with(&mut *loadfn);
+    }
+
+    if EXTERNAL_POINTERS {
+        inner(&mut loadfn)
+    } else {
+        gl::load_with(loadfn);
+    }
+}
+
 pub const EXTERNAL_POINTERS: bool = false;
+
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_ATOMIC_COUNTER_BUFFERS: GLenum = 0x92D9;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_ATTRIBUTES: GLenum = 0x8B89;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_ATTRIBUTE_MAX_LENGTH: GLenum = 0x8B8A;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_PROGRAM: GLenum = 0x8259;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_RESOURCES: GLenum = 0x92F5;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_SUBROUTINES: GLenum = 0x8DE5;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_SUBROUTINE_MAX_LENGTH: GLenum = 0x8E48;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_SUBROUTINE_UNIFORMS: GLenum = 0x8DE6;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_SUBROUTINE_UNIFORM_LOCATIONS: GLenum = 0x8E47;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_SUBROUTINE_UNIFORM_MAX_LENGTH: GLenum = 0x8E49;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_TEXTURE: GLenum = 0x84E0;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_UNIFORMS: GLenum = 0x8B86;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_UNIFORM_BLOCKS: GLenum = 0x8A36;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH: GLenum = 0x8A35;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_UNIFORM_MAX_LENGTH: GLenum = 0x8B87;
+#[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_VARIABLES: GLenum = 0x9305;
+#[allow(dead_code, non_upper_case_globals)] pub const ALIASED_LINE_WIDTH_RANGE: GLenum = 0x846E;
+#[allow(dead_code, non_upper_case_globals)] pub const ALL_BARRIER_BITS: GLenum = 0xFFFFFFFF;
+#[allow(dead_code, non_upper_case_globals)] pub const ALL_SHADER_BITS: GLenum = 0xFFFFFFFF;
+#[allow(dead_code, non_upper_case_globals)] pub const ALPHA: GLenum = 0x1906;
+#[allow(dead_code, non_upper_case_globals)] pub const ALREADY_SIGNALED: GLenum = 0x911A;
+#[allow(dead_code, non_upper_case_globals)] pub const ALWAYS: GLenum = 0x0207;
+#[allow(dead_code, non_upper_case_globals)] pub const AND: GLenum = 0x1501;
+#[allow(dead_code, non_upper_case_globals)] pub const AND_INVERTED: GLenum = 0x1504;
+#[allow(dead_code, non_upper_case_globals)] pub const AND_REVERSE: GLenum = 0x1502;
+#[allow(dead_code, non_upper_case_globals)] pub const ANY_SAMPLES_PASSED: GLenum = 0x8C2F;
+#[allow(dead_code, non_upper_case_globals)] pub const ANY_SAMPLES_PASSED_CONSERVATIVE: GLenum = 0x8D6A;
+#[allow(dead_code, non_upper_case_globals)] pub const ARRAY_BUFFER: GLenum = 0x8892;
+#[allow(dead_code, non_upper_case_globals)] pub const ARRAY_BUFFER_BINDING: GLenum = 0x8894;
+#[allow(dead_code, non_upper_case_globals)] pub const ARRAY_SIZE: GLenum = 0x92FB;
+#[allow(dead_code, non_upper_case_globals)] pub const ARRAY_STRIDE: GLenum = 0x92FE;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BARRIER_BIT: GLenum = 0x00001000;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER: GLenum = 0x92C0;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTERS: GLenum = 0x92C5;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_ACTIVE_ATOMIC_COUNTER_INDICES: GLenum = 0x92C6;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_BINDING: GLenum = 0x92C1;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_DATA_SIZE: GLenum = 0x92C4;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_INDEX: GLenum = 0x9301;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_REFERENCED_BY_COMPUTE_SHADER: GLenum = 0x90ED;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_REFERENCED_BY_FRAGMENT_SHADER: GLenum = 0x92CB;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_REFERENCED_BY_GEOMETRY_SHADER: GLenum = 0x92CA;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_CONTROL_SHADER: GLenum = 0x92C8;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_REFERENCED_BY_TESS_EVALUATION_SHADER: GLenum = 0x92C9;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_REFERENCED_BY_VERTEX_SHADER: GLenum = 0x92C7;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_SIZE: GLenum = 0x92C3;
+#[allow(dead_code, non_upper_case_globals)] pub const ATOMIC_COUNTER_BUFFER_START: GLenum = 0x92C2;
+#[allow(dead_code, non_upper_case_globals)] pub const ATTACHED_SHADERS: GLenum = 0x8B85;
+#[allow(dead_code, non_upper_case_globals)] pub const AUTO_GENERATE_MIPMAP: GLenum = 0x8295;
+#[allow(dead_code, non_upper_case_globals)] pub const BACK: GLenum = 0x0405;
+#[allow(dead_code, non_upper_case_globals)] pub const BACK_LEFT: GLenum = 0x0402;
+#[allow(dead_code, non_upper_case_globals)] pub const BACK_RIGHT: GLenum = 0x0403;
+#[allow(dead_code, non_upper_case_globals)] pub const BGR: GLenum = 0x80E0;
+#[allow(dead_code, non_upper_case_globals)] pub const BGRA: GLenum = 0x80E1;
+#[allow(dead_code, non_upper_case_globals)] pub const BGRA_INTEGER: GLenum = 0x8D9B;
+#[allow(dead_code, non_upper_case_globals)] pub const BGR_INTEGER: GLenum = 0x8D9A;
+#[allow(dead_code, non_upper_case_globals)] pub const BLEND: GLenum = 0x0BE2;
+#[allow(dead_code, non_upper_case_globals)] pub const BLEND_COLOR: GLenum = 0x8005;
+#[allow(dead_code, non_upper_case_globals)] pub const BLEND_DST: GLenum = 0x0BE0;
+#[allow(dead_code, non_upper_case_globals)] pub const BLEND_DST_ALPHA: GLenum = 0x80CA;
+#[allow(dead_code, non_upper_case_globals)] pub const BLEND_DST_RGB: GLenum = 0x80C8;
+#[allow(dead_code, non_upper_case_globals)] pub const BLEND_EQUATION: GLenum = 0x8009;
+#[allow(dead_code, non_upper_case_globals)] pub const BLEND_EQUATION_ALPHA: GLenum = 0x883D;
+#[allow(dead_code, non_upper_case_globals)] pub const BLEND_EQUATION_RGB: GLenum = 0x8009;
+#[allow(dead_code, non_upper_case_globals)] pub const BLEND_SRC: GLenum = 0x0BE1;
+#[allow(dead_code, non_upper_case_globals)] pub const BLEND_SRC_ALPHA: GLenum = 0x80CB;
+#[allow(dead_code, non_upper_case_globals)] pub const BLEND_SRC_RGB: GLenum = 0x80C9;
+#[allow(dead_code, non_upper_case_globals)] pub const BLOCK_INDEX: GLenum = 0x92FD;
+#[allow(dead_code, non_upper_case_globals)] pub const BLUE: GLenum = 0x1905;
+#[allow(dead_code, non_upper_case_globals)] pub const BLUE_INTEGER: GLenum = 0x8D96;
+#[allow(dead_code, non_upper_case_globals)] pub const BOOL: GLenum = 0x8B56;
+#[allow(dead_code, non_upper_case_globals)] pub const BOOL_VEC2: GLenum = 0x8B57;
+#[allow(dead_code, non_upper_case_globals)] pub const BOOL_VEC3: GLenum = 0x8B58;
+#[allow(dead_code, non_upper_case_globals)] pub const BOOL_VEC4: GLenum = 0x8B59;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER: GLenum = 0x82E0;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_ACCESS: GLenum = 0x88BB;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_ACCESS_FLAGS: GLenum = 0x911F;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_BINDING: GLenum = 0x9302;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_DATA_SIZE: GLenum = 0x9303;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_IMMUTABLE_STORAGE: GLenum = 0x821F;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_MAPPED: GLenum = 0x88BC;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_MAP_LENGTH: GLenum = 0x9120;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_MAP_OFFSET: GLenum = 0x9121;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_MAP_POINTER: GLenum = 0x88BD;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_SIZE: GLenum = 0x8764;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_STORAGE_FLAGS: GLenum = 0x8220;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_UPDATE_BARRIER_BIT: GLenum = 0x00000200;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_USAGE: GLenum = 0x8765;
+#[allow(dead_code, non_upper_case_globals)] pub const BUFFER_VARIABLE: GLenum = 0x92E5;
+#[allow(dead_code, non_upper_case_globals)] pub const BYTE: GLenum = 0x1400;
+#[allow(dead_code, non_upper_case_globals)] pub const CAVEAT_SUPPORT: GLenum = 0x82B8;
+#[allow(dead_code, non_upper_case_globals)] pub const CCW: GLenum = 0x0901;
+#[allow(dead_code, non_upper_case_globals)] pub const CLAMP_READ_COLOR: GLenum = 0x891C;
+#[allow(dead_code, non_upper_case_globals)] pub const CLAMP_TO_BORDER: GLenum = 0x812D;
+#[allow(dead_code, non_upper_case_globals)] pub const CLAMP_TO_EDGE: GLenum = 0x812F;
+#[allow(dead_code, non_upper_case_globals)] pub const CLEAR: GLenum = 0x1500;
+#[allow(dead_code, non_upper_case_globals)] pub const CLEAR_BUFFER: GLenum = 0x82B4;
+#[allow(dead_code, non_upper_case_globals)] pub const CLEAR_TEXTURE: GLenum = 0x9365;
+#[allow(dead_code, non_upper_case_globals)] pub const CLIENT_MAPPED_BUFFER_BARRIER_BIT: GLenum = 0x00004000;
+#[allow(dead_code, non_upper_case_globals)] pub const CLIENT_STORAGE_BIT: GLenum = 0x0200;
+#[allow(dead_code, non_upper_case_globals)] pub const CLIP_DEPTH_MODE: GLenum = 0x935D;
+#[allow(dead_code, non_upper_case_globals)] pub const CLIP_DISTANCE0: GLenum = 0x3000;
+#[allow(dead_code, non_upper_case_globals)] pub const CLIP_DISTANCE1: GLenum = 0x3001;
+#[allow(dead_code, non_upper_case_globals)] pub const CLIP_DISTANCE2: GLenum = 0x3002;
+#[allow(dead_code, non_upper_case_globals)] pub const CLIP_DISTANCE3: GLenum = 0x3003;
+#[allow(dead_code, non_upper_case_globals)] pub const CLIP_DISTANCE4: GLenum = 0x3004;
+#[allow(dead_code, non_upper_case_globals)] pub const CLIP_DISTANCE5: GLenum = 0x3005;
+#[allow(dead_code, non_upper_case_globals)] pub const CLIP_DISTANCE6: GLenum = 0x3006;
+#[allow(dead_code, non_upper_case_globals)] pub const CLIP_DISTANCE7: GLenum = 0x3007;
+#[allow(dead_code, non_upper_case_globals)] pub const CLIP_ORIGIN: GLenum = 0x935C;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR: GLenum = 0x1800;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT0: GLenum = 0x8CE0;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT1: GLenum = 0x8CE1;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT10: GLenum = 0x8CEA;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT11: GLenum = 0x8CEB;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT12: GLenum = 0x8CEC;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT13: GLenum = 0x8CED;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT14: GLenum = 0x8CEE;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT15: GLenum = 0x8CEF;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT16: GLenum = 0x8CF0;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT17: GLenum = 0x8CF1;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT18: GLenum = 0x8CF2;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT19: GLenum = 0x8CF3;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT2: GLenum = 0x8CE2;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT20: GLenum = 0x8CF4;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT21: GLenum = 0x8CF5;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT22: GLenum = 0x8CF6;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT23: GLenum = 0x8CF7;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT24: GLenum = 0x8CF8;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT25: GLenum = 0x8CF9;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT26: GLenum = 0x8CFA;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT27: GLenum = 0x8CFB;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT28: GLenum = 0x8CFC;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT29: GLenum = 0x8CFD;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT3: GLenum = 0x8CE3;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT30: GLenum = 0x8CFE;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT31: GLenum = 0x8CFF;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT4: GLenum = 0x8CE4;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT5: GLenum = 0x8CE5;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT6: GLenum = 0x8CE6;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT7: GLenum = 0x8CE7;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT8: GLenum = 0x8CE8;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ATTACHMENT9: GLenum = 0x8CE9;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_BUFFER_BIT: GLenum = 0x00004000;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_CLEAR_VALUE: GLenum = 0x0C22;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_COMPONENTS: GLenum = 0x8283;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_ENCODING: GLenum = 0x8296;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_LOGIC_OP: GLenum = 0x0BF2;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_RENDERABLE: GLenum = 0x8286;
+#[allow(dead_code, non_upper_case_globals)] pub const COLOR_WRITEMASK: GLenum = 0x0C23;
+#[allow(dead_code, non_upper_case_globals)] pub const COMMAND_BARRIER_BIT: GLenum = 0x00000040;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPARE_REF_TO_TEXTURE: GLenum = 0x884E;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPATIBLE_SUBROUTINES: GLenum = 0x8E4B;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPILE_STATUS: GLenum = 0x8B81;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_R11_EAC: GLenum = 0x9270;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RED: GLenum = 0x8225;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RED_RGTC1: GLenum = 0x8DBB;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RG: GLenum = 0x8226;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RG11_EAC: GLenum = 0x9272;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RGB: GLenum = 0x84ED;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RGB8_ETC2: GLenum = 0x9274;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2: GLenum = 0x9276;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RGBA: GLenum = 0x84EE;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RGBA8_ETC2_EAC: GLenum = 0x9278;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RGBA_BPTC_UNORM: GLenum = 0x8E8C;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RGB_BPTC_SIGNED_FLOAT: GLenum = 0x8E8E;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT: GLenum = 0x8E8F;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_RG_RGTC2: GLenum = 0x8DBD;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_SIGNED_R11_EAC: GLenum = 0x9271;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_SIGNED_RED_RGTC1: GLenum = 0x8DBC;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_SIGNED_RG11_EAC: GLenum = 0x9273;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_SIGNED_RG_RGTC2: GLenum = 0x8DBE;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_SRGB: GLenum = 0x8C48;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_SRGB8_ALPHA8_ETC2_EAC: GLenum = 0x9279;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_SRGB8_ETC2: GLenum = 0x9275;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2: GLenum = 0x9277;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_SRGB_ALPHA: GLenum = 0x8C49;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_SRGB_ALPHA_BPTC_UNORM: GLenum = 0x8E8D;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPRESSED_TEXTURE_FORMATS: GLenum = 0x86A3;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPUTE_SHADER: GLenum = 0x91B9;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPUTE_SHADER_BIT: GLenum = 0x00000020;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPUTE_SUBROUTINE: GLenum = 0x92ED;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPUTE_SUBROUTINE_UNIFORM: GLenum = 0x92F3;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPUTE_TEXTURE: GLenum = 0x82A0;
+#[allow(dead_code, non_upper_case_globals)] pub const COMPUTE_WORK_GROUP_SIZE: GLenum = 0x8267;
+#[allow(dead_code, non_upper_case_globals)] pub const CONDITION_SATISFIED: GLenum = 0x911C;
+#[allow(dead_code, non_upper_case_globals)] pub const CONSTANT_ALPHA: GLenum = 0x8003;
+#[allow(dead_code, non_upper_case_globals)] pub const CONSTANT_COLOR: GLenum = 0x8001;
+#[allow(dead_code, non_upper_case_globals)] pub const CONTEXT_COMPATIBILITY_PROFILE_BIT: GLenum = 0x00000002;
+#[allow(dead_code, non_upper_case_globals)] pub const CONTEXT_CORE_PROFILE_BIT: GLenum = 0x00000001;
+#[allow(dead_code, non_upper_case_globals)] pub const CONTEXT_FLAGS: GLenum = 0x821E;
+#[allow(dead_code, non_upper_case_globals)] pub const CONTEXT_FLAG_DEBUG_BIT: GLenum = 0x00000002;
+#[allow(dead_code, non_upper_case_globals)] pub const CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT: GLenum = 0x00000001;
+#[allow(dead_code, non_upper_case_globals)] pub const CONTEXT_FLAG_ROBUST_ACCESS_BIT: GLenum = 0x00000004;
+#[allow(dead_code, non_upper_case_globals)] pub const CONTEXT_LOST: GLenum = 0x0507;
+#[allow(dead_code, non_upper_case_globals)] pub const CONTEXT_PROFILE_MASK: GLenum = 0x9126;
+#[allow(dead_code, non_upper_case_globals)] pub const CONTEXT_RELEASE_BEHAVIOR: GLenum = 0x82FB;
+#[allow(dead_code, non_upper_case_globals)] pub const CONTEXT_RELEASE_BEHAVIOR_FLUSH: GLenum = 0x82FC;
+#[allow(dead_code, non_upper_case_globals)] pub const COPY: GLenum = 0x1503;
+#[allow(dead_code, non_upper_case_globals)] pub const COPY_INVERTED: GLenum = 0x150C;
+#[allow(dead_code, non_upper_case_globals)] pub const COPY_READ_BUFFER: GLenum = 0x8F36;
+#[allow(dead_code, non_upper_case_globals)] pub const COPY_READ_BUFFER_BINDING: GLenum = 0x8F36;
+#[allow(dead_code, non_upper_case_globals)] pub const COPY_WRITE_BUFFER: GLenum = 0x8F37;
+#[allow(dead_code, non_upper_case_globals)] pub const COPY_WRITE_BUFFER_BINDING: GLenum = 0x8F37;
+#[allow(dead_code, non_upper_case_globals)] pub const CULL_FACE: GLenum = 0x0B44;
+#[allow(dead_code, non_upper_case_globals)] pub const CULL_FACE_MODE: GLenum = 0x0B45;
+#[allow(dead_code, non_upper_case_globals)] pub const CURRENT_PROGRAM: GLenum = 0x8B8D;
+#[allow(dead_code, non_upper_case_globals)] pub const CURRENT_QUERY: GLenum = 0x8865;
+#[allow(dead_code, non_upper_case_globals)] pub const CURRENT_VERTEX_ATTRIB: GLenum = 0x8626;
+#[allow(dead_code, non_upper_case_globals)] pub const CW: GLenum = 0x0900;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_CALLBACK_FUNCTION: GLenum = 0x8244;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_CALLBACK_USER_PARAM: GLenum = 0x8245;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_GROUP_STACK_DEPTH: GLenum = 0x826D;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_LOGGED_MESSAGES: GLenum = 0x9145;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_NEXT_LOGGED_MESSAGE_LENGTH: GLenum = 0x8243;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_OUTPUT: GLenum = 0x92E0;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_OUTPUT_SYNCHRONOUS: GLenum = 0x8242;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_SEVERITY_HIGH: GLenum = 0x9146;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_SEVERITY_LOW: GLenum = 0x9148;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_SEVERITY_MEDIUM: GLenum = 0x9147;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_SEVERITY_NOTIFICATION: GLenum = 0x826B;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_SOURCE_API: GLenum = 0x8246;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_SOURCE_APPLICATION: GLenum = 0x824A;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_SOURCE_OTHER: GLenum = 0x824B;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_SOURCE_SHADER_COMPILER: GLenum = 0x8248;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_SOURCE_THIRD_PARTY: GLenum = 0x8249;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_SOURCE_WINDOW_SYSTEM: GLenum = 0x8247;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_TYPE_DEPRECATED_BEHAVIOR: GLenum = 0x824D;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_TYPE_ERROR: GLenum = 0x824C;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_TYPE_MARKER: GLenum = 0x8268;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_TYPE_OTHER: GLenum = 0x8251;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_TYPE_PERFORMANCE: GLenum = 0x8250;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_TYPE_POP_GROUP: GLenum = 0x826A;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_TYPE_PORTABILITY: GLenum = 0x824F;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_TYPE_PUSH_GROUP: GLenum = 0x8269;
+#[allow(dead_code, non_upper_case_globals)] pub const DEBUG_TYPE_UNDEFINED_BEHAVIOR: GLenum = 0x824E;
+#[allow(dead_code, non_upper_case_globals)] pub const DECR: GLenum = 0x1E03;
+#[allow(dead_code, non_upper_case_globals)] pub const DECR_WRAP: GLenum = 0x8508;
+#[allow(dead_code, non_upper_case_globals)] pub const DELETE_STATUS: GLenum = 0x8B80;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH: GLenum = 0x1801;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH24_STENCIL8: GLenum = 0x88F0;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH32F_STENCIL8: GLenum = 0x8CAD;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_ATTACHMENT: GLenum = 0x8D00;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_BUFFER_BIT: GLenum = 0x00000100;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_CLAMP: GLenum = 0x864F;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_CLEAR_VALUE: GLenum = 0x0B73;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_COMPONENT: GLenum = 0x1902;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_COMPONENT16: GLenum = 0x81A5;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_COMPONENT24: GLenum = 0x81A6;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_COMPONENT32: GLenum = 0x81A7;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_COMPONENT32F: GLenum = 0x8CAC;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_COMPONENTS: GLenum = 0x8284;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_FUNC: GLenum = 0x0B74;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_RANGE: GLenum = 0x0B70;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_RENDERABLE: GLenum = 0x8287;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_STENCIL: GLenum = 0x84F9;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_STENCIL_ATTACHMENT: GLenum = 0x821A;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_STENCIL_TEXTURE_MODE: GLenum = 0x90EA;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_TEST: GLenum = 0x0B71;
+#[allow(dead_code, non_upper_case_globals)] pub const DEPTH_WRITEMASK: GLenum = 0x0B72;
+#[allow(dead_code, non_upper_case_globals)] pub const DISPATCH_INDIRECT_BUFFER: GLenum = 0x90EE;
+#[allow(dead_code, non_upper_case_globals)] pub const DISPATCH_INDIRECT_BUFFER_BINDING: GLenum = 0x90EF;
+#[allow(dead_code, non_upper_case_globals)] pub const DISPLAY_LIST: GLenum = 0x82E7;
+#[allow(dead_code, non_upper_case_globals)] pub const DITHER: GLenum = 0x0BD0;
+#[allow(dead_code, non_upper_case_globals)] pub const DONT_CARE: GLenum = 0x1100;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE: GLenum = 0x140A;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLEBUFFER: GLenum = 0x0C32;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE_MAT2: GLenum = 0x8F46;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE_MAT2x3: GLenum = 0x8F49;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE_MAT2x4: GLenum = 0x8F4A;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE_MAT3: GLenum = 0x8F47;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE_MAT3x2: GLenum = 0x8F4B;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE_MAT3x4: GLenum = 0x8F4C;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE_MAT4: GLenum = 0x8F48;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE_MAT4x2: GLenum = 0x8F4D;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE_MAT4x3: GLenum = 0x8F4E;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE_VEC2: GLenum = 0x8FFC;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE_VEC3: GLenum = 0x8FFD;
+#[allow(dead_code, non_upper_case_globals)] pub const DOUBLE_VEC4: GLenum = 0x8FFE;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER: GLenum = 0x0C01;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER0: GLenum = 0x8825;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER1: GLenum = 0x8826;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER10: GLenum = 0x882F;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER11: GLenum = 0x8830;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER12: GLenum = 0x8831;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER13: GLenum = 0x8832;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER14: GLenum = 0x8833;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER15: GLenum = 0x8834;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER2: GLenum = 0x8827;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER3: GLenum = 0x8828;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER4: GLenum = 0x8829;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER5: GLenum = 0x882A;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER6: GLenum = 0x882B;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER7: GLenum = 0x882C;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER8: GLenum = 0x882D;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_BUFFER9: GLenum = 0x882E;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_FRAMEBUFFER: GLenum = 0x8CA9;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_FRAMEBUFFER_BINDING: GLenum = 0x8CA6;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_INDIRECT_BUFFER: GLenum = 0x8F3F;
+#[allow(dead_code, non_upper_case_globals)] pub const DRAW_INDIRECT_BUFFER_BINDING: GLenum = 0x8F43;
+#[allow(dead_code, non_upper_case_globals)] pub const DST_ALPHA: GLenum = 0x0304;
+#[allow(dead_code, non_upper_case_globals)] pub const DST_COLOR: GLenum = 0x0306;
+#[allow(dead_code, non_upper_case_globals)] pub const DYNAMIC_COPY: GLenum = 0x88EA;
+#[allow(dead_code, non_upper_case_globals)] pub const DYNAMIC_DRAW: GLenum = 0x88E8;
+#[allow(dead_code, non_upper_case_globals)] pub const DYNAMIC_READ: GLenum = 0x88E9;
+#[allow(dead_code, non_upper_case_globals)] pub const DYNAMIC_STORAGE_BIT: GLenum = 0x0100;
+#[allow(dead_code, non_upper_case_globals)] pub const ELEMENT_ARRAY_BARRIER_BIT: GLenum = 0x00000002;
+#[allow(dead_code, non_upper_case_globals)] pub const ELEMENT_ARRAY_BUFFER: GLenum = 0x8893;
+#[allow(dead_code, non_upper_case_globals)] pub const ELEMENT_ARRAY_BUFFER_BINDING: GLenum = 0x8895;
+#[allow(dead_code, non_upper_case_globals)] pub const EQUAL: GLenum = 0x0202;
+#[allow(dead_code, non_upper_case_globals)] pub const EQUIV: GLenum = 0x1509;
+#[allow(dead_code, non_upper_case_globals)] pub const EXTENSIONS: GLenum = 0x1F03;
+#[allow(dead_code, non_upper_case_globals)] pub const FALSE: GLboolean = 0;
+#[allow(dead_code, non_upper_case_globals)] pub const FASTEST: GLenum = 0x1101;
+#[allow(dead_code, non_upper_case_globals)] pub const FILL: GLenum = 0x1B02;
+#[allow(dead_code, non_upper_case_globals)] pub const FILTER: GLenum = 0x829A;
+#[allow(dead_code, non_upper_case_globals)] pub const FIRST_VERTEX_CONVENTION: GLenum = 0x8E4D;
+#[allow(dead_code, non_upper_case_globals)] pub const FIXED: GLenum = 0x140C;
+#[allow(dead_code, non_upper_case_globals)] pub const FIXED_ONLY: GLenum = 0x891D;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT: GLenum = 0x1406;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_32_UNSIGNED_INT_24_8_REV: GLenum = 0x8DAD;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_MAT2: GLenum = 0x8B5A;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_MAT2x3: GLenum = 0x8B65;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_MAT2x4: GLenum = 0x8B66;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_MAT3: GLenum = 0x8B5B;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_MAT3x2: GLenum = 0x8B67;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_MAT3x4: GLenum = 0x8B68;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_MAT4: GLenum = 0x8B5C;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_MAT4x2: GLenum = 0x8B69;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_MAT4x3: GLenum = 0x8B6A;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_VEC2: GLenum = 0x8B50;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_VEC3: GLenum = 0x8B51;
+#[allow(dead_code, non_upper_case_globals)] pub const FLOAT_VEC4: GLenum = 0x8B52;
+#[allow(dead_code, non_upper_case_globals)] pub const FRACTIONAL_EVEN: GLenum = 0x8E7C;
+#[allow(dead_code, non_upper_case_globals)] pub const FRACTIONAL_ODD: GLenum = 0x8E7B;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAGMENT_INTERPOLATION_OFFSET_BITS: GLenum = 0x8E5D;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAGMENT_SHADER: GLenum = 0x8B30;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAGMENT_SHADER_BIT: GLenum = 0x00000002;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAGMENT_SHADER_DERIVATIVE_HINT: GLenum = 0x8B8B;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAGMENT_SUBROUTINE: GLenum = 0x92EC;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAGMENT_SUBROUTINE_UNIFORM: GLenum = 0x92F2;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAGMENT_TEXTURE: GLenum = 0x829F;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER: GLenum = 0x8D40;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE: GLenum = 0x8215;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_BLUE_SIZE: GLenum = 0x8214;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING: GLenum = 0x8210;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE: GLenum = 0x8211;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE: GLenum = 0x8216;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_GREEN_SIZE: GLenum = 0x8213;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_LAYERED: GLenum = 0x8DA7;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_OBJECT_NAME: GLenum = 0x8CD1;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE: GLenum = 0x8CD0;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_RED_SIZE: GLenum = 0x8212;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE: GLenum = 0x8217;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE: GLenum = 0x8CD3;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER: GLenum = 0x8CD4;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL: GLenum = 0x8CD2;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_BARRIER_BIT: GLenum = 0x00000400;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_BINDING: GLenum = 0x8CA6;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_BLEND: GLenum = 0x828B;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_COMPLETE: GLenum = 0x8CD5;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_DEFAULT: GLenum = 0x8218;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_DEFAULT_FIXED_SAMPLE_LOCATIONS: GLenum = 0x9314;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_DEFAULT_HEIGHT: GLenum = 0x9311;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_DEFAULT_LAYERS: GLenum = 0x9312;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_DEFAULT_SAMPLES: GLenum = 0x9313;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_DEFAULT_WIDTH: GLenum = 0x9310;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_INCOMPLETE_ATTACHMENT: GLenum = 0x8CD6;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER: GLenum = 0x8CDB;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS: GLenum = 0x8DA8;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: GLenum = 0x8CD7;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_INCOMPLETE_MULTISAMPLE: GLenum = 0x8D56;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_INCOMPLETE_READ_BUFFER: GLenum = 0x8CDC;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_RENDERABLE: GLenum = 0x8289;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_RENDERABLE_LAYERED: GLenum = 0x828A;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_SRGB: GLenum = 0x8DB9;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_UNDEFINED: GLenum = 0x8219;
+#[allow(dead_code, non_upper_case_globals)] pub const FRAMEBUFFER_UNSUPPORTED: GLenum = 0x8CDD;
+#[allow(dead_code, non_upper_case_globals)] pub const FRONT: GLenum = 0x0404;
+#[allow(dead_code, non_upper_case_globals)] pub const FRONT_AND_BACK: GLenum = 0x0408;
+#[allow(dead_code, non_upper_case_globals)] pub const FRONT_FACE: GLenum = 0x0B46;
+#[allow(dead_code, non_upper_case_globals)] pub const FRONT_LEFT: GLenum = 0x0400;
+#[allow(dead_code, non_upper_case_globals)] pub const FRONT_RIGHT: GLenum = 0x0401;
+#[allow(dead_code, non_upper_case_globals)] pub const FULL_SUPPORT: GLenum = 0x82B7;
+#[allow(dead_code, non_upper_case_globals)] pub const FUNC_ADD: GLenum = 0x8006;
+#[allow(dead_code, non_upper_case_globals)] pub const FUNC_REVERSE_SUBTRACT: GLenum = 0x800B;
+#[allow(dead_code, non_upper_case_globals)] pub const FUNC_SUBTRACT: GLenum = 0x800A;
+#[allow(dead_code, non_upper_case_globals)] pub const GEOMETRY_INPUT_TYPE: GLenum = 0x8917;
+#[allow(dead_code, non_upper_case_globals)] pub const GEOMETRY_OUTPUT_TYPE: GLenum = 0x8918;
+#[allow(dead_code, non_upper_case_globals)] pub const GEOMETRY_SHADER: GLenum = 0x8DD9;
+#[allow(dead_code, non_upper_case_globals)] pub const GEOMETRY_SHADER_BIT: GLenum = 0x00000004;
+#[allow(dead_code, non_upper_case_globals)] pub const GEOMETRY_SHADER_INVOCATIONS: GLenum = 0x887F;
+#[allow(dead_code, non_upper_case_globals)] pub const GEOMETRY_SUBROUTINE: GLenum = 0x92EB;
+#[allow(dead_code, non_upper_case_globals)] pub const GEOMETRY_SUBROUTINE_UNIFORM: GLenum = 0x92F1;
+#[allow(dead_code, non_upper_case_globals)] pub const GEOMETRY_TEXTURE: GLenum = 0x829E;
+#[allow(dead_code, non_upper_case_globals)] pub const GEOMETRY_VERTICES_OUT: GLenum = 0x8916;
+#[allow(dead_code, non_upper_case_globals)] pub const GEQUAL: GLenum = 0x0206;
+#[allow(dead_code, non_upper_case_globals)] pub const GET_TEXTURE_IMAGE_FORMAT: GLenum = 0x8291;
+#[allow(dead_code, non_upper_case_globals)] pub const GET_TEXTURE_IMAGE_TYPE: GLenum = 0x8292;
+#[allow(dead_code, non_upper_case_globals)] pub const GREATER: GLenum = 0x0204;
+#[allow(dead_code, non_upper_case_globals)] pub const GREEN: GLenum = 0x1904;
+#[allow(dead_code, non_upper_case_globals)] pub const GREEN_INTEGER: GLenum = 0x8D95;
+#[allow(dead_code, non_upper_case_globals)] pub const GUILTY_CONTEXT_RESET: GLenum = 0x8253;
+#[allow(dead_code, non_upper_case_globals)] pub const HALF_FLOAT: GLenum = 0x140B;
+#[allow(dead_code, non_upper_case_globals)] pub const HIGH_FLOAT: GLenum = 0x8DF2;
+#[allow(dead_code, non_upper_case_globals)] pub const HIGH_INT: GLenum = 0x8DF5;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_1D: GLenum = 0x904C;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_1D_ARRAY: GLenum = 0x9052;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_2D: GLenum = 0x904D;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_2D_ARRAY: GLenum = 0x9053;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_2D_MULTISAMPLE: GLenum = 0x9055;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_2D_MULTISAMPLE_ARRAY: GLenum = 0x9056;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_2D_RECT: GLenum = 0x904F;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_3D: GLenum = 0x904E;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_BINDING_ACCESS: GLenum = 0x8F3E;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_BINDING_FORMAT: GLenum = 0x906E;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_BINDING_LAYER: GLenum = 0x8F3D;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_BINDING_LAYERED: GLenum = 0x8F3C;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_BINDING_LEVEL: GLenum = 0x8F3B;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_BINDING_NAME: GLenum = 0x8F3A;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_BUFFER: GLenum = 0x9051;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CLASS_10_10_10_2: GLenum = 0x82C3;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CLASS_11_11_10: GLenum = 0x82C2;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CLASS_1_X_16: GLenum = 0x82BE;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CLASS_1_X_32: GLenum = 0x82BB;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CLASS_1_X_8: GLenum = 0x82C1;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CLASS_2_X_16: GLenum = 0x82BD;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CLASS_2_X_32: GLenum = 0x82BA;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CLASS_2_X_8: GLenum = 0x82C0;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CLASS_4_X_16: GLenum = 0x82BC;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CLASS_4_X_32: GLenum = 0x82B9;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CLASS_4_X_8: GLenum = 0x82BF;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_COMPATIBILITY_CLASS: GLenum = 0x82A8;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CUBE: GLenum = 0x9050;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_CUBE_MAP_ARRAY: GLenum = 0x9054;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_FORMAT_COMPATIBILITY_BY_CLASS: GLenum = 0x90C9;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_FORMAT_COMPATIBILITY_BY_SIZE: GLenum = 0x90C8;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_FORMAT_COMPATIBILITY_TYPE: GLenum = 0x90C7;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_PIXEL_FORMAT: GLenum = 0x82A9;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_PIXEL_TYPE: GLenum = 0x82AA;
+#[allow(dead_code, non_upper_case_globals)] pub const IMAGE_TEXEL_SIZE: GLenum = 0x82A7;
+#[allow(dead_code, non_upper_case_globals)] pub const IMPLEMENTATION_COLOR_READ_FORMAT: GLenum = 0x8B9B;
+#[allow(dead_code, non_upper_case_globals)] pub const IMPLEMENTATION_COLOR_READ_TYPE: GLenum = 0x8B9A;
+#[allow(dead_code, non_upper_case_globals)] pub const INCR: GLenum = 0x1E02;
+#[allow(dead_code, non_upper_case_globals)] pub const INCR_WRAP: GLenum = 0x8507;
+#[allow(dead_code, non_upper_case_globals)] pub const INFO_LOG_LENGTH: GLenum = 0x8B84;
+#[allow(dead_code, non_upper_case_globals)] pub const INNOCENT_CONTEXT_RESET: GLenum = 0x8254;
+#[allow(dead_code, non_upper_case_globals)] pub const INT: GLenum = 0x1404;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERLEAVED_ATTRIBS: GLenum = 0x8C8C;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_ALPHA_SIZE: GLenum = 0x8274;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_ALPHA_TYPE: GLenum = 0x827B;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_BLUE_SIZE: GLenum = 0x8273;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_BLUE_TYPE: GLenum = 0x827A;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_DEPTH_SIZE: GLenum = 0x8275;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_DEPTH_TYPE: GLenum = 0x827C;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_GREEN_SIZE: GLenum = 0x8272;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_GREEN_TYPE: GLenum = 0x8279;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_PREFERRED: GLenum = 0x8270;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_RED_SIZE: GLenum = 0x8271;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_RED_TYPE: GLenum = 0x8278;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_SHARED_SIZE: GLenum = 0x8277;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_STENCIL_SIZE: GLenum = 0x8276;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_STENCIL_TYPE: GLenum = 0x827D;
+#[allow(dead_code, non_upper_case_globals)] pub const INTERNALFORMAT_SUPPORTED: GLenum = 0x826F;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_2_10_10_10_REV: GLenum = 0x8D9F;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_IMAGE_1D: GLenum = 0x9057;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_IMAGE_1D_ARRAY: GLenum = 0x905D;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_IMAGE_2D: GLenum = 0x9058;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_IMAGE_2D_ARRAY: GLenum = 0x905E;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_IMAGE_2D_MULTISAMPLE: GLenum = 0x9060;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_IMAGE_2D_MULTISAMPLE_ARRAY: GLenum = 0x9061;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_IMAGE_2D_RECT: GLenum = 0x905A;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_IMAGE_3D: GLenum = 0x9059;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_IMAGE_BUFFER: GLenum = 0x905C;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_IMAGE_CUBE: GLenum = 0x905B;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_IMAGE_CUBE_MAP_ARRAY: GLenum = 0x905F;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_SAMPLER_1D: GLenum = 0x8DC9;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_SAMPLER_1D_ARRAY: GLenum = 0x8DCE;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_SAMPLER_2D: GLenum = 0x8DCA;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_SAMPLER_2D_ARRAY: GLenum = 0x8DCF;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_SAMPLER_2D_MULTISAMPLE: GLenum = 0x9109;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_SAMPLER_2D_MULTISAMPLE_ARRAY: GLenum = 0x910C;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_SAMPLER_2D_RECT: GLenum = 0x8DCD;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_SAMPLER_3D: GLenum = 0x8DCB;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_SAMPLER_BUFFER: GLenum = 0x8DD0;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_SAMPLER_CUBE: GLenum = 0x8DCC;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_SAMPLER_CUBE_MAP_ARRAY: GLenum = 0x900E;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_VEC2: GLenum = 0x8B53;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_VEC3: GLenum = 0x8B54;
+#[allow(dead_code, non_upper_case_globals)] pub const INT_VEC4: GLenum = 0x8B55;
+#[allow(dead_code, non_upper_case_globals)] pub const INVALID_ENUM: GLenum = 0x0500;
+#[allow(dead_code, non_upper_case_globals)] pub const INVALID_FRAMEBUFFER_OPERATION: GLenum = 0x0506;
+#[allow(dead_code, non_upper_case_globals)] pub const INVALID_INDEX: GLuint = 0xFFFFFFFF;
+#[allow(dead_code, non_upper_case_globals)] pub const INVALID_OPERATION: GLenum = 0x0502;
+#[allow(dead_code, non_upper_case_globals)] pub const INVALID_VALUE: GLenum = 0x0501;
+#[allow(dead_code, non_upper_case_globals)] pub const INVERT: GLenum = 0x150A;
+#[allow(dead_code, non_upper_case_globals)] pub const ISOLINES: GLenum = 0x8E7A;
+#[allow(dead_code, non_upper_case_globals)] pub const IS_PER_PATCH: GLenum = 0x92E7;
+#[allow(dead_code, non_upper_case_globals)] pub const IS_ROW_MAJOR: GLenum = 0x9300;
+#[allow(dead_code, non_upper_case_globals)] pub const KEEP: GLenum = 0x1E00;
+#[allow(dead_code, non_upper_case_globals)] pub const LAST_VERTEX_CONVENTION: GLenum = 0x8E4E;
+#[allow(dead_code, non_upper_case_globals)] pub const LAYER_PROVOKING_VERTEX: GLenum = 0x825E;
+#[allow(dead_code, non_upper_case_globals)] pub const LEFT: GLenum = 0x0406;
+#[allow(dead_code, non_upper_case_globals)] pub const LEQUAL: GLenum = 0x0203;
+#[allow(dead_code, non_upper_case_globals)] pub const LESS: GLenum = 0x0201;
+#[allow(dead_code, non_upper_case_globals)] pub const LINE: GLenum = 0x1B01;
+#[allow(dead_code, non_upper_case_globals)] pub const LINEAR: GLenum = 0x2601;
+#[allow(dead_code, non_upper_case_globals)] pub const LINEAR_MIPMAP_LINEAR: GLenum = 0x2703;
+#[allow(dead_code, non_upper_case_globals)] pub const LINEAR_MIPMAP_NEAREST: GLenum = 0x2701;
+#[allow(dead_code, non_upper_case_globals)] pub const LINES: GLenum = 0x0001;
+#[allow(dead_code, non_upper_case_globals)] pub const LINES_ADJACENCY: GLenum = 0x000A;
+#[allow(dead_code, non_upper_case_globals)] pub const LINE_LOOP: GLenum = 0x0002;
+#[allow(dead_code, non_upper_case_globals)] pub const LINE_SMOOTH: GLenum = 0x0B20;
+#[allow(dead_code, non_upper_case_globals)] pub const LINE_SMOOTH_HINT: GLenum = 0x0C52;
+#[allow(dead_code, non_upper_case_globals)] pub const LINE_STRIP: GLenum = 0x0003;
+#[allow(dead_code, non_upper_case_globals)] pub const LINE_STRIP_ADJACENCY: GLenum = 0x000B;
+#[allow(dead_code, non_upper_case_globals)] pub const LINE_WIDTH: GLenum = 0x0B21;
+#[allow(dead_code, non_upper_case_globals)] pub const LINE_WIDTH_GRANULARITY: GLenum = 0x0B23;
+#[allow(dead_code, non_upper_case_globals)] pub const LINE_WIDTH_RANGE: GLenum = 0x0B22;
+#[allow(dead_code, non_upper_case_globals)] pub const LINK_STATUS: GLenum = 0x8B82;
+#[allow(dead_code, non_upper_case_globals)] pub const LOCATION: GLenum = 0x930E;
+#[allow(dead_code, non_upper_case_globals)] pub const LOCATION_COMPONENT: GLenum = 0x934A;
+#[allow(dead_code, non_upper_case_globals)] pub const LOCATION_INDEX: GLenum = 0x930F;
+#[allow(dead_code, non_upper_case_globals)] pub const LOGIC_OP_MODE: GLenum = 0x0BF0;
+#[allow(dead_code, non_upper_case_globals)] pub const LOSE_CONTEXT_ON_RESET: GLenum = 0x8252;
+#[allow(dead_code, non_upper_case_globals)] pub const LOWER_LEFT: GLenum = 0x8CA1;
+#[allow(dead_code, non_upper_case_globals)] pub const LOW_FLOAT: GLenum = 0x8DF0;
+#[allow(dead_code, non_upper_case_globals)] pub const LOW_INT: GLenum = 0x8DF3;
+#[allow(dead_code, non_upper_case_globals)] pub const MAJOR_VERSION: GLenum = 0x821B;
+#[allow(dead_code, non_upper_case_globals)] pub const MANUAL_GENERATE_MIPMAP: GLenum = 0x8294;
+#[allow(dead_code, non_upper_case_globals)] pub const MAP_COHERENT_BIT: GLenum = 0x0080;
+#[allow(dead_code, non_upper_case_globals)] pub const MAP_FLUSH_EXPLICIT_BIT: GLenum = 0x0010;
+#[allow(dead_code, non_upper_case_globals)] pub const MAP_INVALIDATE_BUFFER_BIT: GLenum = 0x0008;
+#[allow(dead_code, non_upper_case_globals)] pub const MAP_INVALIDATE_RANGE_BIT: GLenum = 0x0004;
+#[allow(dead_code, non_upper_case_globals)] pub const MAP_PERSISTENT_BIT: GLenum = 0x0040;
+#[allow(dead_code, non_upper_case_globals)] pub const MAP_READ_BIT: GLenum = 0x0001;
+#[allow(dead_code, non_upper_case_globals)] pub const MAP_UNSYNCHRONIZED_BIT: GLenum = 0x0020;
+#[allow(dead_code, non_upper_case_globals)] pub const MAP_WRITE_BIT: GLenum = 0x0002;
+#[allow(dead_code, non_upper_case_globals)] pub const MATRIX_STRIDE: GLenum = 0x92FF;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX: GLenum = 0x8008;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_3D_TEXTURE_SIZE: GLenum = 0x8073;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_ARRAY_TEXTURE_LAYERS: GLenum = 0x88FF;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_ATOMIC_COUNTER_BUFFER_BINDINGS: GLenum = 0x92DC;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_ATOMIC_COUNTER_BUFFER_SIZE: GLenum = 0x92D8;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_CLIP_DISTANCES: GLenum = 0x0D32;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COLOR_ATTACHMENTS: GLenum = 0x8CDF;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COLOR_TEXTURE_SAMPLES: GLenum = 0x910E;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_ATOMIC_COUNTERS: GLenum = 0x92D7;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_ATOMIC_COUNTER_BUFFERS: GLenum = 0x92D1;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_CLIP_AND_CULL_DISTANCES: GLenum = 0x82FA;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_COMPUTE_UNIFORM_COMPONENTS: GLenum = 0x8266;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_DIMENSIONS: GLenum = 0x8282;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS: GLenum = 0x8A33;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS: GLenum = 0x8A32;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_IMAGE_UNIFORMS: GLenum = 0x90CF;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_IMAGE_UNITS_AND_FRAGMENT_OUTPUTS: GLenum = 0x8F39;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_SHADER_OUTPUT_RESOURCES: GLenum = 0x8F39;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_SHADER_STORAGE_BLOCKS: GLenum = 0x90DC;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_TESS_CONTROL_UNIFORM_COMPONENTS: GLenum = 0x8E1E;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_TESS_EVALUATION_UNIFORM_COMPONENTS: GLenum = 0x8E1F;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_TEXTURE_IMAGE_UNITS: GLenum = 0x8B4D;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_UNIFORM_BLOCKS: GLenum = 0x8A2E;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS: GLenum = 0x8A31;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMPUTE_ATOMIC_COUNTERS: GLenum = 0x8265;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMPUTE_ATOMIC_COUNTER_BUFFERS: GLenum = 0x8264;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMPUTE_IMAGE_UNIFORMS: GLenum = 0x91BD;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMPUTE_SHADER_STORAGE_BLOCKS: GLenum = 0x90DB;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMPUTE_SHARED_MEMORY_SIZE: GLenum = 0x8262;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMPUTE_TEXTURE_IMAGE_UNITS: GLenum = 0x91BC;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMPUTE_UNIFORM_BLOCKS: GLenum = 0x91BB;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMPUTE_UNIFORM_COMPONENTS: GLenum = 0x8263;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMPUTE_WORK_GROUP_COUNT: GLenum = 0x91BE;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMPUTE_WORK_GROUP_INVOCATIONS: GLenum = 0x90EB;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_COMPUTE_WORK_GROUP_SIZE: GLenum = 0x91BF;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_CUBE_MAP_TEXTURE_SIZE: GLenum = 0x851C;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_CULL_DISTANCES: GLenum = 0x82F9;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_DEBUG_GROUP_STACK_DEPTH: GLenum = 0x826C;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_DEBUG_LOGGED_MESSAGES: GLenum = 0x9144;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_DEBUG_MESSAGE_LENGTH: GLenum = 0x9143;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_DEPTH: GLenum = 0x8280;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_DEPTH_TEXTURE_SAMPLES: GLenum = 0x910F;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_DRAW_BUFFERS: GLenum = 0x8824;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_DUAL_SOURCE_DRAW_BUFFERS: GLenum = 0x88FC;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_ELEMENTS_INDICES: GLenum = 0x80E9;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_ELEMENTS_VERTICES: GLenum = 0x80E8;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_ELEMENT_INDEX: GLenum = 0x8D6B;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAGMENT_ATOMIC_COUNTERS: GLenum = 0x92D6;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS: GLenum = 0x92D0;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAGMENT_IMAGE_UNIFORMS: GLenum = 0x90CE;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAGMENT_INPUT_COMPONENTS: GLenum = 0x9125;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAGMENT_INTERPOLATION_OFFSET: GLenum = 0x8E5C;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAGMENT_SHADER_STORAGE_BLOCKS: GLenum = 0x90DA;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAGMENT_UNIFORM_BLOCKS: GLenum = 0x8A2D;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAGMENT_UNIFORM_COMPONENTS: GLenum = 0x8B49;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAGMENT_UNIFORM_VECTORS: GLenum = 0x8DFD;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAMEBUFFER_HEIGHT: GLenum = 0x9316;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAMEBUFFER_LAYERS: GLenum = 0x9317;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAMEBUFFER_SAMPLES: GLenum = 0x9318;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_FRAMEBUFFER_WIDTH: GLenum = 0x9315;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_GEOMETRY_ATOMIC_COUNTERS: GLenum = 0x92D5;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS: GLenum = 0x92CF;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_GEOMETRY_IMAGE_UNIFORMS: GLenum = 0x90CD;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_GEOMETRY_INPUT_COMPONENTS: GLenum = 0x9123;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_GEOMETRY_OUTPUT_COMPONENTS: GLenum = 0x9124;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_GEOMETRY_OUTPUT_VERTICES: GLenum = 0x8DE0;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_GEOMETRY_SHADER_INVOCATIONS: GLenum = 0x8E5A;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_GEOMETRY_SHADER_STORAGE_BLOCKS: GLenum = 0x90D7;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_GEOMETRY_TEXTURE_IMAGE_UNITS: GLenum = 0x8C29;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS: GLenum = 0x8DE1;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_GEOMETRY_UNIFORM_BLOCKS: GLenum = 0x8A2C;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_GEOMETRY_UNIFORM_COMPONENTS: GLenum = 0x8DDF;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_HEIGHT: GLenum = 0x827F;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_IMAGE_SAMPLES: GLenum = 0x906D;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_IMAGE_UNITS: GLenum = 0x8F38;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_INTEGER_SAMPLES: GLenum = 0x9110;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_LABEL_LENGTH: GLenum = 0x82E8;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_LAYERS: GLenum = 0x8281;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_NAME_LENGTH: GLenum = 0x92F6;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_NUM_ACTIVE_VARIABLES: GLenum = 0x92F7;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_NUM_COMPATIBLE_SUBROUTINES: GLenum = 0x92F8;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_PATCH_VERTICES: GLenum = 0x8E7D;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_PROGRAM_TEXEL_OFFSET: GLenum = 0x8905;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_PROGRAM_TEXTURE_GATHER_OFFSET: GLenum = 0x8E5F;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_RECTANGLE_TEXTURE_SIZE: GLenum = 0x84F8;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_RENDERBUFFER_SIZE: GLenum = 0x84E8;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_SAMPLES: GLenum = 0x8D57;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_SAMPLE_MASK_WORDS: GLenum = 0x8E59;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_SERVER_WAIT_TIMEOUT: GLenum = 0x9111;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_SHADER_STORAGE_BLOCK_SIZE: GLenum = 0x90DE;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_SHADER_STORAGE_BUFFER_BINDINGS: GLenum = 0x90DD;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_SUBROUTINES: GLenum = 0x8DE7;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_SUBROUTINE_UNIFORM_LOCATIONS: GLenum = 0x8DE8;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_CONTROL_ATOMIC_COUNTERS: GLenum = 0x92D3;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS: GLenum = 0x92CD;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_CONTROL_IMAGE_UNIFORMS: GLenum = 0x90CB;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_CONTROL_INPUT_COMPONENTS: GLenum = 0x886C;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_CONTROL_OUTPUT_COMPONENTS: GLenum = 0x8E83;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_CONTROL_SHADER_STORAGE_BLOCKS: GLenum = 0x90D8;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS: GLenum = 0x8E81;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_CONTROL_TOTAL_OUTPUT_COMPONENTS: GLenum = 0x8E85;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_CONTROL_UNIFORM_BLOCKS: GLenum = 0x8E89;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_CONTROL_UNIFORM_COMPONENTS: GLenum = 0x8E7F;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_EVALUATION_ATOMIC_COUNTERS: GLenum = 0x92D4;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS: GLenum = 0x92CE;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_EVALUATION_IMAGE_UNIFORMS: GLenum = 0x90CC;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_EVALUATION_INPUT_COMPONENTS: GLenum = 0x886D;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_EVALUATION_OUTPUT_COMPONENTS: GLenum = 0x8E86;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_EVALUATION_SHADER_STORAGE_BLOCKS: GLenum = 0x90D9;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS: GLenum = 0x8E82;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_EVALUATION_UNIFORM_BLOCKS: GLenum = 0x8E8A;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_EVALUATION_UNIFORM_COMPONENTS: GLenum = 0x8E80;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_GEN_LEVEL: GLenum = 0x8E7E;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TESS_PATCH_COMPONENTS: GLenum = 0x8E84;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TEXTURE_BUFFER_SIZE: GLenum = 0x8C2B;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TEXTURE_IMAGE_UNITS: GLenum = 0x8872;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TEXTURE_LOD_BIAS: GLenum = 0x84FD;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TEXTURE_SIZE: GLenum = 0x0D33;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TRANSFORM_FEEDBACK_BUFFERS: GLenum = 0x8E70;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS: GLenum = 0x8C8A;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS: GLenum = 0x8C8B;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS: GLenum = 0x8C80;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_UNIFORM_BLOCK_SIZE: GLenum = 0x8A30;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_UNIFORM_BUFFER_BINDINGS: GLenum = 0x8A2F;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_UNIFORM_LOCATIONS: GLenum = 0x826E;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VARYING_COMPONENTS: GLenum = 0x8B4B;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VARYING_FLOATS: GLenum = 0x8B4B;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VARYING_VECTORS: GLenum = 0x8DFC;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_ATOMIC_COUNTERS: GLenum = 0x92D2;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_ATOMIC_COUNTER_BUFFERS: GLenum = 0x92CC;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_ATTRIBS: GLenum = 0x8869;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_ATTRIB_BINDINGS: GLenum = 0x82DA;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_ATTRIB_RELATIVE_OFFSET: GLenum = 0x82D9;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_ATTRIB_STRIDE: GLenum = 0x82E5;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_IMAGE_UNIFORMS: GLenum = 0x90CA;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_OUTPUT_COMPONENTS: GLenum = 0x9122;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_SHADER_STORAGE_BLOCKS: GLenum = 0x90D6;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_STREAMS: GLenum = 0x8E71;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_TEXTURE_IMAGE_UNITS: GLenum = 0x8B4C;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_UNIFORM_BLOCKS: GLenum = 0x8A2B;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_UNIFORM_COMPONENTS: GLenum = 0x8B4A;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VERTEX_UNIFORM_VECTORS: GLenum = 0x8DFB;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VIEWPORTS: GLenum = 0x825B;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_VIEWPORT_DIMS: GLenum = 0x0D3A;
+#[allow(dead_code, non_upper_case_globals)] pub const MAX_WIDTH: GLenum = 0x827E;
+#[allow(dead_code, non_upper_case_globals)] pub const MEDIUM_FLOAT: GLenum = 0x8DF1;
+#[allow(dead_code, non_upper_case_globals)] pub const MEDIUM_INT: GLenum = 0x8DF4;
+#[allow(dead_code, non_upper_case_globals)] pub const MIN: GLenum = 0x8007;
+#[allow(dead_code, non_upper_case_globals)] pub const MINOR_VERSION: GLenum = 0x821C;
+#[allow(dead_code, non_upper_case_globals)] pub const MIN_FRAGMENT_INTERPOLATION_OFFSET: GLenum = 0x8E5B;
+#[allow(dead_code, non_upper_case_globals)] pub const MIN_MAP_BUFFER_ALIGNMENT: GLenum = 0x90BC;
+#[allow(dead_code, non_upper_case_globals)] pub const MIN_PROGRAM_TEXEL_OFFSET: GLenum = 0x8904;
+#[allow(dead_code, non_upper_case_globals)] pub const MIN_PROGRAM_TEXTURE_GATHER_OFFSET: GLenum = 0x8E5E;
+#[allow(dead_code, non_upper_case_globals)] pub const MIN_SAMPLE_SHADING_VALUE: GLenum = 0x8C37;
+#[allow(dead_code, non_upper_case_globals)] pub const MIPMAP: GLenum = 0x8293;
+#[allow(dead_code, non_upper_case_globals)] pub const MIRRORED_REPEAT: GLenum = 0x8370;
+#[allow(dead_code, non_upper_case_globals)] pub const MIRROR_CLAMP_TO_EDGE: GLenum = 0x8743;
+#[allow(dead_code, non_upper_case_globals)] pub const MULTISAMPLE: GLenum = 0x809D;
+#[allow(dead_code, non_upper_case_globals)] pub const NAME_LENGTH: GLenum = 0x92F9;
+#[allow(dead_code, non_upper_case_globals)] pub const NAND: GLenum = 0x150E;
+#[allow(dead_code, non_upper_case_globals)] pub const NEAREST: GLenum = 0x2600;
+#[allow(dead_code, non_upper_case_globals)] pub const NEAREST_MIPMAP_LINEAR: GLenum = 0x2702;
+#[allow(dead_code, non_upper_case_globals)] pub const NEAREST_MIPMAP_NEAREST: GLenum = 0x2700;
+#[allow(dead_code, non_upper_case_globals)] pub const NEGATIVE_ONE_TO_ONE: GLenum = 0x935E;
+#[allow(dead_code, non_upper_case_globals)] pub const NEVER: GLenum = 0x0200;
+#[allow(dead_code, non_upper_case_globals)] pub const NICEST: GLenum = 0x1102;
+#[allow(dead_code, non_upper_case_globals)] pub const NONE: GLenum = 0;
+#[allow(dead_code, non_upper_case_globals)] pub const NOOP: GLenum = 0x1505;
+#[allow(dead_code, non_upper_case_globals)] pub const NOR: GLenum = 0x1508;
+#[allow(dead_code, non_upper_case_globals)] pub const NOTEQUAL: GLenum = 0x0205;
+#[allow(dead_code, non_upper_case_globals)] pub const NO_ERROR: GLenum = 0;
+#[allow(dead_code, non_upper_case_globals)] pub const NO_RESET_NOTIFICATION: GLenum = 0x8261;
+#[allow(dead_code, non_upper_case_globals)] pub const NUM_ACTIVE_VARIABLES: GLenum = 0x9304;
+#[allow(dead_code, non_upper_case_globals)] pub const NUM_COMPATIBLE_SUBROUTINES: GLenum = 0x8E4A;
+#[allow(dead_code, non_upper_case_globals)] pub const NUM_COMPRESSED_TEXTURE_FORMATS: GLenum = 0x86A2;
+#[allow(dead_code, non_upper_case_globals)] pub const NUM_EXTENSIONS: GLenum = 0x821D;
+#[allow(dead_code, non_upper_case_globals)] pub const NUM_PROGRAM_BINARY_FORMATS: GLenum = 0x87FE;
+#[allow(dead_code, non_upper_case_globals)] pub const NUM_SAMPLE_COUNTS: GLenum = 0x9380;
+#[allow(dead_code, non_upper_case_globals)] pub const NUM_SHADER_BINARY_FORMATS: GLenum = 0x8DF9;
+#[allow(dead_code, non_upper_case_globals)] pub const NUM_SHADING_LANGUAGE_VERSIONS: GLenum = 0x82E9;
+#[allow(dead_code, non_upper_case_globals)] pub const OBJECT_TYPE: GLenum = 0x9112;
+#[allow(dead_code, non_upper_case_globals)] pub const OFFSET: GLenum = 0x92FC;
+#[allow(dead_code, non_upper_case_globals)] pub const ONE: GLenum = 1;
+#[allow(dead_code, non_upper_case_globals)] pub const ONE_MINUS_CONSTANT_ALPHA: GLenum = 0x8004;
+#[allow(dead_code, non_upper_case_globals)] pub const ONE_MINUS_CONSTANT_COLOR: GLenum = 0x8002;
+#[allow(dead_code, non_upper_case_globals)] pub const ONE_MINUS_DST_ALPHA: GLenum = 0x0305;
+#[allow(dead_code, non_upper_case_globals)] pub const ONE_MINUS_DST_COLOR: GLenum = 0x0307;
+#[allow(dead_code, non_upper_case_globals)] pub const ONE_MINUS_SRC1_ALPHA: GLenum = 0x88FB;
+#[allow(dead_code, non_upper_case_globals)] pub const ONE_MINUS_SRC1_COLOR: GLenum = 0x88FA;
+#[allow(dead_code, non_upper_case_globals)] pub const ONE_MINUS_SRC_ALPHA: GLenum = 0x0303;
+#[allow(dead_code, non_upper_case_globals)] pub const ONE_MINUS_SRC_COLOR: GLenum = 0x0301;
+#[allow(dead_code, non_upper_case_globals)] pub const OR: GLenum = 0x1507;
+#[allow(dead_code, non_upper_case_globals)] pub const OR_INVERTED: GLenum = 0x150D;
+#[allow(dead_code, non_upper_case_globals)] pub const OR_REVERSE: GLenum = 0x150B;
+#[allow(dead_code, non_upper_case_globals)] pub const OUT_OF_MEMORY: GLenum = 0x0505;
+#[allow(dead_code, non_upper_case_globals)] pub const PACK_ALIGNMENT: GLenum = 0x0D05;
+#[allow(dead_code, non_upper_case_globals)] pub const PACK_COMPRESSED_BLOCK_DEPTH: GLenum = 0x912D;
+#[allow(dead_code, non_upper_case_globals)] pub const PACK_COMPRESSED_BLOCK_HEIGHT: GLenum = 0x912C;
+#[allow(dead_code, non_upper_case_globals)] pub const PACK_COMPRESSED_BLOCK_SIZE: GLenum = 0x912E;
+#[allow(dead_code, non_upper_case_globals)] pub const PACK_COMPRESSED_BLOCK_WIDTH: GLenum = 0x912B;
+#[allow(dead_code, non_upper_case_globals)] pub const PACK_IMAGE_HEIGHT: GLenum = 0x806C;
+#[allow(dead_code, non_upper_case_globals)] pub const PACK_LSB_FIRST: GLenum = 0x0D01;
+#[allow(dead_code, non_upper_case_globals)] pub const PACK_ROW_LENGTH: GLenum = 0x0D02;
+#[allow(dead_code, non_upper_case_globals)] pub const PACK_SKIP_IMAGES: GLenum = 0x806B;
+#[allow(dead_code, non_upper_case_globals)] pub const PACK_SKIP_PIXELS: GLenum = 0x0D04;
+#[allow(dead_code, non_upper_case_globals)] pub const PACK_SKIP_ROWS: GLenum = 0x0D03;
+#[allow(dead_code, non_upper_case_globals)] pub const PACK_SWAP_BYTES: GLenum = 0x0D00;
+#[allow(dead_code, non_upper_case_globals)] pub const PATCHES: GLenum = 0x000E;
+#[allow(dead_code, non_upper_case_globals)] pub const PATCH_DEFAULT_INNER_LEVEL: GLenum = 0x8E73;
+#[allow(dead_code, non_upper_case_globals)] pub const PATCH_DEFAULT_OUTER_LEVEL: GLenum = 0x8E74;
+#[allow(dead_code, non_upper_case_globals)] pub const PATCH_VERTICES: GLenum = 0x8E72;
+#[allow(dead_code, non_upper_case_globals)] pub const PIXEL_BUFFER_BARRIER_BIT: GLenum = 0x00000080;
+#[allow(dead_code, non_upper_case_globals)] pub const PIXEL_PACK_BUFFER: GLenum = 0x88EB;
+#[allow(dead_code, non_upper_case_globals)] pub const PIXEL_PACK_BUFFER_BINDING: GLenum = 0x88ED;
+#[allow(dead_code, non_upper_case_globals)] pub const PIXEL_UNPACK_BUFFER: GLenum = 0x88EC;
+#[allow(dead_code, non_upper_case_globals)] pub const PIXEL_UNPACK_BUFFER_BINDING: GLenum = 0x88EF;
+#[allow(dead_code, non_upper_case_globals)] pub const POINT: GLenum = 0x1B00;
+#[allow(dead_code, non_upper_case_globals)] pub const POINTS: GLenum = 0x0000;
+#[allow(dead_code, non_upper_case_globals)] pub const POINT_FADE_THRESHOLD_SIZE: GLenum = 0x8128;
+#[allow(dead_code, non_upper_case_globals)] pub const POINT_SIZE: GLenum = 0x0B11;
+#[allow(dead_code, non_upper_case_globals)] pub const POINT_SIZE_GRANULARITY: GLenum = 0x0B13;
+#[allow(dead_code, non_upper_case_globals)] pub const POINT_SIZE_RANGE: GLenum = 0x0B12;
+#[allow(dead_code, non_upper_case_globals)] pub const POINT_SPRITE_COORD_ORIGIN: GLenum = 0x8CA0;
+#[allow(dead_code, non_upper_case_globals)] pub const POLYGON_MODE: GLenum = 0x0B40;
+#[allow(dead_code, non_upper_case_globals)] pub const POLYGON_OFFSET_FACTOR: GLenum = 0x8038;
+#[allow(dead_code, non_upper_case_globals)] pub const POLYGON_OFFSET_FILL: GLenum = 0x8037;
+#[allow(dead_code, non_upper_case_globals)] pub const POLYGON_OFFSET_LINE: GLenum = 0x2A02;
+#[allow(dead_code, non_upper_case_globals)] pub const POLYGON_OFFSET_POINT: GLenum = 0x2A01;
+#[allow(dead_code, non_upper_case_globals)] pub const POLYGON_OFFSET_UNITS: GLenum = 0x2A00;
+#[allow(dead_code, non_upper_case_globals)] pub const POLYGON_SMOOTH: GLenum = 0x0B41;
+#[allow(dead_code, non_upper_case_globals)] pub const POLYGON_SMOOTH_HINT: GLenum = 0x0C53;
+#[allow(dead_code, non_upper_case_globals)] pub const PRIMITIVES_GENERATED: GLenum = 0x8C87;
+#[allow(dead_code, non_upper_case_globals)] pub const PRIMITIVE_RESTART: GLenum = 0x8F9D;
+#[allow(dead_code, non_upper_case_globals)] pub const PRIMITIVE_RESTART_FIXED_INDEX: GLenum = 0x8D69;
+#[allow(dead_code, non_upper_case_globals)] pub const PRIMITIVE_RESTART_FOR_PATCHES_SUPPORTED: GLenum = 0x8221;
+#[allow(dead_code, non_upper_case_globals)] pub const PRIMITIVE_RESTART_INDEX: GLenum = 0x8F9E;
+#[allow(dead_code, non_upper_case_globals)] pub const PROGRAM: GLenum = 0x82E2;
+#[allow(dead_code, non_upper_case_globals)] pub const PROGRAM_BINARY_FORMATS: GLenum = 0x87FF;
+#[allow(dead_code, non_upper_case_globals)] pub const PROGRAM_BINARY_LENGTH: GLenum = 0x8741;
+#[allow(dead_code, non_upper_case_globals)] pub const PROGRAM_BINARY_RETRIEVABLE_HINT: GLenum = 0x8257;
+#[allow(dead_code, non_upper_case_globals)] pub const PROGRAM_INPUT: GLenum = 0x92E3;
+#[allow(dead_code, non_upper_case_globals)] pub const PROGRAM_OUTPUT: GLenum = 0x92E4;
+#[allow(dead_code, non_upper_case_globals)] pub const PROGRAM_PIPELINE: GLenum = 0x82E4;
+#[allow(dead_code, non_upper_case_globals)] pub const PROGRAM_PIPELINE_BINDING: GLenum = 0x825A;
+#[allow(dead_code, non_upper_case_globals)] pub const PROGRAM_POINT_SIZE: GLenum = 0x8642;
+#[allow(dead_code, non_upper_case_globals)] pub const PROGRAM_SEPARABLE: GLenum = 0x8258;
+#[allow(dead_code, non_upper_case_globals)] pub const PROVOKING_VERTEX: GLenum = 0x8E4F;
+#[allow(dead_code, non_upper_case_globals)] pub const PROXY_TEXTURE_1D: GLenum = 0x8063;
+#[allow(dead_code, non_upper_case_globals)] pub const PROXY_TEXTURE_1D_ARRAY: GLenum = 0x8C19;
+#[allow(dead_code, non_upper_case_globals)] pub const PROXY_TEXTURE_2D: GLenum = 0x8064;
+#[allow(dead_code, non_upper_case_globals)] pub const PROXY_TEXTURE_2D_ARRAY: GLenum = 0x8C1B;
+#[allow(dead_code, non_upper_case_globals)] pub const PROXY_TEXTURE_2D_MULTISAMPLE: GLenum = 0x9101;
+#[allow(dead_code, non_upper_case_globals)] pub const PROXY_TEXTURE_2D_MULTISAMPLE_ARRAY: GLenum = 0x9103;
+#[allow(dead_code, non_upper_case_globals)] pub const PROXY_TEXTURE_3D: GLenum = 0x8070;
+#[allow(dead_code, non_upper_case_globals)] pub const PROXY_TEXTURE_CUBE_MAP: GLenum = 0x851B;
+#[allow(dead_code, non_upper_case_globals)] pub const PROXY_TEXTURE_CUBE_MAP_ARRAY: GLenum = 0x900B;
+#[allow(dead_code, non_upper_case_globals)] pub const PROXY_TEXTURE_RECTANGLE: GLenum = 0x84F7;
+#[allow(dead_code, non_upper_case_globals)] pub const QUADS: GLenum = 0x0007;
+#[allow(dead_code, non_upper_case_globals)] pub const QUADS_FOLLOW_PROVOKING_VERTEX_CONVENTION: GLenum = 0x8E4C;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY: GLenum = 0x82E3;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_BUFFER: GLenum = 0x9192;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_BUFFER_BARRIER_BIT: GLenum = 0x00008000;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_BUFFER_BINDING: GLenum = 0x9193;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_BY_REGION_NO_WAIT: GLenum = 0x8E16;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_BY_REGION_NO_WAIT_INVERTED: GLenum = 0x8E1A;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_BY_REGION_WAIT: GLenum = 0x8E15;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_BY_REGION_WAIT_INVERTED: GLenum = 0x8E19;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_COUNTER_BITS: GLenum = 0x8864;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_NO_WAIT: GLenum = 0x8E14;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_NO_WAIT_INVERTED: GLenum = 0x8E18;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_RESULT: GLenum = 0x8866;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_RESULT_AVAILABLE: GLenum = 0x8867;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_RESULT_NO_WAIT: GLenum = 0x9194;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_TARGET: GLenum = 0x82EA;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_WAIT: GLenum = 0x8E13;
+#[allow(dead_code, non_upper_case_globals)] pub const QUERY_WAIT_INVERTED: GLenum = 0x8E17;
+#[allow(dead_code, non_upper_case_globals)] pub const R11F_G11F_B10F: GLenum = 0x8C3A;
+#[allow(dead_code, non_upper_case_globals)] pub const R16: GLenum = 0x822A;
+#[allow(dead_code, non_upper_case_globals)] pub const R16F: GLenum = 0x822D;
+#[allow(dead_code, non_upper_case_globals)] pub const R16I: GLenum = 0x8233;
+#[allow(dead_code, non_upper_case_globals)] pub const R16UI: GLenum = 0x8234;
+#[allow(dead_code, non_upper_case_globals)] pub const R16_SNORM: GLenum = 0x8F98;
+#[allow(dead_code, non_upper_case_globals)] pub const R32F: GLenum = 0x822E;
+#[allow(dead_code, non_upper_case_globals)] pub const R32I: GLenum = 0x8235;
+#[allow(dead_code, non_upper_case_globals)] pub const R32UI: GLenum = 0x8236;
+#[allow(dead_code, non_upper_case_globals)] pub const R3_G3_B2: GLenum = 0x2A10;
+#[allow(dead_code, non_upper_case_globals)] pub const R8: GLenum = 0x8229;
+#[allow(dead_code, non_upper_case_globals)] pub const R8I: GLenum = 0x8231;
+#[allow(dead_code, non_upper_case_globals)] pub const R8UI: GLenum = 0x8232;
+#[allow(dead_code, non_upper_case_globals)] pub const R8_SNORM: GLenum = 0x8F94;
+#[allow(dead_code, non_upper_case_globals)] pub const RASTERIZER_DISCARD: GLenum = 0x8C89;
+#[allow(dead_code, non_upper_case_globals)] pub const READ_BUFFER: GLenum = 0x0C02;
+#[allow(dead_code, non_upper_case_globals)] pub const READ_FRAMEBUFFER: GLenum = 0x8CA8;
+#[allow(dead_code, non_upper_case_globals)] pub const READ_FRAMEBUFFER_BINDING: GLenum = 0x8CAA;
+#[allow(dead_code, non_upper_case_globals)] pub const READ_ONLY: GLenum = 0x88B8;
+#[allow(dead_code, non_upper_case_globals)] pub const READ_PIXELS: GLenum = 0x828C;
+#[allow(dead_code, non_upper_case_globals)] pub const READ_PIXELS_FORMAT: GLenum = 0x828D;
+#[allow(dead_code, non_upper_case_globals)] pub const READ_PIXELS_TYPE: GLenum = 0x828E;
+#[allow(dead_code, non_upper_case_globals)] pub const READ_WRITE: GLenum = 0x88BA;
+#[allow(dead_code, non_upper_case_globals)] pub const RED: GLenum = 0x1903;
+#[allow(dead_code, non_upper_case_globals)] pub const RED_INTEGER: GLenum = 0x8D94;
+#[allow(dead_code, non_upper_case_globals)] pub const REFERENCED_BY_COMPUTE_SHADER: GLenum = 0x930B;
+#[allow(dead_code, non_upper_case_globals)] pub const REFERENCED_BY_FRAGMENT_SHADER: GLenum = 0x930A;
+#[allow(dead_code, non_upper_case_globals)] pub const REFERENCED_BY_GEOMETRY_SHADER: GLenum = 0x9309;
+#[allow(dead_code, non_upper_case_globals)] pub const REFERENCED_BY_TESS_CONTROL_SHADER: GLenum = 0x9307;
+#[allow(dead_code, non_upper_case_globals)] pub const REFERENCED_BY_TESS_EVALUATION_SHADER: GLenum = 0x9308;
+#[allow(dead_code, non_upper_case_globals)] pub const REFERENCED_BY_VERTEX_SHADER: GLenum = 0x9306;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERBUFFER: GLenum = 0x8D41;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERBUFFER_ALPHA_SIZE: GLenum = 0x8D53;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERBUFFER_BINDING: GLenum = 0x8CA7;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERBUFFER_BLUE_SIZE: GLenum = 0x8D52;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERBUFFER_DEPTH_SIZE: GLenum = 0x8D54;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERBUFFER_GREEN_SIZE: GLenum = 0x8D51;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERBUFFER_HEIGHT: GLenum = 0x8D43;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERBUFFER_INTERNAL_FORMAT: GLenum = 0x8D44;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERBUFFER_RED_SIZE: GLenum = 0x8D50;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERBUFFER_SAMPLES: GLenum = 0x8CAB;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERBUFFER_STENCIL_SIZE: GLenum = 0x8D55;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERBUFFER_WIDTH: GLenum = 0x8D42;
+#[allow(dead_code, non_upper_case_globals)] pub const RENDERER: GLenum = 0x1F01;
+#[allow(dead_code, non_upper_case_globals)] pub const REPEAT: GLenum = 0x2901;
+#[allow(dead_code, non_upper_case_globals)] pub const REPLACE: GLenum = 0x1E01;
+#[allow(dead_code, non_upper_case_globals)] pub const RESET_NOTIFICATION_STRATEGY: GLenum = 0x8256;
+#[allow(dead_code, non_upper_case_globals)] pub const RG: GLenum = 0x8227;
+#[allow(dead_code, non_upper_case_globals)] pub const RG16: GLenum = 0x822C;
+#[allow(dead_code, non_upper_case_globals)] pub const RG16F: GLenum = 0x822F;
+#[allow(dead_code, non_upper_case_globals)] pub const RG16I: GLenum = 0x8239;
+#[allow(dead_code, non_upper_case_globals)] pub const RG16UI: GLenum = 0x823A;
+#[allow(dead_code, non_upper_case_globals)] pub const RG16_SNORM: GLenum = 0x8F99;
+#[allow(dead_code, non_upper_case_globals)] pub const RG32F: GLenum = 0x8230;
+#[allow(dead_code, non_upper_case_globals)] pub const RG32I: GLenum = 0x823B;
+#[allow(dead_code, non_upper_case_globals)] pub const RG32UI: GLenum = 0x823C;
+#[allow(dead_code, non_upper_case_globals)] pub const RG8: GLenum = 0x822B;
+#[allow(dead_code, non_upper_case_globals)] pub const RG8I: GLenum = 0x8237;
+#[allow(dead_code, non_upper_case_globals)] pub const RG8UI: GLenum = 0x8238;
+#[allow(dead_code, non_upper_case_globals)] pub const RG8_SNORM: GLenum = 0x8F95;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB: GLenum = 0x1907;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB10: GLenum = 0x8052;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB10_A2: GLenum = 0x8059;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB10_A2UI: GLenum = 0x906F;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB12: GLenum = 0x8053;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB16: GLenum = 0x8054;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB16F: GLenum = 0x881B;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB16I: GLenum = 0x8D89;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB16UI: GLenum = 0x8D77;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB16_SNORM: GLenum = 0x8F9A;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB32F: GLenum = 0x8815;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB32I: GLenum = 0x8D83;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB32UI: GLenum = 0x8D71;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB4: GLenum = 0x804F;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB5: GLenum = 0x8050;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB565: GLenum = 0x8D62;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB5_A1: GLenum = 0x8057;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB8: GLenum = 0x8051;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB8I: GLenum = 0x8D8F;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB8UI: GLenum = 0x8D7D;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB8_SNORM: GLenum = 0x8F96;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB9_E5: GLenum = 0x8C3D;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA: GLenum = 0x1908;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA12: GLenum = 0x805A;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA16: GLenum = 0x805B;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA16F: GLenum = 0x881A;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA16I: GLenum = 0x8D88;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA16UI: GLenum = 0x8D76;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA16_SNORM: GLenum = 0x8F9B;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA2: GLenum = 0x8055;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA32F: GLenum = 0x8814;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA32I: GLenum = 0x8D82;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA32UI: GLenum = 0x8D70;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA4: GLenum = 0x8056;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA8: GLenum = 0x8058;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA8I: GLenum = 0x8D8E;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA8UI: GLenum = 0x8D7C;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA8_SNORM: GLenum = 0x8F97;
+#[allow(dead_code, non_upper_case_globals)] pub const RGBA_INTEGER: GLenum = 0x8D99;
+#[allow(dead_code, non_upper_case_globals)] pub const RGB_INTEGER: GLenum = 0x8D98;
+#[allow(dead_code, non_upper_case_globals)] pub const RG_INTEGER: GLenum = 0x8228;
+#[allow(dead_code, non_upper_case_globals)] pub const RIGHT: GLenum = 0x0407;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER: GLenum = 0x82E6;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_1D: GLenum = 0x8B5D;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_1D_ARRAY: GLenum = 0x8DC0;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_1D_ARRAY_SHADOW: GLenum = 0x8DC3;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_1D_SHADOW: GLenum = 0x8B61;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_2D: GLenum = 0x8B5E;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_2D_ARRAY: GLenum = 0x8DC1;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_2D_ARRAY_SHADOW: GLenum = 0x8DC4;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_2D_MULTISAMPLE: GLenum = 0x9108;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_2D_MULTISAMPLE_ARRAY: GLenum = 0x910B;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_2D_RECT: GLenum = 0x8B63;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_2D_RECT_SHADOW: GLenum = 0x8B64;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_2D_SHADOW: GLenum = 0x8B62;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_3D: GLenum = 0x8B5F;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_BINDING: GLenum = 0x8919;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_BUFFER: GLenum = 0x8DC2;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_CUBE: GLenum = 0x8B60;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_CUBE_MAP_ARRAY: GLenum = 0x900C;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_CUBE_MAP_ARRAY_SHADOW: GLenum = 0x900D;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLER_CUBE_SHADOW: GLenum = 0x8DC5;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLES: GLenum = 0x80A9;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLES_PASSED: GLenum = 0x8914;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLE_ALPHA_TO_COVERAGE: GLenum = 0x809E;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLE_ALPHA_TO_ONE: GLenum = 0x809F;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLE_BUFFERS: GLenum = 0x80A8;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLE_COVERAGE: GLenum = 0x80A0;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLE_COVERAGE_INVERT: GLenum = 0x80AB;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLE_COVERAGE_VALUE: GLenum = 0x80AA;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLE_MASK: GLenum = 0x8E51;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLE_MASK_VALUE: GLenum = 0x8E52;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLE_POSITION: GLenum = 0x8E50;
+#[allow(dead_code, non_upper_case_globals)] pub const SAMPLE_SHADING: GLenum = 0x8C36;
+#[allow(dead_code, non_upper_case_globals)] pub const SCISSOR_BOX: GLenum = 0x0C10;
+#[allow(dead_code, non_upper_case_globals)] pub const SCISSOR_TEST: GLenum = 0x0C11;
+#[allow(dead_code, non_upper_case_globals)] pub const SEPARATE_ATTRIBS: GLenum = 0x8C8D;
+#[allow(dead_code, non_upper_case_globals)] pub const SET: GLenum = 0x150F;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER: GLenum = 0x82E1;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_BINARY_FORMATS: GLenum = 0x8DF8;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_COMPILER: GLenum = 0x8DFA;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_IMAGE_ACCESS_BARRIER_BIT: GLenum = 0x00000020;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_IMAGE_ATOMIC: GLenum = 0x82A6;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_IMAGE_LOAD: GLenum = 0x82A4;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_IMAGE_STORE: GLenum = 0x82A5;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_SOURCE_LENGTH: GLenum = 0x8B88;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_STORAGE_BARRIER_BIT: GLenum = 0x00002000;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_STORAGE_BLOCK: GLenum = 0x92E6;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_STORAGE_BUFFER: GLenum = 0x90D2;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_STORAGE_BUFFER_BINDING: GLenum = 0x90D3;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT: GLenum = 0x90DF;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_STORAGE_BUFFER_SIZE: GLenum = 0x90D5;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_STORAGE_BUFFER_START: GLenum = 0x90D4;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADER_TYPE: GLenum = 0x8B4F;
+#[allow(dead_code, non_upper_case_globals)] pub const SHADING_LANGUAGE_VERSION: GLenum = 0x8B8C;
+#[allow(dead_code, non_upper_case_globals)] pub const SHORT: GLenum = 0x1402;
+#[allow(dead_code, non_upper_case_globals)] pub const SIGNALED: GLenum = 0x9119;
+#[allow(dead_code, non_upper_case_globals)] pub const SIGNED_NORMALIZED: GLenum = 0x8F9C;
+#[allow(dead_code, non_upper_case_globals)] pub const SIMULTANEOUS_TEXTURE_AND_DEPTH_TEST: GLenum = 0x82AC;
+#[allow(dead_code, non_upper_case_globals)] pub const SIMULTANEOUS_TEXTURE_AND_DEPTH_WRITE: GLenum = 0x82AE;
+#[allow(dead_code, non_upper_case_globals)] pub const SIMULTANEOUS_TEXTURE_AND_STENCIL_TEST: GLenum = 0x82AD;
+#[allow(dead_code, non_upper_case_globals)] pub const SIMULTANEOUS_TEXTURE_AND_STENCIL_WRITE: GLenum = 0x82AF;
+#[allow(dead_code, non_upper_case_globals)] pub const SMOOTH_LINE_WIDTH_GRANULARITY: GLenum = 0x0B23;
+#[allow(dead_code, non_upper_case_globals)] pub const SMOOTH_LINE_WIDTH_RANGE: GLenum = 0x0B22;
+#[allow(dead_code, non_upper_case_globals)] pub const SMOOTH_POINT_SIZE_GRANULARITY: GLenum = 0x0B13;
+#[allow(dead_code, non_upper_case_globals)] pub const SMOOTH_POINT_SIZE_RANGE: GLenum = 0x0B12;
+#[allow(dead_code, non_upper_case_globals)] pub const SRC1_ALPHA: GLenum = 0x8589;
+#[allow(dead_code, non_upper_case_globals)] pub const SRC1_COLOR: GLenum = 0x88F9;
+#[allow(dead_code, non_upper_case_globals)] pub const SRC_ALPHA: GLenum = 0x0302;
+#[allow(dead_code, non_upper_case_globals)] pub const SRC_ALPHA_SATURATE: GLenum = 0x0308;
+#[allow(dead_code, non_upper_case_globals)] pub const SRC_COLOR: GLenum = 0x0300;
+#[allow(dead_code, non_upper_case_globals)] pub const SRGB: GLenum = 0x8C40;
+#[allow(dead_code, non_upper_case_globals)] pub const SRGB8: GLenum = 0x8C41;
+#[allow(dead_code, non_upper_case_globals)] pub const SRGB8_ALPHA8: GLenum = 0x8C43;
+#[allow(dead_code, non_upper_case_globals)] pub const SRGB_ALPHA: GLenum = 0x8C42;
+#[allow(dead_code, non_upper_case_globals)] pub const SRGB_READ: GLenum = 0x8297;
+#[allow(dead_code, non_upper_case_globals)] pub const SRGB_WRITE: GLenum = 0x8298;
+#[allow(dead_code, non_upper_case_globals)] pub const STACK_OVERFLOW: GLenum = 0x0503;
+#[allow(dead_code, non_upper_case_globals)] pub const STACK_UNDERFLOW: GLenum = 0x0504;
+#[allow(dead_code, non_upper_case_globals)] pub const STATIC_COPY: GLenum = 0x88E6;
+#[allow(dead_code, non_upper_case_globals)] pub const STATIC_DRAW: GLenum = 0x88E4;
+#[allow(dead_code, non_upper_case_globals)] pub const STATIC_READ: GLenum = 0x88E5;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL: GLenum = 0x1802;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_ATTACHMENT: GLenum = 0x8D20;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_BACK_FAIL: GLenum = 0x8801;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_BACK_FUNC: GLenum = 0x8800;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_BACK_PASS_DEPTH_FAIL: GLenum = 0x8802;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_BACK_PASS_DEPTH_PASS: GLenum = 0x8803;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_BACK_REF: GLenum = 0x8CA3;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_BACK_VALUE_MASK: GLenum = 0x8CA4;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_BACK_WRITEMASK: GLenum = 0x8CA5;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_BUFFER_BIT: GLenum = 0x00000400;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_CLEAR_VALUE: GLenum = 0x0B91;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_COMPONENTS: GLenum = 0x8285;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_FAIL: GLenum = 0x0B94;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_FUNC: GLenum = 0x0B92;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_INDEX: GLenum = 0x1901;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_INDEX1: GLenum = 0x8D46;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_INDEX16: GLenum = 0x8D49;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_INDEX4: GLenum = 0x8D47;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_INDEX8: GLenum = 0x8D48;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_PASS_DEPTH_FAIL: GLenum = 0x0B95;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_PASS_DEPTH_PASS: GLenum = 0x0B96;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_REF: GLenum = 0x0B97;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_RENDERABLE: GLenum = 0x8288;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_TEST: GLenum = 0x0B90;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_VALUE_MASK: GLenum = 0x0B93;
+#[allow(dead_code, non_upper_case_globals)] pub const STENCIL_WRITEMASK: GLenum = 0x0B98;
+#[allow(dead_code, non_upper_case_globals)] pub const STEREO: GLenum = 0x0C33;
+#[allow(dead_code, non_upper_case_globals)] pub const STREAM_COPY: GLenum = 0x88E2;
+#[allow(dead_code, non_upper_case_globals)] pub const STREAM_DRAW: GLenum = 0x88E0;
+#[allow(dead_code, non_upper_case_globals)] pub const STREAM_READ: GLenum = 0x88E1;
+#[allow(dead_code, non_upper_case_globals)] pub const SUBPIXEL_BITS: GLenum = 0x0D50;
+#[allow(dead_code, non_upper_case_globals)] pub const SYNC_CONDITION: GLenum = 0x9113;
+#[allow(dead_code, non_upper_case_globals)] pub const SYNC_FENCE: GLenum = 0x9116;
+#[allow(dead_code, non_upper_case_globals)] pub const SYNC_FLAGS: GLenum = 0x9115;
+#[allow(dead_code, non_upper_case_globals)] pub const SYNC_FLUSH_COMMANDS_BIT: GLenum = 0x00000001;
+#[allow(dead_code, non_upper_case_globals)] pub const SYNC_GPU_COMMANDS_COMPLETE: GLenum = 0x9117;
+#[allow(dead_code, non_upper_case_globals)] pub const SYNC_STATUS: GLenum = 0x9114;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_CONTROL_OUTPUT_VERTICES: GLenum = 0x8E75;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_CONTROL_SHADER: GLenum = 0x8E88;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_CONTROL_SHADER_BIT: GLenum = 0x00000008;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_CONTROL_SUBROUTINE: GLenum = 0x92E9;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_CONTROL_SUBROUTINE_UNIFORM: GLenum = 0x92EF;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_CONTROL_TEXTURE: GLenum = 0x829C;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_EVALUATION_SHADER: GLenum = 0x8E87;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_EVALUATION_SHADER_BIT: GLenum = 0x00000010;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_EVALUATION_SUBROUTINE: GLenum = 0x92EA;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_EVALUATION_SUBROUTINE_UNIFORM: GLenum = 0x92F0;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_EVALUATION_TEXTURE: GLenum = 0x829D;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_GEN_MODE: GLenum = 0x8E76;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_GEN_POINT_MODE: GLenum = 0x8E79;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_GEN_SPACING: GLenum = 0x8E77;
+#[allow(dead_code, non_upper_case_globals)] pub const TESS_GEN_VERTEX_ORDER: GLenum = 0x8E78;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE: GLenum = 0x1702;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE0: GLenum = 0x84C0;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE1: GLenum = 0x84C1;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE10: GLenum = 0x84CA;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE11: GLenum = 0x84CB;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE12: GLenum = 0x84CC;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE13: GLenum = 0x84CD;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE14: GLenum = 0x84CE;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE15: GLenum = 0x84CF;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE16: GLenum = 0x84D0;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE17: GLenum = 0x84D1;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE18: GLenum = 0x84D2;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE19: GLenum = 0x84D3;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE2: GLenum = 0x84C2;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE20: GLenum = 0x84D4;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE21: GLenum = 0x84D5;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE22: GLenum = 0x84D6;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE23: GLenum = 0x84D7;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE24: GLenum = 0x84D8;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE25: GLenum = 0x84D9;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE26: GLenum = 0x84DA;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE27: GLenum = 0x84DB;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE28: GLenum = 0x84DC;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE29: GLenum = 0x84DD;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE3: GLenum = 0x84C3;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE30: GLenum = 0x84DE;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE31: GLenum = 0x84DF;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE4: GLenum = 0x84C4;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE5: GLenum = 0x84C5;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE6: GLenum = 0x84C6;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE7: GLenum = 0x84C7;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE8: GLenum = 0x84C8;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE9: GLenum = 0x84C9;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_1D: GLenum = 0x0DE0;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_1D_ARRAY: GLenum = 0x8C18;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_2D: GLenum = 0x0DE1;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_2D_ARRAY: GLenum = 0x8C1A;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_2D_MULTISAMPLE: GLenum = 0x9100;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_2D_MULTISAMPLE_ARRAY: GLenum = 0x9102;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_3D: GLenum = 0x806F;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_ALPHA_SIZE: GLenum = 0x805F;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_ALPHA_TYPE: GLenum = 0x8C13;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BASE_LEVEL: GLenum = 0x813C;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BINDING_1D: GLenum = 0x8068;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BINDING_1D_ARRAY: GLenum = 0x8C1C;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BINDING_2D: GLenum = 0x8069;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BINDING_2D_ARRAY: GLenum = 0x8C1D;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BINDING_2D_MULTISAMPLE: GLenum = 0x9104;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY: GLenum = 0x9105;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BINDING_3D: GLenum = 0x806A;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BINDING_BUFFER: GLenum = 0x8C2C;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BINDING_CUBE_MAP: GLenum = 0x8514;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BINDING_CUBE_MAP_ARRAY: GLenum = 0x900A;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BINDING_RECTANGLE: GLenum = 0x84F6;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BLUE_SIZE: GLenum = 0x805E;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BLUE_TYPE: GLenum = 0x8C12;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BORDER_COLOR: GLenum = 0x1004;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BUFFER: GLenum = 0x8C2A;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BUFFER_BINDING: GLenum = 0x8C2A;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BUFFER_DATA_STORE_BINDING: GLenum = 0x8C2D;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BUFFER_OFFSET: GLenum = 0x919D;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BUFFER_OFFSET_ALIGNMENT: GLenum = 0x919F;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_BUFFER_SIZE: GLenum = 0x919E;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_COMPARE_FUNC: GLenum = 0x884D;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_COMPARE_MODE: GLenum = 0x884C;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_COMPRESSED: GLenum = 0x86A1;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_COMPRESSED_BLOCK_HEIGHT: GLenum = 0x82B2;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_COMPRESSED_BLOCK_SIZE: GLenum = 0x82B3;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_COMPRESSED_BLOCK_WIDTH: GLenum = 0x82B1;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_COMPRESSED_IMAGE_SIZE: GLenum = 0x86A0;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_COMPRESSION_HINT: GLenum = 0x84EF;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_CUBE_MAP: GLenum = 0x8513;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_CUBE_MAP_ARRAY: GLenum = 0x9009;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_CUBE_MAP_NEGATIVE_X: GLenum = 0x8516;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_CUBE_MAP_NEGATIVE_Y: GLenum = 0x8518;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_CUBE_MAP_NEGATIVE_Z: GLenum = 0x851A;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_CUBE_MAP_POSITIVE_X: GLenum = 0x8515;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_CUBE_MAP_POSITIVE_Y: GLenum = 0x8517;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_CUBE_MAP_POSITIVE_Z: GLenum = 0x8519;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_CUBE_MAP_SEAMLESS: GLenum = 0x884F;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_DEPTH: GLenum = 0x8071;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_DEPTH_SIZE: GLenum = 0x884A;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_DEPTH_TYPE: GLenum = 0x8C16;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_FETCH_BARRIER_BIT: GLenum = 0x00000008;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_FIXED_SAMPLE_LOCATIONS: GLenum = 0x9107;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_GATHER: GLenum = 0x82A2;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_GATHER_SHADOW: GLenum = 0x82A3;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_GREEN_SIZE: GLenum = 0x805D;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_GREEN_TYPE: GLenum = 0x8C11;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_HEIGHT: GLenum = 0x1001;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_IMAGE_FORMAT: GLenum = 0x828F;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_IMAGE_TYPE: GLenum = 0x8290;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_IMMUTABLE_FORMAT: GLenum = 0x912F;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_IMMUTABLE_LEVELS: GLenum = 0x82DF;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_INTERNAL_FORMAT: GLenum = 0x1003;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_LOD_BIAS: GLenum = 0x8501;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_MAG_FILTER: GLenum = 0x2800;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_MAX_LEVEL: GLenum = 0x813D;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_MAX_LOD: GLenum = 0x813B;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_MIN_FILTER: GLenum = 0x2801;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_MIN_LOD: GLenum = 0x813A;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_RECTANGLE: GLenum = 0x84F5;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_RED_SIZE: GLenum = 0x805C;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_RED_TYPE: GLenum = 0x8C10;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_SAMPLES: GLenum = 0x9106;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_SHADOW: GLenum = 0x82A1;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_SHARED_SIZE: GLenum = 0x8C3F;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_STENCIL_SIZE: GLenum = 0x88F1;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_SWIZZLE_A: GLenum = 0x8E45;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_SWIZZLE_B: GLenum = 0x8E44;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_SWIZZLE_G: GLenum = 0x8E43;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_SWIZZLE_R: GLenum = 0x8E42;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_SWIZZLE_RGBA: GLenum = 0x8E46;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_TARGET: GLenum = 0x1006;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_UPDATE_BARRIER_BIT: GLenum = 0x00000100;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_VIEW: GLenum = 0x82B5;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_VIEW_MIN_LAYER: GLenum = 0x82DD;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_VIEW_MIN_LEVEL: GLenum = 0x82DB;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_VIEW_NUM_LAYERS: GLenum = 0x82DE;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_VIEW_NUM_LEVELS: GLenum = 0x82DC;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_WIDTH: GLenum = 0x1000;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_WRAP_R: GLenum = 0x8072;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_WRAP_S: GLenum = 0x2802;
+#[allow(dead_code, non_upper_case_globals)] pub const TEXTURE_WRAP_T: GLenum = 0x2803;
+#[allow(dead_code, non_upper_case_globals)] pub const TIMEOUT_EXPIRED: GLenum = 0x911B;
+#[allow(dead_code, non_upper_case_globals)] pub const TIMEOUT_IGNORED: GLuint64 = 0xFFFFFFFFFFFFFFFF;
+#[allow(dead_code, non_upper_case_globals)] pub const TIMESTAMP: GLenum = 0x8E28;
+#[allow(dead_code, non_upper_case_globals)] pub const TIME_ELAPSED: GLenum = 0x88BF;
+#[allow(dead_code, non_upper_case_globals)] pub const TOP_LEVEL_ARRAY_SIZE: GLenum = 0x930C;
+#[allow(dead_code, non_upper_case_globals)] pub const TOP_LEVEL_ARRAY_STRIDE: GLenum = 0x930D;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK: GLenum = 0x8E22;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_ACTIVE: GLenum = 0x8E24;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_BARRIER_BIT: GLenum = 0x00000800;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_BINDING: GLenum = 0x8E25;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_BUFFER: GLenum = 0x8C8E;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_BUFFER_ACTIVE: GLenum = 0x8E24;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_BUFFER_BINDING: GLenum = 0x8C8F;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_BUFFER_INDEX: GLenum = 0x934B;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_BUFFER_MODE: GLenum = 0x8C7F;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_BUFFER_PAUSED: GLenum = 0x8E23;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_BUFFER_SIZE: GLenum = 0x8C85;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_BUFFER_START: GLenum = 0x8C84;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_BUFFER_STRIDE: GLenum = 0x934C;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_PAUSED: GLenum = 0x8E23;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN: GLenum = 0x8C88;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_VARYING: GLenum = 0x92F4;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_VARYINGS: GLenum = 0x8C83;
+#[allow(dead_code, non_upper_case_globals)] pub const TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH: GLenum = 0x8C76;
+#[allow(dead_code, non_upper_case_globals)] pub const TRIANGLES: GLenum = 0x0004;
+#[allow(dead_code, non_upper_case_globals)] pub const TRIANGLES_ADJACENCY: GLenum = 0x000C;
+#[allow(dead_code, non_upper_case_globals)] pub const TRIANGLE_FAN: GLenum = 0x0006;
+#[allow(dead_code, non_upper_case_globals)] pub const TRIANGLE_STRIP: GLenum = 0x0005;
+#[allow(dead_code, non_upper_case_globals)] pub const TRIANGLE_STRIP_ADJACENCY: GLenum = 0x000D;
+#[allow(dead_code, non_upper_case_globals)] pub const TRUE: GLboolean = 1;
+#[allow(dead_code, non_upper_case_globals)] pub const TYPE: GLenum = 0x92FA;
+#[allow(dead_code, non_upper_case_globals)] pub const UNDEFINED_VERTEX: GLenum = 0x8260;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM: GLenum = 0x92E1;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_ARRAY_STRIDE: GLenum = 0x8A3C;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_ATOMIC_COUNTER_BUFFER_INDEX: GLenum = 0x92DA;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BARRIER_BIT: GLenum = 0x00000004;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK: GLenum = 0x92E2;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK_ACTIVE_UNIFORMS: GLenum = 0x8A42;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES: GLenum = 0x8A43;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK_BINDING: GLenum = 0x8A3F;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK_DATA_SIZE: GLenum = 0x8A40;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK_INDEX: GLenum = 0x8A3A;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK_NAME_LENGTH: GLenum = 0x8A41;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK_REFERENCED_BY_COMPUTE_SHADER: GLenum = 0x90EC;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER: GLenum = 0x8A46;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER: GLenum = 0x8A45;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK_REFERENCED_BY_TESS_CONTROL_SHADER: GLenum = 0x84F0;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK_REFERENCED_BY_TESS_EVALUATION_SHADER: GLenum = 0x84F1;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER: GLenum = 0x8A44;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BUFFER: GLenum = 0x8A11;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BUFFER_BINDING: GLenum = 0x8A28;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BUFFER_OFFSET_ALIGNMENT: GLenum = 0x8A34;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BUFFER_SIZE: GLenum = 0x8A2A;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_BUFFER_START: GLenum = 0x8A29;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_IS_ROW_MAJOR: GLenum = 0x8A3E;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_MATRIX_STRIDE: GLenum = 0x8A3D;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_NAME_LENGTH: GLenum = 0x8A39;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_OFFSET: GLenum = 0x8A3B;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_SIZE: GLenum = 0x8A38;
+#[allow(dead_code, non_upper_case_globals)] pub const UNIFORM_TYPE: GLenum = 0x8A37;
+#[allow(dead_code, non_upper_case_globals)] pub const UNKNOWN_CONTEXT_RESET: GLenum = 0x8255;
+#[allow(dead_code, non_upper_case_globals)] pub const UNPACK_ALIGNMENT: GLenum = 0x0CF5;
+#[allow(dead_code, non_upper_case_globals)] pub const UNPACK_COMPRESSED_BLOCK_DEPTH: GLenum = 0x9129;
+#[allow(dead_code, non_upper_case_globals)] pub const UNPACK_COMPRESSED_BLOCK_HEIGHT: GLenum = 0x9128;
+#[allow(dead_code, non_upper_case_globals)] pub const UNPACK_COMPRESSED_BLOCK_SIZE: GLenum = 0x912A;
+#[allow(dead_code, non_upper_case_globals)] pub const UNPACK_COMPRESSED_BLOCK_WIDTH: GLenum = 0x9127;
+#[allow(dead_code, non_upper_case_globals)] pub const UNPACK_IMAGE_HEIGHT: GLenum = 0x806E;
+#[allow(dead_code, non_upper_case_globals)] pub const UNPACK_LSB_FIRST: GLenum = 0x0CF1;
+#[allow(dead_code, non_upper_case_globals)] pub const UNPACK_ROW_LENGTH: GLenum = 0x0CF2;
+#[allow(dead_code, non_upper_case_globals)] pub const UNPACK_SKIP_IMAGES: GLenum = 0x806D;
+#[allow(dead_code, non_upper_case_globals)] pub const UNPACK_SKIP_PIXELS: GLenum = 0x0CF4;
+#[allow(dead_code, non_upper_case_globals)] pub const UNPACK_SKIP_ROWS: GLenum = 0x0CF3;
+#[allow(dead_code, non_upper_case_globals)] pub const UNPACK_SWAP_BYTES: GLenum = 0x0CF0;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNALED: GLenum = 0x9118;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_BYTE: GLenum = 0x1401;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_BYTE_2_3_3_REV: GLenum = 0x8362;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_BYTE_3_3_2: GLenum = 0x8032;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT: GLenum = 0x1405;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_10F_11F_11F_REV: GLenum = 0x8C3B;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_10_10_10_2: GLenum = 0x8036;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_24_8: GLenum = 0x84FA;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_2_10_10_10_REV: GLenum = 0x8368;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_5_9_9_9_REV: GLenum = 0x8C3E;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_8_8_8_8: GLenum = 0x8035;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_8_8_8_8_REV: GLenum = 0x8367;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_ATOMIC_COUNTER: GLenum = 0x92DB;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_IMAGE_1D: GLenum = 0x9062;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_IMAGE_1D_ARRAY: GLenum = 0x9068;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_IMAGE_2D: GLenum = 0x9063;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_IMAGE_2D_ARRAY: GLenum = 0x9069;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_IMAGE_2D_MULTISAMPLE: GLenum = 0x906B;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY: GLenum = 0x906C;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_IMAGE_2D_RECT: GLenum = 0x9065;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_IMAGE_3D: GLenum = 0x9064;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_IMAGE_BUFFER: GLenum = 0x9067;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_IMAGE_CUBE: GLenum = 0x9066;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY: GLenum = 0x906A;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_SAMPLER_1D: GLenum = 0x8DD1;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_SAMPLER_1D_ARRAY: GLenum = 0x8DD6;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_SAMPLER_2D: GLenum = 0x8DD2;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_SAMPLER_2D_ARRAY: GLenum = 0x8DD7;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE: GLenum = 0x910A;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY: GLenum = 0x910D;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_SAMPLER_2D_RECT: GLenum = 0x8DD5;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_SAMPLER_3D: GLenum = 0x8DD3;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_SAMPLER_BUFFER: GLenum = 0x8DD8;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_SAMPLER_CUBE: GLenum = 0x8DD4;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY: GLenum = 0x900F;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_VEC2: GLenum = 0x8DC6;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_VEC3: GLenum = 0x8DC7;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_INT_VEC4: GLenum = 0x8DC8;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_NORMALIZED: GLenum = 0x8C17;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_SHORT: GLenum = 0x1403;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_SHORT_1_5_5_5_REV: GLenum = 0x8366;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_SHORT_4_4_4_4: GLenum = 0x8033;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_SHORT_4_4_4_4_REV: GLenum = 0x8365;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_SHORT_5_5_5_1: GLenum = 0x8034;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_SHORT_5_6_5: GLenum = 0x8363;
+#[allow(dead_code, non_upper_case_globals)] pub const UNSIGNED_SHORT_5_6_5_REV: GLenum = 0x8364;
+#[allow(dead_code, non_upper_case_globals)] pub const UPPER_LEFT: GLenum = 0x8CA2;
+#[allow(dead_code, non_upper_case_globals)] pub const VALIDATE_STATUS: GLenum = 0x8B83;
+#[allow(dead_code, non_upper_case_globals)] pub const VENDOR: GLenum = 0x1F00;
+#[allow(dead_code, non_upper_case_globals)] pub const VERSION: GLenum = 0x1F02;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ARRAY: GLenum = 0x8074;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ARRAY_BINDING: GLenum = 0x85B5;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_ARRAY_BARRIER_BIT: GLenum = 0x00000001;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: GLenum = 0x889F;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_ARRAY_DIVISOR: GLenum = 0x88FE;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_ARRAY_ENABLED: GLenum = 0x8622;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_ARRAY_INTEGER: GLenum = 0x88FD;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_ARRAY_LONG: GLenum = 0x874E;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_ARRAY_NORMALIZED: GLenum = 0x886A;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_ARRAY_POINTER: GLenum = 0x8645;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_ARRAY_SIZE: GLenum = 0x8623;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_ARRAY_STRIDE: GLenum = 0x8624;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_ARRAY_TYPE: GLenum = 0x8625;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_BINDING: GLenum = 0x82D4;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_ATTRIB_RELATIVE_OFFSET: GLenum = 0x82D5;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_BINDING_BUFFER: GLenum = 0x8F4F;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_BINDING_DIVISOR: GLenum = 0x82D6;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_BINDING_OFFSET: GLenum = 0x82D7;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_BINDING_STRIDE: GLenum = 0x82D8;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_PROGRAM_POINT_SIZE: GLenum = 0x8642;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_SHADER: GLenum = 0x8B31;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_SHADER_BIT: GLenum = 0x00000001;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_SUBROUTINE: GLenum = 0x92E8;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_SUBROUTINE_UNIFORM: GLenum = 0x92EE;
+#[allow(dead_code, non_upper_case_globals)] pub const VERTEX_TEXTURE: GLenum = 0x829B;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEWPORT: GLenum = 0x0BA2;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEWPORT_BOUNDS_RANGE: GLenum = 0x825D;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEWPORT_INDEX_PROVOKING_VERTEX: GLenum = 0x825F;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEWPORT_SUBPIXEL_BITS: GLenum = 0x825C;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_128_BITS: GLenum = 0x82C4;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_16_BITS: GLenum = 0x82CA;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_24_BITS: GLenum = 0x82C9;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_32_BITS: GLenum = 0x82C8;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_48_BITS: GLenum = 0x82C7;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_64_BITS: GLenum = 0x82C6;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_8_BITS: GLenum = 0x82CB;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_96_BITS: GLenum = 0x82C5;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_BPTC_FLOAT: GLenum = 0x82D3;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_BPTC_UNORM: GLenum = 0x82D2;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_RGTC1_RED: GLenum = 0x82D0;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_RGTC2_RG: GLenum = 0x82D1;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_S3TC_DXT1_RGB: GLenum = 0x82CC;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_S3TC_DXT1_RGBA: GLenum = 0x82CD;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_S3TC_DXT3_RGBA: GLenum = 0x82CE;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_CLASS_S3TC_DXT5_RGBA: GLenum = 0x82CF;
+#[allow(dead_code, non_upper_case_globals)] pub const VIEW_COMPATIBILITY_CLASS: GLenum = 0x82B6;
+#[allow(dead_code, non_upper_case_globals)] pub const WAIT_FAILED: GLenum = 0x911D;
+#[allow(dead_code, non_upper_case_globals)] pub const WRITE_ONLY: GLenum = 0x88B9;
+#[allow(dead_code, non_upper_case_globals)] pub const XOR: GLenum = 0x1506;
+#[allow(dead_code, non_upper_case_globals)] pub const ZERO: GLenum = 0;
+#[allow(dead_code, non_upper_case_globals)] pub const ZERO_TO_ONE: GLenum = 0x935F;
 
 // (?<=storage)(::.+)(\.f\))(\(.*\))
 // $1$2 } else { gl$1$3 }
-
 
 // (mem::transmute)
 // if EXTERNAL_POINTERS { $1
