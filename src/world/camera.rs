@@ -37,6 +37,21 @@ impl Camera {
         return perspective * modelview;
     }
 
+    pub fn get_frustum_matrix(&self) -> Matrix4<f32> {
+        let perspective = Matrix4::from(PerspectiveFov {
+            fovy: Rad(PI / 2.0),
+            aspect: self.ratio,
+            near: 0.1,
+            far: 48000.0,
+        });
+        let modelview =
+            Matrix4::from_angle_x(Rad(PI + self.frustum_rot.pitch))
+            * Matrix4::from_angle_y(Rad(- self.frustum_rot.yaw))
+            * Matrix4::from_translation(Vector3 { x: -self.frustum_pos.x, y: self.frustum_pos.y, z: -self.frustum_pos.z })
+            * Matrix4::from_nonuniform_scale(1.0, -1.0, 1.0);
+        return perspective * modelview;
+    }
+
     pub fn get_frustum(&self) -> FrustumCuller<f32> {
         let perspective = Matrix4::from(PerspectiveFov {
             fovy: Rad(PI / 2.0),
@@ -61,9 +76,9 @@ impl Camera {
         return Camera { 
             prev_mouse: (f64::MAX, f64::MAX),
             ratio: 1.0,
-            camera_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 2.0 },
+            camera_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 0.0 },
             camera_rot: Rot { pitch: 0.0, yaw: 0.0 },
-            frustum_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 2.0 },
+            frustum_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 0.0 },
             frustum_rot: Rot { pitch: 0.0, yaw: 0.0 },
             frustum_frozen: false
         };

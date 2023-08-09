@@ -62,7 +62,7 @@ fn main() { unsafe {
         world.update(&mut keys);
         world.render(&status);
         window.swap_buffers();
-        fps.tick();
+        // fps.tick();
     }
 } }
 

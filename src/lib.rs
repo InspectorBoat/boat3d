@@ -30,6 +30,7 @@ use std::env;
 use cgmath::Vector3;
 use cgmath_culling::{BoundingBox, Intersection};
 use gl::{types, FramebufferParameteri};
+use gl_util::gl_wrapper::{self, STORAGE, PointerStorage};
 use glfw::{Context, Window, Action, Key, Glfw, ffi::glfwGetCurrentContext};
 use jni::{JNIEnv, objects::{JClass, JByteBuffer, ReleaseMode, JPrimitiveArray, JObject, JString, JValueOwned, JFieldID}, sys::{jlong, jint, jchar, jcharArray, jshort, jobject}, strings::JNIString, signature::ReturnType, descriptors::Desc};
 use world::{world::World, section::Section, blockpos::BlockPos};
@@ -40,6 +41,7 @@ use jni::errors::Result;
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeLoadChunk<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
+    gl_pointers: jlong,
     world: jlong,
     section_x: jint,
     section_z: jint
@@ -61,6 +63,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeLoadChunk<'local>(
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUnloadChunk<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
+    gl_pointers: jlong,
     world: jlong,
     section_x: jint,
     section_z: jint
@@ -77,6 +80,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUnloadChunk<'local>(
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetChunkSection<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
+    gl_pointers: jlong,
     world: jlong,
     section_x: jint,
     section_y: jint,
@@ -105,6 +109,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetChunkSection<'local>
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUpdateBlock<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
+    gl_pointers: jlong,
     world: jlong,
     x: jint,
     y: jint,
@@ -127,7 +132,9 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUpdateBlock<'local>(
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeCreateWorld<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
+    gl_pointers: jlong
 ) -> jlong { unsafe {
+    STORAGE = gl_pointers as *mut PointerStorage;
     let mut world: Box<World> = Box::from(World::new());
 
     // let geometry_staging_byte_buffer = env.new_direct_byte_buffer((&raw mut *world.geometry_staging_buffer.buffer) as *mut u8, 262144);
@@ -144,6 +151,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeCreateWorld<'local>(
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeDeleteWorld<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
+    gl_pointers: jlong,
     world: jlong
 ) { unsafe {
     let world = Box::from_raw(world as *mut World);
@@ -154,6 +162,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeDeleteWorld<'local>(
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeMeshChunkSection<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
+    gl_pointers: jlong,
     world: jlong,
     chunkX: jint,
     chunkY: jint,
@@ -167,6 +176,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeMeshChunkSection<'local
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeGenerateDrawCommands<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
+    gl_pointers: jlong,
     world: jlong
 ) { unsafe {
     let world = &*(world as *const World);
@@ -177,8 +187,9 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeGetPointers<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
     capabilities: jobject
-) { unsafe {
-    gl::load_with(|symbol| {
+) -> jlong { unsafe {
+    STORAGE = Box::into_raw(Box::new(PointerStorage::new()));
+    gl_wrapper::load_with(|symbol| {
         if let Ok(jobject) = env.get_field(mem::transmute::<_, JObject>(capabilities), symbol, "J") {
             if let Ok(j) = jobject.j() {
                 return j as *const c_void;
@@ -189,7 +200,8 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeGetPointers<'local>(
             return 0 as *const c_void;
         }
     });
-    env.exception_clear();
+    let _ = env.exception_clear();
+    return STORAGE as i64;
 } }
 
 /*

@@ -12563,6 +12563,8 @@ pub fn metaloadfn(
             if !ptr.is_null() { break; }
         }
     }
+    if ptr.is_null() { println!("failed to load {symbol}"); }
+    else { println!("loaded {symbol}"); }
     return ptr;
 }
 
