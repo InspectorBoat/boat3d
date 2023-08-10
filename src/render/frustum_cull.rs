@@ -1,4 +1,3 @@
-#![feature(portable_simd)]
 use std::{simd::{SimdFloat, StdFloat, SimdPartialOrd, LaneCount, SupportedLaneCount}, hint};
 use core::simd::Simd;
 use std::mem;
