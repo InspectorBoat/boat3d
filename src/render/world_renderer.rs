@@ -196,7 +196,7 @@ impl WorldRenderer {
             (*self.solid_base_vertices.get()).set_len(0);
             (*self.trans_counts.get()).set_len(0);
             (*self.trans_base_vertices.get()).set_len(0);
-            let frustum = world.camera.get_frustum_matrix().transpose();
+            let frustum = world.camera.get_frustum_matrix();
             for section in world.sections.values() {
                 if section.solid_segment.is_none() && section.trans_segment.is_none() { continue; }
                 if frustum_cull(

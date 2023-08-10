@@ -10,15 +10,15 @@ pub trait SimdMul {
 }
 impl SimdMul for Matrix4<f32> {
     fn simd_mul(&self, vec: &Vector4<f32>) -> Simd<f32, 4> { unsafe {
-        let row_0 = Simd::from_array(*self.row(0).as_ref());
-        let row_1 = Simd::from_array(*self.row(1).as_ref());
-        let row_2 = Simd::from_array(*self.row(2).as_ref());
-        let row_3 = Simd::from_array(*self.row(3).as_ref());
+        let mat_x = Simd::from_array(*self.x.as_ref());
+        let mat_y = Simd::from_array(*self.y.as_ref());
+        let mat_z = Simd::from_array(*self.z.as_ref());
+        let mat_w = Simd::from_array(*self.w.as_ref());
         let mut sum = Simd::splat(0.0);
-        sum = row_0.fast_fma(Simd::splat(vec.x), sum);
-        sum = row_1.fast_fma(Simd::splat(vec.y), sum);
-        sum = row_2.fast_fma(Simd::splat(vec.z), sum);
-        sum = row_3.fast_fma(Simd::splat(vec.w), sum);
+        sum = mat_x.fast_fma(Simd::splat(vec.x), sum);
+        sum = mat_y.fast_fma(Simd::splat(vec.y), sum);
+        sum = mat_z.fast_fma(Simd::splat(vec.z), sum);
+        sum = mat_w.fast_fma(Simd::splat(vec.w), sum);
         return sum;
     } }
 }
