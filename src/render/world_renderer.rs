@@ -4,7 +4,7 @@ use cgmath::{Vector4, Matrix4, Matrix, InnerSpace};
 use cgmath_culling::{Intersection, BoundingBox};
 use gl::types::GLsync;
 
-use crate::{gl_util::{framebuffer::FrameBuffer, texture::Texture, renderbuffer::RenderBuffer, program::Program, gl_helper::{WindowStatus, log_if_error}, buffer::Buffer, shader::Shader}, world::{world::World, camera}, render::frustum_cull::{frustum_cull, Vec4}};
+use crate::{gl_util::{framebuffer::FrameBuffer, texture::Texture, renderbuffer::RenderBuffer, program::Program, gl_helper::{WindowStatus, log_if_error}, buffer::Buffer, shader::Shader}, world::{world::World, camera}, render::frustum_cull::frustum_cull};
 
 #[derive(Debug)]
 pub struct WorldRenderer {
@@ -196,14 +196,13 @@ impl WorldRenderer {
             (*self.solid_base_vertices.get()).set_len(0);
             (*self.trans_counts.get()).set_len(0);
             (*self.trans_base_vertices.get()).set_len(0);
-            let frustum = world.camera.get_frustum_matrix();
+            let frustum = world.camera.get_frustum_matrix().transpose();
             for section in world.sections.values() {
                 if section.solid_segment.is_none() && section.trans_segment.is_none() { continue; }
-                // if frustum.test_sphere(section.get_bounding_sphere(&world.camera)) == Intersection::Outside { continue; }
                 if frustum_cull(
-                    Vec4 { x: section.section_pos.x as f32 * 256.0, y: section.section_pos.y as f32 * 256.0 , z: section.section_pos.z as f32 * 256.0, w: 1.0 },
-                    mem::transmute(frustum),
-                    mem::transmute(frustum)
+                    Vector4 { x: section.section_pos.x as f32 * 256.0, y: section.section_pos.y as f32 * 256.0 , z: section.section_pos.z as f32 * 256.0, w: 1.0 },
+                    frustum,
+                    frustum
                 ) == 0 { continue; }
 
                 (*self.indices.get()).push(0 as *const c_void);

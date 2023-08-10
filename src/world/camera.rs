@@ -59,6 +59,7 @@ impl Camera {
             near: 0.1,
             far: 48000.0,
         });
+        
         let modelview = 
             Matrix4::from_angle_x(Rad(PI + self.frustum_rot.pitch))
             * Matrix4::from_angle_y(Rad(- self.frustum_rot.yaw))

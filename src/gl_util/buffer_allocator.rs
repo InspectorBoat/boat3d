@@ -141,7 +141,6 @@ impl From<BufferSegment<{Offset}>> for BufferSegment<{Unsorted}> {
     } }
 }
 
-
 impl Ord for BufferSegment<{Offset}> {
     fn cmp(&self, other: &BufferSegment<{Offset}>) -> Ordering {
         return self.offset.cmp(&other.offset);

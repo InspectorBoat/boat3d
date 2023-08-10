@@ -26,12 +26,13 @@ mod entity;
 use std::hint::black_box;
 use std::time::Instant;
 use std::{collections::HashMap, hint};
-use std::env;
+use std::{env, mem};
 use cgmath::{Vector3, Vector4};
 use cgmath_culling::BoundingBox;
 use gl_util::fps_tracker::FpsTracker;
 use glfw::{Context, Window, Action, Key};
 use gl_util::{gl_helper::*, gl_wrapper};
+use rand::{thread_rng, Rng};
 use world::world::World;
 use crate::gl_util::gl_helper;
 
@@ -47,7 +48,7 @@ fn main() { unsafe {
     world.renderer.init(&status);
     world.generate();
     world.mesh_all();
-    
+
     world.geometry_buffer_allocator.device_buffer.bind_indexed_target_base(gl_wrapper::SHADER_STORAGE_BUFFER, 0);
     world.light_buffer_allocator.device_buffer.bind_indexed_target_base(gl_wrapper::SHADER_STORAGE_BUFFER, 1);
     
@@ -62,7 +63,7 @@ fn main() { unsafe {
         world.update(&mut keys);
         world.render(&status);
         window.swap_buffers();
-        // fps.tick();
+        fps.tick();
     }
 } }
 
