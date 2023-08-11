@@ -4,7 +4,7 @@ use std::{collections::HashMap, mem, os::raw::c_void, ptr::NonNull, time};
 use crate::gl_util::{buffer::Buffer, buffer_allocator::BufferAllocator, framebuffer::FrameBuffer, gl_helper::WindowStatus, program::Program, renderbuffer::RenderBuffer, shader::Shader, texture::Texture};
 use crate::render::byte_buffer::StagingBuffer;
 use crate::render::world_renderer::WorldRenderer;
-use cgmath::Vector3;
+use cgmath::{Vector3, Euler, Deg, Rad};
 use cgmath_culling::Intersection;
 use gl::types::GLsync;
 use glfw::Key;
@@ -177,6 +177,18 @@ impl World {
     } }
 
     pub fn render(&mut self, status: &WindowStatus) { unsafe {
+        // self.camera.camera_euler = Euler {
+        //     x: Rad(self.camera.camera_rot.pitch),
+        //     y: Rad(self.camera.camera_rot.yaw),
+        //     z: Rad(0.0)
+        // };
+
+        // self.camera.frustum_euler = Euler {
+        //     x: Rad(self.camera.camera_rot.pitch),
+        //     y: Rad(self.camera.camera_rot.yaw),
+        //     z: Rad(0.0)
+        // };
+
         // self.renderer.pre_render();
         self.renderer.render(self, status);
         // self.renderer.post_render();
@@ -210,7 +222,7 @@ impl World {
         }
         if !self.camera.frustum_frozen {
             self.camera.frustum_pos = self.camera.camera_pos;
-            self.camera.frustum_rot = self.camera.camera_rot;
+            self.camera.frustum_euler = self.camera.camera_euler;
         }
     }
 

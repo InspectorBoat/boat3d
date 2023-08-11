@@ -27,7 +27,7 @@ use std::hint::black_box;
 use std::time::Instant;
 use std::{collections::HashMap, hint};
 use std::{env, mem};
-use cgmath::{Vector3, Vector4};
+use cgmath::{Vector3, Vector4, Rad};
 use cgmath_culling::BoundingBox;
 use gl_util::fps_tracker::FpsTracker;
 use glfw::{Context, Window, Action, Key};
@@ -79,8 +79,8 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
             if !status.mouse_captured { return }
             let delta = (x - world.camera.prev_mouse.0, y - world.camera.prev_mouse.1);
             if world.camera.prev_mouse != (f64::MAX, f64::MAX) {
-                world.camera.camera_rot.yaw += (delta.0 / 500.0) as f32;
-                world.camera.camera_rot.pitch += (delta.1 / 500.0) as f32;
+                world.camera.camera_euler.y += Rad((delta.0 / 500.0) as f32);
+                world.camera.camera_euler.x += Rad((delta.1 / 500.0) as f32);
             }
             world.camera.prev_mouse = (x, y);
         }
@@ -104,7 +104,7 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
                     world.camera.frustum_frozen = !world.camera.frustum_frozen;
                     if world.camera.frustum_frozen == false {
                         world.camera.camera_pos = world.camera.frustum_pos;
-                        world.camera.camera_rot = world.camera.frustum_rot;
+                        world.camera.camera_euler = world.camera.frustum_euler;
                     }
                 }
                 Key::G => {

@@ -182,12 +182,12 @@ impl WorldRenderer {
     } }
 
     pub fn render(&self, world: &World, status: &WindowStatus) { unsafe {
+
         if let (Some(framebuffer), Some(solid_program), Some(post_program), Some(trans_program), Some(block_texture), Some(texture_attachment)) = (&self.framebuffer, &self.solid_program, &self.post_program, &self.trans_program, &self.block_texture, &self.texture_attachment) {
-            let camera_matrix: [f32; 16] = world.camera.get_matrix_array();
+            let camera_matrix: [f32; 16] = *world.camera.get_camera_matrix().as_ref();
             solid_program.uniform_matrix_4fv(0, 1, false, &raw const camera_matrix as *const f32);
             trans_program.uniform_matrix_4fv(0, 1, false, &raw const camera_matrix as *const f32);
             
-            let frustum = world.camera.get_frustum();
             let mut solid_drawn_sections = 0;
             let mut trans_drawn_sections = 0;
 
