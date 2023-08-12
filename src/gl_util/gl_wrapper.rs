@@ -13275,8 +13275,6 @@ pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void
     }
 }
 
-pub const EXTERNAL_POINTERS: bool = false;
-
 #[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_ATOMIC_COUNTER_BUFFERS: GLenum = 0x92D9;
 #[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_ATTRIBUTES: GLenum = 0x8B89;
 #[allow(dead_code, non_upper_case_globals)] pub const ACTIVE_ATTRIBUTE_MAX_LENGTH: GLenum = 0x8B8A;
@@ -14632,3 +14630,5 @@ pub const EXTERNAL_POINTERS: bool = false;
 
 // storage::
 // (*STORAGE).
+
+pub const EXTERNAL_POINTERS: bool = false;

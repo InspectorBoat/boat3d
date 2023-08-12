@@ -6,6 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+core_simd = { git = "https://github.com/rust-lang/portable-simd.git", features = ["all_lane_counts"] }
+std_float = { git = "https://github.com/rust-lang/portable-simd.git" }
 gl = "0.14.0"
 simdnoise = "3.1.6"
 rand = "*"

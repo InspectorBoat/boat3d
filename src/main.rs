@@ -22,6 +22,7 @@ mod world;
 mod gl_util;
 mod render;
 mod entity;
+mod cull;
 
 use std::hint::black_box;
 use std::time::Instant;
@@ -60,7 +61,7 @@ fn main() { unsafe {
         glfw.poll_events();
         glfw::flush_messages(&events).for_each(|(_, event)| handle_window_event(&mut window, &mut world, event, &mut keys, &mut status));
         
-        world.update(&mut keys);
+        world.update(&keys);
         world.render(&status);
         window.swap_buffers();
         fps.tick();
@@ -72,15 +73,15 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
         glfw::WindowEvent::Size(width, height) => {
             gl_wrapper::Viewport(0, 0, width, height);
             (status.width, status.height) = (width, height);
-            world.camera.ratio = width as f32 / height as f32;
+            world.camera.aspect = width as f32 / height as f32;
             world.renderer.make_framebuffer(status);
         }
         glfw::WindowEvent::CursorPos(x, y) => {
             if !status.mouse_captured { return }
             let delta = (x - world.camera.prev_mouse.0, y - world.camera.prev_mouse.1);
             if world.camera.prev_mouse != (f64::MAX, f64::MAX) {
-                world.camera.camera_euler.y += Rad((delta.0 / 500.0) as f32);
-                world.camera.camera_euler.x += Rad((delta.1 / 500.0) as f32);
+                world.camera.camera_rot.y += Rad((delta.0 / 500.0) as f32);
+                world.camera.camera_rot.x += Rad((delta.1 / 500.0) as f32);
             }
             world.camera.prev_mouse = (x, y);
         }
@@ -104,7 +105,7 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
                     world.camera.frustum_frozen = !world.camera.frustum_frozen;
                     if world.camera.frustum_frozen == false {
                         world.camera.camera_pos = world.camera.frustum_pos;
-                        world.camera.camera_euler = world.camera.frustum_euler;
+                        world.camera.camera_rot = world.camera.frustum_rot;
                     }
                 }
                 Key::G => {

@@ -24,6 +24,7 @@ mod world;
 mod gl_util;
 mod render;
 mod entity;
+mod cull;
 
 use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem, slice, cell::RefCell, fs::File, str::FromStr};
 use std::env;

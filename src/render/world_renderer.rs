@@ -1,10 +1,10 @@
-use std::{ffi::c_void, mem, cell::UnsafeCell, ops::Mul, hint, simd::{Simd, SimdFloat}};
+use std::{ffi::{c_void, c_uint}, mem, cell::UnsafeCell, ops::Mul, hint, simd::{Simd, SimdFloat}};
 
 use cgmath::{Vector4, Matrix4, Matrix, InnerSpace};
 use cgmath_culling::{Intersection, BoundingBox};
 use gl::types::GLsync;
 
-use crate::{gl_util::{framebuffer::FrameBuffer, texture::Texture, renderbuffer::RenderBuffer, program::Program, gl_helper::{WindowStatus, log_if_error}, buffer::Buffer, shader::Shader}, world::{world::World, camera}, render::frustum_cull::frustum_cull};
+use crate::{gl_util::{framebuffer::FrameBuffer, texture::Texture, renderbuffer::RenderBuffer, program::Program, gl_helper::{WindowStatus, log_if_error}, buffer::Buffer, shader::Shader}, world::{world::World, camera}, render::frustum_cull::frustum_cull, cull::frustum::{LocalFrustum, BoundsCheckResult, LocalBoundingBox}};
 
 #[derive(Debug)]
 pub struct WorldRenderer {
@@ -17,11 +17,11 @@ pub struct WorldRenderer {
     pub trans_program: Option<Program>,
     pub screen_buffer: Option<Buffer>,
     pub block_texture: Option<Texture>,
+    
     pub indices: UnsafeCell<Vec<*const c_void>>,
-    pub solid_counts: UnsafeCell<Vec<i32>>,
-    pub solid_base_vertices: UnsafeCell<Vec<i32>>,
-    pub trans_counts: UnsafeCell<Vec<i32>>,
-    pub trans_base_vertices: UnsafeCell<Vec<i32>>,
+    pub solid_indirect_buffer: UnsafeCell<Vec<IndirectCommand>>,
+    pub trans_indirect_buffer: UnsafeCell<Vec<IndirectCommand>>,
+    
     pub fences: Vec<GLsync>,
 }
 
@@ -37,11 +37,11 @@ impl WorldRenderer {
             trans_program: None,
             screen_buffer: None,
             block_texture: None,
-            solid_counts: UnsafeCell::new(Vec::new()),
+
             indices: UnsafeCell::new(Vec::new()),
-            trans_counts: UnsafeCell::new(Vec::new()),
-            trans_base_vertices: UnsafeCell::new(Vec::new()),
-            solid_base_vertices: UnsafeCell::new(Vec::new()),
+            solid_indirect_buffer: UnsafeCell::new(Vec::new()),
+            trans_indirect_buffer: UnsafeCell::new(Vec::new()),
+            
             fences: Vec::new(),
         };
     }
@@ -182,7 +182,6 @@ impl WorldRenderer {
     } }
 
     pub fn render(&self, world: &World, status: &WindowStatus) { unsafe {
-
         if let (Some(framebuffer), Some(solid_program), Some(post_program), Some(trans_program), Some(block_texture), Some(texture_attachment)) = (&self.framebuffer, &self.solid_program, &self.post_program, &self.trans_program, &self.block_texture, &self.texture_attachment) {
             let camera_matrix: [f32; 16] = *world.camera.get_camera_matrix().as_ref();
             solid_program.uniform_matrix_4fv(0, 1, false, &raw const camera_matrix as *const f32);
@@ -192,35 +191,46 @@ impl WorldRenderer {
             let mut trans_drawn_sections = 0;
 
             (*self.indices.get()).set_len(0);
-            (*self.solid_counts.get()).set_len(0);
-            (*self.solid_base_vertices.get()).set_len(0);
-            (*self.trans_counts.get()).set_len(0);
-            (*self.trans_base_vertices.get()).set_len(0);
-            let frustum = world.camera.get_frustum_matrix();
+            (*self.solid_indirect_buffer.get()).set_len(0);
+            (*self.trans_indirect_buffer.get()).set_len(0);
+
+            let local_frustum = LocalFrustum::from_frustum_culler(world.camera.get_frustum());
+
             for section in world.sections.values() {
                 if section.solid_segment.is_none() && section.trans_segment.is_none() { continue; }
-                if frustum_cull(
-                    Vector4 { x: section.section_pos.x as f32 * 256.0, y: section.section_pos.y as f32 * 256.0 , z: section.section_pos.z as f32 * 256.0, w: 1.0 },
-                    frustum,
-                    frustum
-                ) == 0 { continue; }
-
+                match local_frustum.test_local_bounding_box(&section.get_bounding_box(&world.camera)) {
+                    BoundsCheckResult::Outside => { continue; }
+                    BoundsCheckResult::Partial => {}
+                    BoundsCheckResult::Inside => {}
+                }
+                
                 (*self.indices.get()).push(0 as *const c_void);
 
                 // only render section if it has a geometry and light segment
                 if let (Some(solid_segment), Some(solid_light_segment)) = (&section.solid_segment, &section.solid_light_segment) {
                     let solid_count = section.solid_quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
                     let solid_base_vertex = solid_segment.offset as i32 / BYTES_PER_QUAD * ELEMENTS_PER_QUAD;
-                    (*self.solid_counts.get()).push(solid_count);
-                    (*self.solid_base_vertices.get()).push(solid_base_vertex);
+                    (*self.solid_indirect_buffer.get()).push(IndirectCommand {
+                        count: solid_count as u32,
+                        instance_count: 1,
+                        first_index: 0,
+                        base_vertex: solid_base_vertex,
+                        base_instance: 0,
+                    });
                     solid_drawn_sections += 1;
                 }
                 
                 if let (Some(trans_segment), Some(solid_light_segment)) = (&section.trans_segment, &section.trans_light_segment) {
                     let trans_count = section.trans_quad_count as i32 * ELEMENT_INDICES_PER_QUAD;
                     let trans_base_vertex = trans_segment.offset as i32 / BYTES_PER_QUAD * ELEMENTS_PER_QUAD;
-                    (*self.trans_counts.get()).push(trans_count);
-                    (*self.trans_base_vertices.get()).push(trans_base_vertex);
+                    (*self.trans_indirect_buffer.get()).push(IndirectCommand {
+                        count: trans_count as u32,
+                        instance_count: 1,
+                        first_index: 0,
+                        base_vertex: trans_base_vertex,
+                        base_instance: 0,
+                    });
+
                     trans_drawn_sections += 1;
                 }
             }
@@ -244,13 +254,12 @@ impl WorldRenderer {
                 if status.fill_mode == gl::LINE {
                     gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
                 }
-                gl::MultiDrawElementsBaseVertex(
+                gl::MultiDrawElementsIndirect(
                     gl::TRIANGLE_STRIP,
-                    (*self.solid_counts.get()).as_ptr(),
                     gl::UNSIGNED_INT,
-                    (*self.indices.get()).as_ptr(),
-                    solid_drawn_sections as i32,
-                    (*self.solid_base_vertices.get()).as_ptr()
+                    (*self.solid_indirect_buffer.get()).as_ptr() as *const c_void,
+                    solid_drawn_sections,
+                    0
                 );
             }
     
@@ -291,13 +300,12 @@ impl WorldRenderer {
                 if status.fill_mode == gl::LINE {
                     gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
                 }    
-                gl::MultiDrawElementsBaseVertex(
+                gl::MultiDrawElementsIndirect(
                     gl::TRIANGLE_STRIP,
-                    (*self.trans_counts.get()).as_ptr(),
                     gl::UNSIGNED_INT,
-                    (*self.indices.get()).as_ptr(),
-                    trans_drawn_sections as i32,
-                    (*self.trans_base_vertices.get()).as_ptr()
+                    (*self.trans_indirect_buffer.get()).as_ptr() as *const c_void,
+                    trans_drawn_sections,
+                    0
                 );
             }
         }
@@ -308,4 +316,12 @@ impl WorldRenderer {
         if fence == 0 as GLsync { panic!(); }
         self.fences.push(fence);
     } }
+}
+
+pub struct IndirectCommand {
+    count: u32,
+    instance_count: u32,
+    first_index: u32,
+    base_vertex: i32,
+    base_instance: u32,
 }

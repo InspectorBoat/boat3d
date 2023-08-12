@@ -177,27 +177,14 @@ impl World {
     } }
 
     pub fn render(&mut self, status: &WindowStatus) { unsafe {
-        // self.camera.camera_euler = Euler {
-        //     x: Rad(self.camera.camera_rot.pitch),
-        //     y: Rad(self.camera.camera_rot.yaw),
-        //     z: Rad(0.0)
-        // };
-
-        // self.camera.frustum_euler = Euler {
-        //     x: Rad(self.camera.camera_rot.pitch),
-        //     y: Rad(self.camera.camera_rot.yaw),
-        //     z: Rad(0.0)
-        // };
-
         // self.renderer.pre_render();
         self.renderer.render(self, status);
         // self.renderer.post_render();
     } }
 
-    pub fn update(&mut self, keys: &mut HashMap<Key, bool>) {
+    pub fn update(&mut self, keys: &HashMap<Key, bool>) {
         let speed = 5.0 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
-        for (key, pressed) in keys.iter() {
-            if *pressed == false { continue; }
+        for (key, pressed) in keys.iter().filter(|(_, pressed)| **pressed) {
             match key {
                 Key::W => {
                     self.camera.step(0.0, 0.0, -speed as f64);
@@ -211,6 +198,12 @@ impl World {
                 Key::D => {
                     self.camera.step(speed as f64, 0.0, 0.0);
                 }
+                Key::Q=> {
+                    self.camera.camera_rot.z += Rad(0.005);
+                }
+                Key::E => {
+                    self.camera.camera_rot.z -= Rad(0.005);
+                }
                 Key::Space => {
                     self.camera.step(0.0, speed as f64, 0.0);
                 }
@@ -222,11 +215,11 @@ impl World {
         }
         if !self.camera.frustum_frozen {
             self.camera.frustum_pos = self.camera.camera_pos;
-            self.camera.frustum_euler = self.camera.camera_euler;
+            self.camera.frustum_rot = self.camera.camera_rot;
         }
     }
 
-    pub const MAX_SECTION_X: usize = 4;
-    pub const MAX_SECTION_Y: usize = 4;
-    pub const MAX_SECTION_Z: usize = 4;
+    pub const MAX_SECTION_X: usize = 8;
+    pub const MAX_SECTION_Y: usize = 8;
+    pub const MAX_SECTION_Z: usize = 8;
 }

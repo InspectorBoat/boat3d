@@ -26,12 +26,14 @@ version = "0.1.0"
 dependencies = [
  "cgmath",
  "cgmath-culling",
+ "core_simd",
  "gl",
  "glfw",
  "itertools",
  "jni",
  "rand 0.8.5",
  "simdnoise",
+ "std_float",
 ]
 
 [[package]]
@@ -87,6 +89,11 @@ dependencies = [
  "bytes",
  "memchr",
 ]
+
+[[package]]
+name = "core_simd"
+version = "0.1.0"
+source = "git+https://github.com/rust-lang/portable-simd.git#490b5cf7a123c10c69b15816e349e2ee7025ee1a"
 
 [[package]]
 name = "either"
@@ -382,6 +389,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d9f69a3fa031fc2906ffe27aecc55bdd2c9cb95327c4695ea814a083145fa462"
 dependencies = [
  "simdeez",
+]
+
+[[package]]
+name = "std_float"
+version = "0.1.0"
+source = "git+https://github.com/rust-lang/portable-simd.git#490b5cf7a123c10c69b15816e349e2ee7025ee1a"
+dependencies = [
+ "core_simd",
 ]
 
 [[package]]

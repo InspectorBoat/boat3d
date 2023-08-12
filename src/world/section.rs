@@ -8,6 +8,7 @@ use cgmath_culling::Sphere;
 
 use crate::block::blockstate::BLOCKS;
 use crate::block::normal::Normal::{self, *};
+use crate::cull::frustum::LocalBoundingBox;
 use crate::gl_util::buffer_allocator::{BufferAllocator, SortType::*};
 use crate::gl_util::buffer_allocator::BufferSegment;
 use crate::render::byte_buffer::StagingBuffer;
@@ -1215,29 +1216,18 @@ impl Section {
         trans_staging_buffer.reset();
         light_staging_buffer.reset();
     }
-    pub fn get_bounding_box(&self, camera: &Camera) -> BoundingBox<f32> {
-        return BoundingBox {
-            min: Vector3 {
-                x: (self.section_pos.x * 256) as f32 - camera.frustum_pos.x,
-                y: (self.section_pos.y * 256) as f32 - camera.frustum_pos.y,
-                z: (self.section_pos.z * 256) as f32 - camera.frustum_pos.z,
-            },
-            max: Vector3 {
-                x: (self.section_pos.x * 256) as f32 - camera.frustum_pos.x + 256.0,
-                y: (self.section_pos.y * 256) as f32 - camera.frustum_pos.y + 256.0,
-                z: (self.section_pos.z * 256) as f32 - camera.frustum_pos.z + 256.0,
-            }
-        };
-    }
-
-    pub fn get_bounding_sphere(&self, camera: &Camera) -> Sphere<f32> {
-        return Sphere {
-            center: Vector3 {
-                x: (self.section_pos.x * 256) as f32 - camera.frustum_pos.x + 128.0,
-                y: (self.section_pos.y * 256) as f32 - camera.frustum_pos.y + 128.0,
-                z: (self.section_pos.z * 256) as f32 - camera.frustum_pos.z + 128.0,
-            },
-            radius: 221.702503369
+    pub fn get_bounding_box(&self, camera: &Camera) -> LocalBoundingBox {
+        return LocalBoundingBox {
+            min: [
+                (self.section_pos.x * 256) as f32 - camera.frustum_pos.x,
+                (self.section_pos.y * 256) as f32 - camera.frustum_pos.y,
+                (self.section_pos.z * 256) as f32 - camera.frustum_pos.z,
+            ].into(),
+            max: [
+                (self.section_pos.x * 256) as f32 - camera.frustum_pos.x + 256.0,
+                (self.section_pos.y * 256) as f32 - camera.frustum_pos.y + 256.0,
+                (self.section_pos.z * 256) as f32 - camera.frustum_pos.z + 256.0,
+            ].into()
         };
     }
 
