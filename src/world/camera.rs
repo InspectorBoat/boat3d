@@ -20,6 +20,9 @@ pub struct Camera {
     pub frustum_rot: Euler<Rad<f32>>,
 
     pub frustum_frozen: bool,
+
+    pub window_width: i32,
+    pub window_height: i32
 }
 impl Camera {
     pub fn get_camera_matrix(&self) -> Matrix4<f32> {
@@ -87,7 +90,10 @@ impl Camera {
             frustum_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 0.0 },
             frustum_rot: Euler { x: Rad(0.0), y: Rad(0.0), z: Rad(0.0) },
 
-            frustum_frozen: false
+            frustum_frozen: false,
+            
+            window_width: 600,
+            window_height: 600,
         };
         // Camera {
         //     prev_mouse: (-1193.0, -110.0),

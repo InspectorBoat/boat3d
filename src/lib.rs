@@ -28,16 +28,16 @@ mod cull;
 
 use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem, slice, cell::RefCell, fs::File, str::FromStr};
 use std::env;
-use cgmath::Vector3;
+use cgmath::{Vector3, Euler, Deg, Rad};
 use cgmath_culling::{BoundingBox, Intersection};
 use gl::{types, FramebufferParameteri};
-use gl_util::gl_wrapper::{self, STORAGE, PointerStorage};
+use gl_util::{gl_wrapper::{self, STORAGE, PointerStorage}, gl_helper::WindowStatus};
 use glfw::{Context, Window, Action, Key, Glfw, ffi::glfwGetCurrentContext};
-use jni::{JNIEnv, objects::{JClass, JByteBuffer, ReleaseMode, JPrimitiveArray, JObject, JString, JValueOwned, JFieldID}, sys::{jlong, jint, jchar, jcharArray, jshort, jobject}, strings::JNIString, signature::ReturnType, descriptors::Desc};
-use world::{world::World, section::Section, blockpos::BlockPos};
+use jni::{JNIEnv, objects::{JClass, JByteBuffer, ReleaseMode, JPrimitiveArray, JObject, JString, JValueOwned, JFieldID}, sys::{jlong, jint, jchar, jcharArray, jshort, jobject, jclass, jdouble}, strings::JNIString, signature::ReturnType, descriptors::Desc};
+use world::{world::World, section::Section, blockpos::BlockPos, camera::Camera};
 use jni::errors::Result;
 
-// Loads a 16-tall chunk column
+// loads a 16-tall chunk column
 #[no_mangle]
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeLoadChunk<'local>(
     mut env: JNIEnv<'local>,
@@ -47,7 +47,9 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeLoadChunk<'local>(
     section_x: jint,
     section_z: jint
 ) { unsafe {
+    STORAGE = gl_pointers as *mut PointerStorage;
     let world = &mut *(world as *mut World);
+
     for section_y in 0..16 {
         let mut section: Box<Section> = Box::new_zeroed().assume_init();
         section.set_pos(Vector3 {
@@ -57,9 +59,9 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeLoadChunk<'local>(
         });
         world.add_section(section);
     }
-    println!("LOAD section_x:{section_x} section_z:{section_z}, total: {}", world.sections.len());
+    if DEBUG { println!("LOAD section_x:{section_x} section_z:{section_z}, total: {}", world.sections.len()); }
 } }
-// Unloads a 16-tall chunk column
+// unloads a 16-tall chunk column
 #[no_mangle]
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUnloadChunk<'local>(
     mut env: JNIEnv<'local>,
@@ -69,16 +71,18 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUnloadChunk<'local>(
     section_x: jint,
     section_z: jint
 ) { unsafe {
+    STORAGE = gl_pointers as *mut PointerStorage;
     let world = &mut *(world as *mut World);
+
     for section_y in 0..16 {
         world.remove_section(Vector3 { x: section_x, y: section_y, z: section_z });
     }
-    println!("UNLOAD section_x:{section_x} section_z:{section_z}, total: {}", world.sections.len());
+    if DEBUG { println!("UNLOAD section_x:{section_x} section_z:{section_z}, total: {}", world.sections.len()); }
 } }
 
-// Sets a chunk section
+// sets the block data for a chunk section
 #[no_mangle]
-pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetChunkSection<'local>(
+pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetSection<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
     gl_pointers: jlong,
@@ -88,8 +92,11 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetChunkSection<'local>
     section_z: jint,
     block_data: jcharArray
 ) { unsafe {
+    STORAGE = gl_pointers as *mut PointerStorage;
     let world = &mut *(world as *mut World);
-    let section = world.sections.get_mut(&Vector3 { x: section_x, y: section_y, z: section_z }).unwrap();
+
+    let section_pos = Vector3 { x: section_x, y: section_y, z: section_z };
+    let section = world.sections.get_mut(&section_pos).unwrap();
     let block_data = mem::transmute::<jcharArray, JPrimitiveArray<jshort>>(block_data);
     let block_data = env.get_array_elements_critical(&block_data, ReleaseMode::NoCopyBack);
     
@@ -101,11 +108,13 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetChunkSection<'local>
             let x = i & 0xf;
             section.blocks[BlockPos::new(x, y, z).index] = if raw_block_data[i] == 0 { 0 } else { 1 };
         }
+        world.mesh_section(section_pos);
     }
-    println!("SET section_x:{section_x} section_y:{section_y} section_z:{section_z}, total: {}", world.sections.len());
+
+    if DEBUG { println!("SET section_x:{section_x} section_y:{section_y} section_z:{section_z}, total: {}", world.sections.len()); }
 } }
 
-// Updates a single block
+// updates a single block
 #[no_mangle]
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUpdateBlock<'local>(
     mut env: JNIEnv<'local>,
@@ -117,18 +126,23 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUpdateBlock<'local>(
     z: jint,
     block: jchar
 ) { unsafe {
+    STORAGE = gl_pointers as *mut PointerStorage;
     let world = &mut *(world as *mut World);
-    if let Some(chunk) = world.sections.get_mut(&Vector3 { x: x / 16, y: y / 16, z: z / 16 }) {
+
+    let section_pos = Vector3 { x: x / 16, y: y / 16, z: z / 16 };
+    if let Some(section) = world.sections.get_mut(&section_pos) {
         let pos = BlockPos::new(x & 0xf, y & 0xf, z & 0xf);
         let block = if block == 0 { 0 } else { 1 };
-        if chunk.blocks[pos.index] != block {
-            chunk.blocks[pos.index] = block;
+        if section.blocks[pos.index] != block {
+            section.blocks[pos.index] = block;
         }
     }
-    println!("SETBLOCK x:{x} y:{y} z:{z}, total: {}", world.sections.len());
+    world.mesh_section(section_pos);
+
+    if DEBUG { println!("SETBLOCK x:{x} y:{y} z:{z}, total: {}", world.sections.len()); }
 } }
 
-// Creates a new world
+// creates a new world
 #[no_mangle]
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeCreateWorld<'local>(
     mut env: JNIEnv<'local>,
@@ -137,17 +151,19 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeCreateWorld<'local>(
 ) -> jlong { unsafe {
     STORAGE = gl_pointers as *mut PointerStorage;
     let mut world: Box<World> = Box::from(World::new());
-
-    // let geometry_staging_byte_buffer = env.new_direct_byte_buffer((&raw mut *world.geometry_staging_buffer.buffer) as *mut u8, 262144);
-    // env.set_field(&worldWrapper, "geometryStagingBuffer", "Ljava/nio/ByteBuffer;", (&geometry_staging_byte_buffer.unwrap()).into());
-
-    // let light_staging_buffer = env.new_direct_byte_buffer((&raw mut *world.light_staging_buffer.buffer) as *mut u8, 262144);
-    // env.set_field(&worldWrapper, "lightStagingBuffer", "Ljava/nio/ByteBuffer;", (&light_staging_buffer.unwrap()).into());
-
+    world.renderer.init(&WindowStatus {
+        fill_mode: gl_wrapper::LINE,
+        maximized: true,
+        width: 600,
+        height: 600,
+        mouse_captured: true,
+    });
+    world.generate();
+    world.mesh_all();
+    
     return Box::into_raw(world) as i64;
 } }
-
-// Deletes a world
+// deletes a world
 #[no_mangle]
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeDeleteWorld<'local>(
     mut env: JNIEnv<'local>,
@@ -155,43 +171,45 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeDeleteWorld<'local>(
     gl_pointers: jlong,
     world: jlong
 ) { unsafe {
+    STORAGE = gl_pointers as *mut PointerStorage;
     let world = Box::from_raw(world as *mut World);
+
     mem::drop(world);
 } }
 
+// meshes a chunk section
 #[no_mangle]
-pub extern "system" fn Java_net_boat3d_NativeWorld_nativeMeshChunkSection<'local>(
+pub extern "system" fn Java_net_boat3d_NativeWorld_nativeMeshSection<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
     gl_pointers: jlong,
     world: jlong,
-    chunkX: jint,
-    chunkY: jint,
-    chunkZ: jint
+    section_x: jint,
+    section_y: jint,
+    section_z: jint
 ) { unsafe {
+    STORAGE = gl_pointers as *mut PointerStorage;
     let world = &mut *(world as *mut World);
-    world.mesh_all();
+    world.mesh_section(Vector3 { x: section_x, y: section_y, z: section_z });
 } }
 
-#[no_mangle]
-pub extern "system" fn Java_net_boat3d_NativeWorld_nativeGenerateDrawCommands<'local>(
-    mut env: JNIEnv<'local>,
-    class: JClass<'local>,
-    gl_pointers: jlong,
-    world: jlong
-) { unsafe {
-    let world = &*(world as *const World);
-} }
-
+// loads OpenGL 4.6 function pointers
 #[no_mangle]
 pub extern "system" fn Java_net_boat3d_NativeWorld_nativeGetPointers<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
+    glcontext_class: jclass,
     capabilities: jobject
 ) -> jlong { unsafe {
     STORAGE = Box::into_raw(Box::new(PointerStorage::new()));
+
     gl_wrapper::load_with(|symbol| {
-        if let Ok(jobject) = env.get_field(mem::transmute::<_, JObject>(capabilities), symbol, "J") {
+        if let Ok(jobject) = env.call_static_method(
+            mem::transmute::<_, JClass>(glcontext_class),
+            "getFunctionAddress",
+            "(Ljava/lang/String;)J",
+            &[(&env.new_string(symbol).unwrap()).into()]
+        ) {
             if let Ok(j) = jobject.j() {
                 return j as *const c_void;
             } else {
@@ -205,6 +223,66 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeGetPointers<'local>(
     return STORAGE as i64;
 } }
 
+// sets camera position and angle
+#[no_mangle]
+pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetCamera<'local>(
+    mut env: JNIEnv<'local>,
+    class: JClass<'local>,
+    gl_pointers: jlong,
+    world: jlong,
+    camera_x: jdouble,
+    camera_y: jdouble,
+    camera_z: jdouble,
+    camera_pitch: jdouble,
+    camera_yaw: jdouble,
+    window_width: jint,
+    window_height: jint
+) { unsafe {
+    STORAGE = gl_pointers as *mut PointerStorage;
+    let world = &mut *(world as *mut World);
+    if window_width != world.camera.window_width || window_height != world.camera.window_height {
+        world.renderer.make_framebuffer(&WindowStatus {
+            fill_mode: gl::LINE,
+            maximized: true,
+            width: window_width,
+            height: window_height,
+            mouse_captured: true,
+        });
+    }
+    world.camera = Camera {
+        prev_mouse: (0.0, 0.0),
+        aspect: window_width as f32 / window_height as f32,
+        camera_pos: Vector3 { x: camera_x as f32, y: camera_y as f32, z: camera_z as f32 },
+        camera_rot: Euler { x: Deg(camera_pitch as f32).into(), y: Deg(camera_yaw as f32).into(), z: Rad(0.0) },
+        frustum_pos: Vector3 { x: camera_x as f32, y: camera_y as f32, z: camera_z as f32 },
+        frustum_rot: Euler { x: Deg(camera_pitch as f32).into(), y: Deg(camera_yaw as f32).into(), z: Rad(0.0) },
+        frustum_frozen: false,
+        window_width: window_width,
+        window_height: window_height
+    };
+    println!("{:?}", world.camera);
+} }
+
+// renders the world
+#[no_mangle]
+pub extern "system" fn Java_net_boat3d_NativeWorld_nativeRenderWorld<'local>(
+    mut env: JNIEnv<'local>,
+    class: JClass<'local>,
+    gl_pointers: jlong,
+    world: jlong,
+) { unsafe {
+    STORAGE = gl_pointers as *mut PointerStorage;
+    let world = &mut *(world as *mut World);
+
+    world.render(&WindowStatus {
+        fill_mode: gl_wrapper::LINE,
+        maximized: true,
+        width: world.camera.window_width,
+        height: world.camera.window_height,
+        mouse_captured: true,
+    });
+} }
+pub const DEBUG: bool = true;
 /*
     let boolean = token('Z').map(|_| Primitive::Boolean);
     let byte = token('B').map(|_| Primitive::Byte);

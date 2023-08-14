@@ -1,11 +1,32 @@
 #version 450
 
-layout (location = 0) in vec2 aPos;
-layout (location = 1) in vec2 aTexCoords;
-
 out vec2 TexCoords;
 
 void main() {
-    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0); 
-    TexCoords = aTexCoords;
+    switch (gl_VertexID) {
+        case 0:
+            gl_Position = vec4(-1, 1, 0, 1);
+            TexCoords = vec2(0.0, 1.0);
+            break;
+        case 1:
+            gl_Position = vec4(-1, -1, 0, 1);
+            TexCoords = vec2(0.0, 0.0);
+            break;
+        case 2:
+            gl_Position = vec4(1, -1, 0, 1);
+            TexCoords = vec2(1.0, 0.0);
+            break;
+        case 3:
+            gl_Position = vec4(-1, 1, 0, 1);
+            TexCoords = vec2(0.0, 1.0);
+            break;
+        case 4:
+            gl_Position = vec4(1, -1, 0, 1);
+            TexCoords = vec2(1.0, 0.0);
+            break;
+        case 5:
+            gl_Position = vec4(1, 1, 0, 1);
+            TexCoords = vec2(1.0, 1.0);
+            break;
+    }
 }

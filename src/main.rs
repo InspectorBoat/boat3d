@@ -49,9 +49,6 @@ fn main() { unsafe {
     world.renderer.init(&status);
     world.generate();
     world.mesh_all();
-
-    world.geometry_buffer_allocator.device_buffer.bind_indexed_target_base(gl_wrapper::SHADER_STORAGE_BUFFER, 0);
-    world.light_buffer_allocator.device_buffer.bind_indexed_target_base(gl_wrapper::SHADER_STORAGE_BUFFER, 1);
     
     glfw.set_swap_interval(glfw::SwapInterval::None);
     

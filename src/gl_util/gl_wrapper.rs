@@ -1,4 +1,5 @@
 use gl::types::*;
+use std::any::Any;
 use std::mem;
 use std::ffi::c_void;
 
@@ -705,8 +706,8 @@ pub mod ActiveShaderProgram {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ActiveShaderProgram::is_loaded() }
-        else { (*STORAGE).ActiveShaderProgram.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ActiveShaderProgram.is_loaded }
+        else { gl::ActiveShaderProgram::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -720,8 +721,8 @@ pub mod ActiveTexture {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ActiveTexture::is_loaded() }
-        else { (*STORAGE).ActiveTexture.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ActiveTexture.is_loaded }
+        else { gl::ActiveTexture::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -735,8 +736,8 @@ pub mod AttachShader {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::AttachShader::is_loaded() }
-        else { (*STORAGE).AttachShader.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).AttachShader.is_loaded }
+        else { gl::AttachShader::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -750,8 +751,8 @@ pub mod BeginConditionalRender {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BeginConditionalRender::is_loaded() }
-        else { (*STORAGE).BeginConditionalRender.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BeginConditionalRender.is_loaded }
+        else { gl::BeginConditionalRender::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -765,8 +766,8 @@ pub mod BeginQuery {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BeginQuery::is_loaded() }
-        else { (*STORAGE).BeginQuery.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BeginQuery.is_loaded }
+        else { gl::BeginQuery::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -780,8 +781,8 @@ pub mod BeginQueryIndexed {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BeginQueryIndexed::is_loaded() }
-        else { (*STORAGE).BeginQueryIndexed.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BeginQueryIndexed.is_loaded }
+        else { gl::BeginQueryIndexed::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -795,8 +796,8 @@ pub mod BeginTransformFeedback {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BeginTransformFeedback::is_loaded() }
-        else { (*STORAGE).BeginTransformFeedback.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BeginTransformFeedback.is_loaded }
+        else { gl::BeginTransformFeedback::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -810,8 +811,8 @@ pub mod BindAttribLocation {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindAttribLocation::is_loaded() }
-        else { (*STORAGE).BindAttribLocation.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindAttribLocation.is_loaded }
+        else { gl::BindAttribLocation::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -825,8 +826,8 @@ pub mod BindBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindBuffer::is_loaded() }
-        else { (*STORAGE).BindBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindBuffer.is_loaded }
+        else { gl::BindBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -840,8 +841,8 @@ pub mod BindBufferBase {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindBufferBase::is_loaded() }
-        else { (*STORAGE).BindBufferBase.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindBufferBase.is_loaded }
+        else { gl::BindBufferBase::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -855,8 +856,8 @@ pub mod BindBufferRange {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindBufferRange::is_loaded() }
-        else { (*STORAGE).BindBufferRange.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindBufferRange.is_loaded }
+        else { gl::BindBufferRange::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -870,8 +871,8 @@ pub mod BindBuffersBase {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindBuffersBase::is_loaded() }
-        else { (*STORAGE).BindBuffersBase.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindBuffersBase.is_loaded }
+        else { gl::BindBuffersBase::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -885,8 +886,8 @@ pub mod BindBuffersRange {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindBuffersRange::is_loaded() }
-        else { (*STORAGE).BindBuffersRange.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindBuffersRange.is_loaded }
+        else { gl::BindBuffersRange::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -900,8 +901,8 @@ pub mod BindFragDataLocation {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindFragDataLocation::is_loaded() }
-        else { (*STORAGE).BindFragDataLocation.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindFragDataLocation.is_loaded }
+        else { gl::BindFragDataLocation::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -915,8 +916,8 @@ pub mod BindFragDataLocationIndexed {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindFragDataLocationIndexed::is_loaded() }
-        else { (*STORAGE).BindFragDataLocationIndexed.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindFragDataLocationIndexed.is_loaded }
+        else { gl::BindFragDataLocationIndexed::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -930,8 +931,8 @@ pub mod BindFramebuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindFramebuffer::is_loaded() }
-        else { (*STORAGE).BindFramebuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindFramebuffer.is_loaded }
+        else { gl::BindFramebuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -945,8 +946,8 @@ pub mod BindImageTexture {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindImageTexture::is_loaded() }
-        else { (*STORAGE).BindImageTexture.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindImageTexture.is_loaded }
+        else { gl::BindImageTexture::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -960,8 +961,8 @@ pub mod BindImageTextures {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindImageTextures::is_loaded() }
-        else { (*STORAGE).BindImageTextures.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindImageTextures.is_loaded }
+        else { gl::BindImageTextures::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -975,8 +976,8 @@ pub mod BindProgramPipeline {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindProgramPipeline::is_loaded() }
-        else { (*STORAGE).BindProgramPipeline.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindProgramPipeline.is_loaded }
+        else { gl::BindProgramPipeline::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -990,8 +991,8 @@ pub mod BindRenderbuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindRenderbuffer::is_loaded() }
-        else { (*STORAGE).BindRenderbuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindRenderbuffer.is_loaded }
+        else { gl::BindRenderbuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1005,8 +1006,8 @@ pub mod BindSampler {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindSampler::is_loaded() }
-        else { (*STORAGE).BindSampler.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindSampler.is_loaded }
+        else { gl::BindSampler::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1020,8 +1021,8 @@ pub mod BindSamplers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindSamplers::is_loaded() }
-        else { (*STORAGE).BindSamplers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindSamplers.is_loaded }
+        else { gl::BindSamplers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1035,8 +1036,8 @@ pub mod BindTexture {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindTexture::is_loaded() }
-        else { (*STORAGE).BindTexture.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindTexture.is_loaded }
+        else { gl::BindTexture::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1050,8 +1051,8 @@ pub mod BindTextureUnit {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindTextureUnit::is_loaded() }
-        else { (*STORAGE).BindTextureUnit.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindTextureUnit.is_loaded }
+        else { gl::BindTextureUnit::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1065,8 +1066,8 @@ pub mod BindTextures {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindTextures::is_loaded() }
-        else { (*STORAGE).BindTextures.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindTextures.is_loaded }
+        else { gl::BindTextures::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1080,8 +1081,8 @@ pub mod BindTransformFeedback {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindTransformFeedback::is_loaded() }
-        else { (*STORAGE).BindTransformFeedback.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindTransformFeedback.is_loaded }
+        else { gl::BindTransformFeedback::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1095,8 +1096,8 @@ pub mod BindVertexArray {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindVertexArray::is_loaded() }
-        else { (*STORAGE).BindVertexArray.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindVertexArray.is_loaded }
+        else { gl::BindVertexArray::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1110,8 +1111,8 @@ pub mod BindVertexBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindVertexBuffer::is_loaded() }
-        else { (*STORAGE).BindVertexBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindVertexBuffer.is_loaded }
+        else { gl::BindVertexBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1125,8 +1126,8 @@ pub mod BindVertexBuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BindVertexBuffers::is_loaded() }
-        else { (*STORAGE).BindVertexBuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BindVertexBuffers.is_loaded }
+        else { gl::BindVertexBuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1140,8 +1141,8 @@ pub mod BlendColor {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BlendColor::is_loaded() }
-        else { (*STORAGE).BlendColor.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BlendColor.is_loaded }
+        else { gl::BlendColor::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1155,8 +1156,8 @@ pub mod BlendEquation {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BlendEquation::is_loaded() }
-        else { (*STORAGE).BlendEquation.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BlendEquation.is_loaded }
+        else { gl::BlendEquation::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1170,8 +1171,8 @@ pub mod BlendEquationSeparate {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BlendEquationSeparate::is_loaded() }
-        else { (*STORAGE).BlendEquationSeparate.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BlendEquationSeparate.is_loaded }
+        else { gl::BlendEquationSeparate::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1185,8 +1186,8 @@ pub mod BlendEquationSeparatei {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BlendEquationSeparatei::is_loaded() }
-        else { (*STORAGE).BlendEquationSeparatei.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BlendEquationSeparatei.is_loaded }
+        else { gl::BlendEquationSeparatei::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1200,8 +1201,8 @@ pub mod BlendEquationi {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BlendEquationi::is_loaded() }
-        else { (*STORAGE).BlendEquationi.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BlendEquationi.is_loaded }
+        else { gl::BlendEquationi::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1215,8 +1216,8 @@ pub mod BlendFunc {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BlendFunc::is_loaded() }
-        else { (*STORAGE).BlendFunc.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BlendFunc.is_loaded }
+        else { gl::BlendFunc::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1230,8 +1231,8 @@ pub mod BlendFuncSeparate {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BlendFuncSeparate::is_loaded() }
-        else { (*STORAGE).BlendFuncSeparate.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BlendFuncSeparate.is_loaded }
+        else { gl::BlendFuncSeparate::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1245,8 +1246,8 @@ pub mod BlendFuncSeparatei {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BlendFuncSeparatei::is_loaded() }
-        else { (*STORAGE).BlendFuncSeparatei.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BlendFuncSeparatei.is_loaded }
+        else { gl::BlendFuncSeparatei::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1260,8 +1261,8 @@ pub mod BlendFunci {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BlendFunci::is_loaded() }
-        else { (*STORAGE).BlendFunci.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BlendFunci.is_loaded }
+        else { gl::BlendFunci::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1275,8 +1276,8 @@ pub mod BlitFramebuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BlitFramebuffer::is_loaded() }
-        else { (*STORAGE).BlitFramebuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BlitFramebuffer.is_loaded }
+        else { gl::BlitFramebuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1290,8 +1291,8 @@ pub mod BlitNamedFramebuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BlitNamedFramebuffer::is_loaded() }
-        else { (*STORAGE).BlitNamedFramebuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BlitNamedFramebuffer.is_loaded }
+        else { gl::BlitNamedFramebuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1305,8 +1306,8 @@ pub mod BufferData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BufferData::is_loaded() }
-        else { (*STORAGE).BufferData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BufferData.is_loaded }
+        else { gl::BufferData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1320,8 +1321,8 @@ pub mod BufferStorage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BufferStorage::is_loaded() }
-        else { (*STORAGE).BufferStorage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BufferStorage.is_loaded }
+        else { gl::BufferStorage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1335,8 +1336,8 @@ pub mod BufferSubData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::BufferSubData::is_loaded() }
-        else { (*STORAGE).BufferSubData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).BufferSubData.is_loaded }
+        else { gl::BufferSubData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1350,8 +1351,8 @@ pub mod CheckFramebufferStatus {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CheckFramebufferStatus::is_loaded() }
-        else { (*STORAGE).CheckFramebufferStatus.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CheckFramebufferStatus.is_loaded }
+        else { gl::CheckFramebufferStatus::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1365,8 +1366,8 @@ pub mod CheckNamedFramebufferStatus {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CheckNamedFramebufferStatus::is_loaded() }
-        else { (*STORAGE).CheckNamedFramebufferStatus.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CheckNamedFramebufferStatus.is_loaded }
+        else { gl::CheckNamedFramebufferStatus::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1380,8 +1381,8 @@ pub mod ClampColor {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClampColor::is_loaded() }
-        else { (*STORAGE).ClampColor.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClampColor.is_loaded }
+        else { gl::ClampColor::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1395,8 +1396,8 @@ pub mod Clear {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Clear::is_loaded() }
-        else { (*STORAGE).Clear.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Clear.is_loaded }
+        else { gl::Clear::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1410,8 +1411,8 @@ pub mod ClearBufferData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearBufferData::is_loaded() }
-        else { (*STORAGE).ClearBufferData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearBufferData.is_loaded }
+        else { gl::ClearBufferData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1425,8 +1426,8 @@ pub mod ClearBufferSubData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearBufferSubData::is_loaded() }
-        else { (*STORAGE).ClearBufferSubData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearBufferSubData.is_loaded }
+        else { gl::ClearBufferSubData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1440,8 +1441,8 @@ pub mod ClearBufferfi {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearBufferfi::is_loaded() }
-        else { (*STORAGE).ClearBufferfi.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearBufferfi.is_loaded }
+        else { gl::ClearBufferfi::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1455,8 +1456,8 @@ pub mod ClearBufferfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearBufferfv::is_loaded() }
-        else { (*STORAGE).ClearBufferfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearBufferfv.is_loaded }
+        else { gl::ClearBufferfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1470,8 +1471,8 @@ pub mod ClearBufferiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearBufferiv::is_loaded() }
-        else { (*STORAGE).ClearBufferiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearBufferiv.is_loaded }
+        else { gl::ClearBufferiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1485,8 +1486,8 @@ pub mod ClearBufferuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearBufferuiv::is_loaded() }
-        else { (*STORAGE).ClearBufferuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearBufferuiv.is_loaded }
+        else { gl::ClearBufferuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1500,8 +1501,8 @@ pub mod ClearColor {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearColor::is_loaded() }
-        else { (*STORAGE).ClearColor.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearColor.is_loaded }
+        else { gl::ClearColor::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1515,8 +1516,8 @@ pub mod ClearDepth {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearDepth::is_loaded() }
-        else { (*STORAGE).ClearDepth.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearDepth.is_loaded }
+        else { gl::ClearDepth::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1530,8 +1531,8 @@ pub mod ClearDepthf {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearDepthf::is_loaded() }
-        else { (*STORAGE).ClearDepthf.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearDepthf.is_loaded }
+        else { gl::ClearDepthf::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1545,8 +1546,8 @@ pub mod ClearNamedBufferData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearNamedBufferData::is_loaded() }
-        else { (*STORAGE).ClearNamedBufferData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearNamedBufferData.is_loaded }
+        else { gl::ClearNamedBufferData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1560,8 +1561,8 @@ pub mod ClearNamedBufferSubData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearNamedBufferSubData::is_loaded() }
-        else { (*STORAGE).ClearNamedBufferSubData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearNamedBufferSubData.is_loaded }
+        else { gl::ClearNamedBufferSubData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1575,8 +1576,8 @@ pub mod ClearNamedFramebufferfi {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearNamedFramebufferfi::is_loaded() }
-        else { (*STORAGE).ClearNamedFramebufferfi.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearNamedFramebufferfi.is_loaded }
+        else { gl::ClearNamedFramebufferfi::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1590,8 +1591,8 @@ pub mod ClearNamedFramebufferfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearNamedFramebufferfv::is_loaded() }
-        else { (*STORAGE).ClearNamedFramebufferfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearNamedFramebufferfv.is_loaded }
+        else { gl::ClearNamedFramebufferfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1605,8 +1606,8 @@ pub mod ClearNamedFramebufferiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearNamedFramebufferiv::is_loaded() }
-        else { (*STORAGE).ClearNamedFramebufferiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearNamedFramebufferiv.is_loaded }
+        else { gl::ClearNamedFramebufferiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1620,8 +1621,8 @@ pub mod ClearNamedFramebufferuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearNamedFramebufferuiv::is_loaded() }
-        else { (*STORAGE).ClearNamedFramebufferuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearNamedFramebufferuiv.is_loaded }
+        else { gl::ClearNamedFramebufferuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1635,8 +1636,8 @@ pub mod ClearStencil {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearStencil::is_loaded() }
-        else { (*STORAGE).ClearStencil.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearStencil.is_loaded }
+        else { gl::ClearStencil::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1650,8 +1651,8 @@ pub mod ClearTexImage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearTexImage::is_loaded() }
-        else { (*STORAGE).ClearTexImage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearTexImage.is_loaded }
+        else { gl::ClearTexImage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1665,8 +1666,8 @@ pub mod ClearTexSubImage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClearTexSubImage::is_loaded() }
-        else { (*STORAGE).ClearTexSubImage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClearTexSubImage.is_loaded }
+        else { gl::ClearTexSubImage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1680,8 +1681,8 @@ pub mod ClientWaitSync {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClientWaitSync::is_loaded() }
-        else { (*STORAGE).ClientWaitSync.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClientWaitSync.is_loaded }
+        else { gl::ClientWaitSync::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1695,8 +1696,8 @@ pub mod ClipControl {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ClipControl::is_loaded() }
-        else { (*STORAGE).ClipControl.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ClipControl.is_loaded }
+        else { gl::ClipControl::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1710,8 +1711,8 @@ pub mod ColorMask {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ColorMask::is_loaded() }
-        else { (*STORAGE).ColorMask.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ColorMask.is_loaded }
+        else { gl::ColorMask::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1725,8 +1726,8 @@ pub mod ColorMaski {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ColorMaski::is_loaded() }
-        else { (*STORAGE).ColorMaski.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ColorMaski.is_loaded }
+        else { gl::ColorMaski::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1740,8 +1741,8 @@ pub mod ColorP3ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ColorP3ui::is_loaded() }
-        else { (*STORAGE).ColorP3ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ColorP3ui.is_loaded }
+        else { gl::ColorP3ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1755,8 +1756,8 @@ pub mod ColorP3uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ColorP3uiv::is_loaded() }
-        else { (*STORAGE).ColorP3uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ColorP3uiv.is_loaded }
+        else { gl::ColorP3uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1770,8 +1771,8 @@ pub mod ColorP4ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ColorP4ui::is_loaded() }
-        else { (*STORAGE).ColorP4ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ColorP4ui.is_loaded }
+        else { gl::ColorP4ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1785,8 +1786,8 @@ pub mod ColorP4uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ColorP4uiv::is_loaded() }
-        else { (*STORAGE).ColorP4uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ColorP4uiv.is_loaded }
+        else { gl::ColorP4uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1800,8 +1801,8 @@ pub mod CompileShader {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CompileShader::is_loaded() }
-        else { (*STORAGE).CompileShader.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CompileShader.is_loaded }
+        else { gl::CompileShader::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1815,8 +1816,8 @@ pub mod CompressedTexImage1D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CompressedTexImage1D::is_loaded() }
-        else { (*STORAGE).CompressedTexImage1D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CompressedTexImage1D.is_loaded }
+        else { gl::CompressedTexImage1D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1830,8 +1831,8 @@ pub mod CompressedTexImage2D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CompressedTexImage2D::is_loaded() }
-        else { (*STORAGE).CompressedTexImage2D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CompressedTexImage2D.is_loaded }
+        else { gl::CompressedTexImage2D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1845,8 +1846,8 @@ pub mod CompressedTexImage3D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CompressedTexImage3D::is_loaded() }
-        else { (*STORAGE).CompressedTexImage3D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CompressedTexImage3D.is_loaded }
+        else { gl::CompressedTexImage3D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1860,8 +1861,8 @@ pub mod CompressedTexSubImage1D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CompressedTexSubImage1D::is_loaded() }
-        else { (*STORAGE).CompressedTexSubImage1D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CompressedTexSubImage1D.is_loaded }
+        else { gl::CompressedTexSubImage1D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1875,8 +1876,8 @@ pub mod CompressedTexSubImage2D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CompressedTexSubImage2D::is_loaded() }
-        else { (*STORAGE).CompressedTexSubImage2D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CompressedTexSubImage2D.is_loaded }
+        else { gl::CompressedTexSubImage2D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1890,8 +1891,8 @@ pub mod CompressedTexSubImage3D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CompressedTexSubImage3D::is_loaded() }
-        else { (*STORAGE).CompressedTexSubImage3D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CompressedTexSubImage3D.is_loaded }
+        else { gl::CompressedTexSubImage3D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1905,8 +1906,8 @@ pub mod CompressedTextureSubImage1D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CompressedTextureSubImage1D::is_loaded() }
-        else { (*STORAGE).CompressedTextureSubImage1D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CompressedTextureSubImage1D.is_loaded }
+        else { gl::CompressedTextureSubImage1D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1920,8 +1921,8 @@ pub mod CompressedTextureSubImage2D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CompressedTextureSubImage2D::is_loaded() }
-        else { (*STORAGE).CompressedTextureSubImage2D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CompressedTextureSubImage2D.is_loaded }
+        else { gl::CompressedTextureSubImage2D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1935,8 +1936,8 @@ pub mod CompressedTextureSubImage3D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CompressedTextureSubImage3D::is_loaded() }
-        else { (*STORAGE).CompressedTextureSubImage3D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CompressedTextureSubImage3D.is_loaded }
+        else { gl::CompressedTextureSubImage3D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1950,8 +1951,8 @@ pub mod CopyBufferSubData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CopyBufferSubData::is_loaded() }
-        else { (*STORAGE).CopyBufferSubData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CopyBufferSubData.is_loaded }
+        else { gl::CopyBufferSubData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1965,8 +1966,8 @@ pub mod CopyImageSubData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CopyImageSubData::is_loaded() }
-        else { (*STORAGE).CopyImageSubData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CopyImageSubData.is_loaded }
+        else { gl::CopyImageSubData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1980,8 +1981,8 @@ pub mod CopyNamedBufferSubData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CopyNamedBufferSubData::is_loaded() }
-        else { (*STORAGE).CopyNamedBufferSubData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CopyNamedBufferSubData.is_loaded }
+        else { gl::CopyNamedBufferSubData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -1995,8 +1996,8 @@ pub mod CopyTexImage1D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CopyTexImage1D::is_loaded() }
-        else { (*STORAGE).CopyTexImage1D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CopyTexImage1D.is_loaded }
+        else { gl::CopyTexImage1D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2010,8 +2011,8 @@ pub mod CopyTexImage2D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CopyTexImage2D::is_loaded() }
-        else { (*STORAGE).CopyTexImage2D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CopyTexImage2D.is_loaded }
+        else { gl::CopyTexImage2D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2025,8 +2026,8 @@ pub mod CopyTexSubImage1D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CopyTexSubImage1D::is_loaded() }
-        else { (*STORAGE).CopyTexSubImage1D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CopyTexSubImage1D.is_loaded }
+        else { gl::CopyTexSubImage1D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2040,8 +2041,8 @@ pub mod CopyTexSubImage2D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CopyTexSubImage2D::is_loaded() }
-        else { (*STORAGE).CopyTexSubImage2D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CopyTexSubImage2D.is_loaded }
+        else { gl::CopyTexSubImage2D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2055,8 +2056,8 @@ pub mod CopyTexSubImage3D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CopyTexSubImage3D::is_loaded() }
-        else { (*STORAGE).CopyTexSubImage3D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CopyTexSubImage3D.is_loaded }
+        else { gl::CopyTexSubImage3D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2070,8 +2071,8 @@ pub mod CopyTextureSubImage1D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CopyTextureSubImage1D::is_loaded() }
-        else { (*STORAGE).CopyTextureSubImage1D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CopyTextureSubImage1D.is_loaded }
+        else { gl::CopyTextureSubImage1D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2085,8 +2086,8 @@ pub mod CopyTextureSubImage2D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CopyTextureSubImage2D::is_loaded() }
-        else { (*STORAGE).CopyTextureSubImage2D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CopyTextureSubImage2D.is_loaded }
+        else { gl::CopyTextureSubImage2D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2100,8 +2101,8 @@ pub mod CopyTextureSubImage3D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CopyTextureSubImage3D::is_loaded() }
-        else { (*STORAGE).CopyTextureSubImage3D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CopyTextureSubImage3D.is_loaded }
+        else { gl::CopyTextureSubImage3D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2115,8 +2116,8 @@ pub mod CreateBuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CreateBuffers::is_loaded() }
-        else { (*STORAGE).CreateBuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CreateBuffers.is_loaded }
+        else { gl::CreateBuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2130,8 +2131,8 @@ pub mod CreateFramebuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CreateFramebuffers::is_loaded() }
-        else { (*STORAGE).CreateFramebuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CreateFramebuffers.is_loaded }
+        else { gl::CreateFramebuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2145,8 +2146,8 @@ pub mod CreateProgram {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CreateProgram::is_loaded() }
-        else { (*STORAGE).CreateProgram.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CreateProgram.is_loaded }
+        else { gl::CreateProgram::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2160,8 +2161,8 @@ pub mod CreateProgramPipelines {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CreateProgramPipelines::is_loaded() }
-        else { (*STORAGE).CreateProgramPipelines.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CreateProgramPipelines.is_loaded }
+        else { gl::CreateProgramPipelines::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2175,8 +2176,8 @@ pub mod CreateQueries {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CreateQueries::is_loaded() }
-        else { (*STORAGE).CreateQueries.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CreateQueries.is_loaded }
+        else { gl::CreateQueries::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2190,8 +2191,8 @@ pub mod CreateRenderbuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CreateRenderbuffers::is_loaded() }
-        else { (*STORAGE).CreateRenderbuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CreateRenderbuffers.is_loaded }
+        else { gl::CreateRenderbuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2205,8 +2206,8 @@ pub mod CreateSamplers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CreateSamplers::is_loaded() }
-        else { (*STORAGE).CreateSamplers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CreateSamplers.is_loaded }
+        else { gl::CreateSamplers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2220,8 +2221,8 @@ pub mod CreateShader {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CreateShader::is_loaded() }
-        else { (*STORAGE).CreateShader.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CreateShader.is_loaded }
+        else { gl::CreateShader::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2235,8 +2236,8 @@ pub mod CreateShaderProgramv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CreateShaderProgramv::is_loaded() }
-        else { (*STORAGE).CreateShaderProgramv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CreateShaderProgramv.is_loaded }
+        else { gl::CreateShaderProgramv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2250,8 +2251,8 @@ pub mod CreateTextures {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CreateTextures::is_loaded() }
-        else { (*STORAGE).CreateTextures.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CreateTextures.is_loaded }
+        else { gl::CreateTextures::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2265,8 +2266,8 @@ pub mod CreateTransformFeedbacks {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CreateTransformFeedbacks::is_loaded() }
-        else { (*STORAGE).CreateTransformFeedbacks.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CreateTransformFeedbacks.is_loaded }
+        else { gl::CreateTransformFeedbacks::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2280,8 +2281,8 @@ pub mod CreateVertexArrays {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CreateVertexArrays::is_loaded() }
-        else { (*STORAGE).CreateVertexArrays.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CreateVertexArrays.is_loaded }
+        else { gl::CreateVertexArrays::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2295,8 +2296,8 @@ pub mod CullFace {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::CullFace::is_loaded() }
-        else { (*STORAGE).CullFace.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).CullFace.is_loaded }
+        else { gl::CullFace::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2310,8 +2311,8 @@ pub mod DebugMessageCallback {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DebugMessageCallback::is_loaded() }
-        else { (*STORAGE).DebugMessageCallback.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DebugMessageCallback.is_loaded }
+        else { gl::DebugMessageCallback::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2325,8 +2326,8 @@ pub mod DebugMessageControl {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DebugMessageControl::is_loaded() }
-        else { (*STORAGE).DebugMessageControl.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DebugMessageControl.is_loaded }
+        else { gl::DebugMessageControl::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2340,8 +2341,8 @@ pub mod DebugMessageInsert {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DebugMessageInsert::is_loaded() }
-        else { (*STORAGE).DebugMessageInsert.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DebugMessageInsert.is_loaded }
+        else { gl::DebugMessageInsert::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2355,8 +2356,8 @@ pub mod DeleteBuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DeleteBuffers::is_loaded() }
-        else { (*STORAGE).DeleteBuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DeleteBuffers.is_loaded }
+        else { gl::DeleteBuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2370,8 +2371,8 @@ pub mod DeleteFramebuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DeleteFramebuffers::is_loaded() }
-        else { (*STORAGE).DeleteFramebuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DeleteFramebuffers.is_loaded }
+        else { gl::DeleteFramebuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2385,8 +2386,8 @@ pub mod DeleteProgram {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DeleteProgram::is_loaded() }
-        else { (*STORAGE).DeleteProgram.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DeleteProgram.is_loaded }
+        else { gl::DeleteProgram::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2400,8 +2401,8 @@ pub mod DeleteProgramPipelines {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DeleteProgramPipelines::is_loaded() }
-        else { (*STORAGE).DeleteProgramPipelines.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DeleteProgramPipelines.is_loaded }
+        else { gl::DeleteProgramPipelines::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2415,8 +2416,8 @@ pub mod DeleteQueries {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DeleteQueries::is_loaded() }
-        else { (*STORAGE).DeleteQueries.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DeleteQueries.is_loaded }
+        else { gl::DeleteQueries::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2430,8 +2431,8 @@ pub mod DeleteRenderbuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DeleteRenderbuffers::is_loaded() }
-        else { (*STORAGE).DeleteRenderbuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DeleteRenderbuffers.is_loaded }
+        else { gl::DeleteRenderbuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2445,8 +2446,8 @@ pub mod DeleteSamplers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DeleteSamplers::is_loaded() }
-        else { (*STORAGE).DeleteSamplers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DeleteSamplers.is_loaded }
+        else { gl::DeleteSamplers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2460,8 +2461,8 @@ pub mod DeleteShader {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DeleteShader::is_loaded() }
-        else { (*STORAGE).DeleteShader.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DeleteShader.is_loaded }
+        else { gl::DeleteShader::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2475,8 +2476,8 @@ pub mod DeleteSync {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DeleteSync::is_loaded() }
-        else { (*STORAGE).DeleteSync.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DeleteSync.is_loaded }
+        else { gl::DeleteSync::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2490,8 +2491,8 @@ pub mod DeleteTextures {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DeleteTextures::is_loaded() }
-        else { (*STORAGE).DeleteTextures.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DeleteTextures.is_loaded }
+        else { gl::DeleteTextures::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2505,8 +2506,8 @@ pub mod DeleteTransformFeedbacks {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DeleteTransformFeedbacks::is_loaded() }
-        else { (*STORAGE).DeleteTransformFeedbacks.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DeleteTransformFeedbacks.is_loaded }
+        else { gl::DeleteTransformFeedbacks::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2520,8 +2521,8 @@ pub mod DeleteVertexArrays {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DeleteVertexArrays::is_loaded() }
-        else { (*STORAGE).DeleteVertexArrays.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DeleteVertexArrays.is_loaded }
+        else { gl::DeleteVertexArrays::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2535,8 +2536,8 @@ pub mod DepthFunc {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DepthFunc::is_loaded() }
-        else { (*STORAGE).DepthFunc.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DepthFunc.is_loaded }
+        else { gl::DepthFunc::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2550,8 +2551,8 @@ pub mod DepthMask {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DepthMask::is_loaded() }
-        else { (*STORAGE).DepthMask.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DepthMask.is_loaded }
+        else { gl::DepthMask::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2565,8 +2566,8 @@ pub mod DepthRange {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DepthRange::is_loaded() }
-        else { (*STORAGE).DepthRange.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DepthRange.is_loaded }
+        else { gl::DepthRange::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2580,8 +2581,8 @@ pub mod DepthRangeArrayv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DepthRangeArrayv::is_loaded() }
-        else { (*STORAGE).DepthRangeArrayv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DepthRangeArrayv.is_loaded }
+        else { gl::DepthRangeArrayv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2595,8 +2596,8 @@ pub mod DepthRangeIndexed {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DepthRangeIndexed::is_loaded() }
-        else { (*STORAGE).DepthRangeIndexed.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DepthRangeIndexed.is_loaded }
+        else { gl::DepthRangeIndexed::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2610,8 +2611,8 @@ pub mod DepthRangef {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DepthRangef::is_loaded() }
-        else { (*STORAGE).DepthRangef.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DepthRangef.is_loaded }
+        else { gl::DepthRangef::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2625,8 +2626,8 @@ pub mod DetachShader {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DetachShader::is_loaded() }
-        else { (*STORAGE).DetachShader.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DetachShader.is_loaded }
+        else { gl::DetachShader::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2640,8 +2641,8 @@ pub mod Disable {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Disable::is_loaded() }
-        else { (*STORAGE).Disable.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Disable.is_loaded }
+        else { gl::Disable::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2655,8 +2656,8 @@ pub mod DisableVertexArrayAttrib {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DisableVertexArrayAttrib::is_loaded() }
-        else { (*STORAGE).DisableVertexArrayAttrib.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DisableVertexArrayAttrib.is_loaded }
+        else { gl::DisableVertexArrayAttrib::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2670,8 +2671,8 @@ pub mod DisableVertexAttribArray {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DisableVertexAttribArray::is_loaded() }
-        else { (*STORAGE).DisableVertexAttribArray.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DisableVertexAttribArray.is_loaded }
+        else { gl::DisableVertexAttribArray::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2685,8 +2686,8 @@ pub mod Disablei {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Disablei::is_loaded() }
-        else { (*STORAGE).Disablei.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Disablei.is_loaded }
+        else { gl::Disablei::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2700,8 +2701,8 @@ pub mod DispatchCompute {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DispatchCompute::is_loaded() }
-        else { (*STORAGE).DispatchCompute.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DispatchCompute.is_loaded }
+        else { gl::DispatchCompute::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2715,8 +2716,8 @@ pub mod DispatchComputeIndirect {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DispatchComputeIndirect::is_loaded() }
-        else { (*STORAGE).DispatchComputeIndirect.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DispatchComputeIndirect.is_loaded }
+        else { gl::DispatchComputeIndirect::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2730,8 +2731,8 @@ pub mod DrawArrays {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawArrays::is_loaded() }
-        else { (*STORAGE).DrawArrays.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawArrays.is_loaded }
+        else { gl::DrawArrays::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2745,8 +2746,8 @@ pub mod DrawArraysIndirect {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawArraysIndirect::is_loaded() }
-        else { (*STORAGE).DrawArraysIndirect.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawArraysIndirect.is_loaded }
+        else { gl::DrawArraysIndirect::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2760,8 +2761,8 @@ pub mod DrawArraysInstanced {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawArraysInstanced::is_loaded() }
-        else { (*STORAGE).DrawArraysInstanced.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawArraysInstanced.is_loaded }
+        else { gl::DrawArraysInstanced::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2775,8 +2776,8 @@ pub mod DrawArraysInstancedBaseInstance {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawArraysInstancedBaseInstance::is_loaded() }
-        else { (*STORAGE).DrawArraysInstancedBaseInstance.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawArraysInstancedBaseInstance.is_loaded }
+        else { gl::DrawArraysInstancedBaseInstance::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2790,8 +2791,8 @@ pub mod DrawBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawBuffer::is_loaded() }
-        else { (*STORAGE).DrawBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawBuffer.is_loaded }
+        else { gl::DrawBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2805,8 +2806,8 @@ pub mod DrawBuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawBuffers::is_loaded() }
-        else { (*STORAGE).DrawBuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawBuffers.is_loaded }
+        else { gl::DrawBuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2820,8 +2821,8 @@ pub mod DrawElements {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawElements::is_loaded() }
-        else { (*STORAGE).DrawElements.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawElements.is_loaded }
+        else { gl::DrawElements::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2835,8 +2836,8 @@ pub mod DrawElementsBaseVertex {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawElementsBaseVertex::is_loaded() }
-        else { (*STORAGE).DrawElementsBaseVertex.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawElementsBaseVertex.is_loaded }
+        else { gl::DrawElementsBaseVertex::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2850,8 +2851,8 @@ pub mod DrawElementsIndirect {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawElementsIndirect::is_loaded() }
-        else { (*STORAGE).DrawElementsIndirect.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawElementsIndirect.is_loaded }
+        else { gl::DrawElementsIndirect::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2865,8 +2866,8 @@ pub mod DrawElementsInstanced {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawElementsInstanced::is_loaded() }
-        else { (*STORAGE).DrawElementsInstanced.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawElementsInstanced.is_loaded }
+        else { gl::DrawElementsInstanced::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2880,8 +2881,8 @@ pub mod DrawElementsInstancedBaseInstance {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawElementsInstancedBaseInstance::is_loaded() }
-        else { (*STORAGE).DrawElementsInstancedBaseInstance.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawElementsInstancedBaseInstance.is_loaded }
+        else { gl::DrawElementsInstancedBaseInstance::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2895,8 +2896,8 @@ pub mod DrawElementsInstancedBaseVertex {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawElementsInstancedBaseVertex::is_loaded() }
-        else { (*STORAGE).DrawElementsInstancedBaseVertex.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawElementsInstancedBaseVertex.is_loaded }
+        else { gl::DrawElementsInstancedBaseVertex::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2910,8 +2911,8 @@ pub mod DrawElementsInstancedBaseVertexBaseInstance {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawElementsInstancedBaseVertexBaseInstance::is_loaded() }
-        else { (*STORAGE).DrawElementsInstancedBaseVertexBaseInstance.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawElementsInstancedBaseVertexBaseInstance.is_loaded }
+        else { gl::DrawElementsInstancedBaseVertexBaseInstance::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2925,8 +2926,8 @@ pub mod DrawRangeElements {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawRangeElements::is_loaded() }
-        else { (*STORAGE).DrawRangeElements.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawRangeElements.is_loaded }
+        else { gl::DrawRangeElements::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2940,8 +2941,8 @@ pub mod DrawRangeElementsBaseVertex {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawRangeElementsBaseVertex::is_loaded() }
-        else { (*STORAGE).DrawRangeElementsBaseVertex.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawRangeElementsBaseVertex.is_loaded }
+        else { gl::DrawRangeElementsBaseVertex::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2955,8 +2956,8 @@ pub mod DrawTransformFeedback {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawTransformFeedback::is_loaded() }
-        else { (*STORAGE).DrawTransformFeedback.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawTransformFeedback.is_loaded }
+        else { gl::DrawTransformFeedback::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2970,8 +2971,8 @@ pub mod DrawTransformFeedbackInstanced {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawTransformFeedbackInstanced::is_loaded() }
-        else { (*STORAGE).DrawTransformFeedbackInstanced.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawTransformFeedbackInstanced.is_loaded }
+        else { gl::DrawTransformFeedbackInstanced::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -2985,8 +2986,8 @@ pub mod DrawTransformFeedbackStream {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawTransformFeedbackStream::is_loaded() }
-        else { (*STORAGE).DrawTransformFeedbackStream.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawTransformFeedbackStream.is_loaded }
+        else { gl::DrawTransformFeedbackStream::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3000,8 +3001,8 @@ pub mod DrawTransformFeedbackStreamInstanced {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::DrawTransformFeedbackStreamInstanced::is_loaded() }
-        else { (*STORAGE).DrawTransformFeedbackStreamInstanced.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).DrawTransformFeedbackStreamInstanced.is_loaded }
+        else { gl::DrawTransformFeedbackStreamInstanced::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3015,8 +3016,8 @@ pub mod Enable {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Enable::is_loaded() }
-        else { (*STORAGE).Enable.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Enable.is_loaded }
+        else { gl::Enable::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3030,8 +3031,8 @@ pub mod EnableVertexArrayAttrib {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::EnableVertexArrayAttrib::is_loaded() }
-        else { (*STORAGE).EnableVertexArrayAttrib.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).EnableVertexArrayAttrib.is_loaded }
+        else { gl::EnableVertexArrayAttrib::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3045,8 +3046,8 @@ pub mod EnableVertexAttribArray {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::EnableVertexAttribArray::is_loaded() }
-        else { (*STORAGE).EnableVertexAttribArray.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).EnableVertexAttribArray.is_loaded }
+        else { gl::EnableVertexAttribArray::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3060,8 +3061,8 @@ pub mod Enablei {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Enablei::is_loaded() }
-        else { (*STORAGE).Enablei.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Enablei.is_loaded }
+        else { gl::Enablei::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3075,8 +3076,8 @@ pub mod EndConditionalRender {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::EndConditionalRender::is_loaded() }
-        else { (*STORAGE).EndConditionalRender.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).EndConditionalRender.is_loaded }
+        else { gl::EndConditionalRender::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3090,8 +3091,8 @@ pub mod EndQuery {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::EndQuery::is_loaded() }
-        else { (*STORAGE).EndQuery.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).EndQuery.is_loaded }
+        else { gl::EndQuery::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3105,8 +3106,8 @@ pub mod EndQueryIndexed {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::EndQueryIndexed::is_loaded() }
-        else { (*STORAGE).EndQueryIndexed.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).EndQueryIndexed.is_loaded }
+        else { gl::EndQueryIndexed::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3120,8 +3121,8 @@ pub mod EndTransformFeedback {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::EndTransformFeedback::is_loaded() }
-        else { (*STORAGE).EndTransformFeedback.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).EndTransformFeedback.is_loaded }
+        else { gl::EndTransformFeedback::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3135,8 +3136,8 @@ pub mod FenceSync {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::FenceSync::is_loaded() }
-        else { (*STORAGE).FenceSync.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).FenceSync.is_loaded }
+        else { gl::FenceSync::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3150,8 +3151,8 @@ pub mod Finish {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Finish::is_loaded() }
-        else { (*STORAGE).Finish.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Finish.is_loaded }
+        else { gl::Finish::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3165,8 +3166,8 @@ pub mod Flush {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Flush::is_loaded() }
-        else { (*STORAGE).Flush.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Flush.is_loaded }
+        else { gl::Flush::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3180,8 +3181,8 @@ pub mod FlushMappedBufferRange {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::FlushMappedBufferRange::is_loaded() }
-        else { (*STORAGE).FlushMappedBufferRange.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).FlushMappedBufferRange.is_loaded }
+        else { gl::FlushMappedBufferRange::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3195,8 +3196,8 @@ pub mod FlushMappedNamedBufferRange {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::FlushMappedNamedBufferRange::is_loaded() }
-        else { (*STORAGE).FlushMappedNamedBufferRange.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).FlushMappedNamedBufferRange.is_loaded }
+        else { gl::FlushMappedNamedBufferRange::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3210,8 +3211,8 @@ pub mod FramebufferParameteri {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::FramebufferParameteri::is_loaded() }
-        else { (*STORAGE).FramebufferParameteri.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).FramebufferParameteri.is_loaded }
+        else { gl::FramebufferParameteri::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3225,8 +3226,8 @@ pub mod FramebufferRenderbuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::FramebufferRenderbuffer::is_loaded() }
-        else { (*STORAGE).FramebufferRenderbuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).FramebufferRenderbuffer.is_loaded }
+        else { gl::FramebufferRenderbuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3240,8 +3241,8 @@ pub mod FramebufferTexture {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::FramebufferTexture::is_loaded() }
-        else { (*STORAGE).FramebufferTexture.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).FramebufferTexture.is_loaded }
+        else { gl::FramebufferTexture::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3255,8 +3256,8 @@ pub mod FramebufferTexture1D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::FramebufferTexture1D::is_loaded() }
-        else { (*STORAGE).FramebufferTexture1D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).FramebufferTexture1D.is_loaded }
+        else { gl::FramebufferTexture1D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3270,8 +3271,8 @@ pub mod FramebufferTexture2D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::FramebufferTexture2D::is_loaded() }
-        else { (*STORAGE).FramebufferTexture2D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).FramebufferTexture2D.is_loaded }
+        else { gl::FramebufferTexture2D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3285,8 +3286,8 @@ pub mod FramebufferTexture3D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::FramebufferTexture3D::is_loaded() }
-        else { (*STORAGE).FramebufferTexture3D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).FramebufferTexture3D.is_loaded }
+        else { gl::FramebufferTexture3D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3300,8 +3301,8 @@ pub mod FramebufferTextureLayer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::FramebufferTextureLayer::is_loaded() }
-        else { (*STORAGE).FramebufferTextureLayer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).FramebufferTextureLayer.is_loaded }
+        else { gl::FramebufferTextureLayer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3315,8 +3316,8 @@ pub mod FrontFace {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::FrontFace::is_loaded() }
-        else { (*STORAGE).FrontFace.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).FrontFace.is_loaded }
+        else { gl::FrontFace::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3330,8 +3331,8 @@ pub mod GenBuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GenBuffers::is_loaded() }
-        else { (*STORAGE).GenBuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GenBuffers.is_loaded }
+        else { gl::GenBuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3345,8 +3346,8 @@ pub mod GenFramebuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GenFramebuffers::is_loaded() }
-        else { (*STORAGE).GenFramebuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GenFramebuffers.is_loaded }
+        else { gl::GenFramebuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3360,8 +3361,8 @@ pub mod GenProgramPipelines {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GenProgramPipelines::is_loaded() }
-        else { (*STORAGE).GenProgramPipelines.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GenProgramPipelines.is_loaded }
+        else { gl::GenProgramPipelines::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3375,8 +3376,8 @@ pub mod GenQueries {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GenQueries::is_loaded() }
-        else { (*STORAGE).GenQueries.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GenQueries.is_loaded }
+        else { gl::GenQueries::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3390,8 +3391,8 @@ pub mod GenRenderbuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GenRenderbuffers::is_loaded() }
-        else { (*STORAGE).GenRenderbuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GenRenderbuffers.is_loaded }
+        else { gl::GenRenderbuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3405,8 +3406,8 @@ pub mod GenSamplers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GenSamplers::is_loaded() }
-        else { (*STORAGE).GenSamplers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GenSamplers.is_loaded }
+        else { gl::GenSamplers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3420,8 +3421,8 @@ pub mod GenTextures {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GenTextures::is_loaded() }
-        else { (*STORAGE).GenTextures.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GenTextures.is_loaded }
+        else { gl::GenTextures::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3435,8 +3436,8 @@ pub mod GenTransformFeedbacks {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GenTransformFeedbacks::is_loaded() }
-        else { (*STORAGE).GenTransformFeedbacks.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GenTransformFeedbacks.is_loaded }
+        else { gl::GenTransformFeedbacks::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3450,8 +3451,8 @@ pub mod GenVertexArrays {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GenVertexArrays::is_loaded() }
-        else { (*STORAGE).GenVertexArrays.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GenVertexArrays.is_loaded }
+        else { gl::GenVertexArrays::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3465,8 +3466,8 @@ pub mod GenerateMipmap {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GenerateMipmap::is_loaded() }
-        else { (*STORAGE).GenerateMipmap.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GenerateMipmap.is_loaded }
+        else { gl::GenerateMipmap::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3480,8 +3481,8 @@ pub mod GenerateTextureMipmap {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GenerateTextureMipmap::is_loaded() }
-        else { (*STORAGE).GenerateTextureMipmap.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GenerateTextureMipmap.is_loaded }
+        else { gl::GenerateTextureMipmap::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3495,8 +3496,8 @@ pub mod GetActiveAtomicCounterBufferiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetActiveAtomicCounterBufferiv::is_loaded() }
-        else { (*STORAGE).GetActiveAtomicCounterBufferiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetActiveAtomicCounterBufferiv.is_loaded }
+        else { gl::GetActiveAtomicCounterBufferiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3510,8 +3511,8 @@ pub mod GetActiveAttrib {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetActiveAttrib::is_loaded() }
-        else { (*STORAGE).GetActiveAttrib.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetActiveAttrib.is_loaded }
+        else { gl::GetActiveAttrib::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3525,8 +3526,8 @@ pub mod GetActiveSubroutineName {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetActiveSubroutineName::is_loaded() }
-        else { (*STORAGE).GetActiveSubroutineName.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetActiveSubroutineName.is_loaded }
+        else { gl::GetActiveSubroutineName::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3540,8 +3541,8 @@ pub mod GetActiveSubroutineUniformName {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetActiveSubroutineUniformName::is_loaded() }
-        else { (*STORAGE).GetActiveSubroutineUniformName.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetActiveSubroutineUniformName.is_loaded }
+        else { gl::GetActiveSubroutineUniformName::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3555,8 +3556,8 @@ pub mod GetActiveSubroutineUniformiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetActiveSubroutineUniformiv::is_loaded() }
-        else { (*STORAGE).GetActiveSubroutineUniformiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetActiveSubroutineUniformiv.is_loaded }
+        else { gl::GetActiveSubroutineUniformiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3570,8 +3571,8 @@ pub mod GetActiveUniform {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetActiveUniform::is_loaded() }
-        else { (*STORAGE).GetActiveUniform.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetActiveUniform.is_loaded }
+        else { gl::GetActiveUniform::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3585,8 +3586,8 @@ pub mod GetActiveUniformBlockName {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetActiveUniformBlockName::is_loaded() }
-        else { (*STORAGE).GetActiveUniformBlockName.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetActiveUniformBlockName.is_loaded }
+        else { gl::GetActiveUniformBlockName::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3600,8 +3601,8 @@ pub mod GetActiveUniformBlockiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetActiveUniformBlockiv::is_loaded() }
-        else { (*STORAGE).GetActiveUniformBlockiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetActiveUniformBlockiv.is_loaded }
+        else { gl::GetActiveUniformBlockiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3615,8 +3616,8 @@ pub mod GetActiveUniformName {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetActiveUniformName::is_loaded() }
-        else { (*STORAGE).GetActiveUniformName.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetActiveUniformName.is_loaded }
+        else { gl::GetActiveUniformName::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3630,8 +3631,8 @@ pub mod GetActiveUniformsiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetActiveUniformsiv::is_loaded() }
-        else { (*STORAGE).GetActiveUniformsiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetActiveUniformsiv.is_loaded }
+        else { gl::GetActiveUniformsiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3645,8 +3646,8 @@ pub mod GetAttachedShaders {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetAttachedShaders::is_loaded() }
-        else { (*STORAGE).GetAttachedShaders.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetAttachedShaders.is_loaded }
+        else { gl::GetAttachedShaders::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3660,8 +3661,8 @@ pub mod GetAttribLocation {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetAttribLocation::is_loaded() }
-        else { (*STORAGE).GetAttribLocation.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetAttribLocation.is_loaded }
+        else { gl::GetAttribLocation::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3675,8 +3676,8 @@ pub mod GetBooleani_v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetBooleani_v::is_loaded() }
-        else { (*STORAGE).GetBooleani_v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetBooleani_v.is_loaded }
+        else { gl::GetBooleani_v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3690,8 +3691,8 @@ pub mod GetBooleanv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetBooleanv::is_loaded() }
-        else { (*STORAGE).GetBooleanv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetBooleanv.is_loaded }
+        else { gl::GetBooleanv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3705,8 +3706,8 @@ pub mod GetBufferParameteri64v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetBufferParameteri64v::is_loaded() }
-        else { (*STORAGE).GetBufferParameteri64v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetBufferParameteri64v.is_loaded }
+        else { gl::GetBufferParameteri64v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3720,8 +3721,8 @@ pub mod GetBufferParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetBufferParameteriv::is_loaded() }
-        else { (*STORAGE).GetBufferParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetBufferParameteriv.is_loaded }
+        else { gl::GetBufferParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3735,8 +3736,8 @@ pub mod GetBufferPointerv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetBufferPointerv::is_loaded() }
-        else { (*STORAGE).GetBufferPointerv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetBufferPointerv.is_loaded }
+        else { gl::GetBufferPointerv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3750,8 +3751,8 @@ pub mod GetBufferSubData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetBufferSubData::is_loaded() }
-        else { (*STORAGE).GetBufferSubData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetBufferSubData.is_loaded }
+        else { gl::GetBufferSubData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3765,8 +3766,8 @@ pub mod GetCompressedTexImage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetCompressedTexImage::is_loaded() }
-        else { (*STORAGE).GetCompressedTexImage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetCompressedTexImage.is_loaded }
+        else { gl::GetCompressedTexImage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3780,8 +3781,8 @@ pub mod GetCompressedTextureImage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetCompressedTextureImage::is_loaded() }
-        else { (*STORAGE).GetCompressedTextureImage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetCompressedTextureImage.is_loaded }
+        else { gl::GetCompressedTextureImage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3795,8 +3796,8 @@ pub mod GetCompressedTextureSubImage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetCompressedTextureSubImage::is_loaded() }
-        else { (*STORAGE).GetCompressedTextureSubImage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetCompressedTextureSubImage.is_loaded }
+        else { gl::GetCompressedTextureSubImage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3810,8 +3811,8 @@ pub mod GetDebugMessageLog {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetDebugMessageLog::is_loaded() }
-        else { (*STORAGE).GetDebugMessageLog.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetDebugMessageLog.is_loaded }
+        else { gl::GetDebugMessageLog::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3825,8 +3826,8 @@ pub mod GetDoublei_v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetDoublei_v::is_loaded() }
-        else { (*STORAGE).GetDoublei_v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetDoublei_v.is_loaded }
+        else { gl::GetDoublei_v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3840,8 +3841,8 @@ pub mod GetDoublev {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetDoublev::is_loaded() }
-        else { (*STORAGE).GetDoublev.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetDoublev.is_loaded }
+        else { gl::GetDoublev::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3855,8 +3856,8 @@ pub mod GetError {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetError::is_loaded() }
-        else { (*STORAGE).GetError.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetError.is_loaded }
+        else { gl::GetError::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3870,8 +3871,8 @@ pub mod GetFloati_v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetFloati_v::is_loaded() }
-        else { (*STORAGE).GetFloati_v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetFloati_v.is_loaded }
+        else { gl::GetFloati_v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3885,8 +3886,8 @@ pub mod GetFloatv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetFloatv::is_loaded() }
-        else { (*STORAGE).GetFloatv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetFloatv.is_loaded }
+        else { gl::GetFloatv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3900,8 +3901,8 @@ pub mod GetFragDataIndex {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetFragDataIndex::is_loaded() }
-        else { (*STORAGE).GetFragDataIndex.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetFragDataIndex.is_loaded }
+        else { gl::GetFragDataIndex::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3915,8 +3916,8 @@ pub mod GetFragDataLocation {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetFragDataLocation::is_loaded() }
-        else { (*STORAGE).GetFragDataLocation.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetFragDataLocation.is_loaded }
+        else { gl::GetFragDataLocation::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3930,8 +3931,8 @@ pub mod GetFramebufferAttachmentParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetFramebufferAttachmentParameteriv::is_loaded() }
-        else { (*STORAGE).GetFramebufferAttachmentParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetFramebufferAttachmentParameteriv.is_loaded }
+        else { gl::GetFramebufferAttachmentParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3945,8 +3946,8 @@ pub mod GetFramebufferParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetFramebufferParameteriv::is_loaded() }
-        else { (*STORAGE).GetFramebufferParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetFramebufferParameteriv.is_loaded }
+        else { gl::GetFramebufferParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3960,8 +3961,8 @@ pub mod GetGraphicsResetStatus {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetGraphicsResetStatus::is_loaded() }
-        else { (*STORAGE).GetGraphicsResetStatus.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetGraphicsResetStatus.is_loaded }
+        else { gl::GetGraphicsResetStatus::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3975,8 +3976,8 @@ pub mod GetInteger64i_v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetInteger64i_v::is_loaded() }
-        else { (*STORAGE).GetInteger64i_v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetInteger64i_v.is_loaded }
+        else { gl::GetInteger64i_v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -3990,8 +3991,8 @@ pub mod GetInteger64v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetInteger64v::is_loaded() }
-        else { (*STORAGE).GetInteger64v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetInteger64v.is_loaded }
+        else { gl::GetInteger64v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4005,8 +4006,8 @@ pub mod GetIntegeri_v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetIntegeri_v::is_loaded() }
-        else { (*STORAGE).GetIntegeri_v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetIntegeri_v.is_loaded }
+        else { gl::GetIntegeri_v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4020,8 +4021,8 @@ pub mod GetIntegerv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetIntegerv::is_loaded() }
-        else { (*STORAGE).GetIntegerv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetIntegerv.is_loaded }
+        else { gl::GetIntegerv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4035,8 +4036,8 @@ pub mod GetInternalformati64v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetInternalformati64v::is_loaded() }
-        else { (*STORAGE).GetInternalformati64v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetInternalformati64v.is_loaded }
+        else { gl::GetInternalformati64v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4050,8 +4051,8 @@ pub mod GetInternalformativ {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetInternalformativ::is_loaded() }
-        else { (*STORAGE).GetInternalformativ.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetInternalformativ.is_loaded }
+        else { gl::GetInternalformativ::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4065,8 +4066,8 @@ pub mod GetMultisamplefv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetMultisamplefv::is_loaded() }
-        else { (*STORAGE).GetMultisamplefv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetMultisamplefv.is_loaded }
+        else { gl::GetMultisamplefv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4080,8 +4081,8 @@ pub mod GetNamedBufferParameteri64v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetNamedBufferParameteri64v::is_loaded() }
-        else { (*STORAGE).GetNamedBufferParameteri64v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetNamedBufferParameteri64v.is_loaded }
+        else { gl::GetNamedBufferParameteri64v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4095,8 +4096,8 @@ pub mod GetNamedBufferParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetNamedBufferParameteriv::is_loaded() }
-        else { (*STORAGE).GetNamedBufferParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetNamedBufferParameteriv.is_loaded }
+        else { gl::GetNamedBufferParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4110,8 +4111,8 @@ pub mod GetNamedBufferPointerv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetNamedBufferPointerv::is_loaded() }
-        else { (*STORAGE).GetNamedBufferPointerv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetNamedBufferPointerv.is_loaded }
+        else { gl::GetNamedBufferPointerv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4125,8 +4126,8 @@ pub mod GetNamedBufferSubData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetNamedBufferSubData::is_loaded() }
-        else { (*STORAGE).GetNamedBufferSubData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetNamedBufferSubData.is_loaded }
+        else { gl::GetNamedBufferSubData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4140,8 +4141,8 @@ pub mod GetNamedFramebufferAttachmentParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetNamedFramebufferAttachmentParameteriv::is_loaded() }
-        else { (*STORAGE).GetNamedFramebufferAttachmentParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetNamedFramebufferAttachmentParameteriv.is_loaded }
+        else { gl::GetNamedFramebufferAttachmentParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4155,8 +4156,8 @@ pub mod GetNamedFramebufferParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetNamedFramebufferParameteriv::is_loaded() }
-        else { (*STORAGE).GetNamedFramebufferParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetNamedFramebufferParameteriv.is_loaded }
+        else { gl::GetNamedFramebufferParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4170,8 +4171,8 @@ pub mod GetNamedRenderbufferParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetNamedRenderbufferParameteriv::is_loaded() }
-        else { (*STORAGE).GetNamedRenderbufferParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetNamedRenderbufferParameteriv.is_loaded }
+        else { gl::GetNamedRenderbufferParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4185,8 +4186,8 @@ pub mod GetObjectLabel {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetObjectLabel::is_loaded() }
-        else { (*STORAGE).GetObjectLabel.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetObjectLabel.is_loaded }
+        else { gl::GetObjectLabel::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4200,8 +4201,8 @@ pub mod GetObjectPtrLabel {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetObjectPtrLabel::is_loaded() }
-        else { (*STORAGE).GetObjectPtrLabel.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetObjectPtrLabel.is_loaded }
+        else { gl::GetObjectPtrLabel::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4215,8 +4216,8 @@ pub mod GetPointerv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetPointerv::is_loaded() }
-        else { (*STORAGE).GetPointerv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetPointerv.is_loaded }
+        else { gl::GetPointerv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4230,8 +4231,8 @@ pub mod GetProgramBinary {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetProgramBinary::is_loaded() }
-        else { (*STORAGE).GetProgramBinary.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetProgramBinary.is_loaded }
+        else { gl::GetProgramBinary::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4245,8 +4246,8 @@ pub mod GetProgramInfoLog {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetProgramInfoLog::is_loaded() }
-        else { (*STORAGE).GetProgramInfoLog.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetProgramInfoLog.is_loaded }
+        else { gl::GetProgramInfoLog::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4260,8 +4261,8 @@ pub mod GetProgramInterfaceiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetProgramInterfaceiv::is_loaded() }
-        else { (*STORAGE).GetProgramInterfaceiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetProgramInterfaceiv.is_loaded }
+        else { gl::GetProgramInterfaceiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4275,8 +4276,8 @@ pub mod GetProgramPipelineInfoLog {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetProgramPipelineInfoLog::is_loaded() }
-        else { (*STORAGE).GetProgramPipelineInfoLog.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetProgramPipelineInfoLog.is_loaded }
+        else { gl::GetProgramPipelineInfoLog::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4290,8 +4291,8 @@ pub mod GetProgramPipelineiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetProgramPipelineiv::is_loaded() }
-        else { (*STORAGE).GetProgramPipelineiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetProgramPipelineiv.is_loaded }
+        else { gl::GetProgramPipelineiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4305,8 +4306,8 @@ pub mod GetProgramResourceIndex {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetProgramResourceIndex::is_loaded() }
-        else { (*STORAGE).GetProgramResourceIndex.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetProgramResourceIndex.is_loaded }
+        else { gl::GetProgramResourceIndex::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4320,8 +4321,8 @@ pub mod GetProgramResourceLocation {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetProgramResourceLocation::is_loaded() }
-        else { (*STORAGE).GetProgramResourceLocation.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetProgramResourceLocation.is_loaded }
+        else { gl::GetProgramResourceLocation::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4335,8 +4336,8 @@ pub mod GetProgramResourceLocationIndex {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetProgramResourceLocationIndex::is_loaded() }
-        else { (*STORAGE).GetProgramResourceLocationIndex.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetProgramResourceLocationIndex.is_loaded }
+        else { gl::GetProgramResourceLocationIndex::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4350,8 +4351,8 @@ pub mod GetProgramResourceName {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetProgramResourceName::is_loaded() }
-        else { (*STORAGE).GetProgramResourceName.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetProgramResourceName.is_loaded }
+        else { gl::GetProgramResourceName::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4365,8 +4366,8 @@ pub mod GetProgramResourceiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetProgramResourceiv::is_loaded() }
-        else { (*STORAGE).GetProgramResourceiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetProgramResourceiv.is_loaded }
+        else { gl::GetProgramResourceiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4380,8 +4381,8 @@ pub mod GetProgramStageiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetProgramStageiv::is_loaded() }
-        else { (*STORAGE).GetProgramStageiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetProgramStageiv.is_loaded }
+        else { gl::GetProgramStageiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4395,8 +4396,8 @@ pub mod GetProgramiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetProgramiv::is_loaded() }
-        else { (*STORAGE).GetProgramiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetProgramiv.is_loaded }
+        else { gl::GetProgramiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4410,8 +4411,8 @@ pub mod GetQueryBufferObjecti64v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetQueryBufferObjecti64v::is_loaded() }
-        else { (*STORAGE).GetQueryBufferObjecti64v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetQueryBufferObjecti64v.is_loaded }
+        else { gl::GetQueryBufferObjecti64v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4425,8 +4426,8 @@ pub mod GetQueryBufferObjectiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetQueryBufferObjectiv::is_loaded() }
-        else { (*STORAGE).GetQueryBufferObjectiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetQueryBufferObjectiv.is_loaded }
+        else { gl::GetQueryBufferObjectiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4440,8 +4441,8 @@ pub mod GetQueryBufferObjectui64v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetQueryBufferObjectui64v::is_loaded() }
-        else { (*STORAGE).GetQueryBufferObjectui64v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetQueryBufferObjectui64v.is_loaded }
+        else { gl::GetQueryBufferObjectui64v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4455,8 +4456,8 @@ pub mod GetQueryBufferObjectuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetQueryBufferObjectuiv::is_loaded() }
-        else { (*STORAGE).GetQueryBufferObjectuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetQueryBufferObjectuiv.is_loaded }
+        else { gl::GetQueryBufferObjectuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4470,8 +4471,8 @@ pub mod GetQueryIndexediv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetQueryIndexediv::is_loaded() }
-        else { (*STORAGE).GetQueryIndexediv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetQueryIndexediv.is_loaded }
+        else { gl::GetQueryIndexediv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4485,8 +4486,8 @@ pub mod GetQueryObjecti64v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetQueryObjecti64v::is_loaded() }
-        else { (*STORAGE).GetQueryObjecti64v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetQueryObjecti64v.is_loaded }
+        else { gl::GetQueryObjecti64v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4500,8 +4501,8 @@ pub mod GetQueryObjectiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetQueryObjectiv::is_loaded() }
-        else { (*STORAGE).GetQueryObjectiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetQueryObjectiv.is_loaded }
+        else { gl::GetQueryObjectiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4515,8 +4516,8 @@ pub mod GetQueryObjectui64v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetQueryObjectui64v::is_loaded() }
-        else { (*STORAGE).GetQueryObjectui64v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetQueryObjectui64v.is_loaded }
+        else { gl::GetQueryObjectui64v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4530,8 +4531,8 @@ pub mod GetQueryObjectuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetQueryObjectuiv::is_loaded() }
-        else { (*STORAGE).GetQueryObjectuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetQueryObjectuiv.is_loaded }
+        else { gl::GetQueryObjectuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4545,8 +4546,8 @@ pub mod GetQueryiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetQueryiv::is_loaded() }
-        else { (*STORAGE).GetQueryiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetQueryiv.is_loaded }
+        else { gl::GetQueryiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4560,8 +4561,8 @@ pub mod GetRenderbufferParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetRenderbufferParameteriv::is_loaded() }
-        else { (*STORAGE).GetRenderbufferParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetRenderbufferParameteriv.is_loaded }
+        else { gl::GetRenderbufferParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4575,8 +4576,8 @@ pub mod GetSamplerParameterIiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetSamplerParameterIiv::is_loaded() }
-        else { (*STORAGE).GetSamplerParameterIiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetSamplerParameterIiv.is_loaded }
+        else { gl::GetSamplerParameterIiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4590,8 +4591,8 @@ pub mod GetSamplerParameterIuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetSamplerParameterIuiv::is_loaded() }
-        else { (*STORAGE).GetSamplerParameterIuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetSamplerParameterIuiv.is_loaded }
+        else { gl::GetSamplerParameterIuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4605,8 +4606,8 @@ pub mod GetSamplerParameterfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetSamplerParameterfv::is_loaded() }
-        else { (*STORAGE).GetSamplerParameterfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetSamplerParameterfv.is_loaded }
+        else { gl::GetSamplerParameterfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4620,8 +4621,8 @@ pub mod GetSamplerParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetSamplerParameteriv::is_loaded() }
-        else { (*STORAGE).GetSamplerParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetSamplerParameteriv.is_loaded }
+        else { gl::GetSamplerParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4635,8 +4636,8 @@ pub mod GetShaderInfoLog {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetShaderInfoLog::is_loaded() }
-        else { (*STORAGE).GetShaderInfoLog.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetShaderInfoLog.is_loaded }
+        else { gl::GetShaderInfoLog::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4650,8 +4651,8 @@ pub mod GetShaderPrecisionFormat {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetShaderPrecisionFormat::is_loaded() }
-        else { (*STORAGE).GetShaderPrecisionFormat.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetShaderPrecisionFormat.is_loaded }
+        else { gl::GetShaderPrecisionFormat::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4665,8 +4666,8 @@ pub mod GetShaderSource {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetShaderSource::is_loaded() }
-        else { (*STORAGE).GetShaderSource.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetShaderSource.is_loaded }
+        else { gl::GetShaderSource::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4680,8 +4681,8 @@ pub mod GetShaderiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetShaderiv::is_loaded() }
-        else { (*STORAGE).GetShaderiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetShaderiv.is_loaded }
+        else { gl::GetShaderiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4695,8 +4696,8 @@ pub mod GetString {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetString::is_loaded() }
-        else { (*STORAGE).GetString.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetString.is_loaded }
+        else { gl::GetString::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4710,8 +4711,8 @@ pub mod GetStringi {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetStringi::is_loaded() }
-        else { (*STORAGE).GetStringi.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetStringi.is_loaded }
+        else { gl::GetStringi::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4725,8 +4726,8 @@ pub mod GetSubroutineIndex {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetSubroutineIndex::is_loaded() }
-        else { (*STORAGE).GetSubroutineIndex.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetSubroutineIndex.is_loaded }
+        else { gl::GetSubroutineIndex::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4740,8 +4741,8 @@ pub mod GetSubroutineUniformLocation {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetSubroutineUniformLocation::is_loaded() }
-        else { (*STORAGE).GetSubroutineUniformLocation.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetSubroutineUniformLocation.is_loaded }
+        else { gl::GetSubroutineUniformLocation::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4755,8 +4756,8 @@ pub mod GetSynciv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetSynciv::is_loaded() }
-        else { (*STORAGE).GetSynciv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetSynciv.is_loaded }
+        else { gl::GetSynciv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4770,8 +4771,8 @@ pub mod GetTexImage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTexImage::is_loaded() }
-        else { (*STORAGE).GetTexImage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTexImage.is_loaded }
+        else { gl::GetTexImage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4785,8 +4786,8 @@ pub mod GetTexLevelParameterfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTexLevelParameterfv::is_loaded() }
-        else { (*STORAGE).GetTexLevelParameterfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTexLevelParameterfv.is_loaded }
+        else { gl::GetTexLevelParameterfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4800,8 +4801,8 @@ pub mod GetTexLevelParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTexLevelParameteriv::is_loaded() }
-        else { (*STORAGE).GetTexLevelParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTexLevelParameteriv.is_loaded }
+        else { gl::GetTexLevelParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4815,8 +4816,8 @@ pub mod GetTexParameterIiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTexParameterIiv::is_loaded() }
-        else { (*STORAGE).GetTexParameterIiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTexParameterIiv.is_loaded }
+        else { gl::GetTexParameterIiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4830,8 +4831,8 @@ pub mod GetTexParameterIuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTexParameterIuiv::is_loaded() }
-        else { (*STORAGE).GetTexParameterIuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTexParameterIuiv.is_loaded }
+        else { gl::GetTexParameterIuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4845,8 +4846,8 @@ pub mod GetTexParameterfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTexParameterfv::is_loaded() }
-        else { (*STORAGE).GetTexParameterfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTexParameterfv.is_loaded }
+        else { gl::GetTexParameterfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4860,8 +4861,8 @@ pub mod GetTexParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTexParameteriv::is_loaded() }
-        else { (*STORAGE).GetTexParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTexParameteriv.is_loaded }
+        else { gl::GetTexParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4875,8 +4876,8 @@ pub mod GetTextureImage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTextureImage::is_loaded() }
-        else { (*STORAGE).GetTextureImage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTextureImage.is_loaded }
+        else { gl::GetTextureImage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4890,8 +4891,8 @@ pub mod GetTextureLevelParameterfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTextureLevelParameterfv::is_loaded() }
-        else { (*STORAGE).GetTextureLevelParameterfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTextureLevelParameterfv.is_loaded }
+        else { gl::GetTextureLevelParameterfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4905,8 +4906,8 @@ pub mod GetTextureLevelParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTextureLevelParameteriv::is_loaded() }
-        else { (*STORAGE).GetTextureLevelParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTextureLevelParameteriv.is_loaded }
+        else { gl::GetTextureLevelParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4920,8 +4921,8 @@ pub mod GetTextureParameterIiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTextureParameterIiv::is_loaded() }
-        else { (*STORAGE).GetTextureParameterIiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTextureParameterIiv.is_loaded }
+        else { gl::GetTextureParameterIiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4935,8 +4936,8 @@ pub mod GetTextureParameterIuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTextureParameterIuiv::is_loaded() }
-        else { (*STORAGE).GetTextureParameterIuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTextureParameterIuiv.is_loaded }
+        else { gl::GetTextureParameterIuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4950,8 +4951,8 @@ pub mod GetTextureParameterfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTextureParameterfv::is_loaded() }
-        else { (*STORAGE).GetTextureParameterfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTextureParameterfv.is_loaded }
+        else { gl::GetTextureParameterfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4965,8 +4966,8 @@ pub mod GetTextureParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTextureParameteriv::is_loaded() }
-        else { (*STORAGE).GetTextureParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTextureParameteriv.is_loaded }
+        else { gl::GetTextureParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4980,8 +4981,8 @@ pub mod GetTextureSubImage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTextureSubImage::is_loaded() }
-        else { (*STORAGE).GetTextureSubImage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTextureSubImage.is_loaded }
+        else { gl::GetTextureSubImage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -4995,8 +4996,8 @@ pub mod GetTransformFeedbackVarying {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTransformFeedbackVarying::is_loaded() }
-        else { (*STORAGE).GetTransformFeedbackVarying.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTransformFeedbackVarying.is_loaded }
+        else { gl::GetTransformFeedbackVarying::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5010,8 +5011,8 @@ pub mod GetTransformFeedbacki64_v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTransformFeedbacki64_v::is_loaded() }
-        else { (*STORAGE).GetTransformFeedbacki64_v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTransformFeedbacki64_v.is_loaded }
+        else { gl::GetTransformFeedbacki64_v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5025,8 +5026,8 @@ pub mod GetTransformFeedbacki_v {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTransformFeedbacki_v::is_loaded() }
-        else { (*STORAGE).GetTransformFeedbacki_v.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTransformFeedbacki_v.is_loaded }
+        else { gl::GetTransformFeedbacki_v::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5040,8 +5041,8 @@ pub mod GetTransformFeedbackiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetTransformFeedbackiv::is_loaded() }
-        else { (*STORAGE).GetTransformFeedbackiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetTransformFeedbackiv.is_loaded }
+        else { gl::GetTransformFeedbackiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5055,8 +5056,8 @@ pub mod GetUniformBlockIndex {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetUniformBlockIndex::is_loaded() }
-        else { (*STORAGE).GetUniformBlockIndex.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetUniformBlockIndex.is_loaded }
+        else { gl::GetUniformBlockIndex::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5070,8 +5071,8 @@ pub mod GetUniformIndices {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetUniformIndices::is_loaded() }
-        else { (*STORAGE).GetUniformIndices.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetUniformIndices.is_loaded }
+        else { gl::GetUniformIndices::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5085,8 +5086,8 @@ pub mod GetUniformLocation {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetUniformLocation::is_loaded() }
-        else { (*STORAGE).GetUniformLocation.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetUniformLocation.is_loaded }
+        else { gl::GetUniformLocation::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5100,8 +5101,8 @@ pub mod GetUniformSubroutineuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetUniformSubroutineuiv::is_loaded() }
-        else { (*STORAGE).GetUniformSubroutineuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetUniformSubroutineuiv.is_loaded }
+        else { gl::GetUniformSubroutineuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5115,8 +5116,8 @@ pub mod GetUniformdv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetUniformdv::is_loaded() }
-        else { (*STORAGE).GetUniformdv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetUniformdv.is_loaded }
+        else { gl::GetUniformdv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5130,8 +5131,8 @@ pub mod GetUniformfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetUniformfv::is_loaded() }
-        else { (*STORAGE).GetUniformfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetUniformfv.is_loaded }
+        else { gl::GetUniformfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5145,8 +5146,8 @@ pub mod GetUniformiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetUniformiv::is_loaded() }
-        else { (*STORAGE).GetUniformiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetUniformiv.is_loaded }
+        else { gl::GetUniformiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5160,8 +5161,8 @@ pub mod GetUniformuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetUniformuiv::is_loaded() }
-        else { (*STORAGE).GetUniformuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetUniformuiv.is_loaded }
+        else { gl::GetUniformuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5175,8 +5176,8 @@ pub mod GetVertexArrayIndexed64iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetVertexArrayIndexed64iv::is_loaded() }
-        else { (*STORAGE).GetVertexArrayIndexed64iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetVertexArrayIndexed64iv.is_loaded }
+        else { gl::GetVertexArrayIndexed64iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5190,8 +5191,8 @@ pub mod GetVertexArrayIndexediv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetVertexArrayIndexediv::is_loaded() }
-        else { (*STORAGE).GetVertexArrayIndexediv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetVertexArrayIndexediv.is_loaded }
+        else { gl::GetVertexArrayIndexediv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5205,8 +5206,8 @@ pub mod GetVertexArrayiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetVertexArrayiv::is_loaded() }
-        else { (*STORAGE).GetVertexArrayiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetVertexArrayiv.is_loaded }
+        else { gl::GetVertexArrayiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5220,8 +5221,8 @@ pub mod GetVertexAttribIiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetVertexAttribIiv::is_loaded() }
-        else { (*STORAGE).GetVertexAttribIiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetVertexAttribIiv.is_loaded }
+        else { gl::GetVertexAttribIiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5235,8 +5236,8 @@ pub mod GetVertexAttribIuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetVertexAttribIuiv::is_loaded() }
-        else { (*STORAGE).GetVertexAttribIuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetVertexAttribIuiv.is_loaded }
+        else { gl::GetVertexAttribIuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5250,8 +5251,8 @@ pub mod GetVertexAttribLdv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetVertexAttribLdv::is_loaded() }
-        else { (*STORAGE).GetVertexAttribLdv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetVertexAttribLdv.is_loaded }
+        else { gl::GetVertexAttribLdv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5265,8 +5266,8 @@ pub mod GetVertexAttribPointerv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetVertexAttribPointerv::is_loaded() }
-        else { (*STORAGE).GetVertexAttribPointerv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetVertexAttribPointerv.is_loaded }
+        else { gl::GetVertexAttribPointerv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5280,8 +5281,8 @@ pub mod GetVertexAttribdv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetVertexAttribdv::is_loaded() }
-        else { (*STORAGE).GetVertexAttribdv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetVertexAttribdv.is_loaded }
+        else { gl::GetVertexAttribdv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5295,8 +5296,8 @@ pub mod GetVertexAttribfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetVertexAttribfv::is_loaded() }
-        else { (*STORAGE).GetVertexAttribfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetVertexAttribfv.is_loaded }
+        else { gl::GetVertexAttribfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5310,8 +5311,8 @@ pub mod GetVertexAttribiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetVertexAttribiv::is_loaded() }
-        else { (*STORAGE).GetVertexAttribiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetVertexAttribiv.is_loaded }
+        else { gl::GetVertexAttribiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5325,8 +5326,8 @@ pub mod GetnColorTable {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnColorTable::is_loaded() }
-        else { (*STORAGE).GetnColorTable.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnColorTable.is_loaded }
+        else { gl::GetnColorTable::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5340,8 +5341,8 @@ pub mod GetnCompressedTexImage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnCompressedTexImage::is_loaded() }
-        else { (*STORAGE).GetnCompressedTexImage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnCompressedTexImage.is_loaded }
+        else { gl::GetnCompressedTexImage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5355,8 +5356,8 @@ pub mod GetnConvolutionFilter {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnConvolutionFilter::is_loaded() }
-        else { (*STORAGE).GetnConvolutionFilter.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnConvolutionFilter.is_loaded }
+        else { gl::GetnConvolutionFilter::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5370,8 +5371,8 @@ pub mod GetnHistogram {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnHistogram::is_loaded() }
-        else { (*STORAGE).GetnHistogram.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnHistogram.is_loaded }
+        else { gl::GetnHistogram::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5385,8 +5386,8 @@ pub mod GetnMapdv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnMapdv::is_loaded() }
-        else { (*STORAGE).GetnMapdv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnMapdv.is_loaded }
+        else { gl::GetnMapdv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5400,8 +5401,8 @@ pub mod GetnMapfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnMapfv::is_loaded() }
-        else { (*STORAGE).GetnMapfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnMapfv.is_loaded }
+        else { gl::GetnMapfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5415,8 +5416,8 @@ pub mod GetnMapiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnMapiv::is_loaded() }
-        else { (*STORAGE).GetnMapiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnMapiv.is_loaded }
+        else { gl::GetnMapiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5430,8 +5431,8 @@ pub mod GetnMinmax {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnMinmax::is_loaded() }
-        else { (*STORAGE).GetnMinmax.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnMinmax.is_loaded }
+        else { gl::GetnMinmax::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5445,8 +5446,8 @@ pub mod GetnPixelMapfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnPixelMapfv::is_loaded() }
-        else { (*STORAGE).GetnPixelMapfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnPixelMapfv.is_loaded }
+        else { gl::GetnPixelMapfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5460,8 +5461,8 @@ pub mod GetnPixelMapuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnPixelMapuiv::is_loaded() }
-        else { (*STORAGE).GetnPixelMapuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnPixelMapuiv.is_loaded }
+        else { gl::GetnPixelMapuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5475,8 +5476,8 @@ pub mod GetnPixelMapusv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnPixelMapusv::is_loaded() }
-        else { (*STORAGE).GetnPixelMapusv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnPixelMapusv.is_loaded }
+        else { gl::GetnPixelMapusv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5490,8 +5491,8 @@ pub mod GetnPolygonStipple {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnPolygonStipple::is_loaded() }
-        else { (*STORAGE).GetnPolygonStipple.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnPolygonStipple.is_loaded }
+        else { gl::GetnPolygonStipple::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5505,8 +5506,8 @@ pub mod GetnSeparableFilter {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnSeparableFilter::is_loaded() }
-        else { (*STORAGE).GetnSeparableFilter.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnSeparableFilter.is_loaded }
+        else { gl::GetnSeparableFilter::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5520,8 +5521,8 @@ pub mod GetnTexImage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnTexImage::is_loaded() }
-        else { (*STORAGE).GetnTexImage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnTexImage.is_loaded }
+        else { gl::GetnTexImage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5535,8 +5536,8 @@ pub mod GetnUniformdv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnUniformdv::is_loaded() }
-        else { (*STORAGE).GetnUniformdv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnUniformdv.is_loaded }
+        else { gl::GetnUniformdv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5550,8 +5551,8 @@ pub mod GetnUniformfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnUniformfv::is_loaded() }
-        else { (*STORAGE).GetnUniformfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnUniformfv.is_loaded }
+        else { gl::GetnUniformfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5565,8 +5566,8 @@ pub mod GetnUniformiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnUniformiv::is_loaded() }
-        else { (*STORAGE).GetnUniformiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnUniformiv.is_loaded }
+        else { gl::GetnUniformiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5580,8 +5581,8 @@ pub mod GetnUniformuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::GetnUniformuiv::is_loaded() }
-        else { (*STORAGE).GetnUniformuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).GetnUniformuiv.is_loaded }
+        else { gl::GetnUniformuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5595,8 +5596,8 @@ pub mod Hint {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Hint::is_loaded() }
-        else { (*STORAGE).Hint.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Hint.is_loaded }
+        else { gl::Hint::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5610,8 +5611,8 @@ pub mod InvalidateBufferData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::InvalidateBufferData::is_loaded() }
-        else { (*STORAGE).InvalidateBufferData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).InvalidateBufferData.is_loaded }
+        else { gl::InvalidateBufferData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5625,8 +5626,8 @@ pub mod InvalidateBufferSubData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::InvalidateBufferSubData::is_loaded() }
-        else { (*STORAGE).InvalidateBufferSubData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).InvalidateBufferSubData.is_loaded }
+        else { gl::InvalidateBufferSubData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5640,8 +5641,8 @@ pub mod InvalidateFramebuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::InvalidateFramebuffer::is_loaded() }
-        else { (*STORAGE).InvalidateFramebuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).InvalidateFramebuffer.is_loaded }
+        else { gl::InvalidateFramebuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5655,8 +5656,8 @@ pub mod InvalidateNamedFramebufferData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::InvalidateNamedFramebufferData::is_loaded() }
-        else { (*STORAGE).InvalidateNamedFramebufferData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).InvalidateNamedFramebufferData.is_loaded }
+        else { gl::InvalidateNamedFramebufferData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5670,8 +5671,8 @@ pub mod InvalidateNamedFramebufferSubData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::InvalidateNamedFramebufferSubData::is_loaded() }
-        else { (*STORAGE).InvalidateNamedFramebufferSubData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).InvalidateNamedFramebufferSubData.is_loaded }
+        else { gl::InvalidateNamedFramebufferSubData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5685,8 +5686,8 @@ pub mod InvalidateSubFramebuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::InvalidateSubFramebuffer::is_loaded() }
-        else { (*STORAGE).InvalidateSubFramebuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).InvalidateSubFramebuffer.is_loaded }
+        else { gl::InvalidateSubFramebuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5700,8 +5701,8 @@ pub mod InvalidateTexImage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::InvalidateTexImage::is_loaded() }
-        else { (*STORAGE).InvalidateTexImage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).InvalidateTexImage.is_loaded }
+        else { gl::InvalidateTexImage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5715,8 +5716,8 @@ pub mod InvalidateTexSubImage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::InvalidateTexSubImage::is_loaded() }
-        else { (*STORAGE).InvalidateTexSubImage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).InvalidateTexSubImage.is_loaded }
+        else { gl::InvalidateTexSubImage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5730,8 +5731,8 @@ pub mod IsBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsBuffer::is_loaded() }
-        else { (*STORAGE).IsBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsBuffer.is_loaded }
+        else { gl::IsBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5745,8 +5746,8 @@ pub mod IsEnabled {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsEnabled::is_loaded() }
-        else { (*STORAGE).IsEnabled.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsEnabled.is_loaded }
+        else { gl::IsEnabled::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5760,8 +5761,8 @@ pub mod IsEnabledi {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsEnabledi::is_loaded() }
-        else { (*STORAGE).IsEnabledi.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsEnabledi.is_loaded }
+        else { gl::IsEnabledi::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5775,8 +5776,8 @@ pub mod IsFramebuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsFramebuffer::is_loaded() }
-        else { (*STORAGE).IsFramebuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsFramebuffer.is_loaded }
+        else { gl::IsFramebuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5790,8 +5791,8 @@ pub mod IsProgram {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsProgram::is_loaded() }
-        else { (*STORAGE).IsProgram.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsProgram.is_loaded }
+        else { gl::IsProgram::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5805,8 +5806,8 @@ pub mod IsProgramPipeline {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsProgramPipeline::is_loaded() }
-        else { (*STORAGE).IsProgramPipeline.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsProgramPipeline.is_loaded }
+        else { gl::IsProgramPipeline::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5820,8 +5821,8 @@ pub mod IsQuery {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsQuery::is_loaded() }
-        else { (*STORAGE).IsQuery.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsQuery.is_loaded }
+        else { gl::IsQuery::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5835,8 +5836,8 @@ pub mod IsRenderbuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsRenderbuffer::is_loaded() }
-        else { (*STORAGE).IsRenderbuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsRenderbuffer.is_loaded }
+        else { gl::IsRenderbuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5850,8 +5851,8 @@ pub mod IsSampler {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsSampler::is_loaded() }
-        else { (*STORAGE).IsSampler.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsSampler.is_loaded }
+        else { gl::IsSampler::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5865,8 +5866,8 @@ pub mod IsShader {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsShader::is_loaded() }
-        else { (*STORAGE).IsShader.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsShader.is_loaded }
+        else { gl::IsShader::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5880,8 +5881,8 @@ pub mod IsSync {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsSync::is_loaded() }
-        else { (*STORAGE).IsSync.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsSync.is_loaded }
+        else { gl::IsSync::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5895,8 +5896,8 @@ pub mod IsTexture {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsTexture::is_loaded() }
-        else { (*STORAGE).IsTexture.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsTexture.is_loaded }
+        else { gl::IsTexture::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5910,8 +5911,8 @@ pub mod IsTransformFeedback {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsTransformFeedback::is_loaded() }
-        else { (*STORAGE).IsTransformFeedback.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsTransformFeedback.is_loaded }
+        else { gl::IsTransformFeedback::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5925,8 +5926,8 @@ pub mod IsVertexArray {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::IsVertexArray::is_loaded() }
-        else { (*STORAGE).IsVertexArray.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).IsVertexArray.is_loaded }
+        else { gl::IsVertexArray::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5940,8 +5941,8 @@ pub mod LineWidth {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::LineWidth::is_loaded() }
-        else { (*STORAGE).LineWidth.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).LineWidth.is_loaded }
+        else { gl::LineWidth::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5955,8 +5956,8 @@ pub mod LinkProgram {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::LinkProgram::is_loaded() }
-        else { (*STORAGE).LinkProgram.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).LinkProgram.is_loaded }
+        else { gl::LinkProgram::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5970,8 +5971,8 @@ pub mod LogicOp {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::LogicOp::is_loaded() }
-        else { (*STORAGE).LogicOp.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).LogicOp.is_loaded }
+        else { gl::LogicOp::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -5985,8 +5986,8 @@ pub mod MapBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MapBuffer::is_loaded() }
-        else { (*STORAGE).MapBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MapBuffer.is_loaded }
+        else { gl::MapBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6000,8 +6001,8 @@ pub mod MapBufferRange {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MapBufferRange::is_loaded() }
-        else { (*STORAGE).MapBufferRange.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MapBufferRange.is_loaded }
+        else { gl::MapBufferRange::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6015,8 +6016,8 @@ pub mod MapNamedBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MapNamedBuffer::is_loaded() }
-        else { (*STORAGE).MapNamedBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MapNamedBuffer.is_loaded }
+        else { gl::MapNamedBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6030,8 +6031,8 @@ pub mod MapNamedBufferRange {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MapNamedBufferRange::is_loaded() }
-        else { (*STORAGE).MapNamedBufferRange.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MapNamedBufferRange.is_loaded }
+        else { gl::MapNamedBufferRange::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6045,8 +6046,8 @@ pub mod MemoryBarrier {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MemoryBarrier::is_loaded() }
-        else { (*STORAGE).MemoryBarrier.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MemoryBarrier.is_loaded }
+        else { gl::MemoryBarrier::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6060,8 +6061,8 @@ pub mod MemoryBarrierByRegion {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MemoryBarrierByRegion::is_loaded() }
-        else { (*STORAGE).MemoryBarrierByRegion.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MemoryBarrierByRegion.is_loaded }
+        else { gl::MemoryBarrierByRegion::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6075,8 +6076,8 @@ pub mod MinSampleShading {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MinSampleShading::is_loaded() }
-        else { (*STORAGE).MinSampleShading.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MinSampleShading.is_loaded }
+        else { gl::MinSampleShading::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6090,8 +6091,8 @@ pub mod MultiDrawArrays {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiDrawArrays::is_loaded() }
-        else { (*STORAGE).MultiDrawArrays.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiDrawArrays.is_loaded }
+        else { gl::MultiDrawArrays::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6105,8 +6106,8 @@ pub mod MultiDrawArraysIndirect {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiDrawArraysIndirect::is_loaded() }
-        else { (*STORAGE).MultiDrawArraysIndirect.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiDrawArraysIndirect.is_loaded }
+        else { gl::MultiDrawArraysIndirect::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6120,8 +6121,8 @@ pub mod MultiDrawElements {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiDrawElements::is_loaded() }
-        else { (*STORAGE).MultiDrawElements.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiDrawElements.is_loaded }
+        else { gl::MultiDrawElements::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6135,8 +6136,8 @@ pub mod MultiDrawElementsBaseVertex {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiDrawElementsBaseVertex::is_loaded() }
-        else { (*STORAGE).MultiDrawElementsBaseVertex.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiDrawElementsBaseVertex.is_loaded }
+        else { gl::MultiDrawElementsBaseVertex::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6150,8 +6151,8 @@ pub mod MultiDrawElementsIndirect {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiDrawElementsIndirect::is_loaded() }
-        else { (*STORAGE).MultiDrawElementsIndirect.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiDrawElementsIndirect.is_loaded }
+        else { gl::MultiDrawElementsIndirect::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6165,8 +6166,8 @@ pub mod MultiTexCoordP1ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiTexCoordP1ui::is_loaded() }
-        else { (*STORAGE).MultiTexCoordP1ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiTexCoordP1ui.is_loaded }
+        else { gl::MultiTexCoordP1ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6180,8 +6181,8 @@ pub mod MultiTexCoordP1uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiTexCoordP1uiv::is_loaded() }
-        else { (*STORAGE).MultiTexCoordP1uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiTexCoordP1uiv.is_loaded }
+        else { gl::MultiTexCoordP1uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6195,8 +6196,8 @@ pub mod MultiTexCoordP2ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiTexCoordP2ui::is_loaded() }
-        else { (*STORAGE).MultiTexCoordP2ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiTexCoordP2ui.is_loaded }
+        else { gl::MultiTexCoordP2ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6210,8 +6211,8 @@ pub mod MultiTexCoordP2uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiTexCoordP2uiv::is_loaded() }
-        else { (*STORAGE).MultiTexCoordP2uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiTexCoordP2uiv.is_loaded }
+        else { gl::MultiTexCoordP2uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6225,8 +6226,8 @@ pub mod MultiTexCoordP3ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiTexCoordP3ui::is_loaded() }
-        else { (*STORAGE).MultiTexCoordP3ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiTexCoordP3ui.is_loaded }
+        else { gl::MultiTexCoordP3ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6240,8 +6241,8 @@ pub mod MultiTexCoordP3uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiTexCoordP3uiv::is_loaded() }
-        else { (*STORAGE).MultiTexCoordP3uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiTexCoordP3uiv.is_loaded }
+        else { gl::MultiTexCoordP3uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6255,8 +6256,8 @@ pub mod MultiTexCoordP4ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiTexCoordP4ui::is_loaded() }
-        else { (*STORAGE).MultiTexCoordP4ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiTexCoordP4ui.is_loaded }
+        else { gl::MultiTexCoordP4ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6270,8 +6271,8 @@ pub mod MultiTexCoordP4uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::MultiTexCoordP4uiv::is_loaded() }
-        else { (*STORAGE).MultiTexCoordP4uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).MultiTexCoordP4uiv.is_loaded }
+        else { gl::MultiTexCoordP4uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6285,8 +6286,8 @@ pub mod NamedBufferData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NamedBufferData::is_loaded() }
-        else { (*STORAGE).NamedBufferData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NamedBufferData.is_loaded }
+        else { gl::NamedBufferData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6300,8 +6301,8 @@ pub mod NamedBufferStorage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NamedBufferStorage::is_loaded() }
-        else { (*STORAGE).NamedBufferStorage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NamedBufferStorage.is_loaded }
+        else { gl::NamedBufferStorage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6315,8 +6316,8 @@ pub mod NamedBufferSubData {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NamedBufferSubData::is_loaded() }
-        else { (*STORAGE).NamedBufferSubData.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NamedBufferSubData.is_loaded }
+        else { gl::NamedBufferSubData::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6330,8 +6331,8 @@ pub mod NamedFramebufferDrawBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NamedFramebufferDrawBuffer::is_loaded() }
-        else { (*STORAGE).NamedFramebufferDrawBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NamedFramebufferDrawBuffer.is_loaded }
+        else { gl::NamedFramebufferDrawBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6345,8 +6346,8 @@ pub mod NamedFramebufferDrawBuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NamedFramebufferDrawBuffers::is_loaded() }
-        else { (*STORAGE).NamedFramebufferDrawBuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NamedFramebufferDrawBuffers.is_loaded }
+        else { gl::NamedFramebufferDrawBuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6360,8 +6361,8 @@ pub mod NamedFramebufferParameteri {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NamedFramebufferParameteri::is_loaded() }
-        else { (*STORAGE).NamedFramebufferParameteri.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NamedFramebufferParameteri.is_loaded }
+        else { gl::NamedFramebufferParameteri::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6375,8 +6376,8 @@ pub mod NamedFramebufferReadBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NamedFramebufferReadBuffer::is_loaded() }
-        else { (*STORAGE).NamedFramebufferReadBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NamedFramebufferReadBuffer.is_loaded }
+        else { gl::NamedFramebufferReadBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6390,8 +6391,8 @@ pub mod NamedFramebufferRenderbuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NamedFramebufferRenderbuffer::is_loaded() }
-        else { (*STORAGE).NamedFramebufferRenderbuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NamedFramebufferRenderbuffer.is_loaded }
+        else { gl::NamedFramebufferRenderbuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6405,8 +6406,8 @@ pub mod NamedFramebufferTexture {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NamedFramebufferTexture::is_loaded() }
-        else { (*STORAGE).NamedFramebufferTexture.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NamedFramebufferTexture.is_loaded }
+        else { gl::NamedFramebufferTexture::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6420,8 +6421,8 @@ pub mod NamedFramebufferTextureLayer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NamedFramebufferTextureLayer::is_loaded() }
-        else { (*STORAGE).NamedFramebufferTextureLayer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NamedFramebufferTextureLayer.is_loaded }
+        else { gl::NamedFramebufferTextureLayer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6435,8 +6436,8 @@ pub mod NamedRenderbufferStorage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NamedRenderbufferStorage::is_loaded() }
-        else { (*STORAGE).NamedRenderbufferStorage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NamedRenderbufferStorage.is_loaded }
+        else { gl::NamedRenderbufferStorage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6450,8 +6451,8 @@ pub mod NamedRenderbufferStorageMultisample {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NamedRenderbufferStorageMultisample::is_loaded() }
-        else { (*STORAGE).NamedRenderbufferStorageMultisample.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NamedRenderbufferStorageMultisample.is_loaded }
+        else { gl::NamedRenderbufferStorageMultisample::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6465,8 +6466,8 @@ pub mod NormalP3ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NormalP3ui::is_loaded() }
-        else { (*STORAGE).NormalP3ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NormalP3ui.is_loaded }
+        else { gl::NormalP3ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6480,8 +6481,8 @@ pub mod NormalP3uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::NormalP3uiv::is_loaded() }
-        else { (*STORAGE).NormalP3uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).NormalP3uiv.is_loaded }
+        else { gl::NormalP3uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6495,8 +6496,8 @@ pub mod ObjectLabel {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ObjectLabel::is_loaded() }
-        else { (*STORAGE).ObjectLabel.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ObjectLabel.is_loaded }
+        else { gl::ObjectLabel::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6510,8 +6511,8 @@ pub mod ObjectPtrLabel {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ObjectPtrLabel::is_loaded() }
-        else { (*STORAGE).ObjectPtrLabel.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ObjectPtrLabel.is_loaded }
+        else { gl::ObjectPtrLabel::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6525,8 +6526,8 @@ pub mod PatchParameterfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PatchParameterfv::is_loaded() }
-        else { (*STORAGE).PatchParameterfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PatchParameterfv.is_loaded }
+        else { gl::PatchParameterfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6540,8 +6541,8 @@ pub mod PatchParameteri {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PatchParameteri::is_loaded() }
-        else { (*STORAGE).PatchParameteri.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PatchParameteri.is_loaded }
+        else { gl::PatchParameteri::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6555,8 +6556,8 @@ pub mod PauseTransformFeedback {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PauseTransformFeedback::is_loaded() }
-        else { (*STORAGE).PauseTransformFeedback.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PauseTransformFeedback.is_loaded }
+        else { gl::PauseTransformFeedback::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6570,8 +6571,8 @@ pub mod PixelStoref {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PixelStoref::is_loaded() }
-        else { (*STORAGE).PixelStoref.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PixelStoref.is_loaded }
+        else { gl::PixelStoref::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6585,8 +6586,8 @@ pub mod PixelStorei {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PixelStorei::is_loaded() }
-        else { (*STORAGE).PixelStorei.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PixelStorei.is_loaded }
+        else { gl::PixelStorei::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6600,8 +6601,8 @@ pub mod PointParameterf {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PointParameterf::is_loaded() }
-        else { (*STORAGE).PointParameterf.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PointParameterf.is_loaded }
+        else { gl::PointParameterf::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6615,8 +6616,8 @@ pub mod PointParameterfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PointParameterfv::is_loaded() }
-        else { (*STORAGE).PointParameterfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PointParameterfv.is_loaded }
+        else { gl::PointParameterfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6630,8 +6631,8 @@ pub mod PointParameteri {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PointParameteri::is_loaded() }
-        else { (*STORAGE).PointParameteri.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PointParameteri.is_loaded }
+        else { gl::PointParameteri::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6645,8 +6646,8 @@ pub mod PointParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PointParameteriv::is_loaded() }
-        else { (*STORAGE).PointParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PointParameteriv.is_loaded }
+        else { gl::PointParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6660,8 +6661,8 @@ pub mod PointSize {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PointSize::is_loaded() }
-        else { (*STORAGE).PointSize.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PointSize.is_loaded }
+        else { gl::PointSize::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6675,8 +6676,8 @@ pub mod PolygonMode {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PolygonMode::is_loaded() }
-        else { (*STORAGE).PolygonMode.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PolygonMode.is_loaded }
+        else { gl::PolygonMode::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6690,8 +6691,8 @@ pub mod PolygonOffset {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PolygonOffset::is_loaded() }
-        else { (*STORAGE).PolygonOffset.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PolygonOffset.is_loaded }
+        else { gl::PolygonOffset::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6705,8 +6706,8 @@ pub mod PopDebugGroup {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PopDebugGroup::is_loaded() }
-        else { (*STORAGE).PopDebugGroup.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PopDebugGroup.is_loaded }
+        else { gl::PopDebugGroup::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6720,8 +6721,8 @@ pub mod PrimitiveRestartIndex {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PrimitiveRestartIndex::is_loaded() }
-        else { (*STORAGE).PrimitiveRestartIndex.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PrimitiveRestartIndex.is_loaded }
+        else { gl::PrimitiveRestartIndex::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6735,8 +6736,8 @@ pub mod ProgramBinary {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramBinary::is_loaded() }
-        else { (*STORAGE).ProgramBinary.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramBinary.is_loaded }
+        else { gl::ProgramBinary::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6750,8 +6751,8 @@ pub mod ProgramParameteri {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramParameteri::is_loaded() }
-        else { (*STORAGE).ProgramParameteri.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramParameteri.is_loaded }
+        else { gl::ProgramParameteri::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6765,8 +6766,8 @@ pub mod ProgramUniform1d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform1d::is_loaded() }
-        else { (*STORAGE).ProgramUniform1d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform1d.is_loaded }
+        else { gl::ProgramUniform1d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6780,8 +6781,8 @@ pub mod ProgramUniform1dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform1dv::is_loaded() }
-        else { (*STORAGE).ProgramUniform1dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform1dv.is_loaded }
+        else { gl::ProgramUniform1dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6795,8 +6796,8 @@ pub mod ProgramUniform1f {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform1f::is_loaded() }
-        else { (*STORAGE).ProgramUniform1f.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform1f.is_loaded }
+        else { gl::ProgramUniform1f::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6810,8 +6811,8 @@ pub mod ProgramUniform1fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform1fv::is_loaded() }
-        else { (*STORAGE).ProgramUniform1fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform1fv.is_loaded }
+        else { gl::ProgramUniform1fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6825,8 +6826,8 @@ pub mod ProgramUniform1i {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform1i::is_loaded() }
-        else { (*STORAGE).ProgramUniform1i.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform1i.is_loaded }
+        else { gl::ProgramUniform1i::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6840,8 +6841,8 @@ pub mod ProgramUniform1iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform1iv::is_loaded() }
-        else { (*STORAGE).ProgramUniform1iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform1iv.is_loaded }
+        else { gl::ProgramUniform1iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6855,8 +6856,8 @@ pub mod ProgramUniform1ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform1ui::is_loaded() }
-        else { (*STORAGE).ProgramUniform1ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform1ui.is_loaded }
+        else { gl::ProgramUniform1ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6870,8 +6871,8 @@ pub mod ProgramUniform1uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform1uiv::is_loaded() }
-        else { (*STORAGE).ProgramUniform1uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform1uiv.is_loaded }
+        else { gl::ProgramUniform1uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6885,8 +6886,8 @@ pub mod ProgramUniform2d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform2d::is_loaded() }
-        else { (*STORAGE).ProgramUniform2d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform2d.is_loaded }
+        else { gl::ProgramUniform2d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6900,8 +6901,8 @@ pub mod ProgramUniform2dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform2dv::is_loaded() }
-        else { (*STORAGE).ProgramUniform2dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform2dv.is_loaded }
+        else { gl::ProgramUniform2dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6915,8 +6916,8 @@ pub mod ProgramUniform2f {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform2f::is_loaded() }
-        else { (*STORAGE).ProgramUniform2f.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform2f.is_loaded }
+        else { gl::ProgramUniform2f::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6930,8 +6931,8 @@ pub mod ProgramUniform2fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform2fv::is_loaded() }
-        else { (*STORAGE).ProgramUniform2fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform2fv.is_loaded }
+        else { gl::ProgramUniform2fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6945,8 +6946,8 @@ pub mod ProgramUniform2i {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform2i::is_loaded() }
-        else { (*STORAGE).ProgramUniform2i.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform2i.is_loaded }
+        else { gl::ProgramUniform2i::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6960,8 +6961,8 @@ pub mod ProgramUniform2iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform2iv::is_loaded() }
-        else { (*STORAGE).ProgramUniform2iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform2iv.is_loaded }
+        else { gl::ProgramUniform2iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6975,8 +6976,8 @@ pub mod ProgramUniform2ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform2ui::is_loaded() }
-        else { (*STORAGE).ProgramUniform2ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform2ui.is_loaded }
+        else { gl::ProgramUniform2ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -6990,8 +6991,8 @@ pub mod ProgramUniform2uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform2uiv::is_loaded() }
-        else { (*STORAGE).ProgramUniform2uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform2uiv.is_loaded }
+        else { gl::ProgramUniform2uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7005,8 +7006,8 @@ pub mod ProgramUniform3d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform3d::is_loaded() }
-        else { (*STORAGE).ProgramUniform3d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform3d.is_loaded }
+        else { gl::ProgramUniform3d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7020,8 +7021,8 @@ pub mod ProgramUniform3dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform3dv::is_loaded() }
-        else { (*STORAGE).ProgramUniform3dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform3dv.is_loaded }
+        else { gl::ProgramUniform3dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7035,8 +7036,8 @@ pub mod ProgramUniform3f {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform3f::is_loaded() }
-        else { (*STORAGE).ProgramUniform3f.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform3f.is_loaded }
+        else { gl::ProgramUniform3f::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7050,8 +7051,8 @@ pub mod ProgramUniform3fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform3fv::is_loaded() }
-        else { (*STORAGE).ProgramUniform3fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform3fv.is_loaded }
+        else { gl::ProgramUniform3fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7065,8 +7066,8 @@ pub mod ProgramUniform3i {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform3i::is_loaded() }
-        else { (*STORAGE).ProgramUniform3i.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform3i.is_loaded }
+        else { gl::ProgramUniform3i::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7080,8 +7081,8 @@ pub mod ProgramUniform3iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform3iv::is_loaded() }
-        else { (*STORAGE).ProgramUniform3iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform3iv.is_loaded }
+        else { gl::ProgramUniform3iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7095,8 +7096,8 @@ pub mod ProgramUniform3ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform3ui::is_loaded() }
-        else { (*STORAGE).ProgramUniform3ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform3ui.is_loaded }
+        else { gl::ProgramUniform3ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7110,8 +7111,8 @@ pub mod ProgramUniform3uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform3uiv::is_loaded() }
-        else { (*STORAGE).ProgramUniform3uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform3uiv.is_loaded }
+        else { gl::ProgramUniform3uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7125,8 +7126,8 @@ pub mod ProgramUniform4d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform4d::is_loaded() }
-        else { (*STORAGE).ProgramUniform4d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform4d.is_loaded }
+        else { gl::ProgramUniform4d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7140,8 +7141,8 @@ pub mod ProgramUniform4dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform4dv::is_loaded() }
-        else { (*STORAGE).ProgramUniform4dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform4dv.is_loaded }
+        else { gl::ProgramUniform4dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7155,8 +7156,8 @@ pub mod ProgramUniform4f {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform4f::is_loaded() }
-        else { (*STORAGE).ProgramUniform4f.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform4f.is_loaded }
+        else { gl::ProgramUniform4f::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7170,8 +7171,8 @@ pub mod ProgramUniform4fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform4fv::is_loaded() }
-        else { (*STORAGE).ProgramUniform4fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform4fv.is_loaded }
+        else { gl::ProgramUniform4fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7185,8 +7186,8 @@ pub mod ProgramUniform4i {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform4i::is_loaded() }
-        else { (*STORAGE).ProgramUniform4i.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform4i.is_loaded }
+        else { gl::ProgramUniform4i::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7200,8 +7201,8 @@ pub mod ProgramUniform4iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform4iv::is_loaded() }
-        else { (*STORAGE).ProgramUniform4iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform4iv.is_loaded }
+        else { gl::ProgramUniform4iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7215,8 +7216,8 @@ pub mod ProgramUniform4ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform4ui::is_loaded() }
-        else { (*STORAGE).ProgramUniform4ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform4ui.is_loaded }
+        else { gl::ProgramUniform4ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7230,8 +7231,8 @@ pub mod ProgramUniform4uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniform4uiv::is_loaded() }
-        else { (*STORAGE).ProgramUniform4uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniform4uiv.is_loaded }
+        else { gl::ProgramUniform4uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7245,8 +7246,8 @@ pub mod ProgramUniformMatrix2dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix2dv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix2dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix2dv.is_loaded }
+        else { gl::ProgramUniformMatrix2dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7260,8 +7261,8 @@ pub mod ProgramUniformMatrix2fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix2fv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix2fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix2fv.is_loaded }
+        else { gl::ProgramUniformMatrix2fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7275,8 +7276,8 @@ pub mod ProgramUniformMatrix2x3dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix2x3dv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix2x3dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix2x3dv.is_loaded }
+        else { gl::ProgramUniformMatrix2x3dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7290,8 +7291,8 @@ pub mod ProgramUniformMatrix2x3fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix2x3fv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix2x3fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix2x3fv.is_loaded }
+        else { gl::ProgramUniformMatrix2x3fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7305,8 +7306,8 @@ pub mod ProgramUniformMatrix2x4dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix2x4dv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix2x4dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix2x4dv.is_loaded }
+        else { gl::ProgramUniformMatrix2x4dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7320,8 +7321,8 @@ pub mod ProgramUniformMatrix2x4fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix2x4fv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix2x4fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix2x4fv.is_loaded }
+        else { gl::ProgramUniformMatrix2x4fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7335,8 +7336,8 @@ pub mod ProgramUniformMatrix3dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix3dv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix3dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix3dv.is_loaded }
+        else { gl::ProgramUniformMatrix3dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7350,8 +7351,8 @@ pub mod ProgramUniformMatrix3fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix3fv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix3fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix3fv.is_loaded }
+        else { gl::ProgramUniformMatrix3fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7365,8 +7366,8 @@ pub mod ProgramUniformMatrix3x2dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix3x2dv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix3x2dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix3x2dv.is_loaded }
+        else { gl::ProgramUniformMatrix3x2dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7380,8 +7381,8 @@ pub mod ProgramUniformMatrix3x2fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix3x2fv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix3x2fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix3x2fv.is_loaded }
+        else { gl::ProgramUniformMatrix3x2fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7395,8 +7396,8 @@ pub mod ProgramUniformMatrix3x4dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix3x4dv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix3x4dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix3x4dv.is_loaded }
+        else { gl::ProgramUniformMatrix3x4dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7410,8 +7411,8 @@ pub mod ProgramUniformMatrix3x4fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix3x4fv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix3x4fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix3x4fv.is_loaded }
+        else { gl::ProgramUniformMatrix3x4fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7425,8 +7426,8 @@ pub mod ProgramUniformMatrix4dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix4dv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix4dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix4dv.is_loaded }
+        else { gl::ProgramUniformMatrix4dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7440,8 +7441,8 @@ pub mod ProgramUniformMatrix4fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix4fv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix4fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix4fv.is_loaded }
+        else { gl::ProgramUniformMatrix4fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7455,8 +7456,8 @@ pub mod ProgramUniformMatrix4x2dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix4x2dv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix4x2dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix4x2dv.is_loaded }
+        else { gl::ProgramUniformMatrix4x2dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7470,8 +7471,8 @@ pub mod ProgramUniformMatrix4x2fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix4x2fv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix4x2fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix4x2fv.is_loaded }
+        else { gl::ProgramUniformMatrix4x2fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7485,8 +7486,8 @@ pub mod ProgramUniformMatrix4x3dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix4x3dv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix4x3dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix4x3dv.is_loaded }
+        else { gl::ProgramUniformMatrix4x3dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7500,8 +7501,8 @@ pub mod ProgramUniformMatrix4x3fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProgramUniformMatrix4x3fv::is_loaded() }
-        else { (*STORAGE).ProgramUniformMatrix4x3fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProgramUniformMatrix4x3fv.is_loaded }
+        else { gl::ProgramUniformMatrix4x3fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7515,8 +7516,8 @@ pub mod ProvokingVertex {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ProvokingVertex::is_loaded() }
-        else { (*STORAGE).ProvokingVertex.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ProvokingVertex.is_loaded }
+        else { gl::ProvokingVertex::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7530,8 +7531,8 @@ pub mod PushDebugGroup {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::PushDebugGroup::is_loaded() }
-        else { (*STORAGE).PushDebugGroup.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).PushDebugGroup.is_loaded }
+        else { gl::PushDebugGroup::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7545,8 +7546,8 @@ pub mod QueryCounter {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::QueryCounter::is_loaded() }
-        else { (*STORAGE).QueryCounter.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).QueryCounter.is_loaded }
+        else { gl::QueryCounter::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7560,8 +7561,8 @@ pub mod ReadBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ReadBuffer::is_loaded() }
-        else { (*STORAGE).ReadBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ReadBuffer.is_loaded }
+        else { gl::ReadBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7575,8 +7576,8 @@ pub mod ReadPixels {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ReadPixels::is_loaded() }
-        else { (*STORAGE).ReadPixels.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ReadPixels.is_loaded }
+        else { gl::ReadPixels::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7590,8 +7591,8 @@ pub mod ReadnPixels {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ReadnPixels::is_loaded() }
-        else { (*STORAGE).ReadnPixels.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ReadnPixels.is_loaded }
+        else { gl::ReadnPixels::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7605,8 +7606,8 @@ pub mod ReleaseShaderCompiler {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ReleaseShaderCompiler::is_loaded() }
-        else { (*STORAGE).ReleaseShaderCompiler.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ReleaseShaderCompiler.is_loaded }
+        else { gl::ReleaseShaderCompiler::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7620,8 +7621,8 @@ pub mod RenderbufferStorage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::RenderbufferStorage::is_loaded() }
-        else { (*STORAGE).RenderbufferStorage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).RenderbufferStorage.is_loaded }
+        else { gl::RenderbufferStorage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7635,8 +7636,8 @@ pub mod RenderbufferStorageMultisample {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::RenderbufferStorageMultisample::is_loaded() }
-        else { (*STORAGE).RenderbufferStorageMultisample.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).RenderbufferStorageMultisample.is_loaded }
+        else { gl::RenderbufferStorageMultisample::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7650,8 +7651,8 @@ pub mod ResumeTransformFeedback {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ResumeTransformFeedback::is_loaded() }
-        else { (*STORAGE).ResumeTransformFeedback.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ResumeTransformFeedback.is_loaded }
+        else { gl::ResumeTransformFeedback::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7665,8 +7666,8 @@ pub mod SampleCoverage {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::SampleCoverage::is_loaded() }
-        else { (*STORAGE).SampleCoverage.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).SampleCoverage.is_loaded }
+        else { gl::SampleCoverage::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7680,8 +7681,8 @@ pub mod SampleMaski {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::SampleMaski::is_loaded() }
-        else { (*STORAGE).SampleMaski.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).SampleMaski.is_loaded }
+        else { gl::SampleMaski::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7695,8 +7696,8 @@ pub mod SamplerParameterIiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::SamplerParameterIiv::is_loaded() }
-        else { (*STORAGE).SamplerParameterIiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).SamplerParameterIiv.is_loaded }
+        else { gl::SamplerParameterIiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7710,8 +7711,8 @@ pub mod SamplerParameterIuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::SamplerParameterIuiv::is_loaded() }
-        else { (*STORAGE).SamplerParameterIuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).SamplerParameterIuiv.is_loaded }
+        else { gl::SamplerParameterIuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7725,8 +7726,8 @@ pub mod SamplerParameterf {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::SamplerParameterf::is_loaded() }
-        else { (*STORAGE).SamplerParameterf.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).SamplerParameterf.is_loaded }
+        else { gl::SamplerParameterf::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7740,8 +7741,8 @@ pub mod SamplerParameterfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::SamplerParameterfv::is_loaded() }
-        else { (*STORAGE).SamplerParameterfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).SamplerParameterfv.is_loaded }
+        else { gl::SamplerParameterfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7755,8 +7756,8 @@ pub mod SamplerParameteri {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::SamplerParameteri::is_loaded() }
-        else { (*STORAGE).SamplerParameteri.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).SamplerParameteri.is_loaded }
+        else { gl::SamplerParameteri::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7770,8 +7771,8 @@ pub mod SamplerParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::SamplerParameteriv::is_loaded() }
-        else { (*STORAGE).SamplerParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).SamplerParameteriv.is_loaded }
+        else { gl::SamplerParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7785,8 +7786,8 @@ pub mod Scissor {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Scissor::is_loaded() }
-        else { (*STORAGE).Scissor.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Scissor.is_loaded }
+        else { gl::Scissor::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7800,8 +7801,8 @@ pub mod ScissorArrayv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ScissorArrayv::is_loaded() }
-        else { (*STORAGE).ScissorArrayv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ScissorArrayv.is_loaded }
+        else { gl::ScissorArrayv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7815,8 +7816,8 @@ pub mod ScissorIndexed {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ScissorIndexed::is_loaded() }
-        else { (*STORAGE).ScissorIndexed.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ScissorIndexed.is_loaded }
+        else { gl::ScissorIndexed::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7830,8 +7831,8 @@ pub mod ScissorIndexedv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ScissorIndexedv::is_loaded() }
-        else { (*STORAGE).ScissorIndexedv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ScissorIndexedv.is_loaded }
+        else { gl::ScissorIndexedv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7845,8 +7846,8 @@ pub mod SecondaryColorP3ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::SecondaryColorP3ui::is_loaded() }
-        else { (*STORAGE).SecondaryColorP3ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).SecondaryColorP3ui.is_loaded }
+        else { gl::SecondaryColorP3ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7860,8 +7861,8 @@ pub mod SecondaryColorP3uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::SecondaryColorP3uiv::is_loaded() }
-        else { (*STORAGE).SecondaryColorP3uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).SecondaryColorP3uiv.is_loaded }
+        else { gl::SecondaryColorP3uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7875,8 +7876,8 @@ pub mod ShaderBinary {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ShaderBinary::is_loaded() }
-        else { (*STORAGE).ShaderBinary.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ShaderBinary.is_loaded }
+        else { gl::ShaderBinary::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7890,8 +7891,8 @@ pub mod ShaderSource {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ShaderSource::is_loaded() }
-        else { (*STORAGE).ShaderSource.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ShaderSource.is_loaded }
+        else { gl::ShaderSource::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7905,8 +7906,8 @@ pub mod ShaderStorageBlockBinding {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ShaderStorageBlockBinding::is_loaded() }
-        else { (*STORAGE).ShaderStorageBlockBinding.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ShaderStorageBlockBinding.is_loaded }
+        else { gl::ShaderStorageBlockBinding::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7920,8 +7921,8 @@ pub mod StencilFunc {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::StencilFunc::is_loaded() }
-        else { (*STORAGE).StencilFunc.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).StencilFunc.is_loaded }
+        else { gl::StencilFunc::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7935,8 +7936,8 @@ pub mod StencilFuncSeparate {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::StencilFuncSeparate::is_loaded() }
-        else { (*STORAGE).StencilFuncSeparate.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).StencilFuncSeparate.is_loaded }
+        else { gl::StencilFuncSeparate::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7950,8 +7951,8 @@ pub mod StencilMask {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::StencilMask::is_loaded() }
-        else { (*STORAGE).StencilMask.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).StencilMask.is_loaded }
+        else { gl::StencilMask::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7965,8 +7966,8 @@ pub mod StencilMaskSeparate {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::StencilMaskSeparate::is_loaded() }
-        else { (*STORAGE).StencilMaskSeparate.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).StencilMaskSeparate.is_loaded }
+        else { gl::StencilMaskSeparate::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7980,8 +7981,8 @@ pub mod StencilOp {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::StencilOp::is_loaded() }
-        else { (*STORAGE).StencilOp.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).StencilOp.is_loaded }
+        else { gl::StencilOp::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -7995,8 +7996,8 @@ pub mod StencilOpSeparate {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::StencilOpSeparate::is_loaded() }
-        else { (*STORAGE).StencilOpSeparate.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).StencilOpSeparate.is_loaded }
+        else { gl::StencilOpSeparate::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8010,8 +8011,8 @@ pub mod TexBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexBuffer::is_loaded() }
-        else { (*STORAGE).TexBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexBuffer.is_loaded }
+        else { gl::TexBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8025,8 +8026,8 @@ pub mod TexBufferRange {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexBufferRange::is_loaded() }
-        else { (*STORAGE).TexBufferRange.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexBufferRange.is_loaded }
+        else { gl::TexBufferRange::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8040,8 +8041,8 @@ pub mod TexCoordP1ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexCoordP1ui::is_loaded() }
-        else { (*STORAGE).TexCoordP1ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexCoordP1ui.is_loaded }
+        else { gl::TexCoordP1ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8055,8 +8056,8 @@ pub mod TexCoordP1uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexCoordP1uiv::is_loaded() }
-        else { (*STORAGE).TexCoordP1uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexCoordP1uiv.is_loaded }
+        else { gl::TexCoordP1uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8070,8 +8071,8 @@ pub mod TexCoordP2ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexCoordP2ui::is_loaded() }
-        else { (*STORAGE).TexCoordP2ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexCoordP2ui.is_loaded }
+        else { gl::TexCoordP2ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8085,8 +8086,8 @@ pub mod TexCoordP2uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexCoordP2uiv::is_loaded() }
-        else { (*STORAGE).TexCoordP2uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexCoordP2uiv.is_loaded }
+        else { gl::TexCoordP2uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8100,8 +8101,8 @@ pub mod TexCoordP3ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexCoordP3ui::is_loaded() }
-        else { (*STORAGE).TexCoordP3ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexCoordP3ui.is_loaded }
+        else { gl::TexCoordP3ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8115,8 +8116,8 @@ pub mod TexCoordP3uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexCoordP3uiv::is_loaded() }
-        else { (*STORAGE).TexCoordP3uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexCoordP3uiv.is_loaded }
+        else { gl::TexCoordP3uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8130,8 +8131,8 @@ pub mod TexCoordP4ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexCoordP4ui::is_loaded() }
-        else { (*STORAGE).TexCoordP4ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexCoordP4ui.is_loaded }
+        else { gl::TexCoordP4ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8145,8 +8146,8 @@ pub mod TexCoordP4uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexCoordP4uiv::is_loaded() }
-        else { (*STORAGE).TexCoordP4uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexCoordP4uiv.is_loaded }
+        else { gl::TexCoordP4uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8160,8 +8161,8 @@ pub mod TexImage1D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexImage1D::is_loaded() }
-        else { (*STORAGE).TexImage1D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexImage1D.is_loaded }
+        else { gl::TexImage1D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8175,8 +8176,8 @@ pub mod TexImage2D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexImage2D::is_loaded() }
-        else { (*STORAGE).TexImage2D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexImage2D.is_loaded }
+        else { gl::TexImage2D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8190,8 +8191,8 @@ pub mod TexImage2DMultisample {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexImage2DMultisample::is_loaded() }
-        else { (*STORAGE).TexImage2DMultisample.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexImage2DMultisample.is_loaded }
+        else { gl::TexImage2DMultisample::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8205,8 +8206,8 @@ pub mod TexImage3D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexImage3D::is_loaded() }
-        else { (*STORAGE).TexImage3D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexImage3D.is_loaded }
+        else { gl::TexImage3D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8220,8 +8221,8 @@ pub mod TexImage3DMultisample {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexImage3DMultisample::is_loaded() }
-        else { (*STORAGE).TexImage3DMultisample.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexImage3DMultisample.is_loaded }
+        else { gl::TexImage3DMultisample::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8235,8 +8236,8 @@ pub mod TexParameterIiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexParameterIiv::is_loaded() }
-        else { (*STORAGE).TexParameterIiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexParameterIiv.is_loaded }
+        else { gl::TexParameterIiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8250,8 +8251,8 @@ pub mod TexParameterIuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexParameterIuiv::is_loaded() }
-        else { (*STORAGE).TexParameterIuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexParameterIuiv.is_loaded }
+        else { gl::TexParameterIuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8265,8 +8266,8 @@ pub mod TexParameterf {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexParameterf::is_loaded() }
-        else { (*STORAGE).TexParameterf.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexParameterf.is_loaded }
+        else { gl::TexParameterf::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8280,8 +8281,8 @@ pub mod TexParameterfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexParameterfv::is_loaded() }
-        else { (*STORAGE).TexParameterfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexParameterfv.is_loaded }
+        else { gl::TexParameterfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8295,8 +8296,8 @@ pub mod TexParameteri {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexParameteri::is_loaded() }
-        else { (*STORAGE).TexParameteri.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexParameteri.is_loaded }
+        else { gl::TexParameteri::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8310,8 +8311,8 @@ pub mod TexParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexParameteriv::is_loaded() }
-        else { (*STORAGE).TexParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexParameteriv.is_loaded }
+        else { gl::TexParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8325,8 +8326,8 @@ pub mod TexStorage1D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexStorage1D::is_loaded() }
-        else { (*STORAGE).TexStorage1D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexStorage1D.is_loaded }
+        else { gl::TexStorage1D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8340,8 +8341,8 @@ pub mod TexStorage2D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexStorage2D::is_loaded() }
-        else { (*STORAGE).TexStorage2D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexStorage2D.is_loaded }
+        else { gl::TexStorage2D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8355,8 +8356,8 @@ pub mod TexStorage2DMultisample {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexStorage2DMultisample::is_loaded() }
-        else { (*STORAGE).TexStorage2DMultisample.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexStorage2DMultisample.is_loaded }
+        else { gl::TexStorage2DMultisample::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8370,8 +8371,8 @@ pub mod TexStorage3D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexStorage3D::is_loaded() }
-        else { (*STORAGE).TexStorage3D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexStorage3D.is_loaded }
+        else { gl::TexStorage3D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8385,8 +8386,8 @@ pub mod TexStorage3DMultisample {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexStorage3DMultisample::is_loaded() }
-        else { (*STORAGE).TexStorage3DMultisample.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexStorage3DMultisample.is_loaded }
+        else { gl::TexStorage3DMultisample::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8400,8 +8401,8 @@ pub mod TexSubImage1D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexSubImage1D::is_loaded() }
-        else { (*STORAGE).TexSubImage1D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexSubImage1D.is_loaded }
+        else { gl::TexSubImage1D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8415,8 +8416,8 @@ pub mod TexSubImage2D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexSubImage2D::is_loaded() }
-        else { (*STORAGE).TexSubImage2D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexSubImage2D.is_loaded }
+        else { gl::TexSubImage2D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8430,8 +8431,8 @@ pub mod TexSubImage3D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TexSubImage3D::is_loaded() }
-        else { (*STORAGE).TexSubImage3D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TexSubImage3D.is_loaded }
+        else { gl::TexSubImage3D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8445,8 +8446,8 @@ pub mod TextureBarrier {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureBarrier::is_loaded() }
-        else { (*STORAGE).TextureBarrier.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureBarrier.is_loaded }
+        else { gl::TextureBarrier::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8460,8 +8461,8 @@ pub mod TextureBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureBuffer::is_loaded() }
-        else { (*STORAGE).TextureBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureBuffer.is_loaded }
+        else { gl::TextureBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8475,8 +8476,8 @@ pub mod TextureBufferRange {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureBufferRange::is_loaded() }
-        else { (*STORAGE).TextureBufferRange.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureBufferRange.is_loaded }
+        else { gl::TextureBufferRange::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8490,8 +8491,8 @@ pub mod TextureParameterIiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureParameterIiv::is_loaded() }
-        else { (*STORAGE).TextureParameterIiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureParameterIiv.is_loaded }
+        else { gl::TextureParameterIiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8505,8 +8506,8 @@ pub mod TextureParameterIuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureParameterIuiv::is_loaded() }
-        else { (*STORAGE).TextureParameterIuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureParameterIuiv.is_loaded }
+        else { gl::TextureParameterIuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8520,8 +8521,8 @@ pub mod TextureParameterf {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureParameterf::is_loaded() }
-        else { (*STORAGE).TextureParameterf.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureParameterf.is_loaded }
+        else { gl::TextureParameterf::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8535,8 +8536,8 @@ pub mod TextureParameterfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureParameterfv::is_loaded() }
-        else { (*STORAGE).TextureParameterfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureParameterfv.is_loaded }
+        else { gl::TextureParameterfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8550,8 +8551,8 @@ pub mod TextureParameteri {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureParameteri::is_loaded() }
-        else { (*STORAGE).TextureParameteri.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureParameteri.is_loaded }
+        else { gl::TextureParameteri::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8565,8 +8566,8 @@ pub mod TextureParameteriv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureParameteriv::is_loaded() }
-        else { (*STORAGE).TextureParameteriv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureParameteriv.is_loaded }
+        else { gl::TextureParameteriv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8580,8 +8581,8 @@ pub mod TextureStorage1D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureStorage1D::is_loaded() }
-        else { (*STORAGE).TextureStorage1D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureStorage1D.is_loaded }
+        else { gl::TextureStorage1D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8595,8 +8596,8 @@ pub mod TextureStorage2D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureStorage2D::is_loaded() }
-        else { (*STORAGE).TextureStorage2D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureStorage2D.is_loaded }
+        else { gl::TextureStorage2D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8610,8 +8611,8 @@ pub mod TextureStorage2DMultisample {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureStorage2DMultisample::is_loaded() }
-        else { (*STORAGE).TextureStorage2DMultisample.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureStorage2DMultisample.is_loaded }
+        else { gl::TextureStorage2DMultisample::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8625,8 +8626,8 @@ pub mod TextureStorage3D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureStorage3D::is_loaded() }
-        else { (*STORAGE).TextureStorage3D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureStorage3D.is_loaded }
+        else { gl::TextureStorage3D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8640,8 +8641,8 @@ pub mod TextureStorage3DMultisample {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureStorage3DMultisample::is_loaded() }
-        else { (*STORAGE).TextureStorage3DMultisample.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureStorage3DMultisample.is_loaded }
+        else { gl::TextureStorage3DMultisample::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8655,8 +8656,8 @@ pub mod TextureSubImage1D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureSubImage1D::is_loaded() }
-        else { (*STORAGE).TextureSubImage1D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureSubImage1D.is_loaded }
+        else { gl::TextureSubImage1D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8670,8 +8671,8 @@ pub mod TextureSubImage2D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureSubImage2D::is_loaded() }
-        else { (*STORAGE).TextureSubImage2D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureSubImage2D.is_loaded }
+        else { gl::TextureSubImage2D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8685,8 +8686,8 @@ pub mod TextureSubImage3D {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureSubImage3D::is_loaded() }
-        else { (*STORAGE).TextureSubImage3D.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureSubImage3D.is_loaded }
+        else { gl::TextureSubImage3D::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8700,8 +8701,8 @@ pub mod TextureView {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TextureView::is_loaded() }
-        else { (*STORAGE).TextureView.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TextureView.is_loaded }
+        else { gl::TextureView::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8715,8 +8716,8 @@ pub mod TransformFeedbackBufferBase {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TransformFeedbackBufferBase::is_loaded() }
-        else { (*STORAGE).TransformFeedbackBufferBase.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TransformFeedbackBufferBase.is_loaded }
+        else { gl::TransformFeedbackBufferBase::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8730,8 +8731,8 @@ pub mod TransformFeedbackBufferRange {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TransformFeedbackBufferRange::is_loaded() }
-        else { (*STORAGE).TransformFeedbackBufferRange.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TransformFeedbackBufferRange.is_loaded }
+        else { gl::TransformFeedbackBufferRange::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8745,8 +8746,8 @@ pub mod TransformFeedbackVaryings {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::TransformFeedbackVaryings::is_loaded() }
-        else { (*STORAGE).TransformFeedbackVaryings.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).TransformFeedbackVaryings.is_loaded }
+        else { gl::TransformFeedbackVaryings::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8760,8 +8761,8 @@ pub mod Uniform1d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform1d::is_loaded() }
-        else { (*STORAGE).Uniform1d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform1d.is_loaded }
+        else { gl::Uniform1d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8775,8 +8776,8 @@ pub mod Uniform1dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform1dv::is_loaded() }
-        else { (*STORAGE).Uniform1dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform1dv.is_loaded }
+        else { gl::Uniform1dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8790,8 +8791,8 @@ pub mod Uniform1f {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform1f::is_loaded() }
-        else { (*STORAGE).Uniform1f.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform1f.is_loaded }
+        else { gl::Uniform1f::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8805,8 +8806,8 @@ pub mod Uniform1fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform1fv::is_loaded() }
-        else { (*STORAGE).Uniform1fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform1fv.is_loaded }
+        else { gl::Uniform1fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8820,8 +8821,8 @@ pub mod Uniform1i {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform1i::is_loaded() }
-        else { (*STORAGE).Uniform1i.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform1i.is_loaded }
+        else { gl::Uniform1i::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8835,8 +8836,8 @@ pub mod Uniform1iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform1iv::is_loaded() }
-        else { (*STORAGE).Uniform1iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform1iv.is_loaded }
+        else { gl::Uniform1iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8850,8 +8851,8 @@ pub mod Uniform1ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform1ui::is_loaded() }
-        else { (*STORAGE).Uniform1ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform1ui.is_loaded }
+        else { gl::Uniform1ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8865,8 +8866,8 @@ pub mod Uniform1uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform1uiv::is_loaded() }
-        else { (*STORAGE).Uniform1uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform1uiv.is_loaded }
+        else { gl::Uniform1uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8880,8 +8881,8 @@ pub mod Uniform2d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform2d::is_loaded() }
-        else { (*STORAGE).Uniform2d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform2d.is_loaded }
+        else { gl::Uniform2d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8895,8 +8896,8 @@ pub mod Uniform2dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform2dv::is_loaded() }
-        else { (*STORAGE).Uniform2dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform2dv.is_loaded }
+        else { gl::Uniform2dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8910,8 +8911,8 @@ pub mod Uniform2f {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform2f::is_loaded() }
-        else { (*STORAGE).Uniform2f.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform2f.is_loaded }
+        else { gl::Uniform2f::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8925,8 +8926,8 @@ pub mod Uniform2fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform2fv::is_loaded() }
-        else { (*STORAGE).Uniform2fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform2fv.is_loaded }
+        else { gl::Uniform2fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8940,8 +8941,8 @@ pub mod Uniform2i {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform2i::is_loaded() }
-        else { (*STORAGE).Uniform2i.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform2i.is_loaded }
+        else { gl::Uniform2i::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8955,8 +8956,8 @@ pub mod Uniform2iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform2iv::is_loaded() }
-        else { (*STORAGE).Uniform2iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform2iv.is_loaded }
+        else { gl::Uniform2iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8970,8 +8971,8 @@ pub mod Uniform2ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform2ui::is_loaded() }
-        else { (*STORAGE).Uniform2ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform2ui.is_loaded }
+        else { gl::Uniform2ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -8985,8 +8986,8 @@ pub mod Uniform2uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform2uiv::is_loaded() }
-        else { (*STORAGE).Uniform2uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform2uiv.is_loaded }
+        else { gl::Uniform2uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9000,8 +9001,8 @@ pub mod Uniform3d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform3d::is_loaded() }
-        else { (*STORAGE).Uniform3d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform3d.is_loaded }
+        else { gl::Uniform3d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9015,8 +9016,8 @@ pub mod Uniform3dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform3dv::is_loaded() }
-        else { (*STORAGE).Uniform3dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform3dv.is_loaded }
+        else { gl::Uniform3dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9030,8 +9031,8 @@ pub mod Uniform3f {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform3f::is_loaded() }
-        else { (*STORAGE).Uniform3f.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform3f.is_loaded }
+        else { gl::Uniform3f::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9045,8 +9046,8 @@ pub mod Uniform3fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform3fv::is_loaded() }
-        else { (*STORAGE).Uniform3fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform3fv.is_loaded }
+        else { gl::Uniform3fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9060,8 +9061,8 @@ pub mod Uniform3i {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform3i::is_loaded() }
-        else { (*STORAGE).Uniform3i.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform3i.is_loaded }
+        else { gl::Uniform3i::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9075,8 +9076,8 @@ pub mod Uniform3iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform3iv::is_loaded() }
-        else { (*STORAGE).Uniform3iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform3iv.is_loaded }
+        else { gl::Uniform3iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9090,8 +9091,8 @@ pub mod Uniform3ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform3ui::is_loaded() }
-        else { (*STORAGE).Uniform3ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform3ui.is_loaded }
+        else { gl::Uniform3ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9105,8 +9106,8 @@ pub mod Uniform3uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform3uiv::is_loaded() }
-        else { (*STORAGE).Uniform3uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform3uiv.is_loaded }
+        else { gl::Uniform3uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9120,8 +9121,8 @@ pub mod Uniform4d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform4d::is_loaded() }
-        else { (*STORAGE).Uniform4d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform4d.is_loaded }
+        else { gl::Uniform4d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9135,8 +9136,8 @@ pub mod Uniform4dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform4dv::is_loaded() }
-        else { (*STORAGE).Uniform4dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform4dv.is_loaded }
+        else { gl::Uniform4dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9150,8 +9151,8 @@ pub mod Uniform4f {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform4f::is_loaded() }
-        else { (*STORAGE).Uniform4f.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform4f.is_loaded }
+        else { gl::Uniform4f::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9165,8 +9166,8 @@ pub mod Uniform4fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform4fv::is_loaded() }
-        else { (*STORAGE).Uniform4fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform4fv.is_loaded }
+        else { gl::Uniform4fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9180,8 +9181,8 @@ pub mod Uniform4i {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform4i::is_loaded() }
-        else { (*STORAGE).Uniform4i.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform4i.is_loaded }
+        else { gl::Uniform4i::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9195,8 +9196,8 @@ pub mod Uniform4iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform4iv::is_loaded() }
-        else { (*STORAGE).Uniform4iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform4iv.is_loaded }
+        else { gl::Uniform4iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9210,8 +9211,8 @@ pub mod Uniform4ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform4ui::is_loaded() }
-        else { (*STORAGE).Uniform4ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform4ui.is_loaded }
+        else { gl::Uniform4ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9225,8 +9226,8 @@ pub mod Uniform4uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Uniform4uiv::is_loaded() }
-        else { (*STORAGE).Uniform4uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Uniform4uiv.is_loaded }
+        else { gl::Uniform4uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9240,8 +9241,8 @@ pub mod UniformBlockBinding {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformBlockBinding::is_loaded() }
-        else { (*STORAGE).UniformBlockBinding.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformBlockBinding.is_loaded }
+        else { gl::UniformBlockBinding::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9255,8 +9256,8 @@ pub mod UniformMatrix2dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix2dv::is_loaded() }
-        else { (*STORAGE).UniformMatrix2dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix2dv.is_loaded }
+        else { gl::UniformMatrix2dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9270,8 +9271,8 @@ pub mod UniformMatrix2fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix2fv::is_loaded() }
-        else { (*STORAGE).UniformMatrix2fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix2fv.is_loaded }
+        else { gl::UniformMatrix2fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9285,8 +9286,8 @@ pub mod UniformMatrix2x3dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix2x3dv::is_loaded() }
-        else { (*STORAGE).UniformMatrix2x3dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix2x3dv.is_loaded }
+        else { gl::UniformMatrix2x3dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9300,8 +9301,8 @@ pub mod UniformMatrix2x3fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix2x3fv::is_loaded() }
-        else { (*STORAGE).UniformMatrix2x3fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix2x3fv.is_loaded }
+        else { gl::UniformMatrix2x3fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9315,8 +9316,8 @@ pub mod UniformMatrix2x4dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix2x4dv::is_loaded() }
-        else { (*STORAGE).UniformMatrix2x4dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix2x4dv.is_loaded }
+        else { gl::UniformMatrix2x4dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9330,8 +9331,8 @@ pub mod UniformMatrix2x4fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix2x4fv::is_loaded() }
-        else { (*STORAGE).UniformMatrix2x4fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix2x4fv.is_loaded }
+        else { gl::UniformMatrix2x4fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9345,8 +9346,8 @@ pub mod UniformMatrix3dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix3dv::is_loaded() }
-        else { (*STORAGE).UniformMatrix3dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix3dv.is_loaded }
+        else { gl::UniformMatrix3dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9360,8 +9361,8 @@ pub mod UniformMatrix3fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix3fv::is_loaded() }
-        else { (*STORAGE).UniformMatrix3fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix3fv.is_loaded }
+        else { gl::UniformMatrix3fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9375,8 +9376,8 @@ pub mod UniformMatrix3x2dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix3x2dv::is_loaded() }
-        else { (*STORAGE).UniformMatrix3x2dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix3x2dv.is_loaded }
+        else { gl::UniformMatrix3x2dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9390,8 +9391,8 @@ pub mod UniformMatrix3x2fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix3x2fv::is_loaded() }
-        else { (*STORAGE).UniformMatrix3x2fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix3x2fv.is_loaded }
+        else { gl::UniformMatrix3x2fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9405,8 +9406,8 @@ pub mod UniformMatrix3x4dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix3x4dv::is_loaded() }
-        else { (*STORAGE).UniformMatrix3x4dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix3x4dv.is_loaded }
+        else { gl::UniformMatrix3x4dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9420,8 +9421,8 @@ pub mod UniformMatrix3x4fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix3x4fv::is_loaded() }
-        else { (*STORAGE).UniformMatrix3x4fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix3x4fv.is_loaded }
+        else { gl::UniformMatrix3x4fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9435,8 +9436,8 @@ pub mod UniformMatrix4dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix4dv::is_loaded() }
-        else { (*STORAGE).UniformMatrix4dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix4dv.is_loaded }
+        else { gl::UniformMatrix4dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9450,8 +9451,8 @@ pub mod UniformMatrix4fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix4fv::is_loaded() }
-        else { (*STORAGE).UniformMatrix4fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix4fv.is_loaded }
+        else { gl::UniformMatrix4fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9465,8 +9466,8 @@ pub mod UniformMatrix4x2dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix4x2dv::is_loaded() }
-        else { (*STORAGE).UniformMatrix4x2dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix4x2dv.is_loaded }
+        else { gl::UniformMatrix4x2dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9480,8 +9481,8 @@ pub mod UniformMatrix4x2fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix4x2fv::is_loaded() }
-        else { (*STORAGE).UniformMatrix4x2fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix4x2fv.is_loaded }
+        else { gl::UniformMatrix4x2fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9495,8 +9496,8 @@ pub mod UniformMatrix4x3dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix4x3dv::is_loaded() }
-        else { (*STORAGE).UniformMatrix4x3dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix4x3dv.is_loaded }
+        else { gl::UniformMatrix4x3dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9510,8 +9511,8 @@ pub mod UniformMatrix4x3fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformMatrix4x3fv::is_loaded() }
-        else { (*STORAGE).UniformMatrix4x3fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformMatrix4x3fv.is_loaded }
+        else { gl::UniformMatrix4x3fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9525,8 +9526,8 @@ pub mod UniformSubroutinesuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UniformSubroutinesuiv::is_loaded() }
-        else { (*STORAGE).UniformSubroutinesuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UniformSubroutinesuiv.is_loaded }
+        else { gl::UniformSubroutinesuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9540,8 +9541,8 @@ pub mod UnmapBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UnmapBuffer::is_loaded() }
-        else { (*STORAGE).UnmapBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UnmapBuffer.is_loaded }
+        else { gl::UnmapBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9555,8 +9556,8 @@ pub mod UnmapNamedBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UnmapNamedBuffer::is_loaded() }
-        else { (*STORAGE).UnmapNamedBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UnmapNamedBuffer.is_loaded }
+        else { gl::UnmapNamedBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9570,8 +9571,8 @@ pub mod UseProgram {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UseProgram::is_loaded() }
-        else { (*STORAGE).UseProgram.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UseProgram.is_loaded }
+        else { gl::UseProgram::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9585,8 +9586,8 @@ pub mod UseProgramStages {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::UseProgramStages::is_loaded() }
-        else { (*STORAGE).UseProgramStages.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).UseProgramStages.is_loaded }
+        else { gl::UseProgramStages::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9600,8 +9601,8 @@ pub mod ValidateProgram {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ValidateProgram::is_loaded() }
-        else { (*STORAGE).ValidateProgram.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ValidateProgram.is_loaded }
+        else { gl::ValidateProgram::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9615,8 +9616,8 @@ pub mod ValidateProgramPipeline {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ValidateProgramPipeline::is_loaded() }
-        else { (*STORAGE).ValidateProgramPipeline.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ValidateProgramPipeline.is_loaded }
+        else { gl::ValidateProgramPipeline::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9630,8 +9631,8 @@ pub mod VertexArrayAttribBinding {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexArrayAttribBinding::is_loaded() }
-        else { (*STORAGE).VertexArrayAttribBinding.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexArrayAttribBinding.is_loaded }
+        else { gl::VertexArrayAttribBinding::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9645,8 +9646,8 @@ pub mod VertexArrayAttribFormat {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexArrayAttribFormat::is_loaded() }
-        else { (*STORAGE).VertexArrayAttribFormat.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexArrayAttribFormat.is_loaded }
+        else { gl::VertexArrayAttribFormat::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9660,8 +9661,8 @@ pub mod VertexArrayAttribIFormat {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexArrayAttribIFormat::is_loaded() }
-        else { (*STORAGE).VertexArrayAttribIFormat.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexArrayAttribIFormat.is_loaded }
+        else { gl::VertexArrayAttribIFormat::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9675,8 +9676,8 @@ pub mod VertexArrayAttribLFormat {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexArrayAttribLFormat::is_loaded() }
-        else { (*STORAGE).VertexArrayAttribLFormat.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexArrayAttribLFormat.is_loaded }
+        else { gl::VertexArrayAttribLFormat::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9690,8 +9691,8 @@ pub mod VertexArrayBindingDivisor {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexArrayBindingDivisor::is_loaded() }
-        else { (*STORAGE).VertexArrayBindingDivisor.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexArrayBindingDivisor.is_loaded }
+        else { gl::VertexArrayBindingDivisor::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9705,8 +9706,8 @@ pub mod VertexArrayElementBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexArrayElementBuffer::is_loaded() }
-        else { (*STORAGE).VertexArrayElementBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexArrayElementBuffer.is_loaded }
+        else { gl::VertexArrayElementBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9720,8 +9721,8 @@ pub mod VertexArrayVertexBuffer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexArrayVertexBuffer::is_loaded() }
-        else { (*STORAGE).VertexArrayVertexBuffer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexArrayVertexBuffer.is_loaded }
+        else { gl::VertexArrayVertexBuffer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9735,8 +9736,8 @@ pub mod VertexArrayVertexBuffers {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexArrayVertexBuffers::is_loaded() }
-        else { (*STORAGE).VertexArrayVertexBuffers.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexArrayVertexBuffers.is_loaded }
+        else { gl::VertexArrayVertexBuffers::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9750,8 +9751,8 @@ pub mod VertexAttrib1d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib1d::is_loaded() }
-        else { (*STORAGE).VertexAttrib1d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib1d.is_loaded }
+        else { gl::VertexAttrib1d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9765,8 +9766,8 @@ pub mod VertexAttrib1dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib1dv::is_loaded() }
-        else { (*STORAGE).VertexAttrib1dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib1dv.is_loaded }
+        else { gl::VertexAttrib1dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9780,8 +9781,8 @@ pub mod VertexAttrib1f {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib1f::is_loaded() }
-        else { (*STORAGE).VertexAttrib1f.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib1f.is_loaded }
+        else { gl::VertexAttrib1f::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9795,8 +9796,8 @@ pub mod VertexAttrib1fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib1fv::is_loaded() }
-        else { (*STORAGE).VertexAttrib1fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib1fv.is_loaded }
+        else { gl::VertexAttrib1fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9810,8 +9811,8 @@ pub mod VertexAttrib1s {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib1s::is_loaded() }
-        else { (*STORAGE).VertexAttrib1s.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib1s.is_loaded }
+        else { gl::VertexAttrib1s::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9825,8 +9826,8 @@ pub mod VertexAttrib1sv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib1sv::is_loaded() }
-        else { (*STORAGE).VertexAttrib1sv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib1sv.is_loaded }
+        else { gl::VertexAttrib1sv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9840,8 +9841,8 @@ pub mod VertexAttrib2d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib2d::is_loaded() }
-        else { (*STORAGE).VertexAttrib2d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib2d.is_loaded }
+        else { gl::VertexAttrib2d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9855,8 +9856,8 @@ pub mod VertexAttrib2dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib2dv::is_loaded() }
-        else { (*STORAGE).VertexAttrib2dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib2dv.is_loaded }
+        else { gl::VertexAttrib2dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9870,8 +9871,8 @@ pub mod VertexAttrib2f {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib2f::is_loaded() }
-        else { (*STORAGE).VertexAttrib2f.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib2f.is_loaded }
+        else { gl::VertexAttrib2f::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9885,8 +9886,8 @@ pub mod VertexAttrib2fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib2fv::is_loaded() }
-        else { (*STORAGE).VertexAttrib2fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib2fv.is_loaded }
+        else { gl::VertexAttrib2fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9900,8 +9901,8 @@ pub mod VertexAttrib2s {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib2s::is_loaded() }
-        else { (*STORAGE).VertexAttrib2s.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib2s.is_loaded }
+        else { gl::VertexAttrib2s::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9915,8 +9916,8 @@ pub mod VertexAttrib2sv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib2sv::is_loaded() }
-        else { (*STORAGE).VertexAttrib2sv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib2sv.is_loaded }
+        else { gl::VertexAttrib2sv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9930,8 +9931,8 @@ pub mod VertexAttrib3d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib3d::is_loaded() }
-        else { (*STORAGE).VertexAttrib3d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib3d.is_loaded }
+        else { gl::VertexAttrib3d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9945,8 +9946,8 @@ pub mod VertexAttrib3dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib3dv::is_loaded() }
-        else { (*STORAGE).VertexAttrib3dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib3dv.is_loaded }
+        else { gl::VertexAttrib3dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9960,8 +9961,8 @@ pub mod VertexAttrib3f {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib3f::is_loaded() }
-        else { (*STORAGE).VertexAttrib3f.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib3f.is_loaded }
+        else { gl::VertexAttrib3f::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9975,8 +9976,8 @@ pub mod VertexAttrib3fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib3fv::is_loaded() }
-        else { (*STORAGE).VertexAttrib3fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib3fv.is_loaded }
+        else { gl::VertexAttrib3fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -9990,8 +9991,8 @@ pub mod VertexAttrib3s {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib3s::is_loaded() }
-        else { (*STORAGE).VertexAttrib3s.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib3s.is_loaded }
+        else { gl::VertexAttrib3s::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10005,8 +10006,8 @@ pub mod VertexAttrib3sv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib3sv::is_loaded() }
-        else { (*STORAGE).VertexAttrib3sv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib3sv.is_loaded }
+        else { gl::VertexAttrib3sv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10020,8 +10021,8 @@ pub mod VertexAttrib4Nbv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4Nbv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4Nbv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4Nbv.is_loaded }
+        else { gl::VertexAttrib4Nbv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10035,8 +10036,8 @@ pub mod VertexAttrib4Niv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4Niv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4Niv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4Niv.is_loaded }
+        else { gl::VertexAttrib4Niv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10050,8 +10051,8 @@ pub mod VertexAttrib4Nsv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4Nsv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4Nsv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4Nsv.is_loaded }
+        else { gl::VertexAttrib4Nsv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10065,8 +10066,8 @@ pub mod VertexAttrib4Nub {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4Nub::is_loaded() }
-        else { (*STORAGE).VertexAttrib4Nub.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4Nub.is_loaded }
+        else { gl::VertexAttrib4Nub::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10080,8 +10081,8 @@ pub mod VertexAttrib4Nubv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4Nubv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4Nubv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4Nubv.is_loaded }
+        else { gl::VertexAttrib4Nubv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10095,8 +10096,8 @@ pub mod VertexAttrib4Nuiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4Nuiv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4Nuiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4Nuiv.is_loaded }
+        else { gl::VertexAttrib4Nuiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10110,8 +10111,8 @@ pub mod VertexAttrib4Nusv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4Nusv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4Nusv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4Nusv.is_loaded }
+        else { gl::VertexAttrib4Nusv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10125,8 +10126,8 @@ pub mod VertexAttrib4bv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4bv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4bv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4bv.is_loaded }
+        else { gl::VertexAttrib4bv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10140,8 +10141,8 @@ pub mod VertexAttrib4d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4d::is_loaded() }
-        else { (*STORAGE).VertexAttrib4d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4d.is_loaded }
+        else { gl::VertexAttrib4d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10155,8 +10156,8 @@ pub mod VertexAttrib4dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4dv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4dv.is_loaded }
+        else { gl::VertexAttrib4dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10170,8 +10171,8 @@ pub mod VertexAttrib4f {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4f::is_loaded() }
-        else { (*STORAGE).VertexAttrib4f.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4f.is_loaded }
+        else { gl::VertexAttrib4f::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10185,8 +10186,8 @@ pub mod VertexAttrib4fv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4fv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4fv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4fv.is_loaded }
+        else { gl::VertexAttrib4fv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10200,8 +10201,8 @@ pub mod VertexAttrib4iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4iv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4iv.is_loaded }
+        else { gl::VertexAttrib4iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10215,8 +10216,8 @@ pub mod VertexAttrib4s {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4s::is_loaded() }
-        else { (*STORAGE).VertexAttrib4s.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4s.is_loaded }
+        else { gl::VertexAttrib4s::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10230,8 +10231,8 @@ pub mod VertexAttrib4sv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4sv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4sv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4sv.is_loaded }
+        else { gl::VertexAttrib4sv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10245,8 +10246,8 @@ pub mod VertexAttrib4ubv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4ubv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4ubv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4ubv.is_loaded }
+        else { gl::VertexAttrib4ubv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10260,8 +10261,8 @@ pub mod VertexAttrib4uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4uiv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4uiv.is_loaded }
+        else { gl::VertexAttrib4uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10275,8 +10276,8 @@ pub mod VertexAttrib4usv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttrib4usv::is_loaded() }
-        else { (*STORAGE).VertexAttrib4usv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttrib4usv.is_loaded }
+        else { gl::VertexAttrib4usv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10290,8 +10291,8 @@ pub mod VertexAttribBinding {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribBinding::is_loaded() }
-        else { (*STORAGE).VertexAttribBinding.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribBinding.is_loaded }
+        else { gl::VertexAttribBinding::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10305,8 +10306,8 @@ pub mod VertexAttribDivisor {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribDivisor::is_loaded() }
-        else { (*STORAGE).VertexAttribDivisor.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribDivisor.is_loaded }
+        else { gl::VertexAttribDivisor::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10320,8 +10321,8 @@ pub mod VertexAttribFormat {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribFormat::is_loaded() }
-        else { (*STORAGE).VertexAttribFormat.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribFormat.is_loaded }
+        else { gl::VertexAttribFormat::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10335,8 +10336,8 @@ pub mod VertexAttribI1i {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI1i::is_loaded() }
-        else { (*STORAGE).VertexAttribI1i.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI1i.is_loaded }
+        else { gl::VertexAttribI1i::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10350,8 +10351,8 @@ pub mod VertexAttribI1iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI1iv::is_loaded() }
-        else { (*STORAGE).VertexAttribI1iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI1iv.is_loaded }
+        else { gl::VertexAttribI1iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10365,8 +10366,8 @@ pub mod VertexAttribI1ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI1ui::is_loaded() }
-        else { (*STORAGE).VertexAttribI1ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI1ui.is_loaded }
+        else { gl::VertexAttribI1ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10380,8 +10381,8 @@ pub mod VertexAttribI1uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI1uiv::is_loaded() }
-        else { (*STORAGE).VertexAttribI1uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI1uiv.is_loaded }
+        else { gl::VertexAttribI1uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10395,8 +10396,8 @@ pub mod VertexAttribI2i {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI2i::is_loaded() }
-        else { (*STORAGE).VertexAttribI2i.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI2i.is_loaded }
+        else { gl::VertexAttribI2i::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10410,8 +10411,8 @@ pub mod VertexAttribI2iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI2iv::is_loaded() }
-        else { (*STORAGE).VertexAttribI2iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI2iv.is_loaded }
+        else { gl::VertexAttribI2iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10425,8 +10426,8 @@ pub mod VertexAttribI2ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI2ui::is_loaded() }
-        else { (*STORAGE).VertexAttribI2ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI2ui.is_loaded }
+        else { gl::VertexAttribI2ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10440,8 +10441,8 @@ pub mod VertexAttribI2uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI2uiv::is_loaded() }
-        else { (*STORAGE).VertexAttribI2uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI2uiv.is_loaded }
+        else { gl::VertexAttribI2uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10455,8 +10456,8 @@ pub mod VertexAttribI3i {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI3i::is_loaded() }
-        else { (*STORAGE).VertexAttribI3i.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI3i.is_loaded }
+        else { gl::VertexAttribI3i::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10470,8 +10471,8 @@ pub mod VertexAttribI3iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI3iv::is_loaded() }
-        else { (*STORAGE).VertexAttribI3iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI3iv.is_loaded }
+        else { gl::VertexAttribI3iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10485,8 +10486,8 @@ pub mod VertexAttribI3ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI3ui::is_loaded() }
-        else { (*STORAGE).VertexAttribI3ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI3ui.is_loaded }
+        else { gl::VertexAttribI3ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10500,8 +10501,8 @@ pub mod VertexAttribI3uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI3uiv::is_loaded() }
-        else { (*STORAGE).VertexAttribI3uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI3uiv.is_loaded }
+        else { gl::VertexAttribI3uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10515,8 +10516,8 @@ pub mod VertexAttribI4bv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI4bv::is_loaded() }
-        else { (*STORAGE).VertexAttribI4bv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI4bv.is_loaded }
+        else { gl::VertexAttribI4bv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10530,8 +10531,8 @@ pub mod VertexAttribI4i {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI4i::is_loaded() }
-        else { (*STORAGE).VertexAttribI4i.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI4i.is_loaded }
+        else { gl::VertexAttribI4i::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10545,8 +10546,8 @@ pub mod VertexAttribI4iv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI4iv::is_loaded() }
-        else { (*STORAGE).VertexAttribI4iv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI4iv.is_loaded }
+        else { gl::VertexAttribI4iv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10560,8 +10561,8 @@ pub mod VertexAttribI4sv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI4sv::is_loaded() }
-        else { (*STORAGE).VertexAttribI4sv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI4sv.is_loaded }
+        else { gl::VertexAttribI4sv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10575,8 +10576,8 @@ pub mod VertexAttribI4ubv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI4ubv::is_loaded() }
-        else { (*STORAGE).VertexAttribI4ubv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI4ubv.is_loaded }
+        else { gl::VertexAttribI4ubv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10590,8 +10591,8 @@ pub mod VertexAttribI4ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI4ui::is_loaded() }
-        else { (*STORAGE).VertexAttribI4ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI4ui.is_loaded }
+        else { gl::VertexAttribI4ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10605,8 +10606,8 @@ pub mod VertexAttribI4uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI4uiv::is_loaded() }
-        else { (*STORAGE).VertexAttribI4uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI4uiv.is_loaded }
+        else { gl::VertexAttribI4uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10620,8 +10621,8 @@ pub mod VertexAttribI4usv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribI4usv::is_loaded() }
-        else { (*STORAGE).VertexAttribI4usv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribI4usv.is_loaded }
+        else { gl::VertexAttribI4usv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10635,8 +10636,8 @@ pub mod VertexAttribIFormat {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribIFormat::is_loaded() }
-        else { (*STORAGE).VertexAttribIFormat.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribIFormat.is_loaded }
+        else { gl::VertexAttribIFormat::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10650,8 +10651,8 @@ pub mod VertexAttribIPointer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribIPointer::is_loaded() }
-        else { (*STORAGE).VertexAttribIPointer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribIPointer.is_loaded }
+        else { gl::VertexAttribIPointer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10665,8 +10666,8 @@ pub mod VertexAttribL1d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribL1d::is_loaded() }
-        else { (*STORAGE).VertexAttribL1d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribL1d.is_loaded }
+        else { gl::VertexAttribL1d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10680,8 +10681,8 @@ pub mod VertexAttribL1dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribL1dv::is_loaded() }
-        else { (*STORAGE).VertexAttribL1dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribL1dv.is_loaded }
+        else { gl::VertexAttribL1dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10695,8 +10696,8 @@ pub mod VertexAttribL2d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribL2d::is_loaded() }
-        else { (*STORAGE).VertexAttribL2d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribL2d.is_loaded }
+        else { gl::VertexAttribL2d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10710,8 +10711,8 @@ pub mod VertexAttribL2dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribL2dv::is_loaded() }
-        else { (*STORAGE).VertexAttribL2dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribL2dv.is_loaded }
+        else { gl::VertexAttribL2dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10725,8 +10726,8 @@ pub mod VertexAttribL3d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribL3d::is_loaded() }
-        else { (*STORAGE).VertexAttribL3d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribL3d.is_loaded }
+        else { gl::VertexAttribL3d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10740,8 +10741,8 @@ pub mod VertexAttribL3dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribL3dv::is_loaded() }
-        else { (*STORAGE).VertexAttribL3dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribL3dv.is_loaded }
+        else { gl::VertexAttribL3dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10755,8 +10756,8 @@ pub mod VertexAttribL4d {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribL4d::is_loaded() }
-        else { (*STORAGE).VertexAttribL4d.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribL4d.is_loaded }
+        else { gl::VertexAttribL4d::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10770,8 +10771,8 @@ pub mod VertexAttribL4dv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribL4dv::is_loaded() }
-        else { (*STORAGE).VertexAttribL4dv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribL4dv.is_loaded }
+        else { gl::VertexAttribL4dv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10785,8 +10786,8 @@ pub mod VertexAttribLFormat {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribLFormat::is_loaded() }
-        else { (*STORAGE).VertexAttribLFormat.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribLFormat.is_loaded }
+        else { gl::VertexAttribLFormat::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10800,8 +10801,8 @@ pub mod VertexAttribLPointer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribLPointer::is_loaded() }
-        else { (*STORAGE).VertexAttribLPointer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribLPointer.is_loaded }
+        else { gl::VertexAttribLPointer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10815,8 +10816,8 @@ pub mod VertexAttribP1ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribP1ui::is_loaded() }
-        else { (*STORAGE).VertexAttribP1ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribP1ui.is_loaded }
+        else { gl::VertexAttribP1ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10830,8 +10831,8 @@ pub mod VertexAttribP1uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribP1uiv::is_loaded() }
-        else { (*STORAGE).VertexAttribP1uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribP1uiv.is_loaded }
+        else { gl::VertexAttribP1uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10845,8 +10846,8 @@ pub mod VertexAttribP2ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribP2ui::is_loaded() }
-        else { (*STORAGE).VertexAttribP2ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribP2ui.is_loaded }
+        else { gl::VertexAttribP2ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10860,8 +10861,8 @@ pub mod VertexAttribP2uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribP2uiv::is_loaded() }
-        else { (*STORAGE).VertexAttribP2uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribP2uiv.is_loaded }
+        else { gl::VertexAttribP2uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10875,8 +10876,8 @@ pub mod VertexAttribP3ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribP3ui::is_loaded() }
-        else { (*STORAGE).VertexAttribP3ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribP3ui.is_loaded }
+        else { gl::VertexAttribP3ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10890,8 +10891,8 @@ pub mod VertexAttribP3uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribP3uiv::is_loaded() }
-        else { (*STORAGE).VertexAttribP3uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribP3uiv.is_loaded }
+        else { gl::VertexAttribP3uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10905,8 +10906,8 @@ pub mod VertexAttribP4ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribP4ui::is_loaded() }
-        else { (*STORAGE).VertexAttribP4ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribP4ui.is_loaded }
+        else { gl::VertexAttribP4ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10920,8 +10921,8 @@ pub mod VertexAttribP4uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribP4uiv::is_loaded() }
-        else { (*STORAGE).VertexAttribP4uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribP4uiv.is_loaded }
+        else { gl::VertexAttribP4uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10935,8 +10936,8 @@ pub mod VertexAttribPointer {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexAttribPointer::is_loaded() }
-        else { (*STORAGE).VertexAttribPointer.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexAttribPointer.is_loaded }
+        else { gl::VertexAttribPointer::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10950,8 +10951,8 @@ pub mod VertexBindingDivisor {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexBindingDivisor::is_loaded() }
-        else { (*STORAGE).VertexBindingDivisor.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexBindingDivisor.is_loaded }
+        else { gl::VertexBindingDivisor::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10965,8 +10966,8 @@ pub mod VertexP2ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexP2ui::is_loaded() }
-        else { (*STORAGE).VertexP2ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexP2ui.is_loaded }
+        else { gl::VertexP2ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10980,8 +10981,8 @@ pub mod VertexP2uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexP2uiv::is_loaded() }
-        else { (*STORAGE).VertexP2uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexP2uiv.is_loaded }
+        else { gl::VertexP2uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -10995,8 +10996,8 @@ pub mod VertexP3ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexP3ui::is_loaded() }
-        else { (*STORAGE).VertexP3ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexP3ui.is_loaded }
+        else { gl::VertexP3ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -11010,8 +11011,8 @@ pub mod VertexP3uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexP3uiv::is_loaded() }
-        else { (*STORAGE).VertexP3uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexP3uiv.is_loaded }
+        else { gl::VertexP3uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -11025,8 +11026,8 @@ pub mod VertexP4ui {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexP4ui::is_loaded() }
-        else { (*STORAGE).VertexP4ui.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexP4ui.is_loaded }
+        else { gl::VertexP4ui::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -11040,8 +11041,8 @@ pub mod VertexP4uiv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::VertexP4uiv::is_loaded() }
-        else { (*STORAGE).VertexP4uiv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).VertexP4uiv.is_loaded }
+        else { gl::VertexP4uiv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -11055,8 +11056,8 @@ pub mod Viewport {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::Viewport::is_loaded() }
-        else { (*STORAGE).Viewport.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).Viewport.is_loaded }
+        else { gl::Viewport::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -11070,8 +11071,8 @@ pub mod ViewportArrayv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ViewportArrayv::is_loaded() }
-        else { (*STORAGE).ViewportArrayv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ViewportArrayv.is_loaded }
+        else { gl::ViewportArrayv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -11085,8 +11086,8 @@ pub mod ViewportIndexedf {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ViewportIndexedf::is_loaded() }
-        else { (*STORAGE).ViewportIndexedf.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ViewportIndexedf.is_loaded }
+        else { gl::ViewportIndexedf::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -11100,8 +11101,8 @@ pub mod ViewportIndexedfv {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::ViewportIndexedfv::is_loaded() }
-        else { (*STORAGE).ViewportIndexedfv.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).ViewportIndexedfv.is_loaded }
+        else { gl::ViewportIndexedfv::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -11115,8 +11116,8 @@ pub mod WaitSync {
     use crate::gl_util::gl_wrapper::EXTERNAL_POINTERS;
     use std::ffi::c_void;
     pub fn is_loaded() -> bool { unsafe { 
-        if EXTERNAL_POINTERS { gl::WaitSync::is_loaded() }
-        else { (*STORAGE).WaitSync.is_loaded }
+        if EXTERNAL_POINTERS { (*STORAGE).WaitSync.is_loaded }
+        else { gl::WaitSync::is_loaded() }
     } }
 
     pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void { unsafe {
@@ -11133,13 +11134,14 @@ pub struct FnPtr {
 
 impl FnPtr {
     /// Creates a `FnPtr` from a load attempt.
-    pub fn new(ptr: *const c_void) -> FnPtr {
+    pub fn new(info: (*const c_void, &'static str)) -> FnPtr { unsafe {
+        let (ptr, symbol) = info;
         if ptr.is_null() {
             FnPtr { f: missing_fn_panic as *const c_void, is_loaded: false }
         } else {
             FnPtr { f: ptr, is_loaded: true }
         }
-    }
+    } }
 }
 
 pub struct PointerStorage {
@@ -11843,705 +11845,702 @@ pub struct PointerStorage {
 impl PointerStorage {
     pub fn new() -> PointerStorage {
         return PointerStorage {
-            ActiveShaderProgram: FnPtr::new(0 as *const c_void),
-            ActiveTexture: FnPtr::new(0 as *const c_void),
-            AttachShader: FnPtr::new(0 as *const c_void),
-            BeginConditionalRender: FnPtr::new(0 as *const c_void),
-            BeginQuery: FnPtr::new(0 as *const c_void),
-            BeginQueryIndexed: FnPtr::new(0 as *const c_void),
-            BeginTransformFeedback: FnPtr::new(0 as *const c_void),
-            BindAttribLocation: FnPtr::new(0 as *const c_void),
-            BindBuffer: FnPtr::new(0 as *const c_void),
-            BindBufferBase: FnPtr::new(0 as *const c_void),
-            BindBufferRange: FnPtr::new(0 as *const c_void),
-            BindBuffersBase: FnPtr::new(0 as *const c_void),
-            BindBuffersRange: FnPtr::new(0 as *const c_void),
-            BindFragDataLocation: FnPtr::new(0 as *const c_void),
-            BindFragDataLocationIndexed: FnPtr::new(0 as *const c_void),
-            BindFramebuffer: FnPtr::new(0 as *const c_void),
-            BindImageTexture: FnPtr::new(0 as *const c_void),
-            BindImageTextures: FnPtr::new(0 as *const c_void),
-            BindProgramPipeline: FnPtr::new(0 as *const c_void),
-            BindRenderbuffer: FnPtr::new(0 as *const c_void),
-            BindSampler: FnPtr::new(0 as *const c_void),
-            BindSamplers: FnPtr::new(0 as *const c_void),
-            BindTexture: FnPtr::new(0 as *const c_void),
-            BindTextureUnit: FnPtr::new(0 as *const c_void),
-            BindTextures: FnPtr::new(0 as *const c_void),
-            BindTransformFeedback: FnPtr::new(0 as *const c_void),
-            BindVertexArray: FnPtr::new(0 as *const c_void),
-            BindVertexBuffer: FnPtr::new(0 as *const c_void),
-            BindVertexBuffers: FnPtr::new(0 as *const c_void),
-            BlendColor: FnPtr::new(0 as *const c_void),
-            BlendEquation: FnPtr::new(0 as *const c_void),
-            BlendEquationSeparate: FnPtr::new(0 as *const c_void),
-            BlendEquationSeparatei: FnPtr::new(0 as *const c_void),
-            BlendEquationi: FnPtr::new(0 as *const c_void),
-            BlendFunc: FnPtr::new(0 as *const c_void),
-            BlendFuncSeparate: FnPtr::new(0 as *const c_void),
-            BlendFuncSeparatei: FnPtr::new(0 as *const c_void),
-            BlendFunci: FnPtr::new(0 as *const c_void),
-            BlitFramebuffer: FnPtr::new(0 as *const c_void),
-            BlitNamedFramebuffer: FnPtr::new(0 as *const c_void),
-            BufferData: FnPtr::new(0 as *const c_void),
-            BufferStorage: FnPtr::new(0 as *const c_void),
-            BufferSubData: FnPtr::new(0 as *const c_void),
-            CheckFramebufferStatus: FnPtr::new(0 as *const c_void),
-            CheckNamedFramebufferStatus: FnPtr::new(0 as *const c_void),
-            ClampColor: FnPtr::new(0 as *const c_void),
-            Clear: FnPtr::new(0 as *const c_void),
-            ClearBufferData: FnPtr::new(0 as *const c_void),
-            ClearBufferSubData: FnPtr::new(0 as *const c_void),
-            ClearBufferfi: FnPtr::new(0 as *const c_void),
-            ClearBufferfv: FnPtr::new(0 as *const c_void),
-            ClearBufferiv: FnPtr::new(0 as *const c_void),
-            ClearBufferuiv: FnPtr::new(0 as *const c_void),
-            ClearColor: FnPtr::new(0 as *const c_void),
-            ClearDepth: FnPtr::new(0 as *const c_void),
-            ClearDepthf: FnPtr::new(0 as *const c_void),
-            ClearNamedBufferData: FnPtr::new(0 as *const c_void),
-            ClearNamedBufferSubData: FnPtr::new(0 as *const c_void),
-            ClearNamedFramebufferfi: FnPtr::new(0 as *const c_void),
-            ClearNamedFramebufferfv: FnPtr::new(0 as *const c_void),
-            ClearNamedFramebufferiv: FnPtr::new(0 as *const c_void),
-            ClearNamedFramebufferuiv: FnPtr::new(0 as *const c_void),
-            ClearStencil: FnPtr::new(0 as *const c_void),
-            ClearTexImage: FnPtr::new(0 as *const c_void),
-            ClearTexSubImage: FnPtr::new(0 as *const c_void),
-            ClientWaitSync: FnPtr::new(0 as *const c_void),
-            ClipControl: FnPtr::new(0 as *const c_void),
-            ColorMask: FnPtr::new(0 as *const c_void),
-            ColorMaski: FnPtr::new(0 as *const c_void),
-            ColorP3ui: FnPtr::new(0 as *const c_void),
-            ColorP3uiv: FnPtr::new(0 as *const c_void),
-            ColorP4ui: FnPtr::new(0 as *const c_void),
-            ColorP4uiv: FnPtr::new(0 as *const c_void),
-            CompileShader: FnPtr::new(0 as *const c_void),
-            CompressedTexImage1D: FnPtr::new(0 as *const c_void),
-            CompressedTexImage2D: FnPtr::new(0 as *const c_void),
-            CompressedTexImage3D: FnPtr::new(0 as *const c_void),
-            CompressedTexSubImage1D: FnPtr::new(0 as *const c_void),
-            CompressedTexSubImage2D: FnPtr::new(0 as *const c_void),
-            CompressedTexSubImage3D: FnPtr::new(0 as *const c_void),
-            CompressedTextureSubImage1D: FnPtr::new(0 as *const c_void),
-            CompressedTextureSubImage2D: FnPtr::new(0 as *const c_void),
-            CompressedTextureSubImage3D: FnPtr::new(0 as *const c_void),
-            CopyBufferSubData: FnPtr::new(0 as *const c_void),
-            CopyImageSubData: FnPtr::new(0 as *const c_void),
-            CopyNamedBufferSubData: FnPtr::new(0 as *const c_void),
-            CopyTexImage1D: FnPtr::new(0 as *const c_void),
-            CopyTexImage2D: FnPtr::new(0 as *const c_void),
-            CopyTexSubImage1D: FnPtr::new(0 as *const c_void),
-            CopyTexSubImage2D: FnPtr::new(0 as *const c_void),
-            CopyTexSubImage3D: FnPtr::new(0 as *const c_void),
-            CopyTextureSubImage1D: FnPtr::new(0 as *const c_void),
-            CopyTextureSubImage2D: FnPtr::new(0 as *const c_void),
-            CopyTextureSubImage3D: FnPtr::new(0 as *const c_void),
-            CreateBuffers: FnPtr::new(0 as *const c_void),
-            CreateFramebuffers: FnPtr::new(0 as *const c_void),
-            CreateProgram: FnPtr::new(0 as *const c_void),
-            CreateProgramPipelines: FnPtr::new(0 as *const c_void),
-            CreateQueries: FnPtr::new(0 as *const c_void),
-            CreateRenderbuffers: FnPtr::new(0 as *const c_void),
-            CreateSamplers: FnPtr::new(0 as *const c_void),
-            CreateShader: FnPtr::new(0 as *const c_void),
-            CreateShaderProgramv: FnPtr::new(0 as *const c_void),
-            CreateTextures: FnPtr::new(0 as *const c_void),
-            CreateTransformFeedbacks: FnPtr::new(0 as *const c_void),
-            CreateVertexArrays: FnPtr::new(0 as *const c_void),
-            CullFace: FnPtr::new(0 as *const c_void),
-            DebugMessageCallback: FnPtr::new(0 as *const c_void),
-            DebugMessageControl: FnPtr::new(0 as *const c_void),
-            DebugMessageInsert: FnPtr::new(0 as *const c_void),
-            DeleteBuffers: FnPtr::new(0 as *const c_void),
-            DeleteFramebuffers: FnPtr::new(0 as *const c_void),
-            DeleteProgram: FnPtr::new(0 as *const c_void),
-            DeleteProgramPipelines: FnPtr::new(0 as *const c_void),
-            DeleteQueries: FnPtr::new(0 as *const c_void),
-            DeleteRenderbuffers: FnPtr::new(0 as *const c_void),
-            DeleteSamplers: FnPtr::new(0 as *const c_void),
-            DeleteShader: FnPtr::new(0 as *const c_void),
-            DeleteSync: FnPtr::new(0 as *const c_void),
-            DeleteTextures: FnPtr::new(0 as *const c_void),
-            DeleteTransformFeedbacks: FnPtr::new(0 as *const c_void),
-            DeleteVertexArrays: FnPtr::new(0 as *const c_void),
-            DepthFunc: FnPtr::new(0 as *const c_void),
-            DepthMask: FnPtr::new(0 as *const c_void),
-            DepthRange: FnPtr::new(0 as *const c_void),
-            DepthRangeArrayv: FnPtr::new(0 as *const c_void),
-            DepthRangeIndexed: FnPtr::new(0 as *const c_void),
-            DepthRangef: FnPtr::new(0 as *const c_void),
-            DetachShader: FnPtr::new(0 as *const c_void),
-            Disable: FnPtr::new(0 as *const c_void),
-            DisableVertexArrayAttrib: FnPtr::new(0 as *const c_void),
-            DisableVertexAttribArray: FnPtr::new(0 as *const c_void),
-            Disablei: FnPtr::new(0 as *const c_void),
-            DispatchCompute: FnPtr::new(0 as *const c_void),
-            DispatchComputeIndirect: FnPtr::new(0 as *const c_void),
-            DrawArrays: FnPtr::new(0 as *const c_void),
-            DrawArraysIndirect: FnPtr::new(0 as *const c_void),
-            DrawArraysInstanced: FnPtr::new(0 as *const c_void),
-            DrawArraysInstancedBaseInstance: FnPtr::new(0 as *const c_void),
-            DrawBuffer: FnPtr::new(0 as *const c_void),
-            DrawBuffers: FnPtr::new(0 as *const c_void),
-            DrawElements: FnPtr::new(0 as *const c_void),
-            DrawElementsBaseVertex: FnPtr::new(0 as *const c_void),
-            DrawElementsIndirect: FnPtr::new(0 as *const c_void),
-            DrawElementsInstanced: FnPtr::new(0 as *const c_void),
-            DrawElementsInstancedBaseInstance: FnPtr::new(0 as *const c_void),
-            DrawElementsInstancedBaseVertex: FnPtr::new(0 as *const c_void),
-            DrawElementsInstancedBaseVertexBaseInstance: FnPtr::new(0 as *const c_void),
-            DrawRangeElements: FnPtr::new(0 as *const c_void),
-            DrawRangeElementsBaseVertex: FnPtr::new(0 as *const c_void),
-            DrawTransformFeedback: FnPtr::new(0 as *const c_void),
-            DrawTransformFeedbackInstanced: FnPtr::new(0 as *const c_void),
-            DrawTransformFeedbackStream: FnPtr::new(0 as *const c_void),
-            DrawTransformFeedbackStreamInstanced: FnPtr::new(0 as *const c_void),
-            Enable: FnPtr::new(0 as *const c_void),
-            EnableVertexArrayAttrib: FnPtr::new(0 as *const c_void),
-            EnableVertexAttribArray: FnPtr::new(0 as *const c_void),
-            Enablei: FnPtr::new(0 as *const c_void),
-            EndConditionalRender: FnPtr::new(0 as *const c_void),
-            EndQuery: FnPtr::new(0 as *const c_void),
-            EndQueryIndexed: FnPtr::new(0 as *const c_void),
-            EndTransformFeedback: FnPtr::new(0 as *const c_void),
-            FenceSync: FnPtr::new(0 as *const c_void),
-            Finish: FnPtr::new(0 as *const c_void),
-            Flush: FnPtr::new(0 as *const c_void),
-            FlushMappedBufferRange: FnPtr::new(0 as *const c_void),
-            FlushMappedNamedBufferRange: FnPtr::new(0 as *const c_void),
-            FramebufferParameteri: FnPtr::new(0 as *const c_void),
-            FramebufferRenderbuffer: FnPtr::new(0 as *const c_void),
-            FramebufferTexture: FnPtr::new(0 as *const c_void),
-            FramebufferTexture1D: FnPtr::new(0 as *const c_void),
-            FramebufferTexture2D: FnPtr::new(0 as *const c_void),
-            FramebufferTexture3D: FnPtr::new(0 as *const c_void),
-            FramebufferTextureLayer: FnPtr::new(0 as *const c_void),
-            FrontFace: FnPtr::new(0 as *const c_void),
-            GenBuffers: FnPtr::new(0 as *const c_void),
-            GenFramebuffers: FnPtr::new(0 as *const c_void),
-            GenProgramPipelines: FnPtr::new(0 as *const c_void),
-            GenQueries: FnPtr::new(0 as *const c_void),
-            GenRenderbuffers: FnPtr::new(0 as *const c_void),
-            GenSamplers: FnPtr::new(0 as *const c_void),
-            GenTextures: FnPtr::new(0 as *const c_void),
-            GenTransformFeedbacks: FnPtr::new(0 as *const c_void),
-            GenVertexArrays: FnPtr::new(0 as *const c_void),
-            GenerateMipmap: FnPtr::new(0 as *const c_void),
-            GenerateTextureMipmap: FnPtr::new(0 as *const c_void),
-            GetActiveAtomicCounterBufferiv: FnPtr::new(0 as *const c_void),
-            GetActiveAttrib: FnPtr::new(0 as *const c_void),
-            GetActiveSubroutineName: FnPtr::new(0 as *const c_void),
-            GetActiveSubroutineUniformName: FnPtr::new(0 as *const c_void),
-            GetActiveSubroutineUniformiv: FnPtr::new(0 as *const c_void),
-            GetActiveUniform: FnPtr::new(0 as *const c_void),
-            GetActiveUniformBlockName: FnPtr::new(0 as *const c_void),
-            GetActiveUniformBlockiv: FnPtr::new(0 as *const c_void),
-            GetActiveUniformName: FnPtr::new(0 as *const c_void),
-            GetActiveUniformsiv: FnPtr::new(0 as *const c_void),
-            GetAttachedShaders: FnPtr::new(0 as *const c_void),
-            GetAttribLocation: FnPtr::new(0 as *const c_void),
-            GetBooleani_v: FnPtr::new(0 as *const c_void),
-            GetBooleanv: FnPtr::new(0 as *const c_void),
-            GetBufferParameteri64v: FnPtr::new(0 as *const c_void),
-            GetBufferParameteriv: FnPtr::new(0 as *const c_void),
-            GetBufferPointerv: FnPtr::new(0 as *const c_void),
-            GetBufferSubData: FnPtr::new(0 as *const c_void),
-            GetCompressedTexImage: FnPtr::new(0 as *const c_void),
-            GetCompressedTextureImage: FnPtr::new(0 as *const c_void),
-            GetCompressedTextureSubImage: FnPtr::new(0 as *const c_void),
-            GetDebugMessageLog: FnPtr::new(0 as *const c_void),
-            GetDoublei_v: FnPtr::new(0 as *const c_void),
-            GetDoublev: FnPtr::new(0 as *const c_void),
-            GetError: FnPtr::new(0 as *const c_void),
-            GetFloati_v: FnPtr::new(0 as *const c_void),
-            GetFloatv: FnPtr::new(0 as *const c_void),
-            GetFragDataIndex: FnPtr::new(0 as *const c_void),
-            GetFragDataLocation: FnPtr::new(0 as *const c_void),
-            GetFramebufferAttachmentParameteriv: FnPtr::new(0 as *const c_void),
-            GetFramebufferParameteriv: FnPtr::new(0 as *const c_void),
-            GetGraphicsResetStatus: FnPtr::new(0 as *const c_void),
-            GetInteger64i_v: FnPtr::new(0 as *const c_void),
-            GetInteger64v: FnPtr::new(0 as *const c_void),
-            GetIntegeri_v: FnPtr::new(0 as *const c_void),
-            GetIntegerv: FnPtr::new(0 as *const c_void),
-            GetInternalformati64v: FnPtr::new(0 as *const c_void),
-            GetInternalformativ: FnPtr::new(0 as *const c_void),
-            GetMultisamplefv: FnPtr::new(0 as *const c_void),
-            GetNamedBufferParameteri64v: FnPtr::new(0 as *const c_void),
-            GetNamedBufferParameteriv: FnPtr::new(0 as *const c_void),
-            GetNamedBufferPointerv: FnPtr::new(0 as *const c_void),
-            GetNamedBufferSubData: FnPtr::new(0 as *const c_void),
-            GetNamedFramebufferAttachmentParameteriv: FnPtr::new(0 as *const c_void),
-            GetNamedFramebufferParameteriv: FnPtr::new(0 as *const c_void),
-            GetNamedRenderbufferParameteriv: FnPtr::new(0 as *const c_void),
-            GetObjectLabel: FnPtr::new(0 as *const c_void),
-            GetObjectPtrLabel: FnPtr::new(0 as *const c_void),
-            GetPointerv: FnPtr::new(0 as *const c_void),
-            GetProgramBinary: FnPtr::new(0 as *const c_void),
-            GetProgramInfoLog: FnPtr::new(0 as *const c_void),
-            GetProgramInterfaceiv: FnPtr::new(0 as *const c_void),
-            GetProgramPipelineInfoLog: FnPtr::new(0 as *const c_void),
-            GetProgramPipelineiv: FnPtr::new(0 as *const c_void),
-            GetProgramResourceIndex: FnPtr::new(0 as *const c_void),
-            GetProgramResourceLocation: FnPtr::new(0 as *const c_void),
-            GetProgramResourceLocationIndex: FnPtr::new(0 as *const c_void),
-            GetProgramResourceName: FnPtr::new(0 as *const c_void),
-            GetProgramResourceiv: FnPtr::new(0 as *const c_void),
-            GetProgramStageiv: FnPtr::new(0 as *const c_void),
-            GetProgramiv: FnPtr::new(0 as *const c_void),
-            GetQueryBufferObjecti64v: FnPtr::new(0 as *const c_void),
-            GetQueryBufferObjectiv: FnPtr::new(0 as *const c_void),
-            GetQueryBufferObjectui64v: FnPtr::new(0 as *const c_void),
-            GetQueryBufferObjectuiv: FnPtr::new(0 as *const c_void),
-            GetQueryIndexediv: FnPtr::new(0 as *const c_void),
-            GetQueryObjecti64v: FnPtr::new(0 as *const c_void),
-            GetQueryObjectiv: FnPtr::new(0 as *const c_void),
-            GetQueryObjectui64v: FnPtr::new(0 as *const c_void),
-            GetQueryObjectuiv: FnPtr::new(0 as *const c_void),
-            GetQueryiv: FnPtr::new(0 as *const c_void),
-            GetRenderbufferParameteriv: FnPtr::new(0 as *const c_void),
-            GetSamplerParameterIiv: FnPtr::new(0 as *const c_void),
-            GetSamplerParameterIuiv: FnPtr::new(0 as *const c_void),
-            GetSamplerParameterfv: FnPtr::new(0 as *const c_void),
-            GetSamplerParameteriv: FnPtr::new(0 as *const c_void),
-            GetShaderInfoLog: FnPtr::new(0 as *const c_void),
-            GetShaderPrecisionFormat: FnPtr::new(0 as *const c_void),
-            GetShaderSource: FnPtr::new(0 as *const c_void),
-            GetShaderiv: FnPtr::new(0 as *const c_void),
-            GetString: FnPtr::new(0 as *const c_void),
-            GetStringi: FnPtr::new(0 as *const c_void),
-            GetSubroutineIndex: FnPtr::new(0 as *const c_void),
-            GetSubroutineUniformLocation: FnPtr::new(0 as *const c_void),
-            GetSynciv: FnPtr::new(0 as *const c_void),
-            GetTexImage: FnPtr::new(0 as *const c_void),
-            GetTexLevelParameterfv: FnPtr::new(0 as *const c_void),
-            GetTexLevelParameteriv: FnPtr::new(0 as *const c_void),
-            GetTexParameterIiv: FnPtr::new(0 as *const c_void),
-            GetTexParameterIuiv: FnPtr::new(0 as *const c_void),
-            GetTexParameterfv: FnPtr::new(0 as *const c_void),
-            GetTexParameteriv: FnPtr::new(0 as *const c_void),
-            GetTextureImage: FnPtr::new(0 as *const c_void),
-            GetTextureLevelParameterfv: FnPtr::new(0 as *const c_void),
-            GetTextureLevelParameteriv: FnPtr::new(0 as *const c_void),
-            GetTextureParameterIiv: FnPtr::new(0 as *const c_void),
-            GetTextureParameterIuiv: FnPtr::new(0 as *const c_void),
-            GetTextureParameterfv: FnPtr::new(0 as *const c_void),
-            GetTextureParameteriv: FnPtr::new(0 as *const c_void),
-            GetTextureSubImage: FnPtr::new(0 as *const c_void),
-            GetTransformFeedbackVarying: FnPtr::new(0 as *const c_void),
-            GetTransformFeedbacki64_v: FnPtr::new(0 as *const c_void),
-            GetTransformFeedbacki_v: FnPtr::new(0 as *const c_void),
-            GetTransformFeedbackiv: FnPtr::new(0 as *const c_void),
-            GetUniformBlockIndex: FnPtr::new(0 as *const c_void),
-            GetUniformIndices: FnPtr::new(0 as *const c_void),
-            GetUniformLocation: FnPtr::new(0 as *const c_void),
-            GetUniformSubroutineuiv: FnPtr::new(0 as *const c_void),
-            GetUniformdv: FnPtr::new(0 as *const c_void),
-            GetUniformfv: FnPtr::new(0 as *const c_void),
-            GetUniformiv: FnPtr::new(0 as *const c_void),
-            GetUniformuiv: FnPtr::new(0 as *const c_void),
-            GetVertexArrayIndexed64iv: FnPtr::new(0 as *const c_void),
-            GetVertexArrayIndexediv: FnPtr::new(0 as *const c_void),
-            GetVertexArrayiv: FnPtr::new(0 as *const c_void),
-            GetVertexAttribIiv: FnPtr::new(0 as *const c_void),
-            GetVertexAttribIuiv: FnPtr::new(0 as *const c_void),
-            GetVertexAttribLdv: FnPtr::new(0 as *const c_void),
-            GetVertexAttribPointerv: FnPtr::new(0 as *const c_void),
-            GetVertexAttribdv: FnPtr::new(0 as *const c_void),
-            GetVertexAttribfv: FnPtr::new(0 as *const c_void),
-            GetVertexAttribiv: FnPtr::new(0 as *const c_void),
-            GetnColorTable: FnPtr::new(0 as *const c_void),
-            GetnCompressedTexImage: FnPtr::new(0 as *const c_void),
-            GetnConvolutionFilter: FnPtr::new(0 as *const c_void),
-            GetnHistogram: FnPtr::new(0 as *const c_void),
-            GetnMapdv: FnPtr::new(0 as *const c_void),
-            GetnMapfv: FnPtr::new(0 as *const c_void),
-            GetnMapiv: FnPtr::new(0 as *const c_void),
-            GetnMinmax: FnPtr::new(0 as *const c_void),
-            GetnPixelMapfv: FnPtr::new(0 as *const c_void),
-            GetnPixelMapuiv: FnPtr::new(0 as *const c_void),
-            GetnPixelMapusv: FnPtr::new(0 as *const c_void),
-            GetnPolygonStipple: FnPtr::new(0 as *const c_void),
-            GetnSeparableFilter: FnPtr::new(0 as *const c_void),
-            GetnTexImage: FnPtr::new(0 as *const c_void),
-            GetnUniformdv: FnPtr::new(0 as *const c_void),
-            GetnUniformfv: FnPtr::new(0 as *const c_void),
-            GetnUniformiv: FnPtr::new(0 as *const c_void),
-            GetnUniformuiv: FnPtr::new(0 as *const c_void),
-            Hint: FnPtr::new(0 as *const c_void),
-            InvalidateBufferData: FnPtr::new(0 as *const c_void),
-            InvalidateBufferSubData: FnPtr::new(0 as *const c_void),
-            InvalidateFramebuffer: FnPtr::new(0 as *const c_void),
-            InvalidateNamedFramebufferData: FnPtr::new(0 as *const c_void),
-            InvalidateNamedFramebufferSubData: FnPtr::new(0 as *const c_void),
-            InvalidateSubFramebuffer: FnPtr::new(0 as *const c_void),
-            InvalidateTexImage: FnPtr::new(0 as *const c_void),
-            InvalidateTexSubImage: FnPtr::new(0 as *const c_void),
-            IsBuffer: FnPtr::new(0 as *const c_void),
-            IsEnabled: FnPtr::new(0 as *const c_void),
-            IsEnabledi: FnPtr::new(0 as *const c_void),
-            IsFramebuffer: FnPtr::new(0 as *const c_void),
-            IsProgram: FnPtr::new(0 as *const c_void),
-            IsProgramPipeline: FnPtr::new(0 as *const c_void),
-            IsQuery: FnPtr::new(0 as *const c_void),
-            IsRenderbuffer: FnPtr::new(0 as *const c_void),
-            IsSampler: FnPtr::new(0 as *const c_void),
-            IsShader: FnPtr::new(0 as *const c_void),
-            IsSync: FnPtr::new(0 as *const c_void),
-            IsTexture: FnPtr::new(0 as *const c_void),
-            IsTransformFeedback: FnPtr::new(0 as *const c_void),
-            IsVertexArray: FnPtr::new(0 as *const c_void),
-            LineWidth: FnPtr::new(0 as *const c_void),
-            LinkProgram: FnPtr::new(0 as *const c_void),
-            LogicOp: FnPtr::new(0 as *const c_void),
-            MapBuffer: FnPtr::new(0 as *const c_void),
-            MapBufferRange: FnPtr::new(0 as *const c_void),
-            MapNamedBuffer: FnPtr::new(0 as *const c_void),
-            MapNamedBufferRange: FnPtr::new(0 as *const c_void),
-            MemoryBarrier: FnPtr::new(0 as *const c_void),
-            MemoryBarrierByRegion: FnPtr::new(0 as *const c_void),
-            MinSampleShading: FnPtr::new(0 as *const c_void),
-            MultiDrawArrays: FnPtr::new(0 as *const c_void),
-            MultiDrawArraysIndirect: FnPtr::new(0 as *const c_void),
-            MultiDrawElements: FnPtr::new(0 as *const c_void),
-            MultiDrawElementsBaseVertex: FnPtr::new(0 as *const c_void),
-            MultiDrawElementsIndirect: FnPtr::new(0 as *const c_void),
-            MultiTexCoordP1ui: FnPtr::new(0 as *const c_void),
-            MultiTexCoordP1uiv: FnPtr::new(0 as *const c_void),
-            MultiTexCoordP2ui: FnPtr::new(0 as *const c_void),
-            MultiTexCoordP2uiv: FnPtr::new(0 as *const c_void),
-            MultiTexCoordP3ui: FnPtr::new(0 as *const c_void),
-            MultiTexCoordP3uiv: FnPtr::new(0 as *const c_void),
-            MultiTexCoordP4ui: FnPtr::new(0 as *const c_void),
-            MultiTexCoordP4uiv: FnPtr::new(0 as *const c_void),
-            NamedBufferData: FnPtr::new(0 as *const c_void),
-            NamedBufferStorage: FnPtr::new(0 as *const c_void),
-            NamedBufferSubData: FnPtr::new(0 as *const c_void),
-            NamedFramebufferDrawBuffer: FnPtr::new(0 as *const c_void),
-            NamedFramebufferDrawBuffers: FnPtr::new(0 as *const c_void),
-            NamedFramebufferParameteri: FnPtr::new(0 as *const c_void),
-            NamedFramebufferReadBuffer: FnPtr::new(0 as *const c_void),
-            NamedFramebufferRenderbuffer: FnPtr::new(0 as *const c_void),
-            NamedFramebufferTexture: FnPtr::new(0 as *const c_void),
-            NamedFramebufferTextureLayer: FnPtr::new(0 as *const c_void),
-            NamedRenderbufferStorage: FnPtr::new(0 as *const c_void),
-            NamedRenderbufferStorageMultisample: FnPtr::new(0 as *const c_void),
-            NormalP3ui: FnPtr::new(0 as *const c_void),
-            NormalP3uiv: FnPtr::new(0 as *const c_void),
-            ObjectLabel: FnPtr::new(0 as *const c_void),
-            ObjectPtrLabel: FnPtr::new(0 as *const c_void),
-            PatchParameterfv: FnPtr::new(0 as *const c_void),
-            PatchParameteri: FnPtr::new(0 as *const c_void),
-            PauseTransformFeedback: FnPtr::new(0 as *const c_void),
-            PixelStoref: FnPtr::new(0 as *const c_void),
-            PixelStorei: FnPtr::new(0 as *const c_void),
-            PointParameterf: FnPtr::new(0 as *const c_void),
-            PointParameterfv: FnPtr::new(0 as *const c_void),
-            PointParameteri: FnPtr::new(0 as *const c_void),
-            PointParameteriv: FnPtr::new(0 as *const c_void),
-            PointSize: FnPtr::new(0 as *const c_void),
-            PolygonMode: FnPtr::new(0 as *const c_void),
-            PolygonOffset: FnPtr::new(0 as *const c_void),
-            PopDebugGroup: FnPtr::new(0 as *const c_void),
-            PrimitiveRestartIndex: FnPtr::new(0 as *const c_void),
-            ProgramBinary: FnPtr::new(0 as *const c_void),
-            ProgramParameteri: FnPtr::new(0 as *const c_void),
-            ProgramUniform1d: FnPtr::new(0 as *const c_void),
-            ProgramUniform1dv: FnPtr::new(0 as *const c_void),
-            ProgramUniform1f: FnPtr::new(0 as *const c_void),
-            ProgramUniform1fv: FnPtr::new(0 as *const c_void),
-            ProgramUniform1i: FnPtr::new(0 as *const c_void),
-            ProgramUniform1iv: FnPtr::new(0 as *const c_void),
-            ProgramUniform1ui: FnPtr::new(0 as *const c_void),
-            ProgramUniform1uiv: FnPtr::new(0 as *const c_void),
-            ProgramUniform2d: FnPtr::new(0 as *const c_void),
-            ProgramUniform2dv: FnPtr::new(0 as *const c_void),
-            ProgramUniform2f: FnPtr::new(0 as *const c_void),
-            ProgramUniform2fv: FnPtr::new(0 as *const c_void),
-            ProgramUniform2i: FnPtr::new(0 as *const c_void),
-            ProgramUniform2iv: FnPtr::new(0 as *const c_void),
-            ProgramUniform2ui: FnPtr::new(0 as *const c_void),
-            ProgramUniform2uiv: FnPtr::new(0 as *const c_void),
-            ProgramUniform3d: FnPtr::new(0 as *const c_void),
-            ProgramUniform3dv: FnPtr::new(0 as *const c_void),
-            ProgramUniform3f: FnPtr::new(0 as *const c_void),
-            ProgramUniform3fv: FnPtr::new(0 as *const c_void),
-            ProgramUniform3i: FnPtr::new(0 as *const c_void),
-            ProgramUniform3iv: FnPtr::new(0 as *const c_void),
-            ProgramUniform3ui: FnPtr::new(0 as *const c_void),
-            ProgramUniform3uiv: FnPtr::new(0 as *const c_void),
-            ProgramUniform4d: FnPtr::new(0 as *const c_void),
-            ProgramUniform4dv: FnPtr::new(0 as *const c_void),
-            ProgramUniform4f: FnPtr::new(0 as *const c_void),
-            ProgramUniform4fv: FnPtr::new(0 as *const c_void),
-            ProgramUniform4i: FnPtr::new(0 as *const c_void),
-            ProgramUniform4iv: FnPtr::new(0 as *const c_void),
-            ProgramUniform4ui: FnPtr::new(0 as *const c_void),
-            ProgramUniform4uiv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix2dv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix2fv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix2x3dv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix2x3fv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix2x4dv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix2x4fv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix3dv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix3fv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix3x2dv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix3x2fv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix3x4dv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix3x4fv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix4dv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix4fv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix4x2dv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix4x2fv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix4x3dv: FnPtr::new(0 as *const c_void),
-            ProgramUniformMatrix4x3fv: FnPtr::new(0 as *const c_void),
-            ProvokingVertex: FnPtr::new(0 as *const c_void),
-            PushDebugGroup: FnPtr::new(0 as *const c_void),
-            QueryCounter: FnPtr::new(0 as *const c_void),
-            ReadBuffer: FnPtr::new(0 as *const c_void),
-            ReadPixels: FnPtr::new(0 as *const c_void),
-            ReadnPixels: FnPtr::new(0 as *const c_void),
-            ReleaseShaderCompiler: FnPtr::new(0 as *const c_void),
-            RenderbufferStorage: FnPtr::new(0 as *const c_void),
-            RenderbufferStorageMultisample: FnPtr::new(0 as *const c_void),
-            ResumeTransformFeedback: FnPtr::new(0 as *const c_void),
-            SampleCoverage: FnPtr::new(0 as *const c_void),
-            SampleMaski: FnPtr::new(0 as *const c_void),
-            SamplerParameterIiv: FnPtr::new(0 as *const c_void),
-            SamplerParameterIuiv: FnPtr::new(0 as *const c_void),
-            SamplerParameterf: FnPtr::new(0 as *const c_void),
-            SamplerParameterfv: FnPtr::new(0 as *const c_void),
-            SamplerParameteri: FnPtr::new(0 as *const c_void),
-            SamplerParameteriv: FnPtr::new(0 as *const c_void),
-            Scissor: FnPtr::new(0 as *const c_void),
-            ScissorArrayv: FnPtr::new(0 as *const c_void),
-            ScissorIndexed: FnPtr::new(0 as *const c_void),
-            ScissorIndexedv: FnPtr::new(0 as *const c_void),
-            SecondaryColorP3ui: FnPtr::new(0 as *const c_void),
-            SecondaryColorP3uiv: FnPtr::new(0 as *const c_void),
-            ShaderBinary: FnPtr::new(0 as *const c_void),
-            ShaderSource: FnPtr::new(0 as *const c_void),
-            ShaderStorageBlockBinding: FnPtr::new(0 as *const c_void),
-            StencilFunc: FnPtr::new(0 as *const c_void),
-            StencilFuncSeparate: FnPtr::new(0 as *const c_void),
-            StencilMask: FnPtr::new(0 as *const c_void),
-            StencilMaskSeparate: FnPtr::new(0 as *const c_void),
-            StencilOp: FnPtr::new(0 as *const c_void),
-            StencilOpSeparate: FnPtr::new(0 as *const c_void),
-            TexBuffer: FnPtr::new(0 as *const c_void),
-            TexBufferRange: FnPtr::new(0 as *const c_void),
-            TexCoordP1ui: FnPtr::new(0 as *const c_void),
-            TexCoordP1uiv: FnPtr::new(0 as *const c_void),
-            TexCoordP2ui: FnPtr::new(0 as *const c_void),
-            TexCoordP2uiv: FnPtr::new(0 as *const c_void),
-            TexCoordP3ui: FnPtr::new(0 as *const c_void),
-            TexCoordP3uiv: FnPtr::new(0 as *const c_void),
-            TexCoordP4ui: FnPtr::new(0 as *const c_void),
-            TexCoordP4uiv: FnPtr::new(0 as *const c_void),
-            TexImage1D: FnPtr::new(0 as *const c_void),
-            TexImage2D: FnPtr::new(0 as *const c_void),
-            TexImage2DMultisample: FnPtr::new(0 as *const c_void),
-            TexImage3D: FnPtr::new(0 as *const c_void),
-            TexImage3DMultisample: FnPtr::new(0 as *const c_void),
-            TexParameterIiv: FnPtr::new(0 as *const c_void),
-            TexParameterIuiv: FnPtr::new(0 as *const c_void),
-            TexParameterf: FnPtr::new(0 as *const c_void),
-            TexParameterfv: FnPtr::new(0 as *const c_void),
-            TexParameteri: FnPtr::new(0 as *const c_void),
-            TexParameteriv: FnPtr::new(0 as *const c_void),
-            TexStorage1D: FnPtr::new(0 as *const c_void),
-            TexStorage2D: FnPtr::new(0 as *const c_void),
-            TexStorage2DMultisample: FnPtr::new(0 as *const c_void),
-            TexStorage3D: FnPtr::new(0 as *const c_void),
-            TexStorage3DMultisample: FnPtr::new(0 as *const c_void),
-            TexSubImage1D: FnPtr::new(0 as *const c_void),
-            TexSubImage2D: FnPtr::new(0 as *const c_void),
-            TexSubImage3D: FnPtr::new(0 as *const c_void),
-            TextureBarrier: FnPtr::new(0 as *const c_void),
-            TextureBuffer: FnPtr::new(0 as *const c_void),
-            TextureBufferRange: FnPtr::new(0 as *const c_void),
-            TextureParameterIiv: FnPtr::new(0 as *const c_void),
-            TextureParameterIuiv: FnPtr::new(0 as *const c_void),
-            TextureParameterf: FnPtr::new(0 as *const c_void),
-            TextureParameterfv: FnPtr::new(0 as *const c_void),
-            TextureParameteri: FnPtr::new(0 as *const c_void),
-            TextureParameteriv: FnPtr::new(0 as *const c_void),
-            TextureStorage1D: FnPtr::new(0 as *const c_void),
-            TextureStorage2D: FnPtr::new(0 as *const c_void),
-            TextureStorage2DMultisample: FnPtr::new(0 as *const c_void),
-            TextureStorage3D: FnPtr::new(0 as *const c_void),
-            TextureStorage3DMultisample: FnPtr::new(0 as *const c_void),
-            TextureSubImage1D: FnPtr::new(0 as *const c_void),
-            TextureSubImage2D: FnPtr::new(0 as *const c_void),
-            TextureSubImage3D: FnPtr::new(0 as *const c_void),
-            TextureView: FnPtr::new(0 as *const c_void),
-            TransformFeedbackBufferBase: FnPtr::new(0 as *const c_void),
-            TransformFeedbackBufferRange: FnPtr::new(0 as *const c_void),
-            TransformFeedbackVaryings: FnPtr::new(0 as *const c_void),
-            Uniform1d: FnPtr::new(0 as *const c_void),
-            Uniform1dv: FnPtr::new(0 as *const c_void),
-            Uniform1f: FnPtr::new(0 as *const c_void),
-            Uniform1fv: FnPtr::new(0 as *const c_void),
-            Uniform1i: FnPtr::new(0 as *const c_void),
-            Uniform1iv: FnPtr::new(0 as *const c_void),
-            Uniform1ui: FnPtr::new(0 as *const c_void),
-            Uniform1uiv: FnPtr::new(0 as *const c_void),
-            Uniform2d: FnPtr::new(0 as *const c_void),
-            Uniform2dv: FnPtr::new(0 as *const c_void),
-            Uniform2f: FnPtr::new(0 as *const c_void),
-            Uniform2fv: FnPtr::new(0 as *const c_void),
-            Uniform2i: FnPtr::new(0 as *const c_void),
-            Uniform2iv: FnPtr::new(0 as *const c_void),
-            Uniform2ui: FnPtr::new(0 as *const c_void),
-            Uniform2uiv: FnPtr::new(0 as *const c_void),
-            Uniform3d: FnPtr::new(0 as *const c_void),
-            Uniform3dv: FnPtr::new(0 as *const c_void),
-            Uniform3f: FnPtr::new(0 as *const c_void),
-            Uniform3fv: FnPtr::new(0 as *const c_void),
-            Uniform3i: FnPtr::new(0 as *const c_void),
-            Uniform3iv: FnPtr::new(0 as *const c_void),
-            Uniform3ui: FnPtr::new(0 as *const c_void),
-            Uniform3uiv: FnPtr::new(0 as *const c_void),
-            Uniform4d: FnPtr::new(0 as *const c_void),
-            Uniform4dv: FnPtr::new(0 as *const c_void),
-            Uniform4f: FnPtr::new(0 as *const c_void),
-            Uniform4fv: FnPtr::new(0 as *const c_void),
-            Uniform4i: FnPtr::new(0 as *const c_void),
-            Uniform4iv: FnPtr::new(0 as *const c_void),
-            Uniform4ui: FnPtr::new(0 as *const c_void),
-            Uniform4uiv: FnPtr::new(0 as *const c_void),
-            UniformBlockBinding: FnPtr::new(0 as *const c_void),
-            UniformMatrix2dv: FnPtr::new(0 as *const c_void),
-            UniformMatrix2fv: FnPtr::new(0 as *const c_void),
-            UniformMatrix2x3dv: FnPtr::new(0 as *const c_void),
-            UniformMatrix2x3fv: FnPtr::new(0 as *const c_void),
-            UniformMatrix2x4dv: FnPtr::new(0 as *const c_void),
-            UniformMatrix2x4fv: FnPtr::new(0 as *const c_void),
-            UniformMatrix3dv: FnPtr::new(0 as *const c_void),
-            UniformMatrix3fv: FnPtr::new(0 as *const c_void),
-            UniformMatrix3x2dv: FnPtr::new(0 as *const c_void),
-            UniformMatrix3x2fv: FnPtr::new(0 as *const c_void),
-            UniformMatrix3x4dv: FnPtr::new(0 as *const c_void),
-            UniformMatrix3x4fv: FnPtr::new(0 as *const c_void),
-            UniformMatrix4dv: FnPtr::new(0 as *const c_void),
-            UniformMatrix4fv: FnPtr::new(0 as *const c_void),
-            UniformMatrix4x2dv: FnPtr::new(0 as *const c_void),
-            UniformMatrix4x2fv: FnPtr::new(0 as *const c_void),
-            UniformMatrix4x3dv: FnPtr::new(0 as *const c_void),
-            UniformMatrix4x3fv: FnPtr::new(0 as *const c_void),
-            UniformSubroutinesuiv: FnPtr::new(0 as *const c_void),
-            UnmapBuffer: FnPtr::new(0 as *const c_void),
-            UnmapNamedBuffer: FnPtr::new(0 as *const c_void),
-            UseProgram: FnPtr::new(0 as *const c_void),
-            UseProgramStages: FnPtr::new(0 as *const c_void),
-            ValidateProgram: FnPtr::new(0 as *const c_void),
-            ValidateProgramPipeline: FnPtr::new(0 as *const c_void),
-            VertexArrayAttribBinding: FnPtr::new(0 as *const c_void),
-            VertexArrayAttribFormat: FnPtr::new(0 as *const c_void),
-            VertexArrayAttribIFormat: FnPtr::new(0 as *const c_void),
-            VertexArrayAttribLFormat: FnPtr::new(0 as *const c_void),
-            VertexArrayBindingDivisor: FnPtr::new(0 as *const c_void),
-            VertexArrayElementBuffer: FnPtr::new(0 as *const c_void),
-            VertexArrayVertexBuffer: FnPtr::new(0 as *const c_void),
-            VertexArrayVertexBuffers: FnPtr::new(0 as *const c_void),
-            VertexAttrib1d: FnPtr::new(0 as *const c_void),
-            VertexAttrib1dv: FnPtr::new(0 as *const c_void),
-            VertexAttrib1f: FnPtr::new(0 as *const c_void),
-            VertexAttrib1fv: FnPtr::new(0 as *const c_void),
-            VertexAttrib1s: FnPtr::new(0 as *const c_void),
-            VertexAttrib1sv: FnPtr::new(0 as *const c_void),
-            VertexAttrib2d: FnPtr::new(0 as *const c_void),
-            VertexAttrib2dv: FnPtr::new(0 as *const c_void),
-            VertexAttrib2f: FnPtr::new(0 as *const c_void),
-            VertexAttrib2fv: FnPtr::new(0 as *const c_void),
-            VertexAttrib2s: FnPtr::new(0 as *const c_void),
-            VertexAttrib2sv: FnPtr::new(0 as *const c_void),
-            VertexAttrib3d: FnPtr::new(0 as *const c_void),
-            VertexAttrib3dv: FnPtr::new(0 as *const c_void),
-            VertexAttrib3f: FnPtr::new(0 as *const c_void),
-            VertexAttrib3fv: FnPtr::new(0 as *const c_void),
-            VertexAttrib3s: FnPtr::new(0 as *const c_void),
-            VertexAttrib3sv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4Nbv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4Niv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4Nsv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4Nub: FnPtr::new(0 as *const c_void),
-            VertexAttrib4Nubv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4Nuiv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4Nusv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4bv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4d: FnPtr::new(0 as *const c_void),
-            VertexAttrib4dv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4f: FnPtr::new(0 as *const c_void),
-            VertexAttrib4fv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4iv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4s: FnPtr::new(0 as *const c_void),
-            VertexAttrib4sv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4ubv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4uiv: FnPtr::new(0 as *const c_void),
-            VertexAttrib4usv: FnPtr::new(0 as *const c_void),
-            VertexAttribBinding: FnPtr::new(0 as *const c_void),
-            VertexAttribDivisor: FnPtr::new(0 as *const c_void),
-            VertexAttribFormat: FnPtr::new(0 as *const c_void),
-            VertexAttribI1i: FnPtr::new(0 as *const c_void),
-            VertexAttribI1iv: FnPtr::new(0 as *const c_void),
-            VertexAttribI1ui: FnPtr::new(0 as *const c_void),
-            VertexAttribI1uiv: FnPtr::new(0 as *const c_void),
-            VertexAttribI2i: FnPtr::new(0 as *const c_void),
-            VertexAttribI2iv: FnPtr::new(0 as *const c_void),
-            VertexAttribI2ui: FnPtr::new(0 as *const c_void),
-            VertexAttribI2uiv: FnPtr::new(0 as *const c_void),
-            VertexAttribI3i: FnPtr::new(0 as *const c_void),
-            VertexAttribI3iv: FnPtr::new(0 as *const c_void),
-            VertexAttribI3ui: FnPtr::new(0 as *const c_void),
-            VertexAttribI3uiv: FnPtr::new(0 as *const c_void),
-            VertexAttribI4bv: FnPtr::new(0 as *const c_void),
-            VertexAttribI4i: FnPtr::new(0 as *const c_void),
-            VertexAttribI4iv: FnPtr::new(0 as *const c_void),
-            VertexAttribI4sv: FnPtr::new(0 as *const c_void),
-            VertexAttribI4ubv: FnPtr::new(0 as *const c_void),
-            VertexAttribI4ui: FnPtr::new(0 as *const c_void),
-            VertexAttribI4uiv: FnPtr::new(0 as *const c_void),
-            VertexAttribI4usv: FnPtr::new(0 as *const c_void),
-            VertexAttribIFormat: FnPtr::new(0 as *const c_void),
-            VertexAttribIPointer: FnPtr::new(0 as *const c_void),
-            VertexAttribL1d: FnPtr::new(0 as *const c_void),
-            VertexAttribL1dv: FnPtr::new(0 as *const c_void),
-            VertexAttribL2d: FnPtr::new(0 as *const c_void),
-            VertexAttribL2dv: FnPtr::new(0 as *const c_void),
-            VertexAttribL3d: FnPtr::new(0 as *const c_void),
-            VertexAttribL3dv: FnPtr::new(0 as *const c_void),
-            VertexAttribL4d: FnPtr::new(0 as *const c_void),
-            VertexAttribL4dv: FnPtr::new(0 as *const c_void),
-            VertexAttribLFormat: FnPtr::new(0 as *const c_void),
-            VertexAttribLPointer: FnPtr::new(0 as *const c_void),
-            VertexAttribP1ui: FnPtr::new(0 as *const c_void),
-            VertexAttribP1uiv: FnPtr::new(0 as *const c_void),
-            VertexAttribP2ui: FnPtr::new(0 as *const c_void),
-            VertexAttribP2uiv: FnPtr::new(0 as *const c_void),
-            VertexAttribP3ui: FnPtr::new(0 as *const c_void),
-            VertexAttribP3uiv: FnPtr::new(0 as *const c_void),
-            VertexAttribP4ui: FnPtr::new(0 as *const c_void),
-            VertexAttribP4uiv: FnPtr::new(0 as *const c_void),
-            VertexAttribPointer: FnPtr::new(0 as *const c_void),
-            VertexBindingDivisor: FnPtr::new(0 as *const c_void),
-            VertexP2ui: FnPtr::new(0 as *const c_void),
-            VertexP2uiv: FnPtr::new(0 as *const c_void),
-            VertexP3ui: FnPtr::new(0 as *const c_void),
-            VertexP3uiv: FnPtr::new(0 as *const c_void),
-            VertexP4ui: FnPtr::new(0 as *const c_void),
-            VertexP4uiv: FnPtr::new(0 as *const c_void),
-            Viewport: FnPtr::new(0 as *const c_void),
-            ViewportArrayv: FnPtr::new(0 as *const c_void),
-            ViewportIndexedf: FnPtr::new(0 as *const c_void),
-            ViewportIndexedfv: FnPtr::new(0 as *const c_void),
-            WaitSync: FnPtr::new(0 as *const c_void) 
+            ActiveShaderProgram: FnPtr::new((0 as *const c_void, "glActiveShaderProgram")),
+            ActiveTexture: FnPtr::new((0 as *const c_void, "glActiveTexture")),
+            AttachShader: FnPtr::new((0 as *const c_void, "glAttachShader")),
+            BeginConditionalRender: FnPtr::new((0 as *const c_void, "glBeginConditionalRender")),
+            BeginQuery: FnPtr::new((0 as *const c_void, "glBeginQuery")),
+            BeginQueryIndexed: FnPtr::new((0 as *const c_void, "glBeginQueryIndexed")),
+            BeginTransformFeedback: FnPtr::new((0 as *const c_void, "glBeginTransformFeedback")),
+            BindAttribLocation: FnPtr::new((0 as *const c_void, "glBindAttribLocation")),
+            BindBuffer: FnPtr::new((0 as *const c_void, "glBindBuffer")),
+            BindBufferBase: FnPtr::new((0 as *const c_void, "glBindBufferBase")),
+            BindBufferRange: FnPtr::new((0 as *const c_void, "glBindBufferRange")),
+            BindBuffersBase: FnPtr::new((0 as *const c_void, "glBindBuffersBase")),
+            BindBuffersRange: FnPtr::new((0 as *const c_void, "glBindBuffersRange")),
+            BindFragDataLocation: FnPtr::new((0 as *const c_void, "glBindFragDataLocation")),
+            BindFragDataLocationIndexed: FnPtr::new((0 as *const c_void, "glBindFragDataLocationIndexed")),
+            BindFramebuffer: FnPtr::new((0 as *const c_void, "glBindFramebuffer")),
+            BindImageTexture: FnPtr::new((0 as *const c_void, "glBindImageTexture")),
+            BindImageTextures: FnPtr::new((0 as *const c_void, "glBindImageTextures")),
+            BindProgramPipeline: FnPtr::new((0 as *const c_void, "glBindProgramPipeline")),
+            BindRenderbuffer: FnPtr::new((0 as *const c_void, "glBindRenderbuffer")),
+            BindSampler: FnPtr::new((0 as *const c_void, "glBindSampler")),
+            BindSamplers: FnPtr::new((0 as *const c_void, "glBindSamplers")),
+            BindTexture: FnPtr::new((0 as *const c_void, "glBindTexture")),
+            BindTextureUnit: FnPtr::new((0 as *const c_void, "glBindTextureUnit")),
+            BindTextures: FnPtr::new((0 as *const c_void, "glBindTextures")),
+            BindTransformFeedback: FnPtr::new((0 as *const c_void, "glBindTransformFeedback")),
+            BindVertexArray: FnPtr::new((0 as *const c_void, "glBindVertexArray")),
+            BindVertexBuffer: FnPtr::new((0 as *const c_void, "glBindVertexBuffer")),
+            BindVertexBuffers: FnPtr::new((0 as *const c_void, "glBindVertexBuffers")),
+            BlendColor: FnPtr::new((0 as *const c_void, "glBlendColor")),
+            BlendEquation: FnPtr::new((0 as *const c_void, "glBlendEquation")),
+            BlendEquationSeparate: FnPtr::new((0 as *const c_void, "glBlendEquationSeparate")),
+            BlendEquationSeparatei: FnPtr::new((0 as *const c_void, "glBlendEquationSeparatei")),
+            BlendEquationi: FnPtr::new((0 as *const c_void, "glBlendEquationi")),
+            BlendFunc: FnPtr::new((0 as *const c_void, "glBlendFunc")),
+            BlendFuncSeparate: FnPtr::new((0 as *const c_void, "glBlendFuncSeparate")),
+            BlendFuncSeparatei: FnPtr::new((0 as *const c_void, "glBlendFuncSeparatei")),
+            BlendFunci: FnPtr::new((0 as *const c_void, "glBlendFunci")),
+            BlitFramebuffer: FnPtr::new((0 as *const c_void, "glBlitFramebuffer")),
+            BlitNamedFramebuffer: FnPtr::new((0 as *const c_void, "glBlitNamedFramebuffer")),
+            BufferData: FnPtr::new((0 as *const c_void, "glBufferData")),
+            BufferStorage: FnPtr::new((0 as *const c_void, "glBufferStorage")),
+            BufferSubData: FnPtr::new((0 as *const c_void, "glBufferSubData")),
+            CheckFramebufferStatus: FnPtr::new((0 as *const c_void, "glCheckFramebufferStatus")),
+            CheckNamedFramebufferStatus: FnPtr::new((0 as *const c_void, "glCheckNamedFramebufferStatus")),
+            ClampColor: FnPtr::new((0 as *const c_void, "glClampColor")),
+            Clear: FnPtr::new((0 as *const c_void, "glClear")),
+            ClearBufferData: FnPtr::new((0 as *const c_void, "glClearBufferData")),
+            ClearBufferSubData: FnPtr::new((0 as *const c_void, "glClearBufferSubData")),
+            ClearBufferfi: FnPtr::new((0 as *const c_void, "glClearBufferfi")),
+            ClearBufferfv: FnPtr::new((0 as *const c_void, "glClearBufferfv")),
+            ClearBufferiv: FnPtr::new((0 as *const c_void, "glClearBufferiv")),
+            ClearBufferuiv: FnPtr::new((0 as *const c_void, "glClearBufferuiv")),
+            ClearColor: FnPtr::new((0 as *const c_void, "glClearColor")),
+            ClearDepth: FnPtr::new((0 as *const c_void, "glClearDepth")),
+            ClearDepthf: FnPtr::new((0 as *const c_void, "glClearDepthf")),
+            ClearNamedBufferData: FnPtr::new((0 as *const c_void, "glClearNamedBufferData")),
+            ClearNamedBufferSubData: FnPtr::new((0 as *const c_void, "glClearNamedBufferSubData")),
+            ClearNamedFramebufferfi: FnPtr::new((0 as *const c_void, "glClearNamedFramebufferfi")),
+            ClearNamedFramebufferfv: FnPtr::new((0 as *const c_void, "glClearNamedFramebufferfv")),
+            ClearNamedFramebufferiv: FnPtr::new((0 as *const c_void, "glClearNamedFramebufferiv")),
+            ClearNamedFramebufferuiv: FnPtr::new((0 as *const c_void, "glClearNamedFramebufferuiv")),
+            ClearStencil: FnPtr::new((0 as *const c_void, "glClearStencil")),
+            ClearTexImage: FnPtr::new((0 as *const c_void, "glClearTexImage")),
+            ClearTexSubImage: FnPtr::new((0 as *const c_void, "glClearTexSubImage")),
+            ClientWaitSync: FnPtr::new((0 as *const c_void, "glClientWaitSync")),
+            ClipControl: FnPtr::new((0 as *const c_void, "glClipControl")),
+            ColorMask: FnPtr::new((0 as *const c_void, "glColorMask")),
+            ColorMaski: FnPtr::new((0 as *const c_void, "glColorMaski")),
+            ColorP3ui: FnPtr::new((0 as *const c_void, "glColorP3ui")),
+            ColorP3uiv: FnPtr::new((0 as *const c_void, "glColorP3uiv")),
+            ColorP4ui: FnPtr::new((0 as *const c_void, "glColorP4ui")),
+            ColorP4uiv: FnPtr::new((0 as *const c_void, "glColorP4uiv")),
+            CompileShader: FnPtr::new((0 as *const c_void, "glCompileShader")),
+            CompressedTexImage1D: FnPtr::new((0 as *const c_void, "glCompressedTexImage1D")),
+            CompressedTexImage2D: FnPtr::new((0 as *const c_void, "glCompressedTexImage2D")),
+            CompressedTexImage3D: FnPtr::new((0 as *const c_void, "glCompressedTexImage3D")),
+            CompressedTexSubImage1D: FnPtr::new((0 as *const c_void, "glCompressedTexSubImage1D")),
+            CompressedTexSubImage2D: FnPtr::new((0 as *const c_void, "glCompressedTexSubImage2D")),
+            CompressedTexSubImage3D: FnPtr::new((0 as *const c_void, "glCompressedTexSubImage3D")),
+            CompressedTextureSubImage1D: FnPtr::new((0 as *const c_void, "glCompressedTextureSubImage1D")),
+            CompressedTextureSubImage2D: FnPtr::new((0 as *const c_void, "glCompressedTextureSubImage2D")),
+            CompressedTextureSubImage3D: FnPtr::new((0 as *const c_void, "glCompressedTextureSubImage3D")),
+            CopyBufferSubData: FnPtr::new((0 as *const c_void, "glCopyBufferSubData")),
+            CopyImageSubData: FnPtr::new((0 as *const c_void, "glCopyImageSubData")),
+            CopyNamedBufferSubData: FnPtr::new((0 as *const c_void, "glCopyNamedBufferSubData")),
+            CopyTexImage1D: FnPtr::new((0 as *const c_void, "glCopyTexImage1D")),
+            CopyTexImage2D: FnPtr::new((0 as *const c_void, "glCopyTexImage2D")),
+            CopyTexSubImage1D: FnPtr::new((0 as *const c_void, "glCopyTexSubImage1D")),
+            CopyTexSubImage2D: FnPtr::new((0 as *const c_void, "glCopyTexSubImage2D")),
+            CopyTexSubImage3D: FnPtr::new((0 as *const c_void, "glCopyTexSubImage3D")),
+            CopyTextureSubImage1D: FnPtr::new((0 as *const c_void, "glCopyTextureSubImage1D")),
+            CopyTextureSubImage2D: FnPtr::new((0 as *const c_void, "glCopyTextureSubImage2D")),
+            CopyTextureSubImage3D: FnPtr::new((0 as *const c_void, "glCopyTextureSubImage3D")),
+            CreateBuffers: FnPtr::new((0 as *const c_void, "glCreateBuffers")),
+            CreateFramebuffers: FnPtr::new((0 as *const c_void, "glCreateFramebuffers")),
+            CreateProgram: FnPtr::new((0 as *const c_void, "glCreateProgram")),
+            CreateProgramPipelines: FnPtr::new((0 as *const c_void, "glCreateProgramPipelines")),
+            CreateQueries: FnPtr::new((0 as *const c_void, "glCreateQueries")),
+            CreateRenderbuffers: FnPtr::new((0 as *const c_void, "glCreateRenderbuffers")),
+            CreateSamplers: FnPtr::new((0 as *const c_void, "glCreateSamplers")),
+            CreateShader: FnPtr::new((0 as *const c_void, "glCreateShader")),
+            CreateShaderProgramv: FnPtr::new((0 as *const c_void, "glCreateShaderProgramv")),
+            CreateTextures: FnPtr::new((0 as *const c_void, "glCreateTextures")),
+            CreateTransformFeedbacks: FnPtr::new((0 as *const c_void, "glCreateTransformFeedbacks")),
+            CreateVertexArrays: FnPtr::new((0 as *const c_void, "glCreateVertexArrays")),
+            CullFace: FnPtr::new((0 as *const c_void, "glCullFace")),
+            DebugMessageCallback: FnPtr::new((0 as *const c_void, "glDebugMessageCallback")),
+            DebugMessageControl: FnPtr::new((0 as *const c_void, "glDebugMessageControl")),
+            DebugMessageInsert: FnPtr::new((0 as *const c_void, "glDebugMessageInsert")),
+            DeleteBuffers: FnPtr::new((0 as *const c_void, "glDeleteBuffers")),
+            DeleteFramebuffers: FnPtr::new((0 as *const c_void, "glDeleteFramebuffers")),
+            DeleteProgram: FnPtr::new((0 as *const c_void, "glDeleteProgram")),
+            DeleteProgramPipelines: FnPtr::new((0 as *const c_void, "glDeleteProgramPipelines")),
+            DeleteQueries: FnPtr::new((0 as *const c_void, "glDeleteQueries")),
+            DeleteRenderbuffers: FnPtr::new((0 as *const c_void, "glDeleteRenderbuffers")),
+            DeleteSamplers: FnPtr::new((0 as *const c_void, "glDeleteSamplers")),
+            DeleteShader: FnPtr::new((0 as *const c_void, "glDeleteShader")),
+            DeleteSync: FnPtr::new((0 as *const c_void, "glDeleteSync")),
+            DeleteTextures: FnPtr::new((0 as *const c_void, "glDeleteTextures")),
+            DeleteTransformFeedbacks: FnPtr::new((0 as *const c_void, "glDeleteTransformFeedbacks")),
+            DeleteVertexArrays: FnPtr::new((0 as *const c_void, "glDeleteVertexArrays")),
+            DepthFunc: FnPtr::new((0 as *const c_void, "glDepthFunc")),
+            DepthMask: FnPtr::new((0 as *const c_void, "glDepthMask")),
+            DepthRange: FnPtr::new((0 as *const c_void, "glDepthRange")),
+            DepthRangeArrayv: FnPtr::new((0 as *const c_void, "glDepthRangeArrayv")),
+            DepthRangeIndexed: FnPtr::new((0 as *const c_void, "glDepthRangeIndexed")),
+            DepthRangef: FnPtr::new((0 as *const c_void, "glDepthRangef")),
+            DetachShader: FnPtr::new((0 as *const c_void, "glDetachShader")),
+            Disable: FnPtr::new((0 as *const c_void, "glDisable")),
+            DisableVertexArrayAttrib: FnPtr::new((0 as *const c_void, "glDisableVertexArrayAttrib")),
+            DisableVertexAttribArray: FnPtr::new((0 as *const c_void, "glDisableVertexAttribArray")),
+            Disablei: FnPtr::new((0 as *const c_void, "glDisablei")),
+            DispatchCompute: FnPtr::new((0 as *const c_void, "glDispatchCompute")),
+            DispatchComputeIndirect: FnPtr::new((0 as *const c_void, "glDispatchComputeIndirect")),
+            DrawArrays: FnPtr::new((0 as *const c_void, "glDrawArrays")),
+            DrawArraysIndirect: FnPtr::new((0 as *const c_void, "glDrawArraysIndirect")),
+            DrawArraysInstanced: FnPtr::new((0 as *const c_void, "glDrawArraysInstanced")),
+            DrawArraysInstancedBaseInstance: FnPtr::new((0 as *const c_void, "glDrawArraysInstancedBaseInstance")),
+            DrawBuffer: FnPtr::new((0 as *const c_void, "glDrawBuffer")),
+            DrawBuffers: FnPtr::new((0 as *const c_void, "glDrawBuffers")),
+            DrawElements: FnPtr::new((0 as *const c_void, "glDrawElements")),
+            DrawElementsBaseVertex: FnPtr::new((0 as *const c_void, "glDrawElementsBaseVertex")),
+            DrawElementsIndirect: FnPtr::new((0 as *const c_void, "glDrawElementsIndirect")),
+            DrawElementsInstanced: FnPtr::new((0 as *const c_void, "glDrawElementsInstanced")),
+            DrawElementsInstancedBaseInstance: FnPtr::new((0 as *const c_void, "glDrawElementsInstancedBaseInstance")),
+            DrawElementsInstancedBaseVertex: FnPtr::new((0 as *const c_void, "glDrawElementsInstancedBaseVertex")),
+            DrawElementsInstancedBaseVertexBaseInstance: FnPtr::new((0 as *const c_void, "glDrawElementsInstancedBaseVertexBaseInstance")),
+            DrawRangeElements: FnPtr::new((0 as *const c_void, "glDrawRangeElements")),
+            DrawRangeElementsBaseVertex: FnPtr::new((0 as *const c_void, "glDrawRangeElementsBaseVertex")),
+            DrawTransformFeedback: FnPtr::new((0 as *const c_void, "glDrawTransformFeedback")),
+            DrawTransformFeedbackInstanced: FnPtr::new((0 as *const c_void, "glDrawTransformFeedbackInstanced")),
+            DrawTransformFeedbackStream: FnPtr::new((0 as *const c_void, "glDrawTransformFeedbackStream")),
+            DrawTransformFeedbackStreamInstanced: FnPtr::new((0 as *const c_void, "glDrawTransformFeedbackStreamInstanced")),
+            Enable: FnPtr::new((0 as *const c_void, "glEnable")),
+            EnableVertexArrayAttrib: FnPtr::new((0 as *const c_void, "glEnableVertexArrayAttrib")),
+            EnableVertexAttribArray: FnPtr::new((0 as *const c_void, "glEnableVertexAttribArray")),
+            Enablei: FnPtr::new((0 as *const c_void, "glEnablei")),
+            EndConditionalRender: FnPtr::new((0 as *const c_void, "glEndConditionalRender")),
+            EndQuery: FnPtr::new((0 as *const c_void, "glEndQuery")),
+            EndQueryIndexed: FnPtr::new((0 as *const c_void, "glEndQueryIndexed")),
+            EndTransformFeedback: FnPtr::new((0 as *const c_void, "glEndTransformFeedback")),
+            FenceSync: FnPtr::new((0 as *const c_void, "glFenceSync")),
+            Finish: FnPtr::new((0 as *const c_void, "glFinish")),
+            Flush: FnPtr::new((0 as *const c_void, "glFlush")),
+            FlushMappedBufferRange: FnPtr::new((0 as *const c_void, "glFlushMappedBufferRange")),
+            FlushMappedNamedBufferRange: FnPtr::new((0 as *const c_void, "glFlushMappedNamedBufferRange")),
+            FramebufferParameteri: FnPtr::new((0 as *const c_void, "glFramebufferParameteri")),
+            FramebufferRenderbuffer: FnPtr::new((0 as *const c_void, "glFramebufferRenderbuffer")),
+            FramebufferTexture: FnPtr::new((0 as *const c_void, "glFramebufferTexture")),
+            FramebufferTexture1D: FnPtr::new((0 as *const c_void, "glFramebufferTexture1D")),
+            FramebufferTexture2D: FnPtr::new((0 as *const c_void, "glFramebufferTexture2D")),
+            FramebufferTexture3D: FnPtr::new((0 as *const c_void, "glFramebufferTexture3D")),
+            FramebufferTextureLayer: FnPtr::new((0 as *const c_void, "glFramebufferTextureLayer")),
+            FrontFace: FnPtr::new((0 as *const c_void, "glFrontFace")),
+            GenBuffers: FnPtr::new((0 as *const c_void, "glGenBuffers")),
+            GenFramebuffers: FnPtr::new((0 as *const c_void, "glGenFramebuffers")),
+            GenProgramPipelines: FnPtr::new((0 as *const c_void, "glGenProgramPipelines")),
+            GenQueries: FnPtr::new((0 as *const c_void, "glGenQueries")),
+            GenRenderbuffers: FnPtr::new((0 as *const c_void, "glGenRenderbuffers")),
+            GenSamplers: FnPtr::new((0 as *const c_void, "glGenSamplers")),
+            GenTextures: FnPtr::new((0 as *const c_void, "glGenTextures")),
+            GenTransformFeedbacks: FnPtr::new((0 as *const c_void, "glGenTransformFeedbacks")),
+            GenVertexArrays: FnPtr::new((0 as *const c_void, "glGenVertexArrays")),
+            GenerateMipmap: FnPtr::new((0 as *const c_void, "glGenerateMipmap")),
+            GenerateTextureMipmap: FnPtr::new((0 as *const c_void, "glGenerateTextureMipmap")),
+            GetActiveAtomicCounterBufferiv: FnPtr::new((0 as *const c_void, "glGetActiveAtomicCounterBufferiv")),
+            GetActiveAttrib: FnPtr::new((0 as *const c_void, "glGetActiveAttrib")),
+            GetActiveSubroutineName: FnPtr::new((0 as *const c_void, "glGetActiveSubroutineName")),
+            GetActiveSubroutineUniformName: FnPtr::new((0 as *const c_void, "glGetActiveSubroutineUniformName")),
+            GetActiveSubroutineUniformiv: FnPtr::new((0 as *const c_void, "glGetActiveSubroutineUniformiv")),
+            GetActiveUniform: FnPtr::new((0 as *const c_void, "glGetActiveUniform")),
+            GetActiveUniformBlockName: FnPtr::new((0 as *const c_void, "glGetActiveUniformBlockName")),
+            GetActiveUniformBlockiv: FnPtr::new((0 as *const c_void, "glGetActiveUniformBlockiv")),
+            GetActiveUniformName: FnPtr::new((0 as *const c_void, "glGetActiveUniformName")),
+            GetActiveUniformsiv: FnPtr::new((0 as *const c_void, "glGetActiveUniformsiv")),
+            GetAttachedShaders: FnPtr::new((0 as *const c_void, "glGetAttachedShaders")),
+            GetAttribLocation: FnPtr::new((0 as *const c_void, "glGetAttribLocation")),
+            GetBooleani_v: FnPtr::new((0 as *const c_void, "glGetBooleani_v")),
+            GetBooleanv: FnPtr::new((0 as *const c_void, "glGetBooleanv")),
+            GetBufferParameteri64v: FnPtr::new((0 as *const c_void, "glGetBufferParameteri64v")),
+            GetBufferParameteriv: FnPtr::new((0 as *const c_void, "glGetBufferParameteriv")),
+            GetBufferPointerv: FnPtr::new((0 as *const c_void, "glGetBufferPointerv")),
+            GetBufferSubData: FnPtr::new((0 as *const c_void, "glGetBufferSubData")),
+            GetCompressedTexImage: FnPtr::new((0 as *const c_void, "glGetCompressedTexImage")),
+            GetCompressedTextureImage: FnPtr::new((0 as *const c_void, "glGetCompressedTextureImage")),
+            GetCompressedTextureSubImage: FnPtr::new((0 as *const c_void, "glGetCompressedTextureSubImage")),
+            GetDebugMessageLog: FnPtr::new((0 as *const c_void, "glGetDebugMessageLog")),
+            GetDoublei_v: FnPtr::new((0 as *const c_void, "glGetDoublei_v")),
+            GetDoublev: FnPtr::new((0 as *const c_void, "glGetDoublev")),
+            GetError: FnPtr::new((0 as *const c_void, "glGetError")),
+            GetFloati_v: FnPtr::new((0 as *const c_void, "glGetFloati_v")),
+            GetFloatv: FnPtr::new((0 as *const c_void, "glGetFloatv")),
+            GetFragDataIndex: FnPtr::new((0 as *const c_void, "glGetFragDataIndex")),
+            GetFragDataLocation: FnPtr::new((0 as *const c_void, "glGetFragDataLocation")),
+            GetFramebufferAttachmentParameteriv: FnPtr::new((0 as *const c_void, "glGetFramebufferAttachmentParameteriv")),
+            GetFramebufferParameteriv: FnPtr::new((0 as *const c_void, "glGetFramebufferParameteriv")),
+            GetGraphicsResetStatus: FnPtr::new((0 as *const c_void, "glGetGraphicsResetStatus")),
+            GetInteger64i_v: FnPtr::new((0 as *const c_void, "glGetInteger64i_v")),
+            GetInteger64v: FnPtr::new((0 as *const c_void, "glGetInteger64v")),
+            GetIntegeri_v: FnPtr::new((0 as *const c_void, "glGetIntegeri_v")),
+            GetIntegerv: FnPtr::new((0 as *const c_void, "glGetIntegerv")),
+            GetInternalformati64v: FnPtr::new((0 as *const c_void, "glGetInternalformati64v")),
+            GetInternalformativ: FnPtr::new((0 as *const c_void, "glGetInternalformativ")),
+            GetMultisamplefv: FnPtr::new((0 as *const c_void, "glGetMultisamplefv")),
+            GetNamedBufferParameteri64v: FnPtr::new((0 as *const c_void, "glGetNamedBufferParameteri64v")),
+            GetNamedBufferParameteriv: FnPtr::new((0 as *const c_void, "glGetNamedBufferParameteriv")),
+            GetNamedBufferPointerv: FnPtr::new((0 as *const c_void, "glGetNamedBufferPointerv")),
+            GetNamedBufferSubData: FnPtr::new((0 as *const c_void, "glGetNamedBufferSubData")),
+            GetNamedFramebufferAttachmentParameteriv: FnPtr::new((0 as *const c_void, "glGetNamedFramebufferAttachmentParameteriv")),
+            GetNamedFramebufferParameteriv: FnPtr::new((0 as *const c_void, "glGetNamedFramebufferParameteriv")),
+            GetNamedRenderbufferParameteriv: FnPtr::new((0 as *const c_void, "glGetNamedRenderbufferParameteriv")),
+            GetObjectLabel: FnPtr::new((0 as *const c_void, "glGetObjectLabel")),
+            GetObjectPtrLabel: FnPtr::new((0 as *const c_void, "glGetObjectPtrLabel")),
+            GetPointerv: FnPtr::new((0 as *const c_void, "glGetPointerv")),
+            GetProgramBinary: FnPtr::new((0 as *const c_void, "glGetProgramBinary")),
+            GetProgramInfoLog: FnPtr::new((0 as *const c_void, "glGetProgramInfoLog")),
+            GetProgramInterfaceiv: FnPtr::new((0 as *const c_void, "glGetProgramInterfaceiv")),
+            GetProgramPipelineInfoLog: FnPtr::new((0 as *const c_void, "glGetProgramPipelineInfoLog")),
+            GetProgramPipelineiv: FnPtr::new((0 as *const c_void, "glGetProgramPipelineiv")),
+            GetProgramResourceIndex: FnPtr::new((0 as *const c_void, "glGetProgramResourceIndex")),
+            GetProgramResourceLocation: FnPtr::new((0 as *const c_void, "glGetProgramResourceLocation")),
+            GetProgramResourceLocationIndex: FnPtr::new((0 as *const c_void, "glGetProgramResourceLocationIndex")),
+            GetProgramResourceName: FnPtr::new((0 as *const c_void, "glGetProgramResourceName")),
+            GetProgramResourceiv: FnPtr::new((0 as *const c_void, "glGetProgramResourceiv")),
+            GetProgramStageiv: FnPtr::new((0 as *const c_void, "glGetProgramStageiv")),
+            GetProgramiv: FnPtr::new((0 as *const c_void, "glGetProgramiv")),
+            GetQueryBufferObjecti64v: FnPtr::new((0 as *const c_void, "glGetQueryBufferObjecti64v")),
+            GetQueryBufferObjectiv: FnPtr::new((0 as *const c_void, "glGetQueryBufferObjectiv")),
+            GetQueryBufferObjectui64v: FnPtr::new((0 as *const c_void, "glGetQueryBufferObjectui64v")),
+            GetQueryBufferObjectuiv: FnPtr::new((0 as *const c_void, "glGetQueryBufferObjectuiv")),
+            GetQueryIndexediv: FnPtr::new((0 as *const c_void, "glGetQueryIndexediv")),
+            GetQueryObjecti64v: FnPtr::new((0 as *const c_void, "glGetQueryObjecti64v")),
+            GetQueryObjectiv: FnPtr::new((0 as *const c_void, "glGetQueryObjectiv")),
+            GetQueryObjectui64v: FnPtr::new((0 as *const c_void, "glGetQueryObjectui64v")),
+            GetQueryObjectuiv: FnPtr::new((0 as *const c_void, "glGetQueryObjectuiv")),
+            GetQueryiv: FnPtr::new((0 as *const c_void, "glGetQueryiv")),
+            GetRenderbufferParameteriv: FnPtr::new((0 as *const c_void, "glGetRenderbufferParameteriv")),
+            GetSamplerParameterIiv: FnPtr::new((0 as *const c_void, "glGetSamplerParameterIiv")),
+            GetSamplerParameterIuiv: FnPtr::new((0 as *const c_void, "glGetSamplerParameterIuiv")),
+            GetSamplerParameterfv: FnPtr::new((0 as *const c_void, "glGetSamplerParameterfv")),
+            GetSamplerParameteriv: FnPtr::new((0 as *const c_void, "glGetSamplerParameteriv")),
+            GetShaderInfoLog: FnPtr::new((0 as *const c_void, "glGetShaderInfoLog")),
+            GetShaderPrecisionFormat: FnPtr::new((0 as *const c_void, "glGetShaderPrecisionFormat")),
+            GetShaderSource: FnPtr::new((0 as *const c_void, "glGetShaderSource")),
+            GetShaderiv: FnPtr::new((0 as *const c_void, "glGetShaderiv")),
+            GetString: FnPtr::new((0 as *const c_void, "glGetString")),
+            GetStringi: FnPtr::new((0 as *const c_void, "glGetStringi")),
+            GetSubroutineIndex: FnPtr::new((0 as *const c_void, "glGetSubroutineIndex")),
+            GetSubroutineUniformLocation: FnPtr::new((0 as *const c_void, "glGetSubroutineUniformLocation")),
+            GetSynciv: FnPtr::new((0 as *const c_void, "glGetSynciv")),
+            GetTexImage: FnPtr::new((0 as *const c_void, "glGetTexImage")),
+            GetTexLevelParameterfv: FnPtr::new((0 as *const c_void, "glGetTexLevelParameterfv")),
+            GetTexLevelParameteriv: FnPtr::new((0 as *const c_void, "glGetTexLevelParameteriv")),
+            GetTexParameterIiv: FnPtr::new((0 as *const c_void, "glGetTexParameterIiv")),
+            GetTexParameterIuiv: FnPtr::new((0 as *const c_void, "glGetTexParameterIuiv")),
+            GetTexParameterfv: FnPtr::new((0 as *const c_void, "glGetTexParameterfv")),
+            GetTexParameteriv: FnPtr::new((0 as *const c_void, "glGetTexParameteriv")),
+            GetTextureImage: FnPtr::new((0 as *const c_void, "glGetTextureImage")),
+            GetTextureLevelParameterfv: FnPtr::new((0 as *const c_void, "glGetTextureLevelParameterfv")),
+            GetTextureLevelParameteriv: FnPtr::new((0 as *const c_void, "glGetTextureLevelParameteriv")),
+            GetTextureParameterIiv: FnPtr::new((0 as *const c_void, "glGetTextureParameterIiv")),
+            GetTextureParameterIuiv: FnPtr::new((0 as *const c_void, "glGetTextureParameterIuiv")),
+            GetTextureParameterfv: FnPtr::new((0 as *const c_void, "glGetTextureParameterfv")),
+            GetTextureParameteriv: FnPtr::new((0 as *const c_void, "glGetTextureParameteriv")),
+            GetTextureSubImage: FnPtr::new((0 as *const c_void, "glGetTextureSubImage")),
+            GetTransformFeedbackVarying: FnPtr::new((0 as *const c_void, "glGetTransformFeedbackVarying")),
+            GetTransformFeedbacki64_v: FnPtr::new((0 as *const c_void, "glGetTransformFeedbacki64_v")),
+            GetTransformFeedbacki_v: FnPtr::new((0 as *const c_void, "glGetTransformFeedbacki_v")),
+            GetTransformFeedbackiv: FnPtr::new((0 as *const c_void, "glGetTransformFeedbackiv")),
+            GetUniformBlockIndex: FnPtr::new((0 as *const c_void, "glGetUniformBlockIndex")),
+            GetUniformIndices: FnPtr::new((0 as *const c_void, "glGetUniformIndices")),
+            GetUniformLocation: FnPtr::new((0 as *const c_void, "glGetUniformLocation")),
+            GetUniformSubroutineuiv: FnPtr::new((0 as *const c_void, "glGetUniformSubroutineuiv")),
+            GetUniformdv: FnPtr::new((0 as *const c_void, "glGetUniformdv")),
+            GetUniformfv: FnPtr::new((0 as *const c_void, "glGetUniformfv")),
+            GetUniformiv: FnPtr::new((0 as *const c_void, "glGetUniformiv")),
+            GetUniformuiv: FnPtr::new((0 as *const c_void, "glGetUniformuiv")),
+            GetVertexArrayIndexed64iv: FnPtr::new((0 as *const c_void, "glGetVertexArrayIndexed64iv")),
+            GetVertexArrayIndexediv: FnPtr::new((0 as *const c_void, "glGetVertexArrayIndexediv")),
+            GetVertexArrayiv: FnPtr::new((0 as *const c_void, "glGetVertexArrayiv")),
+            GetVertexAttribIiv: FnPtr::new((0 as *const c_void, "glGetVertexAttribIiv")),
+            GetVertexAttribIuiv: FnPtr::new((0 as *const c_void, "glGetVertexAttribIuiv")),
+            GetVertexAttribLdv: FnPtr::new((0 as *const c_void, "glGetVertexAttribLdv")),
+            GetVertexAttribPointerv: FnPtr::new((0 as *const c_void, "glGetVertexAttribPointerv")),
+            GetVertexAttribdv: FnPtr::new((0 as *const c_void, "glGetVertexAttribdv")),
+            GetVertexAttribfv: FnPtr::new((0 as *const c_void, "glGetVertexAttribfv")),
+            GetVertexAttribiv: FnPtr::new((0 as *const c_void, "glGetVertexAttribiv")),
+            GetnColorTable: FnPtr::new((0 as *const c_void, "glGetnColorTable")),
+            GetnCompressedTexImage: FnPtr::new((0 as *const c_void, "glGetnCompressedTexImage")),
+            GetnConvolutionFilter: FnPtr::new((0 as *const c_void, "glGetnConvolutionFilter")),
+            GetnHistogram: FnPtr::new((0 as *const c_void, "glGetnHistogram")),
+            GetnMapdv: FnPtr::new((0 as *const c_void, "glGetnMapdv")),
+            GetnMapfv: FnPtr::new((0 as *const c_void, "glGetnMapfv")),
+            GetnMapiv: FnPtr::new((0 as *const c_void, "glGetnMapiv")),
+            GetnMinmax: FnPtr::new((0 as *const c_void, "glGetnMinmax")),
+            GetnPixelMapfv: FnPtr::new((0 as *const c_void, "glGetnPixelMapfv")),
+            GetnPixelMapuiv: FnPtr::new((0 as *const c_void, "glGetnPixelMapuiv")),
+            GetnPixelMapusv: FnPtr::new((0 as *const c_void, "glGetnPixelMapusv")),
+            GetnPolygonStipple: FnPtr::new((0 as *const c_void, "glGetnPolygonStipple")),
+            GetnSeparableFilter: FnPtr::new((0 as *const c_void, "glGetnSeparableFilter")),
+            GetnTexImage: FnPtr::new((0 as *const c_void, "glGetnTexImage")),
+            GetnUniformdv: FnPtr::new((0 as *const c_void, "glGetnUniformdv")),
+            GetnUniformfv: FnPtr::new((0 as *const c_void, "glGetnUniformfv")),
+            GetnUniformiv: FnPtr::new((0 as *const c_void, "glGetnUniformiv")),
+            GetnUniformuiv: FnPtr::new((0 as *const c_void, "glGetnUniformuiv")),
+            Hint: FnPtr::new((0 as *const c_void, "glHint")),
+            InvalidateBufferData: FnPtr::new((0 as *const c_void, "glInvalidateBufferData")),
+            InvalidateBufferSubData: FnPtr::new((0 as *const c_void, "glInvalidateBufferSubData")),
+            InvalidateFramebuffer: FnPtr::new((0 as *const c_void, "glInvalidateFramebuffer")),
+            InvalidateNamedFramebufferData: FnPtr::new((0 as *const c_void, "glInvalidateNamedFramebufferData")),
+            InvalidateNamedFramebufferSubData: FnPtr::new((0 as *const c_void, "glInvalidateNamedFramebufferSubData")),
+            InvalidateSubFramebuffer: FnPtr::new((0 as *const c_void, "glInvalidateSubFramebuffer")),
+            InvalidateTexImage: FnPtr::new((0 as *const c_void, "glInvalidateTexImage")),
+            InvalidateTexSubImage: FnPtr::new((0 as *const c_void, "glInvalidateTexSubImage")),
+            IsBuffer: FnPtr::new((0 as *const c_void, "glIsBuffer")),
+            IsEnabled: FnPtr::new((0 as *const c_void, "glIsEnabled")),
+            IsEnabledi: FnPtr::new((0 as *const c_void, "glIsEnabledi")),
+            IsFramebuffer: FnPtr::new((0 as *const c_void, "glIsFramebuffer")),
+            IsProgram: FnPtr::new((0 as *const c_void, "glIsProgram")),
+            IsProgramPipeline: FnPtr::new((0 as *const c_void, "glIsProgramPipeline")),
+            IsQuery: FnPtr::new((0 as *const c_void, "glIsQuery")),
+            IsRenderbuffer: FnPtr::new((0 as *const c_void, "glIsRenderbuffer")),
+            IsSampler: FnPtr::new((0 as *const c_void, "glIsSampler")),
+            IsShader: FnPtr::new((0 as *const c_void, "glIsShader")),
+            IsSync: FnPtr::new((0 as *const c_void, "glIsSync")),
+            IsTexture: FnPtr::new((0 as *const c_void, "glIsTexture")),
+            IsTransformFeedback: FnPtr::new((0 as *const c_void, "glIsTransformFeedback")),
+            IsVertexArray: FnPtr::new((0 as *const c_void, "glIsVertexArray")),
+            LineWidth: FnPtr::new((0 as *const c_void, "glLineWidth")),
+            LinkProgram: FnPtr::new((0 as *const c_void, "glLinkProgram")),
+            LogicOp: FnPtr::new((0 as *const c_void, "glLogicOp")),
+            MapBuffer: FnPtr::new((0 as *const c_void, "glMapBuffer")),
+            MapBufferRange: FnPtr::new((0 as *const c_void, "glMapBufferRange")),
+            MapNamedBuffer: FnPtr::new((0 as *const c_void, "glMapNamedBuffer")),
+            MapNamedBufferRange: FnPtr::new((0 as *const c_void, "glMapNamedBufferRange")),
+            MemoryBarrier: FnPtr::new((0 as *const c_void, "glMemoryBarrier")),
+            MemoryBarrierByRegion: FnPtr::new((0 as *const c_void, "glMemoryBarrierByRegion")),
+            MinSampleShading: FnPtr::new((0 as *const c_void, "glMinSampleShading")),
+            MultiDrawArrays: FnPtr::new((0 as *const c_void, "glMultiDrawArrays")),
+            MultiDrawArraysIndirect: FnPtr::new((0 as *const c_void, "glMultiDrawArraysIndirect")),
+            MultiDrawElements: FnPtr::new((0 as *const c_void, "glMultiDrawElements")),
+            MultiDrawElementsBaseVertex: FnPtr::new((0 as *const c_void, "glMultiDrawElementsBaseVertex")),
+            MultiDrawElementsIndirect: FnPtr::new((0 as *const c_void, "glMultiDrawElementsIndirect")),
+            MultiTexCoordP1ui: FnPtr::new((0 as *const c_void, "glMultiTexCoordP1ui")),
+            MultiTexCoordP1uiv: FnPtr::new((0 as *const c_void, "glMultiTexCoordP1uiv")),
+            MultiTexCoordP2ui: FnPtr::new((0 as *const c_void, "glMultiTexCoordP2ui")),
+            MultiTexCoordP2uiv: FnPtr::new((0 as *const c_void, "glMultiTexCoordP2uiv")),
+            MultiTexCoordP3ui: FnPtr::new((0 as *const c_void, "glMultiTexCoordP3ui")),
+            MultiTexCoordP3uiv: FnPtr::new((0 as *const c_void, "glMultiTexCoordP3uiv")),
+            MultiTexCoordP4ui: FnPtr::new((0 as *const c_void, "glMultiTexCoordP4ui")),
+            MultiTexCoordP4uiv: FnPtr::new((0 as *const c_void, "glMultiTexCoordP4uiv")),
+            NamedBufferData: FnPtr::new((0 as *const c_void, "glNamedBufferData")),
+            NamedBufferStorage: FnPtr::new((0 as *const c_void, "glNamedBufferStorage")),
+            NamedBufferSubData: FnPtr::new((0 as *const c_void, "glNamedBufferSubData")),
+            NamedFramebufferDrawBuffer: FnPtr::new((0 as *const c_void, "glNamedFramebufferDrawBuffer")),
+            NamedFramebufferDrawBuffers: FnPtr::new((0 as *const c_void, "glNamedFramebufferDrawBuffers")),
+            NamedFramebufferParameteri: FnPtr::new((0 as *const c_void, "glNamedFramebufferParameteri")),
+            NamedFramebufferReadBuffer: FnPtr::new((0 as *const c_void, "glNamedFramebufferReadBuffer")),
+            NamedFramebufferRenderbuffer: FnPtr::new((0 as *const c_void, "glNamedFramebufferRenderbuffer")),
+            NamedFramebufferTexture: FnPtr::new((0 as *const c_void, "glNamedFramebufferTexture")),
+            NamedFramebufferTextureLayer: FnPtr::new((0 as *const c_void, "glNamedFramebufferTextureLayer")),
+            NamedRenderbufferStorage: FnPtr::new((0 as *const c_void, "glNamedRenderbufferStorage")),
+            NamedRenderbufferStorageMultisample: FnPtr::new((0 as *const c_void, "glNamedRenderbufferStorageMultisample")),
+            NormalP3ui: FnPtr::new((0 as *const c_void, "glNormalP3ui")),
+            NormalP3uiv: FnPtr::new((0 as *const c_void, "glNormalP3uiv")),
+            ObjectLabel: FnPtr::new((0 as *const c_void, "glObjectLabel")),
+            ObjectPtrLabel: FnPtr::new((0 as *const c_void, "glObjectPtrLabel")),
+            PatchParameterfv: FnPtr::new((0 as *const c_void, "glPatchParameterfv")),
+            PatchParameteri: FnPtr::new((0 as *const c_void, "glPatchParameteri")),
+            PauseTransformFeedback: FnPtr::new((0 as *const c_void, "glPauseTransformFeedback")),
+            PixelStoref: FnPtr::new((0 as *const c_void, "glPixelStoref")),
+            PixelStorei: FnPtr::new((0 as *const c_void, "glPixelStorei")),
+            PointParameterf: FnPtr::new((0 as *const c_void, "glPointParameterf")),
+            PointParameterfv: FnPtr::new((0 as *const c_void, "glPointParameterfv")),
+            PointParameteri: FnPtr::new((0 as *const c_void, "glPointParameteri")),
+            PointParameteriv: FnPtr::new((0 as *const c_void, "glPointParameteriv")),
+            PointSize: FnPtr::new((0 as *const c_void, "glPointSize")),
+            PolygonMode: FnPtr::new((0 as *const c_void, "glPolygonMode")),
+            PolygonOffset: FnPtr::new((0 as *const c_void, "glPolygonOffset")),
+            PopDebugGroup: FnPtr::new((0 as *const c_void, "glPopDebugGroup")),
+            PrimitiveRestartIndex: FnPtr::new((0 as *const c_void, "glPrimitiveRestartIndex")),
+            ProgramBinary: FnPtr::new((0 as *const c_void, "glProgramBinary")),
+            ProgramParameteri: FnPtr::new((0 as *const c_void, "glProgramParameteri")),
+            ProgramUniform1d: FnPtr::new((0 as *const c_void, "glProgramUniform1d")),
+            ProgramUniform1dv: FnPtr::new((0 as *const c_void, "glProgramUniform1dv")),
+            ProgramUniform1f: FnPtr::new((0 as *const c_void, "glProgramUniform1f")),
+            ProgramUniform1fv: FnPtr::new((0 as *const c_void, "glProgramUniform1fv")),
+            ProgramUniform1i: FnPtr::new((0 as *const c_void, "glProgramUniform1i")),
+            ProgramUniform1iv: FnPtr::new((0 as *const c_void, "glProgramUniform1iv")),
+            ProgramUniform1ui: FnPtr::new((0 as *const c_void, "glProgramUniform1ui")),
+            ProgramUniform1uiv: FnPtr::new((0 as *const c_void, "glProgramUniform1uiv")),
+            ProgramUniform2d: FnPtr::new((0 as *const c_void, "glProgramUniform2d")),
+            ProgramUniform2dv: FnPtr::new((0 as *const c_void, "glProgramUniform2dv")),
+            ProgramUniform2f: FnPtr::new((0 as *const c_void, "glProgramUniform2f")),
+            ProgramUniform2fv: FnPtr::new((0 as *const c_void, "glProgramUniform2fv")),
+            ProgramUniform2i: FnPtr::new((0 as *const c_void, "glProgramUniform2i")),
+            ProgramUniform2iv: FnPtr::new((0 as *const c_void, "glProgramUniform2iv")),
+            ProgramUniform2ui: FnPtr::new((0 as *const c_void, "glProgramUniform2ui")),
+            ProgramUniform2uiv: FnPtr::new((0 as *const c_void, "glProgramUniform2uiv")),
+            ProgramUniform3d: FnPtr::new((0 as *const c_void, "glProgramUniform3d")),
+            ProgramUniform3dv: FnPtr::new((0 as *const c_void, "glProgramUniform3dv")),
+            ProgramUniform3f: FnPtr::new((0 as *const c_void, "glProgramUniform3f")),
+            ProgramUniform3fv: FnPtr::new((0 as *const c_void, "glProgramUniform3fv")),
+            ProgramUniform3i: FnPtr::new((0 as *const c_void, "glProgramUniform3i")),
+            ProgramUniform3iv: FnPtr::new((0 as *const c_void, "glProgramUniform3iv")),
+            ProgramUniform3ui: FnPtr::new((0 as *const c_void, "glProgramUniform3ui")),
+            ProgramUniform3uiv: FnPtr::new((0 as *const c_void, "glProgramUniform3uiv")),
+            ProgramUniform4d: FnPtr::new((0 as *const c_void, "glProgramUniform4d")),
+            ProgramUniform4dv: FnPtr::new((0 as *const c_void, "glProgramUniform4dv")),
+            ProgramUniform4f: FnPtr::new((0 as *const c_void, "glProgramUniform4f")),
+            ProgramUniform4fv: FnPtr::new((0 as *const c_void, "glProgramUniform4fv")),
+            ProgramUniform4i: FnPtr::new((0 as *const c_void, "glProgramUniform4i")),
+            ProgramUniform4iv: FnPtr::new((0 as *const c_void, "glProgramUniform4iv")),
+            ProgramUniform4ui: FnPtr::new((0 as *const c_void, "glProgramUniform4ui")),
+            ProgramUniform4uiv: FnPtr::new((0 as *const c_void, "glProgramUniform4uiv")),
+            ProgramUniformMatrix2dv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix2dv")),
+            ProgramUniformMatrix2fv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix2fv")),
+            ProgramUniformMatrix2x3dv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix2x3dv")),
+            ProgramUniformMatrix2x3fv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix2x3fv")),
+            ProgramUniformMatrix2x4dv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix2x4dv")),
+            ProgramUniformMatrix2x4fv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix2x4fv")),
+            ProgramUniformMatrix3dv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix3dv")),
+            ProgramUniformMatrix3fv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix3fv")),
+            ProgramUniformMatrix3x2dv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix3x2dv")),
+            ProgramUniformMatrix3x2fv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix3x2fv")),
+            ProgramUniformMatrix3x4dv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix3x4dv")),
+            ProgramUniformMatrix3x4fv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix3x4fv")),
+            ProgramUniformMatrix4dv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix4dv")),
+            ProgramUniformMatrix4fv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix4fv")),
+            ProgramUniformMatrix4x2dv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix4x2dv")),
+            ProgramUniformMatrix4x2fv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix4x2fv")),
+            ProgramUniformMatrix4x3dv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix4x3dv")),
+            ProgramUniformMatrix4x3fv: FnPtr::new((0 as *const c_void, "glProgramUniformMatrix4x3fv")),
+            ProvokingVertex: FnPtr::new((0 as *const c_void, "glProvokingVertex")),
+            PushDebugGroup: FnPtr::new((0 as *const c_void, "glPushDebugGroup")),
+            QueryCounter: FnPtr::new((0 as *const c_void, "glQueryCounter")),
+            ReadBuffer: FnPtr::new((0 as *const c_void, "glReadBuffer")),
+            ReadPixels: FnPtr::new((0 as *const c_void, "glReadPixels")),
+            ReadnPixels: FnPtr::new((0 as *const c_void, "glReadnPixels")),
+            ReleaseShaderCompiler: FnPtr::new((0 as *const c_void, "glReleaseShaderCompiler")),
+            RenderbufferStorage: FnPtr::new((0 as *const c_void, "glRenderbufferStorage")),
+            RenderbufferStorageMultisample: FnPtr::new((0 as *const c_void, "glRenderbufferStorageMultisample")),
+            ResumeTransformFeedback: FnPtr::new((0 as *const c_void, "glResumeTransformFeedback")),
+            SampleCoverage: FnPtr::new((0 as *const c_void, "glSampleCoverage")),
+            SampleMaski: FnPtr::new((0 as *const c_void, "glSampleMaski")),
+            SamplerParameterIiv: FnPtr::new((0 as *const c_void, "glSamplerParameterIiv")),
+            SamplerParameterIuiv: FnPtr::new((0 as *const c_void, "glSamplerParameterIuiv")),
+            SamplerParameterf: FnPtr::new((0 as *const c_void, "glSamplerParameterf")),
+            SamplerParameterfv: FnPtr::new((0 as *const c_void, "glSamplerParameterfv")),
+            SamplerParameteri: FnPtr::new((0 as *const c_void, "glSamplerParameteri")),
+            SamplerParameteriv: FnPtr::new((0 as *const c_void, "glSamplerParameteriv")),
+            Scissor: FnPtr::new((0 as *const c_void, "glScissor")),
+            ScissorArrayv: FnPtr::new((0 as *const c_void, "glScissorArrayv")),
+            ScissorIndexed: FnPtr::new((0 as *const c_void, "glScissorIndexed")),
+            ScissorIndexedv: FnPtr::new((0 as *const c_void, "glScissorIndexedv")),
+            SecondaryColorP3ui: FnPtr::new((0 as *const c_void, "glSecondaryColorP3ui")),
+            SecondaryColorP3uiv: FnPtr::new((0 as *const c_void, "glSecondaryColorP3uiv")),
+            ShaderBinary: FnPtr::new((0 as *const c_void, "glShaderBinary")),
+            ShaderSource: FnPtr::new((0 as *const c_void, "glShaderSource")),
+            ShaderStorageBlockBinding: FnPtr::new((0 as *const c_void, "glShaderStorageBlockBinding")),
+            StencilFunc: FnPtr::new((0 as *const c_void, "glStencilFunc")),
+            StencilFuncSeparate: FnPtr::new((0 as *const c_void, "glStencilFuncSeparate")),
+            StencilMask: FnPtr::new((0 as *const c_void, "glStencilMask")),
+            StencilMaskSeparate: FnPtr::new((0 as *const c_void, "glStencilMaskSeparate")),
+            StencilOp: FnPtr::new((0 as *const c_void, "glStencilOp")),
+            StencilOpSeparate: FnPtr::new((0 as *const c_void, "glStencilOpSeparate")),
+            TexBuffer: FnPtr::new((0 as *const c_void, "glTexBuffer")),
+            TexBufferRange: FnPtr::new((0 as *const c_void, "glTexBufferRange")),
+            TexCoordP1ui: FnPtr::new((0 as *const c_void, "glTexCoordP1ui")),
+            TexCoordP1uiv: FnPtr::new((0 as *const c_void, "glTexCoordP1uiv")),
+            TexCoordP2ui: FnPtr::new((0 as *const c_void, "glTexCoordP2ui")),
+            TexCoordP2uiv: FnPtr::new((0 as *const c_void, "glTexCoordP2uiv")),
+            TexCoordP3ui: FnPtr::new((0 as *const c_void, "glTexCoordP3ui")),
+            TexCoordP3uiv: FnPtr::new((0 as *const c_void, "glTexCoordP3uiv")),
+            TexCoordP4ui: FnPtr::new((0 as *const c_void, "glTexCoordP4ui")),
+            TexCoordP4uiv: FnPtr::new((0 as *const c_void, "glTexCoordP4uiv")),
+            TexImage1D: FnPtr::new((0 as *const c_void, "glTexImage1D")),
+            TexImage2D: FnPtr::new((0 as *const c_void, "glTexImage2D")),
+            TexImage2DMultisample: FnPtr::new((0 as *const c_void, "glTexImage2DMultisample")),
+            TexImage3D: FnPtr::new((0 as *const c_void, "glTexImage3D")),
+            TexImage3DMultisample: FnPtr::new((0 as *const c_void, "glTexImage3DMultisample")),
+            TexParameterIiv: FnPtr::new((0 as *const c_void, "glTexParameterIiv")),
+            TexParameterIuiv: FnPtr::new((0 as *const c_void, "glTexParameterIuiv")),
+            TexParameterf: FnPtr::new((0 as *const c_void, "glTexParameterf")),
+            TexParameterfv: FnPtr::new((0 as *const c_void, "glTexParameterfv")),
+            TexParameteri: FnPtr::new((0 as *const c_void, "glTexParameteri")),
+            TexParameteriv: FnPtr::new((0 as *const c_void, "glTexParameteriv")),
+            TexStorage1D: FnPtr::new((0 as *const c_void, "glTexStorage1D")),
+            TexStorage2D: FnPtr::new((0 as *const c_void, "glTexStorage2D")),
+            TexStorage2DMultisample: FnPtr::new((0 as *const c_void, "glTexStorage2DMultisample")),
+            TexStorage3D: FnPtr::new((0 as *const c_void, "glTexStorage3D")),
+            TexStorage3DMultisample: FnPtr::new((0 as *const c_void, "glTexStorage3DMultisample")),
+            TexSubImage1D: FnPtr::new((0 as *const c_void, "glTexSubImage1D")),
+            TexSubImage2D: FnPtr::new((0 as *const c_void, "glTexSubImage2D")),
+            TexSubImage3D: FnPtr::new((0 as *const c_void, "glTexSubImage3D")),
+            TextureBarrier: FnPtr::new((0 as *const c_void, "glTextureBarrier")),
+            TextureBuffer: FnPtr::new((0 as *const c_void, "glTextureBuffer")),
+            TextureBufferRange: FnPtr::new((0 as *const c_void, "glTextureBufferRange")),
+            TextureParameterIiv: FnPtr::new((0 as *const c_void, "glTextureParameterIiv")),
+            TextureParameterIuiv: FnPtr::new((0 as *const c_void, "glTextureParameterIuiv")),
+            TextureParameterf: FnPtr::new((0 as *const c_void, "glTextureParameterf")),
+            TextureParameterfv: FnPtr::new((0 as *const c_void, "glTextureParameterfv")),
+            TextureParameteri: FnPtr::new((0 as *const c_void, "glTextureParameteri")),
+            TextureParameteriv: FnPtr::new((0 as *const c_void, "glTextureParameteriv")),
+            TextureStorage1D: FnPtr::new((0 as *const c_void, "glTextureStorage1D")),
+            TextureStorage2D: FnPtr::new((0 as *const c_void, "glTextureStorage2D")),
+            TextureStorage2DMultisample: FnPtr::new((0 as *const c_void, "glTextureStorage2DMultisample")),
+            TextureStorage3D: FnPtr::new((0 as *const c_void, "glTextureStorage3D")),
+            TextureStorage3DMultisample: FnPtr::new((0 as *const c_void, "glTextureStorage3DMultisample")),
+            TextureSubImage1D: FnPtr::new((0 as *const c_void, "glTextureSubImage1D")),
+            TextureSubImage2D: FnPtr::new((0 as *const c_void, "glTextureSubImage2D")),
+            TextureSubImage3D: FnPtr::new((0 as *const c_void, "glTextureSubImage3D")),
+            TextureView: FnPtr::new((0 as *const c_void, "glTextureView")),
+            TransformFeedbackBufferBase: FnPtr::new((0 as *const c_void, "glTransformFeedbackBufferBase")),
+            TransformFeedbackBufferRange: FnPtr::new((0 as *const c_void, "glTransformFeedbackBufferRange")),
+            TransformFeedbackVaryings: FnPtr::new((0 as *const c_void, "glTransformFeedbackVaryings")),
+            Uniform1d: FnPtr::new((0 as *const c_void, "glUniform1d")),
+            Uniform1dv: FnPtr::new((0 as *const c_void, "glUniform1dv")),
+            Uniform1f: FnPtr::new((0 as *const c_void, "glUniform1f")),
+            Uniform1fv: FnPtr::new((0 as *const c_void, "glUniform1fv")),
+            Uniform1i: FnPtr::new((0 as *const c_void, "glUniform1i")),
+            Uniform1iv: FnPtr::new((0 as *const c_void, "glUniform1iv")),
+            Uniform1ui: FnPtr::new((0 as *const c_void, "glUniform1ui")),
+            Uniform1uiv: FnPtr::new((0 as *const c_void, "glUniform1uiv")),
+            Uniform2d: FnPtr::new((0 as *const c_void, "glUniform2d")),
+            Uniform2dv: FnPtr::new((0 as *const c_void, "glUniform2dv")),
+            Uniform2f: FnPtr::new((0 as *const c_void, "glUniform2f")),
+            Uniform2fv: FnPtr::new((0 as *const c_void, "glUniform2fv")),
+            Uniform2i: FnPtr::new((0 as *const c_void, "glUniform2i")),
+            Uniform2iv: FnPtr::new((0 as *const c_void, "glUniform2iv")),
+            Uniform2ui: FnPtr::new((0 as *const c_void, "glUniform2ui")),
+            Uniform2uiv: FnPtr::new((0 as *const c_void, "glUniform2uiv")),
+            Uniform3d: FnPtr::new((0 as *const c_void, "glUniform3d")),
+            Uniform3dv: FnPtr::new((0 as *const c_void, "glUniform3dv")),
+            Uniform3f: FnPtr::new((0 as *const c_void, "glUniform3f")),
+            Uniform3fv: FnPtr::new((0 as *const c_void, "glUniform3fv")),
+            Uniform3i: FnPtr::new((0 as *const c_void, "glUniform3i")),
+            Uniform3iv: FnPtr::new((0 as *const c_void, "glUniform3iv")),
+            Uniform3ui: FnPtr::new((0 as *const c_void, "glUniform3ui")),
+            Uniform3uiv: FnPtr::new((0 as *const c_void, "glUniform3uiv")),
+            Uniform4d: FnPtr::new((0 as *const c_void, "glUniform4d")),
+            Uniform4dv: FnPtr::new((0 as *const c_void, "glUniform4dv")),
+            Uniform4f: FnPtr::new((0 as *const c_void, "glUniform4f")),
+            Uniform4fv: FnPtr::new((0 as *const c_void, "glUniform4fv")),
+            Uniform4i: FnPtr::new((0 as *const c_void, "glUniform4i")),
+            Uniform4iv: FnPtr::new((0 as *const c_void, "glUniform4iv")),
+            Uniform4ui: FnPtr::new((0 as *const c_void, "glUniform4ui")),
+            Uniform4uiv: FnPtr::new((0 as *const c_void, "glUniform4uiv")),
+            UniformBlockBinding: FnPtr::new((0 as *const c_void, "glUniformBlockBinding")),
+            UniformMatrix2dv: FnPtr::new((0 as *const c_void, "glUniformMatrix2dv")),
+            UniformMatrix2fv: FnPtr::new((0 as *const c_void, "glUniformMatrix2fv")),
+            UniformMatrix2x3dv: FnPtr::new((0 as *const c_void, "glUniformMatrix2x3dv")),
+            UniformMatrix2x3fv: FnPtr::new((0 as *const c_void, "glUniformMatrix2x3fv")),
+            UniformMatrix2x4dv: FnPtr::new((0 as *const c_void, "glUniformMatrix2x4dv")),
+            UniformMatrix2x4fv: FnPtr::new((0 as *const c_void, "glUniformMatrix2x4fv")),
+            UniformMatrix3dv: FnPtr::new((0 as *const c_void, "glUniformMatrix3dv")),
+            UniformMatrix3fv: FnPtr::new((0 as *const c_void, "glUniformMatrix3fv")),
+            UniformMatrix3x2dv: FnPtr::new((0 as *const c_void, "glUniformMatrix3x2dv")),
+            UniformMatrix3x2fv: FnPtr::new((0 as *const c_void, "glUniformMatrix3x2fv")),
+            UniformMatrix3x4dv: FnPtr::new((0 as *const c_void, "glUniformMatrix3x4dv")),
+            UniformMatrix3x4fv: FnPtr::new((0 as *const c_void, "glUniformMatrix3x4fv")),
+            UniformMatrix4dv: FnPtr::new((0 as *const c_void, "glUniformMatrix4dv")),
+            UniformMatrix4fv: FnPtr::new((0 as *const c_void, "glUniformMatrix4fv")),
+            UniformMatrix4x2dv: FnPtr::new((0 as *const c_void, "glUniformMatrix4x2dv")),
+            UniformMatrix4x2fv: FnPtr::new((0 as *const c_void, "glUniformMatrix4x2fv")),
+            UniformMatrix4x3dv: FnPtr::new((0 as *const c_void, "glUniformMatrix4x3dv")),
+            UniformMatrix4x3fv: FnPtr::new((0 as *const c_void, "glUniformMatrix4x3fv")),
+            UniformSubroutinesuiv: FnPtr::new((0 as *const c_void, "glUniformSubroutinesuiv")),
+            UnmapBuffer: FnPtr::new((0 as *const c_void, "glUnmapBuffer")),
+            UnmapNamedBuffer: FnPtr::new((0 as *const c_void, "glUnmapNamedBuffer")),
+            UseProgram: FnPtr::new((0 as *const c_void, "glUseProgram")),
+            UseProgramStages: FnPtr::new((0 as *const c_void, "glUseProgramStages")),
+            ValidateProgram: FnPtr::new((0 as *const c_void, "glValidateProgram")),
+            ValidateProgramPipeline: FnPtr::new((0 as *const c_void, "glValidateProgramPipeline")),
+            VertexArrayAttribBinding: FnPtr::new((0 as *const c_void, "glVertexArrayAttribBinding")),
+            VertexArrayAttribFormat: FnPtr::new((0 as *const c_void, "glVertexArrayAttribFormat")),
+            VertexArrayAttribIFormat: FnPtr::new((0 as *const c_void, "glVertexArrayAttribIFormat")),
+            VertexArrayAttribLFormat: FnPtr::new((0 as *const c_void, "glVertexArrayAttribLFormat")),
+            VertexArrayBindingDivisor: FnPtr::new((0 as *const c_void, "glVertexArrayBindingDivisor")),
+            VertexArrayElementBuffer: FnPtr::new((0 as *const c_void, "glVertexArrayElementBuffer")),
+            VertexArrayVertexBuffer: FnPtr::new((0 as *const c_void, "glVertexArrayVertexBuffer")),
+            VertexArrayVertexBuffers: FnPtr::new((0 as *const c_void, "glVertexArrayVertexBuffers")),
+            VertexAttrib1d: FnPtr::new((0 as *const c_void, "glVertexAttrib1d")),
+            VertexAttrib1dv: FnPtr::new((0 as *const c_void, "glVertexAttrib1dv")),
+            VertexAttrib1f: FnPtr::new((0 as *const c_void, "glVertexAttrib1f")),
+            VertexAttrib1fv: FnPtr::new((0 as *const c_void, "glVertexAttrib1fv")),
+            VertexAttrib1s: FnPtr::new((0 as *const c_void, "glVertexAttrib1s")),
+            VertexAttrib1sv: FnPtr::new((0 as *const c_void, "glVertexAttrib1sv")),
+            VertexAttrib2d: FnPtr::new((0 as *const c_void, "glVertexAttrib2d")),
+            VertexAttrib2dv: FnPtr::new((0 as *const c_void, "glVertexAttrib2dv")),
+            VertexAttrib2f: FnPtr::new((0 as *const c_void, "glVertexAttrib2f")),
+            VertexAttrib2fv: FnPtr::new((0 as *const c_void, "glVertexAttrib2fv")),
+            VertexAttrib2s: FnPtr::new((0 as *const c_void, "glVertexAttrib2s")),
+            VertexAttrib2sv: FnPtr::new((0 as *const c_void, "glVertexAttrib2sv")),
+            VertexAttrib3d: FnPtr::new((0 as *const c_void, "glVertexAttrib3d")),
+            VertexAttrib3dv: FnPtr::new((0 as *const c_void, "glVertexAttrib3dv")),
+            VertexAttrib3f: FnPtr::new((0 as *const c_void, "glVertexAttrib3f")),
+            VertexAttrib3fv: FnPtr::new((0 as *const c_void, "glVertexAttrib3fv")),
+            VertexAttrib3s: FnPtr::new((0 as *const c_void, "glVertexAttrib3s")),
+            VertexAttrib3sv: FnPtr::new((0 as *const c_void, "glVertexAttrib3sv")),
+            VertexAttrib4Nbv: FnPtr::new((0 as *const c_void, "glVertexAttrib4Nbv")),
+            VertexAttrib4Niv: FnPtr::new((0 as *const c_void, "glVertexAttrib4Niv")),
+            VertexAttrib4Nsv: FnPtr::new((0 as *const c_void, "glVertexAttrib4Nsv")),
+            VertexAttrib4Nub: FnPtr::new((0 as *const c_void, "glVertexAttrib4Nub")),
+            VertexAttrib4Nubv: FnPtr::new((0 as *const c_void, "glVertexAttrib4Nubv")),
+            VertexAttrib4Nuiv: FnPtr::new((0 as *const c_void, "glVertexAttrib4Nuiv")),
+            VertexAttrib4Nusv: FnPtr::new((0 as *const c_void, "glVertexAttrib4Nusv")),
+            VertexAttrib4bv: FnPtr::new((0 as *const c_void, "glVertexAttrib4bv")),
+            VertexAttrib4d: FnPtr::new((0 as *const c_void, "glVertexAttrib4d")),
+            VertexAttrib4dv: FnPtr::new((0 as *const c_void, "glVertexAttrib4dv")),
+            VertexAttrib4f: FnPtr::new((0 as *const c_void, "glVertexAttrib4f")),
+            VertexAttrib4fv: FnPtr::new((0 as *const c_void, "glVertexAttrib4fv")),
+            VertexAttrib4iv: FnPtr::new((0 as *const c_void, "glVertexAttrib4iv")),
+            VertexAttrib4s: FnPtr::new((0 as *const c_void, "glVertexAttrib4s")),
+            VertexAttrib4sv: FnPtr::new((0 as *const c_void, "glVertexAttrib4sv")),
+            VertexAttrib4ubv: FnPtr::new((0 as *const c_void, "glVertexAttrib4ubv")),
+            VertexAttrib4uiv: FnPtr::new((0 as *const c_void, "glVertexAttrib4uiv")),
+            VertexAttrib4usv: FnPtr::new((0 as *const c_void, "glVertexAttrib4usv")),
+            VertexAttribBinding: FnPtr::new((0 as *const c_void, "glVertexAttribBinding")),
+            VertexAttribDivisor: FnPtr::new((0 as *const c_void, "glVertexAttribDivisor")),
+            VertexAttribFormat: FnPtr::new((0 as *const c_void, "glVertexAttribFormat")),
+            VertexAttribI1i: FnPtr::new((0 as *const c_void, "glVertexAttribI1i")),
+            VertexAttribI1iv: FnPtr::new((0 as *const c_void, "glVertexAttribI1iv")),
+            VertexAttribI1ui: FnPtr::new((0 as *const c_void, "glVertexAttribI1ui")),
+            VertexAttribI1uiv: FnPtr::new((0 as *const c_void, "glVertexAttribI1uiv")),
+            VertexAttribI2i: FnPtr::new((0 as *const c_void, "glVertexAttribI2i")),
+            VertexAttribI2iv: FnPtr::new((0 as *const c_void, "glVertexAttribI2iv")),
+            VertexAttribI2ui: FnPtr::new((0 as *const c_void, "glVertexAttribI2ui")),
+            VertexAttribI2uiv: FnPtr::new((0 as *const c_void, "glVertexAttribI2uiv")),
+            VertexAttribI3i: FnPtr::new((0 as *const c_void, "glVertexAttribI3i")),
+            VertexAttribI3iv: FnPtr::new((0 as *const c_void, "glVertexAttribI3iv")),
+            VertexAttribI3ui: FnPtr::new((0 as *const c_void, "glVertexAttribI3ui")),
+            VertexAttribI3uiv: FnPtr::new((0 as *const c_void, "glVertexAttribI3uiv")),
+            VertexAttribI4bv: FnPtr::new((0 as *const c_void, "glVertexAttribI4bv")),
+            VertexAttribI4i: FnPtr::new((0 as *const c_void, "glVertexAttribI4i")),
+            VertexAttribI4iv: FnPtr::new((0 as *const c_void, "glVertexAttribI4iv")),
+            VertexAttribI4sv: FnPtr::new((0 as *const c_void, "glVertexAttribI4sv")),
+            VertexAttribI4ubv: FnPtr::new((0 as *const c_void, "glVertexAttribI4ubv")),
+            VertexAttribI4ui: FnPtr::new((0 as *const c_void, "glVertexAttribI4ui")),
+            VertexAttribI4uiv: FnPtr::new((0 as *const c_void, "glVertexAttribI4uiv")),
+            VertexAttribI4usv: FnPtr::new((0 as *const c_void, "glVertexAttribI4usv")),
+            VertexAttribIFormat: FnPtr::new((0 as *const c_void, "glVertexAttribIFormat")),
+            VertexAttribIPointer: FnPtr::new((0 as *const c_void, "glVertexAttribIPointer")),
+            VertexAttribL1d: FnPtr::new((0 as *const c_void, "glVertexAttribL1d")),
+            VertexAttribL1dv: FnPtr::new((0 as *const c_void, "glVertexAttribL1dv")),
+            VertexAttribL2d: FnPtr::new((0 as *const c_void, "glVertexAttribL2d")),
+            VertexAttribL2dv: FnPtr::new((0 as *const c_void, "glVertexAttribL2dv")),
+            VertexAttribL3d: FnPtr::new((0 as *const c_void, "glVertexAttribL3d")),
+            VertexAttribL3dv: FnPtr::new((0 as *const c_void, "glVertexAttribL3dv")),
+            VertexAttribL4d: FnPtr::new((0 as *const c_void, "glVertexAttribL4d")),
+            VertexAttribL4dv: FnPtr::new((0 as *const c_void, "glVertexAttribL4dv")),
+            VertexAttribLFormat: FnPtr::new((0 as *const c_void, "glVertexAttribLFormat")),
+            VertexAttribLPointer: FnPtr::new((0 as *const c_void, "glVertexAttribLPointer")),
+            VertexAttribP1ui: FnPtr::new((0 as *const c_void, "glVertexAttribP1ui")),
+            VertexAttribP1uiv: FnPtr::new((0 as *const c_void, "glVertexAttribP1uiv")),
+            VertexAttribP2ui: FnPtr::new((0 as *const c_void, "glVertexAttribP2ui")),
+            VertexAttribP2uiv: FnPtr::new((0 as *const c_void, "glVertexAttribP2uiv")),
+            VertexAttribP3ui: FnPtr::new((0 as *const c_void, "glVertexAttribP3ui")),
+            VertexAttribP3uiv: FnPtr::new((0 as *const c_void, "glVertexAttribP3uiv")),
+            VertexAttribP4ui: FnPtr::new((0 as *const c_void, "glVertexAttribP4ui")),
+            VertexAttribP4uiv: FnPtr::new((0 as *const c_void, "glVertexAttribP4uiv")),
+            VertexAttribPointer: FnPtr::new((0 as *const c_void, "glVertexAttribPointer")),
+            VertexBindingDivisor: FnPtr::new((0 as *const c_void, "glVertexBindingDivisor")),
+            VertexP2ui: FnPtr::new((0 as *const c_void, "glVertexP2ui")),
+            VertexP2uiv: FnPtr::new((0 as *const c_void, "glVertexP2uiv")),
+            VertexP3ui: FnPtr::new((0 as *const c_void, "glVertexP3ui")),
+            VertexP3uiv: FnPtr::new((0 as *const c_void, "glVertexP3uiv")),
+            VertexP4ui: FnPtr::new((0 as *const c_void, "glVertexP4ui")),
+            VertexP4uiv: FnPtr::new((0 as *const c_void, "glVertexP4uiv")),
+            Viewport: FnPtr::new((0 as *const c_void, "glViewport")),
+            ViewportArrayv: FnPtr::new((0 as *const c_void, "glViewportArrayv")),
+            ViewportIndexedf: FnPtr::new((0 as *const c_void, "glViewportIndexedf")),
+            ViewportIndexedfv: FnPtr::new((0 as *const c_void, "glViewportIndexedfv")),
+            WaitSync: FnPtr::new((0 as *const c_void, "glWaitSync")) 
         }
-    }
-    pub fn load_with() {
-        
     }
 }
 
@@ -12555,7 +12554,7 @@ pub fn metaloadfn(
     loadfn: &mut dyn FnMut(&'static str) -> *const c_void,
     symbol: &'static str,
     fallbacks: &[&'static str]
-) -> *const c_void {
+) -> (*const c_void, &'static str) {
     let mut ptr = loadfn(symbol);
     if ptr.is_null() {
         for &sym in fallbacks {
@@ -12563,9 +12562,9 @@ pub fn metaloadfn(
             if !ptr.is_null() { break; }
         }
     }
-    if ptr.is_null() { println!("failed to load {symbol}"); }
-    else { println!("loaded {symbol}"); }
-    return ptr;
+    // if ptr.is_null() { println!("failed to load {symbol}"); }
+    // else { println!("loaded {symbol}"); }
+    return (ptr, symbol);
 }
 
 pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void {

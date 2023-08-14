@@ -139,7 +139,7 @@ impl World {
 
     pub fn remove_section(&mut self, section_pos: Vector3<i32>) { unsafe {
         if let Some(mut section) = self.sections.remove(&section_pos) {
-            println!("removing section at {} {} {}", section_pos.x, section_pos.y, section_pos.z);
+            // println!("removing section at {} {} {}", section_pos.x, section_pos.y, section_pos.z);
             if let Some(mut south) = section.neighbors.south {
                 south.as_mut().neighbors.north = None;
             }
@@ -219,7 +219,7 @@ impl World {
         }
     }
 
-    pub const MAX_SECTION_X: usize = 8;
-    pub const MAX_SECTION_Y: usize = 8;
-    pub const MAX_SECTION_Z: usize = 8;
+    pub const MAX_SECTION_X: usize = 32;
+    pub const MAX_SECTION_Y: usize = 32;
+    pub const MAX_SECTION_Z: usize = 32;
 }
