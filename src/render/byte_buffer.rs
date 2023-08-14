@@ -62,10 +62,10 @@ impl StagingBuffer {
                 texture: buffer_quad.get_texture(),
             };
             match gpu_quad.normal {
-                South | North => {
+                North | South => {
                     (gpu_quad.x, gpu_quad.y, gpu_quad.z) = (gpu_quad.x, gpu_quad.y, gpu_quad.z);
                 }
-                West | East => {
+                East | West => {
                     (gpu_quad.x, gpu_quad.y, gpu_quad.z) = (gpu_quad.z, gpu_quad.y, gpu_quad.x);
                 }
                 Down | Up => {

@@ -112,10 +112,10 @@ impl Run {
         self.idx = buffer.idx as u32;
         let offset: u32;
         match N {
-            South | North => {
+            North | South => {
                 offset = Section::INDICES_ZYX[pos.index];
             }
-            West | East => {
+            East | West => {
                 offset = Section::INDICES_XYZ[pos.index];
             }
             Down | Up => {
@@ -148,10 +148,10 @@ impl Run {
     pub fn add_face<const N: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, pos: BlockPos) { unsafe {
         let offset: u32;
         match N {
-            South | North => {
+            North | South => {
                 offset = Section::INDICES_ZYX[pos.index];
             }
-            West | East => {
+            East | West => {
                 offset = Section::INDICES_XYZ[pos.index];
             }
             Down | Up => {

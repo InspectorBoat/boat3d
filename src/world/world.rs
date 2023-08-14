@@ -219,7 +219,7 @@ impl World {
         }
     }
 
-    pub const MAX_SECTION_X: usize = 32;
-    pub const MAX_SECTION_Y: usize = 32;
-    pub const MAX_SECTION_Z: usize = 32;
+    pub const MAX_SECTION_X: usize = 4;
+    pub const MAX_SECTION_Y: usize = 4;
+    pub const MAX_SECTION_Z: usize = 4;
 }

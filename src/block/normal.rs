@@ -5,12 +5,13 @@ use self::Normal::*;
 #[derive(PartialEq, Eq, ConstParamTy)]
 #[repr(u8)]
 pub enum Normal {
-    South = 0,
-    West = 1,
+    North = 0,
+    East = 1,
     Down = 2,
-    North = 3,
-    East = 4,
+    South = 3,
+    West = 4,
     Up = 5,
+
     Diagonal = 6,
     OtherDiagonal = 7,
     Unaligned = u8::MAX
@@ -19,11 +20,11 @@ pub enum Normal {
 impl Normal {
     pub const fn reverse(&self) -> Normal { unsafe {
         match self {
-            South => { return North; }
-            West  => { return East; }
-            Down  => { return Up; }
             North => { return South; }
             East  => { return West; }
+            Down  => { return Up; }
+            South => { return North; }
+            West  => { return East; }
             Up    => { return Down; }
             _     => { unreachable_unchecked(); }
         }

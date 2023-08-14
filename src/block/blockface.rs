@@ -42,10 +42,10 @@ impl BlockFace {
     
     pub fn culled_by<const N: Normal>(&self, b: &BlockFace) -> bool { unsafe {
         match N {
-            South | West | Down => {
+            North | East | Down => {
                 if self.dep != 0 || b.dep != 15 { return false; }
             },
-            North | East | Up => {
+            South | West | Up => {
                 if self.dep != 15 || b.dep != 0 { return false; }
             }
             _ => { hint::unreachable_unchecked(); }
@@ -65,8 +65,8 @@ impl BlockFace {
     
     pub const fn full(normal: Normal, texture: u16) -> BlockFace { unsafe {
         let depth = match normal {
-            South | West | Down => { 0 },
-            North | East | Up => { 15 },
+            North | East | Down => { 0 },
+            South | West | Up => { 15 },
             _ => { 0 }
         };
         return BlockFace {
@@ -82,8 +82,8 @@ impl BlockFace {
 
     pub const fn half(normal: Normal, half: HalfFaceType, texture: u16) -> BlockFace { unsafe {
         let depth = match normal {
-            South | West | Down => { 0 },
-            North | East | Up => { 15 },
+            North | East | Down => { 0 },
+            South | West | Up => { 15 },
             _ => { unreachable_unchecked() }
         };
         match half {
@@ -139,8 +139,8 @@ impl BlockFace {
     
     pub const fn quarter(normal: Normal, quarter: QuarterFaceType, texture: u16) -> BlockFace { unsafe {
         let depth = match normal {
-            South | West | Down => { 0 },
-            North | East | Up => { 15 },
+            North | East | Down => { 0 },
+            South | West | Up => { 15 },
             _ => { unreachable_unchecked() }
         };
         match quarter {

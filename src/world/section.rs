@@ -58,16 +58,16 @@ impl Section {
         if block_id != self.blocks[block_pos.index] {
             self.dirty = true;
             self.blocks[block_pos.index] = block_id;
-            if block_pos.x() == 0 && let Some(west) = self.get_neighbor::<{West}>() {
+            if block_pos.x() == 0 && let Some(west) = self.get_neighbor::<{East}>() {
                 west.dirty = true;
             }
-            if block_pos.x() == 15 && let Some(east) = self.get_neighbor::<{East}>() {
+            if block_pos.x() == 15 && let Some(east) = self.get_neighbor::<{West}>() {
                 east.dirty = true;
             }
-            if block_pos.z() == 0 && let Some(south) = self.get_neighbor::<{South}>() {
+            if block_pos.z() == 0 && let Some(south) = self.get_neighbor::<{North}>() {
                 south.dirty = true;
             }
-            if block_pos.z() == 15 && let Some(north) = self.get_neighbor::<{North}>() {
+            if block_pos.z() == 15 && let Some(north) = self.get_neighbor::<{South}>() {
                 north.dirty = true;
             }
             if block_pos.y() == 0 && let Some(down) = self.get_neighbor::<{Down}>() {
@@ -81,16 +81,16 @@ impl Section {
 
     pub fn get_neighbor<const N: Normal>(&self) -> Option<&mut Section> { unsafe {
         match N {
-            North => {
+            South => {
                 return mem::transmute(self.neighbors.north);
             }
-            South => {
+            North => {
                 return mem::transmute(self.neighbors.south);
             }
-            East => {
+            West => {
                 return mem::transmute(self.neighbors.east);
             }
-            West => {
+            East => {
                 return mem::transmute(self.neighbors.west);
             }
             Up => {
@@ -108,13 +108,13 @@ impl Section {
     } }
     pub fn get_opposing_block<const N: Normal>(&self, pos: BlockPos) -> &BlockState { unsafe {
         match N {
-            South => {
+            North => {
                 if pos.z() == 0 {
                     return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_z(15)));
                 }
                 return &self.get_block(pos - BlockPos::new(0, 0, 1));
             }
-            West => {
+            East => {
                 if pos.x() == 0 {
                     return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_x(15)));
                 }
@@ -126,13 +126,13 @@ impl Section {
                 }
                 return &self.get_block(pos - BlockPos::new(0, 1, 0));
             }
-            North => {
+            South => {
                 if pos.z() == 15 {
                     return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_z(0)));
                 }
                 return &self.get_block(pos + BlockPos::new(0, 0, 1));
             }
-            East => {
+            West => {
                 if pos.x() == 15 {
                     return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_x(0)));
                 }
@@ -160,25 +160,25 @@ impl Section {
     }
     pub fn get_face_light<const N: Normal>(&self, block_pos: BlockPos) -> u8 { unsafe {
         match N {
-            North => {
+            South => {
                 if block_pos.z() == 15 {
                     return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_z(0)));
                 }
                 return self.get_light(block_pos + BlockPos::new(0, 0, 1));
             }
-            South => {
+            North => {
                 if block_pos.z() == 0 {
                     return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_z(15)));
                 }
                 return self.get_light(block_pos - BlockPos::new(0, 0, 1));
             }
-            East => {
+            West => {
                 if block_pos.x() == 15 {
                     return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_x(0)));
                 }
                 return self.get_light(block_pos + BlockPos::new(1, 0, 0));
             }
-            West => {
+            East => {
                 if block_pos.x() == 0 {
                     return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_x(15)));
                 }
@@ -206,16 +206,16 @@ impl Section {
 
     pub fn has_extra_face<const N: Normal>(&self, block_pos: BlockPos) -> bool { unsafe {
         match N {
-            South => { return self.get_block(block_pos).model.extra_south.len() > 0; }
-            West => { return self.get_block(block_pos).model.extra_west.len() > 0; }
+            North => { return self.get_block(block_pos).model.extra_north.len() > 0; }
+            East => { return self.get_block(block_pos).model.extra_east.len() > 0; }
             Down => { return self.get_block(block_pos).model.extra_down.len() > 0; }
             _ => { hint::unreachable_unchecked(); }
         }
     } }
     pub fn has_opposing_extra_face<const N: Normal>(&self, block_pos: BlockPos) -> bool { unsafe {
         match N {
-            South => { return self.get_opposing_block::<N>(block_pos).model.extra_north.len() > 0; }
-            West => { return self.get_opposing_block::<N>(block_pos).model.extra_east.len() > 0; }
+            North => { return self.get_opposing_block::<N>(block_pos).model.extra_south.len() > 0; }
+            East => { return self.get_opposing_block::<N>(block_pos).model.extra_west.len() > 0; }
             Down => { return self.get_opposing_block::<N>(block_pos).model.extra_up.len() > 0; }
             _ => { hint::unreachable_unchecked(); }
         }
@@ -223,22 +223,22 @@ impl Section {
 
     pub fn get_extra_face<const N: Normal>(&self, block_pos: BlockPos) -> &[BlockFace] { unsafe {
         match N {
-            South => { return self.get_block(block_pos).model.extra_south; }
-            West => { return self.get_block(block_pos).model.extra_west; }
-            Down => { return self.get_block(block_pos).model.extra_down; }
             North => { return self.get_block(block_pos).model.extra_north; }
             East => { return self.get_block(block_pos).model.extra_east; }
+            Down => { return self.get_block(block_pos).model.extra_down; }
+            South => { return self.get_block(block_pos).model.extra_south; }
+            West => { return self.get_block(block_pos).model.extra_west; }
             Up => { return self.get_block(block_pos).model.extra_up; }
             _ => { unreachable_unchecked(); }
         }
     } }
     pub fn get_opposing_extra_face<const N: Normal>(&self, block_pos: BlockPos) -> &[BlockFace] { unsafe {
         match N {
-            South => { return self.get_opposing_block::<N>(block_pos).model.extra_north; }
-            West => { return self.get_opposing_block::<N>(block_pos).model.extra_east; }
-            Down => { return self.get_opposing_block::<N>(block_pos).model.extra_up; }
             North => { return self.get_opposing_block::<N>(block_pos).model.extra_south; }
             East => { return self.get_opposing_block::<N>(block_pos).model.extra_west; }
+            Down => { return self.get_opposing_block::<N>(block_pos).model.extra_up; }
+            South => { return self.get_opposing_block::<N>(block_pos).model.extra_north; }
+            West => { return self.get_opposing_block::<N>(block_pos).model.extra_east; }
             Up => { return self.get_opposing_block::<N>(block_pos).model.extra_down; }
             _ => { unreachable_unchecked(); }
         }
@@ -293,16 +293,16 @@ impl Section {
     }
     
     // rel_x, rel_y, rel_z = x, y, z
-    pub fn mesh_south_north(&mut self, solid_staging_buffer: &mut StagingBuffer) {
-        let mut row_s: [Run; 16] = Default::default();
-        let mut run_s: &mut Run = &mut row_s[0];
-        let mut active_run_s: bool = false;
-        let mut same_row_s: bool = false;
-
+    pub fn mesh_north_south(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         let mut row_n: [Run; 16] = Default::default();
         let mut run_n: &mut Run = &mut row_n[0];
         let mut active_run_n: bool = false;
         let mut same_row_n: bool = false;
+
+        let mut row_s: [Run; 16] = Default::default();
+        let mut run_s: &mut Run = &mut row_s[0];
+        let mut active_run_s: bool = false;
+        let mut same_row_s: bool = false;
         
         let mut row_id: u16 = 0;
 
@@ -311,79 +311,22 @@ impl Section {
                 for rel_x in 0..16_u8 {
                     let block_pos = BlockPos::new(rel_x, rel_y, rel_z);
 
-                    let (face_s, face_n) = self.get_face_pair::<{South}>(block_pos);
-                    let compare = BlockFace::should_cull_pair(face_s, face_n);
-                    'south: {
-                        for face in self.get_extra_face::<{South}>(block_pos) {
-                            Run::add_face::<{South}>(solid_staging_buffer, face, block_pos);
+                    let (face_n, face_s) = self.get_face_pair::<{North}>(block_pos);
+                    let compare = BlockFace::should_cull_pair(face_n, face_s);
+                    'north: {
+                        for face in self.get_extra_face::<{North}>(block_pos) {
+                            Run::add_face::<{North}>(solid_staging_buffer, face, block_pos);
                         }
             
                         if compare.0 {
-                            active_run_s = false;
-                            break 'south
-                        }
-                        // /*
-                        if active_run_s && same_row_s {
-                            if run_s.match_right(&face_s) {
-                                run_s.merge_face(solid_staging_buffer, &face_s);
-                                break 'south
-                            } else {
-                                active_run_s = false;
-                            }
-                        }
-                        // /*
-                        if !active_run_s {
-                            run_s = &mut row_s[rel_x as usize];
-                            if run_s.row + 1 == row_id && run_s.match_top_left(&face_s) {
-                                same_row_s = false;
-                                active_run_s = true;
-                            }
-                        }
-                        if active_run_s {
-                            if run_s.end == rel_x {
-                                if run_s.match_top_right(&face_s) {
-                                    run_s.pull(solid_staging_buffer, &face_s, rel_x, rel_y, rel_z);
-                                    active_run_s = false;
-                                }
-                                else {
-                                    run_s.pull_partial(solid_staging_buffer, &face_s, rel_x, rel_y, rel_z);
-                                    same_row_s = true;
-                                }
-                            }
-                            else {
-                                let next_block_pos = block_pos + BlockPos::new(1, 0, 0);
-                                let (next_face_s, next_face_n) = self.get_face_pair::<{South}>(next_block_pos);
-                                let compare = BlockFace::should_cull_pair(next_face_s, next_face_n);
-
-                                if compare.0 || !Run::match_faces(face_s, next_face_s) {
-                                    run_s.pull_partial(solid_staging_buffer, &face_s, rel_x, rel_y, rel_z);
-                                    active_run_s = false;
-                                }
-                            }
-                            break 'south
-                        }
-                        // */
-                        // */
-                        run_s = &mut row_s[rel_x as usize];
-                        same_row_s = true;
-                        active_run_s = true;
-                        run_s.begin::<{South}>(solid_staging_buffer, &face_s, block_pos, rel_x, row_id);
-                    }
-                    'north: {
-                        // break 'north;
-                        for face in self.get_opposing_extra_face::<{South}>(block_pos) {
-                            Run::add_face::<{South}>(solid_staging_buffer, &face, block_pos);
-                        }
-
-                        if compare.1 {
                             active_run_n = false;
-                            break 'north;
+                            break 'north
                         }
                         // /*
                         if active_run_n && same_row_n {
                             if run_n.match_right(&face_n) {
                                 run_n.merge_face(solid_staging_buffer, &face_n);
-                                break 'north;
+                                break 'north
                             } else {
                                 active_run_n = false;
                             }
@@ -409,10 +352,10 @@ impl Section {
                             }
                             else {
                                 let next_block_pos = block_pos + BlockPos::new(1, 0, 0);
-                                let (next_face_s, next_face_n) = self.get_face_pair::<{South}>(next_block_pos);
+                                let (next_face_s, next_face_n) = self.get_face_pair::<{North}>(next_block_pos);
                                 let compare = BlockFace::should_cull_pair(next_face_s, next_face_n);
 
-                                if compare.1 || !Run::match_faces(face_n, next_face_n) {
+                                if compare.0 || !Run::match_faces(face_n, next_face_s) {
                                     run_n.pull_partial(solid_staging_buffer, &face_n, rel_x, rel_y, rel_z);
                                     active_run_n = false;
                                 }
@@ -422,12 +365,68 @@ impl Section {
                         // */
                         // */
                         run_n = &mut row_n[rel_x as usize];
-                        active_run_n = true;
                         same_row_n = true;
+                        active_run_n = true;
                         run_n.begin::<{North}>(solid_staging_buffer, &face_n, block_pos, rel_x, row_id);
                     }
+                    'south: {
+                        for face in self.get_opposing_extra_face::<{North}>(block_pos) {
+                            Run::add_face::<{North}>(solid_staging_buffer, &face, block_pos);
+                        }
+
+                        if compare.1 {
+                            active_run_s = false;
+                            break 'south;
+                        }
+                        // /*
+                        if active_run_s && same_row_s {
+                            if run_s.match_right(&face_s) {
+                                run_s.merge_face(solid_staging_buffer, &face_s);
+                                break 'south;
+                            } else {
+                                active_run_s = false;
+                            }
+                        }
+                        // /*
+                        if !active_run_s {
+                            run_s = &mut row_s[rel_x as usize];
+                            if run_s.row + 1 == row_id && run_s.match_top_left(&face_s) {
+                                same_row_s = false;
+                                active_run_s = true;
+                            }
+                        }
+                        if active_run_s {
+                            if run_s.end == rel_x {
+                                if run_s.match_top_right(&face_s) {
+                                    run_s.pull(solid_staging_buffer, &face_s, rel_x, rel_y, rel_z);
+                                    active_run_s = false;
+                                }
+                                else {
+                                    run_s.pull_partial(solid_staging_buffer, &face_s, rel_x, rel_y, rel_z);
+                                    same_row_s = true;
+                                }
+                            }
+                            else {
+                                let next_block_pos = block_pos + BlockPos::new(1, 0, 0);
+                                let (next_face_s, next_face_n) = self.get_face_pair::<{North}>(next_block_pos);
+                                let compare = BlockFace::should_cull_pair(next_face_s, next_face_n);
+
+                                if compare.1 || !Run::match_faces(face_s, next_face_n) {
+                                    run_s.pull_partial(solid_staging_buffer, &face_s, rel_x, rel_y, rel_z);
+                                    active_run_s = false;
+                                }
+                            }
+                            break 'south
+                        }
+                        // */
+                        // */
+                        run_s = &mut row_s[rel_x as usize];
+                        active_run_s = true;
+                        same_row_s = true;
+                        run_s.begin::<{South}>(solid_staging_buffer, &face_s, block_pos, rel_x, row_id);
+                    }
                 }
-                (active_run_s, active_run_n) = (false, false);
+                (active_run_n, active_run_s) = (false, false);
                 row_id += 1;
             }
             row_id += 16;
@@ -435,16 +434,16 @@ impl Section {
     }
     
     // rel_x, rel_y, rel_z = z, y, x
-    pub fn mesh_west_east(&mut self, solid_staging_buffer: &mut StagingBuffer) {
-        let mut row_w: [Run; 16] = Default::default();
-        let mut run_w: &mut Run = &mut row_w[0];
-        let mut active_run_w: bool = false;
-        let mut same_row_w: bool = false;
-
+    pub fn mesh_east_west(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         let mut row_e: [Run; 16] = Default::default();
         let mut run_e: &mut Run = &mut row_e[0];
         let mut active_run_e: bool = false;
         let mut same_row_e: bool = false;
+
+        let mut row_w: [Run; 16] = Default::default();
+        let mut run_w: &mut Run = &mut row_w[0];
+        let mut active_run_w: bool = false;
+        let mut same_row_w: bool = false;
         
         let mut row_id: u16 = 0;
         
@@ -453,76 +452,19 @@ impl Section {
                 for rel_x in 0..16_u8 {
                     let block_pos = BlockPos::new(rel_z, rel_y, rel_x);
                     
-                    let (face_w, face_e) = self.get_face_pair::<{West}>(block_pos);
-                    let compare = BlockFace::should_cull_pair(face_w, face_e);
-                    'west: {
-                        for face in self.get_extra_face::<{West}>(block_pos) {
-                            Run::add_face::<{West}>(solid_staging_buffer, face, block_pos);
+                    let (face_e, face_w) = self.get_face_pair::<{East}>(block_pos);
+                    let compare = BlockFace::should_cull_pair(face_e, face_w);
+                    'east: {
+                        for face in self.get_extra_face::<{East}>(block_pos) {
+                            Run::add_face::<{East}>(solid_staging_buffer, face, block_pos);
                         }
             
             
                         if compare.0 {
-                            active_run_w = false;
-                            break 'west
-                        }
-
-                        // /*
-                        if active_run_w && same_row_w {
-                            if run_w.match_right(&face_w) {
-                                run_w.merge_face(solid_staging_buffer, &face_w);
-                                break 'west
-                            } else {
-                                active_run_w = false;
-                            }
-                        }
-                        // /*
-                        if !active_run_w {
-                            run_w = &mut row_w[rel_x as usize];
-                            if run_w.row + 1 == row_id && run_w.match_top_left(&face_w) {
-                                same_row_w = false;
-                                active_run_w = true;
-                            }
-                        }
-                        if active_run_w {
-                            if run_w.end == rel_x {
-                                if run_w.match_top_right(&face_w) {
-                                    run_w.pull(solid_staging_buffer, &face_w, rel_x, rel_y, rel_z);
-                                    active_run_w = false;
-                                }
-                                else {
-                                    run_w.pull_partial(solid_staging_buffer, &face_w, rel_x, rel_y, rel_z);
-                                    same_row_w = true;
-                                }
-                            }
-                            else {
-                                let next_block_pos = block_pos + BlockPos::new(0, 0, 1);
-                                let (next_face_w, next_face_e) = self.get_face_pair::<{West}>(next_block_pos);
-                                let compare = BlockFace::should_cull_pair(next_face_w, next_face_e);
-
-                                if compare.0 || !Run::match_faces(face_w, next_face_w) {
-                                    run_w.pull_partial(solid_staging_buffer, &face_w, rel_x, rel_y, rel_z);
-                                    active_run_w = false;
-                                }
-                            }
-                            break 'west
-                        }
-                        // */
-                        // */
-                        run_w = &mut row_w[rel_x as usize];
-                        same_row_w = true;
-                        active_run_w = true;
-                        run_w.begin::<{West}>(solid_staging_buffer, &face_w, block_pos, rel_x, row_id);
-                    }
-                    'east: {
-                        // break 'east;
-
-                        for face in self.get_opposing_extra_face::<{West}>(block_pos) {
-                            Run::add_face::<{East}>(solid_staging_buffer, face, block_pos);
-                        }
-                        if compare.1 {
                             active_run_e = false;
                             break 'east
                         }
+
                         // /*
                         if active_run_e && same_row_e {
                             if run_e.match_right(&face_e) {
@@ -532,7 +474,7 @@ impl Section {
                                 active_run_e = false;
                             }
                         }
-                        // /* 
+                        // /*
                         if !active_run_e {
                             run_e = &mut row_e[rel_x as usize];
                             if run_e.row + 1 == row_id && run_e.match_top_left(&face_e) {
@@ -540,7 +482,6 @@ impl Section {
                                 active_run_e = true;
                             }
                         }
-
                         if active_run_e {
                             if run_e.end == rel_x {
                                 if run_e.match_top_right(&face_e) {
@@ -554,10 +495,10 @@ impl Section {
                             }
                             else {
                                 let next_block_pos = block_pos + BlockPos::new(0, 0, 1);
-                                let (next_face_w, next_face_e) = self.get_face_pair::<{West}>(next_block_pos);
+                                let (next_face_w, next_face_e) = self.get_face_pair::<{East}>(next_block_pos);
                                 let compare = BlockFace::should_cull_pair(next_face_w, next_face_e);
 
-                                if compare.1 || !Run::match_faces(face_e, next_face_e) {
+                                if compare.0 || !Run::match_faces(face_e, next_face_w) {
                                     run_e.pull_partial(solid_staging_buffer, &face_e, rel_x, rel_y, rel_z);
                                     active_run_e = false;
                                 }
@@ -567,12 +508,70 @@ impl Section {
                         // */
                         // */
                         run_e = &mut row_e[rel_x as usize];
-                        active_run_e = true;
                         same_row_e = true;
+                        active_run_e = true;
                         run_e.begin::<{East}>(solid_staging_buffer, &face_e, block_pos, rel_x, row_id);
                     }
+                    'west: {
+                        // break 'east;
+
+                        for face in self.get_opposing_extra_face::<{East}>(block_pos) {
+                            Run::add_face::<{West}>(solid_staging_buffer, face, block_pos);
+                        }
+                        if compare.1 {
+                            active_run_w = false;
+                            break 'west
+                        }
+                        // /*
+                        if active_run_w && same_row_w {
+                            if run_w.match_right(&face_w) {
+                                run_w.merge_face(solid_staging_buffer, &face_w);
+                                break 'west
+                            } else {
+                                active_run_w = false;
+                            }
+                        }
+                        // /* 
+                        if !active_run_w {
+                            run_w = &mut row_w[rel_x as usize];
+                            if run_w.row + 1 == row_id && run_w.match_top_left(&face_w) {
+                                same_row_w = false;
+                                active_run_w = true;
+                            }
+                        }
+
+                        if active_run_w {
+                            if run_w.end == rel_x {
+                                if run_w.match_top_right(&face_w) {
+                                    run_w.pull(solid_staging_buffer, &face_w, rel_x, rel_y, rel_z);
+                                    active_run_w = false;
+                                }
+                                else {
+                                    run_w.pull_partial(solid_staging_buffer, &face_w, rel_x, rel_y, rel_z);
+                                    same_row_w = true;
+                                }
+                            }
+                            else {
+                                let next_block_pos = block_pos + BlockPos::new(0, 0, 1);
+                                let (next_face_w, next_face_e) = self.get_face_pair::<{East}>(next_block_pos);
+                                let compare = BlockFace::should_cull_pair(next_face_w, next_face_e);
+
+                                if compare.1 || !Run::match_faces(face_w, next_face_e) {
+                                    run_w.pull_partial(solid_staging_buffer, &face_w, rel_x, rel_y, rel_z);
+                                    active_run_w = false;
+                                }
+                            }
+                            break 'west
+                        }
+                        // */
+                        // */
+                        run_w = &mut row_w[rel_x as usize];
+                        active_run_w = true;
+                        same_row_w = true;
+                        run_w.begin::<{West}>(solid_staging_buffer, &face_w, block_pos, rel_x, row_id);
+                    }
                 }
-                (active_run_w, active_run_e) = (false, false); row_id += 1;
+                (active_run_e, active_run_w) = (false, false); row_id += 1;
             }
             row_id += 16;
         }
@@ -729,8 +728,8 @@ impl Section {
                     let block_pos = BlockPos::new(x, y, z);
 
 
-                    let face_s = self.get_face::<{South}>(block_pos);
-                    let face_n = self.get_opposing_face::<{South}>(block_pos);
+                    let face_s = self.get_face::<{North}>(block_pos);
+                    let face_n = self.get_opposing_face::<{North}>(block_pos);
 
                     let compare = face_s.as_u32() + 0x10101010 - face_n.as_u32();
                     if compare == 0x10101010 { continue; }
@@ -738,17 +737,17 @@ impl Section {
                     let offset = Section::INDICES_ZYX[block_pos.index] as u64;
                     
                     if compare < 0x10101010 {
-                        Run::add_face::<{South}>(solid_staging_buffer, face_s, block_pos);
+                        Run::add_face::<{North}>(solid_staging_buffer, face_s, block_pos);
                     }
                     if compare > 0x10101010 {
-                        Run::add_face::<{North}>(solid_staging_buffer, face_n, block_pos);
+                        Run::add_face::<{South}>(solid_staging_buffer, face_n, block_pos);
                     }
                     
-                    for face in self.get_extra_face::<{South}>(block_pos) {
-                        Run::add_face::<{South}>(solid_staging_buffer, &face, block_pos);
-                    }
-                    for face in self.get_opposing_extra_face::<{South}>(block_pos) {
+                    for face in self.get_extra_face::<{North}>(block_pos) {
                         Run::add_face::<{North}>(solid_staging_buffer, &face, block_pos);
+                    }
+                    for face in self.get_opposing_extra_face::<{North}>(block_pos) {
+                        Run::add_face::<{South}>(solid_staging_buffer, &face, block_pos);
                     }
                 }
             }
@@ -760,8 +759,8 @@ impl Section {
                 for z in 0..16_u8 {
                     let block_pos = BlockPos::new(x, y, z);
 
-                    let face_w = self.get_face::<{West}>(block_pos);
-                    let face_e = self.get_opposing_face::<{West}>(block_pos);
+                    let face_w = self.get_face::<{East}>(block_pos);
+                    let face_e = self.get_opposing_face::<{East}>(block_pos);
 
                     let compare = face_w.as_u32() + 0x10101010 - face_e.as_u32();
                     if compare == 0x10101010 { continue; }
@@ -769,18 +768,18 @@ impl Section {
                     let offset = Section::INDICES_XYZ[block_pos.index] as u64;
                     
                     if compare < 0x10101010 {
-                        Run::add_face::<{West}>(solid_staging_buffer, face_w, block_pos);
+                        Run::add_face::<{East}>(solid_staging_buffer, face_w, block_pos);
                     }
                     if compare > 0x10101010 {
-                        Run::add_face::<{East}>(solid_staging_buffer, face_e, block_pos);
+                        Run::add_face::<{West}>(solid_staging_buffer, face_e, block_pos);
                     }
 
-                    for face in self.get_extra_face::<{West}>(block_pos) {
-                        Run::add_face::<{West}>(solid_staging_buffer, &face, block_pos);
-                    }
-
-                    for face in self.get_opposing_extra_face::<{West}>(block_pos) {
+                    for face in self.get_extra_face::<{East}>(block_pos) {
                         Run::add_face::<{East}>(solid_staging_buffer, &face, block_pos);
+                    }
+
+                    for face in self.get_opposing_extra_face::<{East}>(block_pos) {
+                        Run::add_face::<{West}>(solid_staging_buffer, &face, block_pos);
                     }
                 }
             }
@@ -839,42 +838,42 @@ impl Section {
                     let block_pos = BlockPos::new(x, y, z);
 
                     let block = self.get_block(block_pos);
-                    let opposing_block_south = self.get_opposing_block::<{South}>(block_pos);
-                    let opposing_block_west = self.get_opposing_block::<{West}>(block_pos);
+                    let opposing_block_south = self.get_opposing_block::<{North}>(block_pos);
+                    let opposing_block_west = self.get_opposing_block::<{East}>(block_pos);
                     let opposing_block_down = self.get_opposing_block::<{Down}>(block_pos);
 
-                    'south: for face in block.model.transparent_south {
-                        for opposing_face in opposing_block_south.model.transparent_north {
-                            if face.culled_by::<{South}>(opposing_face) { continue 'south; }
-                        }
-                        Run::add_face::<{South}>(trans_staging_buffer, &face, block_pos);
-                    }
-                    'west: for face in block.model.transparent_west {
-                        for opposing_face in opposing_block_west.model.transparent_east {
-                            if face.culled_by::<{West}>(opposing_face) { continue 'west; }
-                        }
-                        Run::add_face::<{West}>(trans_staging_buffer, &face, block_pos);
-                    }
-                    'down: for face in block.model.transparent_down {
-                        for opposing_face in opposing_block_down.model.transparent_up {
-                            if face.culled_by::<{Down}>(opposing_face) { continue 'down; }
-                        }
-                        Run::add_face::<{Down}>(trans_staging_buffer, &face, block_pos);
-                    }
-                    'north: for face in opposing_block_south.model.transparent_north {
-                        for opposing_face in block.model.transparent_south {
+                    'north: for face in block.model.trans_north {
+                        for opposing_face in opposing_block_south.model.trans_south {
                             if face.culled_by::<{North}>(opposing_face) { continue 'north; }
                         }
                         Run::add_face::<{North}>(trans_staging_buffer, &face, block_pos);
                     }
-                    'east: for face in opposing_block_west.model.transparent_east {
-                        for opposing_face in block.model.transparent_west {
+                    'east: for face in block.model.trans_east {
+                        for opposing_face in opposing_block_west.model.trans_west {
                             if face.culled_by::<{East}>(opposing_face) { continue 'east; }
                         }
                         Run::add_face::<{East}>(trans_staging_buffer, &face, block_pos);
                     }
-                    'up: for face in opposing_block_down.model.transparent_up {
-                        for opposing_face in block.model.transparent_down {
+                    'down: for face in block.model.trans_down {
+                        for opposing_face in opposing_block_down.model.trans_up {
+                            if face.culled_by::<{Down}>(opposing_face) { continue 'down; }
+                        }
+                        Run::add_face::<{Down}>(trans_staging_buffer, &face, block_pos);
+                    }
+                    'south: for face in opposing_block_south.model.trans_south {
+                        for opposing_face in block.model.trans_north {
+                            if face.culled_by::<{South}>(opposing_face) { continue 'south; }
+                        }
+                        Run::add_face::<{South}>(trans_staging_buffer, &face, block_pos);
+                    }
+                    'west: for face in opposing_block_west.model.trans_west {
+                        for opposing_face in block.model.trans_east {
+                            if face.culled_by::<{West}>(opposing_face) { continue 'west; }
+                        }
+                        Run::add_face::<{West}>(trans_staging_buffer, &face, block_pos);
+                    }
+                    'up: for face in opposing_block_down.model.trans_up {
+                        for opposing_face in block.model.trans_down {
                             if face.culled_by::<{Up}>(opposing_face) { continue 'up; }
                         }
                         Run::add_face::<{Up}>(trans_staging_buffer, &face, block_pos);
@@ -887,8 +886,8 @@ impl Section {
         self.trans_segment = geometry_buffer_allocator.alloc(trans_staging_buffer.idx + 4 * mem::size_of::<u32>());
     }
     pub fn mesh_solid(&mut self, solid_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
-        self.mesh_south_north(solid_staging_buffer);
-        self.mesh_west_east(solid_staging_buffer);
+        self.mesh_north_south(solid_staging_buffer);
+        self.mesh_east_west(solid_staging_buffer);
         self.mesh_down_up(solid_staging_buffer);
         self.mesh_unaligned(solid_staging_buffer);
 
@@ -910,7 +909,7 @@ impl Section {
             light_staging_buffer.set_u32(i * mem::size_of::<u32>(), (light_staging_buffer.idx / mem::size_of::<u32>()) as u32);
             
             match quad.normal {
-                South => {
+                North => {
                     let start_x = quad.x / 16;
                     let end_x = (quad.x + quad.width) / 16;
                     
@@ -921,11 +920,11 @@ impl Section {
                     
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
-                            light_staging_buffer.put_u32(self.get_face_light::<{South}>(BlockPos::new(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_face_light::<{North}>(BlockPos::new(x, y, z)) as u32);
                         }
                     }
                 }
-                North => {
+                South => {
                     let start_x = quad.x / 16;
                     let end_x = (quad.x + quad.width) / 16;
     
@@ -938,18 +937,18 @@ impl Section {
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
                             if z == 15 {
-                                if let Some(south) = self.get_neighbor::<{South}>() {
-                                    light_staging_buffer.put_u32(south.get_face_light::<{North}>(BlockPos::new(x, y, z)) as u32);
+                                if let Some(south) = self.get_neighbor::<{North}>() {
+                                    light_staging_buffer.put_u32(south.get_face_light::<{South}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
                                     light_staging_buffer.put_u32(rand::random::<u32>() & 15);
                                 }
                             }
-                            light_staging_buffer.put_u32(self.get_face_light::<{North}>(BlockPos::new(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_face_light::<{South}>(BlockPos::new(x, y, z)) as u32);
                         }
                     }
                 }
-                West => {
+                East => {
                     let x = quad.x / 16;
     
                     let start_y = quad.y / 16;
@@ -960,11 +959,11 @@ impl Section {
                     
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
-                            light_staging_buffer.put_u32(self.get_face_light::<{West}>(BlockPos::new(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_face_light::<{East}>(BlockPos::new(x, y, z)) as u32);
                         }
                     }
                 }
-                East => {
+                West => {
                     // if this from the neighboring section, x wraps to 15, which is the only way for it to be 15
                     let x = (quad.x - 16) / 16;
     
@@ -977,14 +976,14 @@ impl Section {
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
                             if x == 15 {
-                                if let Some(west) = self.get_neighbor::<{West}>() {
-                                    light_staging_buffer.put_u32(west.get_face_light::<{East}>(BlockPos::new(x, y, z)) as u32);
+                                if let Some(west) = self.get_neighbor::<{East}>() {
+                                    light_staging_buffer.put_u32(west.get_face_light::<{West}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
                                     light_staging_buffer.put_u32(rand::random::<u32>() & 15);
                                 }
                             }
-                            light_staging_buffer.put_u32(self.get_face_light::<{East}>(BlockPos::new(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_face_light::<{West}>(BlockPos::new(x, y, z)) as u32);
                         }
                     }
                 }
@@ -1034,7 +1033,7 @@ impl Section {
                     
                     let z = (quad.z + 1) / 16;
 
-                    light_staging_buffer.put_u32(self.get_face_light::<{South}>(BlockPos::new(x, y, z)) as u32);
+                    light_staging_buffer.put_u32(self.get_face_light::<{North}>(BlockPos::new(x, y, z)) as u32);
 
                 }
             }
@@ -1053,7 +1052,7 @@ impl Section {
             // insert the index offset of the light section
             light_staging_buffer.set_u32(i * mem::size_of::<u32>(), (light_staging_buffer.idx / mem::size_of::<u32>()) as u32);
             match quad.normal {
-                South => {
+                North => {
                     let start_x = quad.x / 16;
                     let end_x = (quad.x + quad.width) / 16;
                     
@@ -1064,11 +1063,11 @@ impl Section {
                     
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
-                            light_staging_buffer.put_u32(self.get_face_light::<{South}>(BlockPos::new(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_face_light::<{North}>(BlockPos::new(x, y, z)) as u32);
                         }
                     }
                 }
-                North => {
+                South => {
                     let start_x = quad.x / 16;
                     let end_x = (quad.x + quad.width) / 16;
     
@@ -1081,18 +1080,18 @@ impl Section {
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
                             if z == 15 {
-                                if let Some(south) = self.get_neighbor::<{South}>() {
-                                    light_staging_buffer.put_u32(south.get_face_light::<{North}>(BlockPos::new(x, y, z)) as u32);
+                                if let Some(south) = self.get_neighbor::<{North}>() {
+                                    light_staging_buffer.put_u32(south.get_face_light::<{South}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
                                     light_staging_buffer.put_u32(rand::random::<u32>() & 15);
                                 }
                             }
-                            light_staging_buffer.put_u32(self.get_face_light::<{North}>(BlockPos::new(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_face_light::<{South}>(BlockPos::new(x, y, z)) as u32);
                         }
                     }
                 }
-                West => {
+                East => {
                     let x = quad.x / 16;
     
                     let start_y = quad.y / 16;
@@ -1103,11 +1102,11 @@ impl Section {
                     
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
-                            light_staging_buffer.put_u32(self.get_face_light::<{West}>(BlockPos::new(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_face_light::<{East}>(BlockPos::new(x, y, z)) as u32);
                         }
                     }
                 }
-                East => {
+                West => {
                     // if this from the neighboring section, x wraps to 15, which is the only way for it to be 15
                     let x = (quad.x - 16) / 16;
     
@@ -1120,14 +1119,14 @@ impl Section {
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
                             if x == 15 {
-                                if let Some(west) = self.get_neighbor::<{West}>() {
-                                    light_staging_buffer.put_u32(west.get_face_light::<{East}>(BlockPos::new(x, y, z)) as u32);
+                                if let Some(west) = self.get_neighbor::<{East}>() {
+                                    light_staging_buffer.put_u32(west.get_face_light::<{West}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
                                     light_staging_buffer.put_u32(rand::random::<u32>() & 15);
                                 }
                             }
-                            light_staging_buffer.put_u32(self.get_face_light::<{East}>(BlockPos::new(x, y, z)) as u32);
+                            light_staging_buffer.put_u32(self.get_face_light::<{West}>(BlockPos::new(x, y, z)) as u32);
                         }
                     }
                 }
@@ -1139,7 +1138,7 @@ impl Section {
     
                     let start_z = quad.z / 16;
                     let end_z = (quad.z + quad.width) / 16;
-                    
+                    let a = 1..=2;
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
                             light_staging_buffer.put_u32(self.get_face_light::<{Down}>(BlockPos::new(x, y, z)) as u32);
@@ -1177,7 +1176,7 @@ impl Section {
                     
                     let z = (quad.z + 1) / 16;
 
-                    light_staging_buffer.put_u32(self.get_face_light::<{South}>(BlockPos::new(x, y, z)) as u32);
+                    light_staging_buffer.put_u32(self.get_face_light::<{North}>(BlockPos::new(x, y, z)) as u32);
 
                 }
             }
