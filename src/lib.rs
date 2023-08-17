@@ -269,26 +269,36 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeRenderWorld<'local>(
     class: JClass<'local>,
     gl_pointers: jlong,
     world: jlong,
-    end_framebuffer_id: jint
+    target_framebuffer_id: jint
 ) { unsafe {
     STORAGE = gl_pointers as *mut PointerStorage;
     let world = &mut *(world as *mut World);
+
     gl_wrapper::Disable(gl_wrapper::CULL_FACE);
+
     gl_wrapper::Enable(gl_wrapper::PRIMITIVE_RESTART);
     gl_wrapper::PrimitiveRestartIndex(u32::MAX as u32);
+    
     gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE0);
     gl_wrapper::Enable(gl_wrapper::TEXTURE_2D);
+    
     gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE1);
-    gl_wrapper::Enable(gl_wrapper::TEXTURE_2D);
+    gl_wrapper::Enable(gl_wrapper::TEXTURE_3D);
+    
     world.render(&WindowStatus {
         fill_mode: gl_wrapper::FILL,
         maximized: true,
         width: world.camera.window_width,
         height: world.camera.window_height,
         mouse_captured: true,
-    }, end_framebuffer_id);
+    }, target_framebuffer_id);
+    
     gl_wrapper::UseProgram(0);
     gl_wrapper::Enable(gl_wrapper::CULL_FACE);
+    
+    gl_wrapper::Disable(gl_wrapper::PRIMITIVE_RESTART);
+    
+    gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, target_framebuffer_id as u32);
 } }
 pub const DEBUG: bool = false;
 /*

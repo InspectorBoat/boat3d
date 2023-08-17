@@ -20,8 +20,6 @@ pub struct WorldRenderer {
     pub indices: UnsafeCell<Vec<*const c_void>>,
     pub solid_indirect_buffer: UnsafeCell<Vec<IndirectCommand>>,
     pub trans_indirect_buffer: UnsafeCell<Vec<IndirectCommand>>,
-    
-    pub fences: Vec<GLsync>,
 }
 
 impl WorldRenderer {
@@ -39,8 +37,6 @@ impl WorldRenderer {
             indices: UnsafeCell::new(Vec::new()),
             solid_indirect_buffer: UnsafeCell::new(Vec::new()),
             trans_indirect_buffer: UnsafeCell::new(Vec::new()),
-            
-            fences: Vec::new(),
         };
     }
     
@@ -127,20 +123,26 @@ impl WorldRenderer {
 
     pub fn make_shader_programs(&mut self) { unsafe {
         let solid_program = Program::create(
-            Shader::create(gl_wrapper::VERTEX_SHADER, include_str!("../shader/geometry.glsl.vert")),
-            Shader::create(gl_wrapper::FRAGMENT_SHADER, include_str!("../shader/geometry.glsl.frag"))
+            Shader::create(gl_wrapper::VERTEX_SHADER, include_str!("../shader/solid.glsl.vert")),
+            Shader::create(gl_wrapper::FRAGMENT_SHADER, include_str!("../shader/solid.glsl.frag"))
         );
         let post_program = Program::create(
             Shader::create(gl_wrapper::VERTEX_SHADER, include_str!("../shader/post.glsl.vert")),
             Shader::create(gl_wrapper::FRAGMENT_SHADER, include_str!("../shader/post.glsl.frag"))
         );
         let trans_program = Program::create(
-            Shader::create(gl_wrapper::VERTEX_SHADER, include_str!("../shader/translucent.glsl.vert")),
-            Shader::create(gl_wrapper::FRAGMENT_SHADER, include_str!("../shader/translucent.glsl.frag"))
+            Shader::create(gl_wrapper::VERTEX_SHADER, include_str!("../shader/trans.glsl.vert")),
+            Shader::create(gl_wrapper::FRAGMENT_SHADER, include_str!("../shader/trans.glsl.frag"))
         );
+        // texture attachment
         post_program.uniform_1i(0, 0);
+        // block texture
         post_program.uniform_1i(1, 1);
+
+        // block texture
         solid_program.uniform_1i(1, 1);
+
+        // block texture
         trans_program.uniform_1i(1, 1);
     
         self.solid_program = Some(solid_program);
@@ -148,19 +150,15 @@ impl WorldRenderer {
         self.trans_program = Some(trans_program);
     } }
 
-    pub fn pre_render(&mut self) { unsafe {
-        while self.fences.len() > 9 {
-            if let Some(fence) = self.fences.pop() {
-                gl_wrapper::ClientWaitSync(fence, gl_wrapper::SYNC_FLUSH_COMMANDS_BIT, u64::MAX);
-                gl_wrapper::DeleteSync(fence);
-            }
-        }
-    } }
-
-    pub fn render(&self, world: &World, status: &WindowStatus, end_framebuffer_id: i32) { unsafe {
+    pub fn render(&self, world: &World, status: &WindowStatus, target_framebuffer_id: i32) { unsafe {
         world.geometry_buffer_allocator.device_buffer.bind_indexed_target_base(gl_wrapper::SHADER_STORAGE_BUFFER, 0);
         world.light_buffer_allocator.device_buffer.bind_indexed_target_base(gl_wrapper::SHADER_STORAGE_BUFFER, 1);
         if let (Some(framebuffer), Some(solid_program), Some(post_program), Some(trans_program), Some(block_texture), Some(texture_attachment), Some(index_buffer)) = (&self.framebuffer, &self.solid_program, &self.post_program, &self.trans_program, &self.block_texture, &self.texture_attachment, &self.index_buffer) {
+            post_program.uniform_1i(0, 0);
+            post_program.uniform_1i(1, 1);
+            solid_program.uniform_1i(1, 1);    
+            trans_program.uniform_1i(1, 1);
+    
             index_buffer.bind_target(gl_wrapper::ELEMENT_ARRAY_BUFFER);
 
             // sets up projection-model-view matrix
@@ -181,14 +179,14 @@ impl WorldRenderer {
             if status.fill_mode == gl_wrapper::LINE {
                 gl_wrapper::PolygonMode(gl_wrapper::FRONT_AND_BACK, gl_wrapper::FILL);
             }
-            self.render_post(end_framebuffer_id);  
+            self.render_post(target_framebuffer_id);  
 
             // blit depth buffer
-            gl_wrapper::BindFramebuffer(gl_wrapper::DRAW_FRAMEBUFFER, 0);
-            gl_wrapper::BindFramebuffer(gl_wrapper::READ_FRAMEBUFFER, framebuffer.id);
-            gl_wrapper::BlitFramebuffer(0, 0, status.width, status.height, 0, 0, status.width, status.height, gl_wrapper::DEPTH_BUFFER_BIT, gl_wrapper::NEAREST);
-        
-            gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, 0);
+            // gl_wrapper::BindFramebuffer(gl_wrapper::DRAW_FRAMEBUFFER, target_framebuffer_id as u32);
+            // gl_wrapper::BindFramebuffer(gl_wrapper::READ_FRAMEBUFFER, framebuffer.id);
+            // gl_wrapper::BlitFramebuffer(0, 0, status.width, status.height, 0, 0, status.width, status.height, gl_wrapper::DEPTH_BUFFER_BIT, gl_wrapper::NEAREST);
+            
+            gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, target_framebuffer_id as u32);
 
             self.draw_trans(trans_drawn_sections, status);
         }
@@ -231,14 +229,14 @@ impl WorldRenderer {
         framebuffer.bind(gl_wrapper::FRAMEBUFFER);
         gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE1);
         block_texture.bind(gl_wrapper::TEXTURE_2D_ARRAY);
-        
+
         // clear solids framebuffer
         let CLEAR_COLOR: [u32; 4] = [0, 0, 0, 0];
         gl_wrapper::ClearNamedFramebufferuiv(framebuffer.id, gl_wrapper::COLOR, 0, &raw const CLEAR_COLOR as *const u32);
         gl_wrapper::ClearNamedFramebufferfi(framebuffer.id, gl_wrapper::DEPTH_STENCIL, 0, 1.0, 0);
         gl_wrapper::Enable(gl_wrapper::DEPTH_TEST);
-                        
-        if solid_drawn_sections > 0 {
+        
+        if solid_drawn_sections > 0 {    
             gl_wrapper::MultiDrawElementsIndirect(
                 gl_wrapper::TRIANGLE_STRIP,
                 gl_wrapper::UNSIGNED_INT,
@@ -247,6 +245,26 @@ impl WorldRenderer {
                 0
             );
         }
+    } }
+
+    pub fn render_post(&self, target_framebuffer_id: i32) { unsafe {
+        let Some(post_program) = &self.post_program else { panic!(); };
+        let Some(texture_attachment) = &self.texture_attachment else { panic!(); };
+        let Some(block_texture) = &self.block_texture else { panic!(); };
+        post_program.bind();
+        gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, target_framebuffer_id as u32);
+    
+        // gl_wrapper::ClearColor(1.0, 1.0, 1.0, 1.0);
+        // gl_wrapper::Clear(gl_wrapper::COLOR_BUFFER_BIT | gl_wrapper::DEPTH_BUFFER_BIT);
+        
+        gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE0);
+        texture_attachment.bind(gl_wrapper::TEXTURE_2D);
+
+        gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE1);
+        block_texture.bind(gl_wrapper::TEXTURE_2D_ARRAY);
+                
+        gl_wrapper::Disable(gl_wrapper::DEPTH_TEST);
+        gl_wrapper::DrawArrays(gl_wrapper::TRIANGLES, 0, 6);
     } }
 
     pub fn cull_chunks(&self, world: &World, solid_drawn_sections: &mut i32, trans_drawn_sections: &mut i32) { unsafe {
@@ -294,32 +312,6 @@ impl WorldRenderer {
                 *trans_drawn_sections += 1;
             }
         }
-    } }
-
-    pub fn render_post(&self, end_framebuffer_id: i32) { unsafe {
-        let Some(post_program) = &self.post_program else { panic!(); };
-        let Some(texture_attachment) = &self.texture_attachment else { panic!(); };
-        let Some(block_texture) = &self.block_texture else { panic!(); };
-        post_program.bind();
-        gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, end_framebuffer_id as u32);
-    
-        gl_wrapper::ClearColor(1.0, 1.0, 1.0, 1.0);
-        gl_wrapper::Clear(gl_wrapper::COLOR_BUFFER_BIT | gl_wrapper::DEPTH_BUFFER_BIT);
-                
-        gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE0);
-        texture_attachment.bind(gl_wrapper::TEXTURE_2D);
-        gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE1);
-        block_texture.bind(gl_wrapper::TEXTURE_2D_ARRAY);
-                
-        gl_wrapper::Disable(gl_wrapper::DEPTH_TEST);
-        gl_wrapper::DrawArrays(gl_wrapper::TRIANGLES, 0, 6);
-    } }
-    
-
-    pub fn post_render(&mut self) { unsafe {
-        let fence = gl_wrapper::FenceSync(gl_wrapper::SYNC_GPU_COMMANDS_COMPLETE, 0);
-        if fence == 0 as GLsync { panic!(); }
-        self.fences.push(fence);
     } }
 
     pub const ELEMENT_INDICES_PER_QUAD: i32 = 5;

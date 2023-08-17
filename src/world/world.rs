@@ -178,9 +178,7 @@ impl World {
     } }
 
     pub fn render(&mut self, status: &WindowStatus, end_framebuffer_id: i32) { unsafe {
-        // self.renderer.pre_render();
         self.renderer.render(self, status, end_framebuffer_id);
-        // self.renderer.post_render();
     } }
 
     pub fn update(&mut self, keys: &HashMap<Key, bool>) {
