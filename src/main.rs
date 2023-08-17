@@ -59,7 +59,7 @@ fn main() { unsafe {
         glfw::flush_messages(&events).for_each(|(_, event)| handle_window_event(&mut window, &mut world, event, &mut keys, &mut status));
         
         world.update(&keys);
-        world.render(&status);
+        world.render(&status, 0);
         window.swap_buffers();
         fps.tick();
     }

@@ -1218,14 +1218,14 @@ impl Section {
     pub fn get_bounding_box(&self, camera: &Camera) -> LocalBoundingBox {
         return LocalBoundingBox {
             min: [
-                (self.section_pos.x * 256) as f32 - camera.frustum_pos.x,
-                (self.section_pos.y * 256) as f32 - camera.frustum_pos.y,
-                (self.section_pos.z * 256) as f32 - camera.frustum_pos.z,
+                (self.section_pos.x * 16) as f32 - camera.frustum_pos.x,
+                (self.section_pos.y * 16) as f32 - camera.frustum_pos.y,
+                (self.section_pos.z * 16) as f32 - camera.frustum_pos.z,
             ].into(),
             max: [
-                (self.section_pos.x * 256) as f32 - camera.frustum_pos.x + 256.0,
-                (self.section_pos.y * 256) as f32 - camera.frustum_pos.y + 256.0,
-                (self.section_pos.z * 256) as f32 - camera.frustum_pos.z + 256.0,
+                (self.section_pos.x * 16) as f32 - camera.frustum_pos.x + 16.0,
+                (self.section_pos.y * 16) as f32 - camera.frustum_pos.y + 16.0,
+                (self.section_pos.z * 16) as f32 - camera.frustum_pos.z + 16.0,
             ].into()
         };
     }

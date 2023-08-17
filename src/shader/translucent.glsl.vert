@@ -147,7 +147,7 @@ void main() {
         vec4 corner_offset = get_size(face_index) * corner_transforms[corner_index] * pos_transforms[normal];
         vertex_pos += corner_offset;
         
-        gl_Position = u_transform * (vertex_pos + get_chunk_pos() * 256);
+        gl_Position = u_transform * vec4((vertex_pos * 0.0625 + get_chunk_pos() * 16).xyz, 1);
         
         texture_pos = (get_size(face_index) * corner_transforms[corner_index]).xy / 16;
         texture_id = get_texture(face_index);

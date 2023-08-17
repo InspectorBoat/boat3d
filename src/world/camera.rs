@@ -36,8 +36,8 @@ impl Camera {
             Matrix4::from_angle_x(Rad(PI) + self.camera_rot.x)
             * Matrix4::from_angle_y(-self.camera_rot.y)
             * Matrix4::from_angle_z(self.camera_rot.z)
-            * Matrix4::from_translation(Vector3 { x: -self.camera_pos.x, y: self.camera_pos.y, z: -self.camera_pos.z })
-            * Matrix4::from_nonuniform_scale(1.0, -1.0, 1.0);
+            * Matrix4::from_translation(Vector3 { x: self.camera_pos.x, y: self.camera_pos.y, z: -self.camera_pos.z })
+            * Matrix4::from_nonuniform_scale(-1.0, -1.0, 1.0);
         return perspective * modelview;
     }
 
@@ -52,8 +52,8 @@ impl Camera {
             Matrix4::from_angle_x(Rad(PI) + self.camera_rot.x)
             * Matrix4::from_angle_y(-self.camera_rot.y)
             * Matrix4::from_angle_z(self.camera_rot.z)
-            * Matrix4::from_translation(Vector3 { x: -self.frustum_pos.x, y: self.frustum_pos.y, z: -self.frustum_pos.z })
-            * Matrix4::from_nonuniform_scale(1.0, -1.0, 1.0);
+            * Matrix4::from_translation(Vector3 { x: self.frustum_pos.x, y: self.frustum_pos.y, z: -self.frustum_pos.z })
+            * Matrix4::from_nonuniform_scale(-1.0, -1.0, 1.0);
         return perspective * modelview;
     }
 
@@ -69,12 +69,12 @@ impl Camera {
             Matrix4::from_angle_x(Rad(PI) + self.frustum_rot.x)
             * Matrix4::from_angle_y(-self.frustum_rot.y)
             * Matrix4::from_angle_z(self.frustum_rot.z)
-            * Matrix4::from_nonuniform_scale(1.0, -1.0, 1.0);
+            * Matrix4::from_nonuniform_scale(-1.0, -1.0, 1.0);
         return FrustumCuller::from_matrix(perspective * modelview);
     }
 
     pub fn step(&mut self, x: f64, y: f64, z: f64) {
-        self.camera_pos.x += ((self.camera_rot.y.cos() as f64) * x - (self.camera_rot.y.sin() as f64) * z) as f32;
+        self.camera_pos.x -= ((self.camera_rot.y.cos() as f64) * x - (self.camera_rot.y.sin() as f64) * z) as f32;
         self.camera_pos.z -= ((self.camera_rot.y.sin() as f64) * x + (self.camera_rot.y.cos() as f64) * z) as f32;
         self.camera_pos.y += y as f32;
     }

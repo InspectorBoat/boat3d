@@ -31,7 +31,7 @@ use std::env;
 use cgmath::{Vector3, Euler, Deg, Rad};
 use cgmath_culling::{BoundingBox, Intersection};
 use gl::{types, FramebufferParameteri};
-use gl_util::{gl_wrapper::{self, STORAGE, PointerStorage}, gl_helper::WindowStatus};
+use gl_util::{gl_wrapper::{self, STORAGE, PointerStorage}, gl_helper::{WindowStatus, log_if_error}};
 use glfw::{Context, Window, Action, Key, Glfw, ffi::glfwGetCurrentContext};
 use jni::{JNIEnv, objects::{JClass, JByteBuffer, ReleaseMode, JPrimitiveArray, JObject, JString, JValueOwned, JFieldID}, sys::{jlong, jint, jchar, jcharArray, jshort, jobject, jclass, jdouble}, strings::JNIString, signature::ReturnType, descriptors::Desc};
 use world::{world::World, section::Section, blockpos::BlockPos, camera::Camera};
@@ -158,8 +158,8 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeCreateWorld<'local>(
         height: 600,
         mouse_captured: true,
     });
-    world.generate();
-    world.mesh_all();
+    // world.generate();
+    // world.mesh_all();
     
     return Box::into_raw(world) as i64;
 } }
@@ -260,7 +260,6 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetCamera<'local>(
         window_width: window_width,
         window_height: window_height
     };
-    println!("{:?}", world.camera);
 } }
 
 // renders the world
@@ -270,19 +269,28 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeRenderWorld<'local>(
     class: JClass<'local>,
     gl_pointers: jlong,
     world: jlong,
+    end_framebuffer_id: jint
 ) { unsafe {
     STORAGE = gl_pointers as *mut PointerStorage;
     let world = &mut *(world as *mut World);
-
+    gl_wrapper::Disable(gl_wrapper::CULL_FACE);
+    gl_wrapper::Enable(gl_wrapper::PRIMITIVE_RESTART);
+    gl_wrapper::PrimitiveRestartIndex(u32::MAX as u32);
+    gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE0);
+    gl_wrapper::Enable(gl_wrapper::TEXTURE_2D);
+    gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE1);
+    gl_wrapper::Enable(gl_wrapper::TEXTURE_2D);
     world.render(&WindowStatus {
-        fill_mode: gl_wrapper::LINE,
+        fill_mode: gl_wrapper::FILL,
         maximized: true,
         width: world.camera.window_width,
         height: world.camera.window_height,
         mouse_captured: true,
-    });
+    }, end_framebuffer_id);
+    gl_wrapper::UseProgram(0);
+    gl_wrapper::Enable(gl_wrapper::CULL_FACE);
 } }
-pub const DEBUG: bool = true;
+pub const DEBUG: bool = false;
 /*
     let boolean = token('Z').map(|_| Primitive::Boolean);
     let byte = token('B').map(|_| Primitive::Byte);

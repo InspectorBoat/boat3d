@@ -1,6 +1,7 @@
 use std::collections::hash_map::RandomState;
 use std::hint;
 use std::{collections::HashMap, mem, os::raw::c_void, ptr::NonNull, time};
+use crate::gl_util::framebuffer;
 use crate::gl_util::{buffer::Buffer, buffer_allocator::BufferAllocator, framebuffer::FrameBuffer, gl_helper::WindowStatus, program::Program, renderbuffer::RenderBuffer, shader::Shader, texture::Texture};
 use crate::render::byte_buffer::StagingBuffer;
 use crate::render::world_renderer::WorldRenderer;
@@ -176,9 +177,9 @@ impl World {
         }
     } }
 
-    pub fn render(&mut self, status: &WindowStatus) { unsafe {
+    pub fn render(&mut self, status: &WindowStatus, end_framebuffer_id: i32) { unsafe {
         // self.renderer.pre_render();
-        self.renderer.render(self, status);
+        self.renderer.render(self, status, end_framebuffer_id);
         // self.renderer.post_render();
     } }
 
