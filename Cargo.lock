@@ -25,7 +25,6 @@ name = "boat3d"
 version = "0.1.0"
 dependencies = [
  "cgmath",
- "cgmath-culling",
  "core_simd",
  "gl",
  "glfw",
@@ -69,15 +68,6 @@ dependencies = [
  "approx",
  "num-traits 0.1.43",
  "rand 0.4.6",
-]
-
-[[package]]
-name = "cgmath-culling"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7526fc17f8aa1ba0672b870c4098a10a11bb3ea221450c4bac62561c569729b7"
-dependencies = [
- "cgmath",
 ]
 
 [[package]]

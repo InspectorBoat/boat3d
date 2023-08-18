@@ -29,7 +29,6 @@ use std::time::Instant;
 use std::{collections::HashMap, hint};
 use std::{env, mem};
 use cgmath::{Vector3, Vector4, Rad};
-use cgmath_culling::BoundingBox;
 use gl_util::fps_tracker::FpsTracker;
 use glfw::{Context, Window, Action, Key};
 use gl_util::{gl_helper::*, gl_wrapper};

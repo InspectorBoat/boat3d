@@ -3,7 +3,6 @@ use std::ops::Shr;
 use std::thread::current;
 
 use cgmath::{Matrix4, SquareMatrix};
-use cgmath_culling::FrustumCuller;
 use core_simd::simd::*;
 use std_float::StdFloat;
 use crate::gl_util::gl_wrapper::CullFace;
@@ -29,7 +28,7 @@ impl LocalFrustum {
             plane_ws: planes[3],
         }
     }
-    
+
     pub fn from_matrix(matrix: Matrix4<f32>) -> Self { unsafe {
         return LocalFrustum {
             plane_xs: [matrix.x.w + matrix.x.x, matrix.x.w - matrix.x.x, matrix.x.w + matrix.x.y, matrix.x.w - matrix.x.y, matrix.x.w + matrix.x.z, matrix.x.w - matrix.x.z].into(),

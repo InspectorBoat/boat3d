@@ -29,7 +29,6 @@ mod cull;
 use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem, slice, cell::RefCell, fs::File, str::FromStr};
 use std::env;
 use cgmath::{Vector3, Euler, Deg, Rad};
-use cgmath_culling::{BoundingBox, Intersection};
 use gl::{types, FramebufferParameteri};
 use gl_util::{gl_wrapper::{self, STORAGE, PointerStorage}, gl_helper::{WindowStatus, log_if_error}};
 use glfw::{Context, Window, Action, Key, Glfw, ffi::glfwGetCurrentContext};

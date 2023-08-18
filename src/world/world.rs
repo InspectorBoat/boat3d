@@ -6,7 +6,6 @@ use crate::gl_util::{buffer::Buffer, buffer_allocator::BufferAllocator, framebuf
 use crate::render::byte_buffer::StagingBuffer;
 use crate::render::world_renderer::WorldRenderer;
 use cgmath::{Vector3, Euler, Deg, Rad};
-use cgmath_culling::Intersection;
 use gl::types::GLsync;
 use glfw::Key;
 use simdnoise::NoiseBuilder;

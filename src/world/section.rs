@@ -3,8 +3,6 @@ use std::hint::unreachable_unchecked;
 use std::mem;
 use std::ptr::NonNull;
 use cgmath::Vector3;
-use cgmath_culling::BoundingBox;
-use cgmath_culling::Sphere;
 
 use crate::block::blockstate::BLOCKS;
 use crate::block::normal::Normal::{self, *};
@@ -1215,7 +1213,9 @@ impl Section {
         trans_staging_buffer.reset();
         light_staging_buffer.reset();
     }
-    pub fn get_bounding_box(&self, camera: &Camera) -> LocalBoundingBox {
+    
+    #[inline(always)]
+    pub fn get_local_bounding_box(&self, camera: &Camera) -> LocalBoundingBox {
         return LocalBoundingBox {
             min: [
                 (self.section_pos.x * 16) as f32 - camera.frustum_pos.x,

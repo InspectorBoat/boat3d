@@ -1,7 +1,8 @@
 use std::f32::consts::PI;
 
 use cgmath::{Matrix4, PerspectiveFov, Rad, Vector3, Euler, Deg, Angle};
-use cgmath_culling::FrustumCuller;
+
+use crate::cull::frustum::LocalFrustum;
 #[derive(Debug, Clone, Copy)]
 pub struct Rot {
     pub yaw: f32,
@@ -32,7 +33,7 @@ impl Camera {
             near: Camera::NEAR_PLANE,
             far: Camera::FAR_PLANE,
         });
-        
+
         let modelview =
             Matrix4::from_angle_x(Rad(PI) + self.camera_rot.x)
             * Matrix4::from_angle_y(-self.camera_rot.y)
@@ -57,21 +58,9 @@ impl Camera {
             * Matrix4::from_nonuniform_scale(-1.0, -1.0, 1.0);
         return perspective * modelview;
     }
-
-    pub fn get_frustum(&self) -> FrustumCuller<f32> {
-        let perspective = Matrix4::from(PerspectiveFov {
-            fovy: Camera::FOVY,
-            aspect: self.aspect,
-            near: Camera::NEAR_PLANE,
-            far: Camera::FAR_PLANE,
-        });
-        
-        let modelview = 
-            Matrix4::from_angle_x(Rad(PI) + self.frustum_rot.x)
-            * Matrix4::from_angle_y(-self.frustum_rot.y)
-            * Matrix4::from_angle_z(self.frustum_rot.z)
-            * Matrix4::from_nonuniform_scale(-1.0, -1.0, 1.0);
-        return FrustumCuller::from_matrix(perspective * modelview);
+    
+    pub fn get_frustum(&self) -> LocalFrustum {
+        return LocalFrustum::from_matrix(self.get_frustum_matrix());
     }
 
     pub fn step(&mut self, x: f64, y: f64, z: f64) {
