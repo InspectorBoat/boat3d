@@ -1,13 +1,14 @@
-use std::{simd::{SimdFloat, StdFloat, SimdPartialOrd, LaneCount, SupportedLaneCount}, hint};
+use std::{simd::{SimdFloat, StdFloat, SimdPartialOrd, LaneCount, SupportedLaneCount}, hint, ops::Mul};
 use core::simd::Simd;
 use std::mem;
 
-use cgmath::{Vector4, Matrix4, Matrix};
+use cgmath::{Vector4, Matrix4, Matrix, Vector3};
 
-pub trait SimdMul {
-    fn simd_mul(&self, vec: &Vector4<f32>) -> Simd<f32, 4>;
+pub trait SimdMul<T> {
+    fn simd_mul(&self, vec: &T) -> Simd<f32, 4>;
 }
-impl SimdMul for Matrix4<f32> {
+
+impl SimdMul<Vector4<f32>> for Matrix4<f32> {
     fn simd_mul(&self, vec: &Vector4<f32>) -> Simd<f32, 4> { unsafe {
         let mat_x = Simd::from_array(*self.x.as_ref());
         let mat_y = Simd::from_array(*self.y.as_ref());
@@ -18,6 +19,21 @@ impl SimdMul for Matrix4<f32> {
         sum = mat_y.fast_fma(Simd::splat(vec.y), sum);
         sum = mat_z.fast_fma(Simd::splat(vec.z), sum);
         sum = mat_w.fast_fma(Simd::splat(vec.w), sum);
+        return sum;
+    } }
+}
+
+impl SimdMul<Vector3<f32>> for Matrix4<f32> {
+    fn simd_mul(&self, vec: &Vector3<f32>) -> Simd<f32, 4> { unsafe {
+        let mat_x = Simd::from_array(*self.x.as_ref());
+        let mat_y = Simd::from_array(*self.y.as_ref());
+        let mat_z = Simd::from_array(*self.z.as_ref());
+        let mat_w = Simd::from_array(*self.w.as_ref());
+        let mut sum = Simd::splat(0.0);
+        sum = mat_x.fast_fma(Simd::splat(vec.x), sum);
+        sum = mat_y.fast_fma(Simd::splat(vec.y), sum);
+        sum = mat_z.fast_fma(Simd::splat(vec.z), sum);
+        sum = mat_w.fast_fma(Simd::splat(1.0), sum);
         return sum;
     } }
 }

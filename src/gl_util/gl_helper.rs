@@ -18,20 +18,22 @@ pub fn create_window(status: &WindowStatus) -> (Window, Receiver<(f64, WindowEve
 }
 pub fn log_error() { unsafe {
     match gl_wrapper::GetError() {
-        gl_wrapper::INVALID_ENUM => println!("INVALID_ENUM"),
-        gl_wrapper::INVALID_VALUE => println!("INVALID_VALUE"),
-        gl_wrapper::INVALID_OPERATION => println!("INVALID_OPERATION"),
-        0 => println!("NONE"),
-        default => println!("{default}")
+        0 => { println!("NONE"); }
+        gl_wrapper::INVALID_ENUM => { println!("INVALID_ENUM"); }
+        gl_wrapper::INVALID_VALUE => { println!("INVALID_VALUE"); }
+        gl_wrapper::INVALID_OPERATION => { println!("INVALID_OPERATION"); }
+        gl_wrapper::INVALID_FRAMEBUFFER_OPERATION => { println!("INVALID_FRAMEBUFFER_OPERATION"); }
+        default => { println!("{default}"); }
     }
 } }
 pub fn log_if_error() { unsafe {
     match gl_wrapper::GetError() {
-        0 => return,
-        gl_wrapper::INVALID_ENUM => println!("INVALID_ENUM"),
-        gl_wrapper::INVALID_VALUE => println!("INVALID_VALUE"),
-        gl_wrapper::INVALID_OPERATION => println!("INVALID_OPERATION"),
-        default => println!("{default}")
+        0 => { return; }
+        gl_wrapper::INVALID_ENUM => { println!("INVALID_ENUM") }
+        gl_wrapper::INVALID_VALUE => { println!("INVALID_VALUE") }
+        gl_wrapper::INVALID_OPERATION => { println!("INVALID_OPERATION") }
+        gl_wrapper::INVALID_FRAMEBUFFER_OPERATION => { println!("INVALID_FRAMEBUFFER_OPERATION"); }
+        default => { println!("{default}"); }
     }
 } }
 pub fn log_framebuffers() { unsafe {

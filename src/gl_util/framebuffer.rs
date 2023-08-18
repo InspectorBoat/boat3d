@@ -1,3 +1,5 @@
+use std::ffi::c_void;
+
 use super::{texture::Texture, renderbuffer::RenderBuffer, gl_wrapper};
 
 #[derive(Debug)]
@@ -16,17 +18,35 @@ impl FrameBuffer {
     pub fn bind(&self, target: u32) { unsafe {
         gl_wrapper::BindFramebuffer(target, self.id);
     } }
-    pub fn texture2d_attachment(target: u32, attachment_location: u32, texture_type: u32, texture: &Texture, level: i32) { unsafe {
-        gl_wrapper::FramebufferTexture2D(target, attachment_location, texture_type, texture.id, level);
+    pub fn texture2d_attachment(&self, attachment: u32, texture: &Texture, level: i32) { unsafe {
+        gl_wrapper::NamedFramebufferTexture(self.id, attachment, texture.id, level)
     } }
-    pub fn renderbuffer_attachment(target: u32, attachment_type: u32, renderbuffer_target: u32, renderbuffer: &RenderBuffer) { unsafe {
-        gl_wrapper::FramebufferRenderbuffer(target, attachment_type, renderbuffer_target, renderbuffer.id)
+    pub fn renderbuffer_attachment(&self, attachment: u32, renderbuffer_target: u32, renderbuffer: &RenderBuffer) { unsafe {
+        gl_wrapper::NamedFramebufferRenderbuffer(self.id, attachment, renderbuffer_target, renderbuffer.id)
     } }
     pub fn clear_bind(target: u32) { unsafe {
         gl_wrapper::BindFramebuffer(target, 0);
     } }
-    pub fn clear_unsigned_integer_color_attachment(&self, attachment_location: i32, clear_color: *const u32) { unsafe {
-        gl_wrapper::ClearNamedFramebufferuiv(self.id, gl_wrapper::COLOR, attachment_location, clear_color);
+    pub fn clear_unsigned_integer_color_attachment(&self, attachment: i32, value: *const u32) { unsafe {
+        gl_wrapper::ClearNamedFramebufferuiv(self.id, gl_wrapper::COLOR, attachment, value);
+    } }
+    pub fn clear_signed_integer_color_attachment(&self, attachment: i32, value: *const i32) { unsafe {
+        gl_wrapper::ClearNamedFramebufferiv(self.id, gl_wrapper::COLOR, attachment, value);
+    } }
+    pub fn clear_float_color_attachment(&self, attachment: i32, value: *const f32) { unsafe {
+        gl_wrapper::ClearNamedFramebufferfv(self.id, gl_wrapper::COLOR, attachment, value);
+    } }
+    pub fn clear_depth_stencil_attachment(&self, depth: f32, stencil: i32) { unsafe {
+        gl_wrapper::ClearNamedFramebufferfi(self.id, gl_wrapper::DEPTH_STENCIL, 0, depth, stencil);
+    } }
+    pub fn clear_depth_attachment(&self, depth: f32) { unsafe {
+        gl_wrapper::ClearNamedFramebufferfv(self.id, gl_wrapper::DEPTH, 0, &raw const depth);
+    } }
+    pub fn clear_stencil_attachment(&self, stencil: i32) { unsafe {
+        gl_wrapper::ClearNamedFramebufferiv(self.id, gl_wrapper::STENCIL, 0, &raw const stencil);
+    } }
+    pub fn drawbuffers(&self, n: i32, bufs: *const u32) { unsafe {
+        gl_wrapper::NamedFramebufferDrawBuffers(self.id, n, bufs);
     } }
     pub fn kill(self) { unsafe {
         gl_wrapper::DeleteFramebuffers(1, &self.id);

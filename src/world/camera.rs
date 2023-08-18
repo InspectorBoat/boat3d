@@ -70,30 +70,36 @@ impl Camera {
     }
     
     pub fn new() -> Camera {
-        return Camera { 
-            prev_mouse: (f64::MAX, f64::MAX),
+        // return Camera { 
+        //     prev_mouse: (f64::MAX, f64::MAX),
+        //     aspect: 1.0,
+
+        //     camera_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 0.0 },
+        //     camera_rot: Euler { x: Rad(0.0), y: Rad(0.0), z: Rad(0.0) },
+
+        //     frustum_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 0.0 },
+        //     frustum_rot: Euler { x: Rad(0.0), y: Rad(0.0), z: Rad(0.0) },
+
+        //     frustum_frozen: false,
+            
+        //     window_width: 600,
+        //     window_height: 600,
+        // };
+        return Camera {
+            prev_mouse: (-95.0, -41.0),
             aspect: 1.0,
 
-            camera_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 0.0 },
-            camera_rot: Euler { x: Rad(0.0), y: Rad(0.0), z: Rad(0.0) },
-
-            frustum_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 0.0 },
-            frustum_rot: Euler { x: Rad(0.0), y: Rad(0.0), z: Rad(0.0) },
-
+            camera_pos: Vector3 { x: -7.324981, y: -7.35001, z: -6.9660172 },
+            camera_rot: Euler { x: Rad(-0.7160001), y: Rad(-0.8439991), z: Rad(0.0) },
+            
+            frustum_pos: Vector3 { x: -7.324981, y: -7.35001, z: -6.9660172 },
+            frustum_rot: Euler { x: Rad(-0.7160001), y: Rad(-0.8439991), z: Rad(0.0) },
+            
             frustum_frozen: false,
             
             window_width: 600,
-            window_height: 600,
+            window_height: 600
         };
-        // Camera {
-        //     prev_mouse: (-1193.0, -110.0),
-        //     ratio: 1.0,
-        //     camera_pos: Vector3 { x: -465.77737, y: 0.0, z: -670.4167 },
-        //     camera_rot: Rot { yaw: 176.76808, pitch: -0.7279996 },
-        //     frustum_pos: Vector3 { x: -465.77737, y: 0.0, z: -670.4167 },
-        //     frustum_rot: Rot { yaw: 176.76808, pitch: -0.7279996 },
-        //     frustum_frozen: false
-        // }
     }
     pub const NEAR_PLANE: f32 = 0.1;
     pub const FAR_PLANE: f32 = 48000.0;

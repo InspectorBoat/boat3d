@@ -13,6 +13,9 @@ impl RenderBuffer {
             id: id
         };
     } }
+    pub fn storage(&self, internalformat: u32, width: i32, height: i32) { unsafe {
+        gl_wrapper::NamedRenderbufferStorage(self.id, internalformat, width, height)
+    } }
     pub fn bind(&self, target: u32) { unsafe {
         gl_wrapper::BindRenderbuffer(gl_wrapper::RENDERBUFFER, self.id);
     } }

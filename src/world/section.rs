@@ -6,7 +6,7 @@ use cgmath::Vector3;
 
 use crate::block::blockstate::BLOCKS;
 use crate::block::normal::Normal::{self, *};
-use crate::cull::frustum::LocalBoundingBox;
+use crate::cull::bounding_box::{SimdLocalBoundingBox, LocalBoundingBox};
 use crate::gl_util::buffer_allocator::{BufferAllocator, SortType::*};
 use crate::gl_util::buffer_allocator::BufferSegment;
 use crate::render::byte_buffer::StagingBuffer;
@@ -278,7 +278,7 @@ impl Section {
         for i in 0..4096 {
             let pos = BlockPos { index: i };
             // if pos.y() == 0 {
-            //     self.blocks[i] = 4;
+                self.blocks[i] = 1;
             // }
             self.light[i] = rand::random::<u8>() % 16;
         }
@@ -1217,16 +1217,16 @@ impl Section {
     #[inline(always)]
     pub fn get_local_bounding_box(&self, camera: &Camera) -> LocalBoundingBox {
         return LocalBoundingBox {
-            min: [
-                (self.section_pos.x * 16) as f32 - camera.frustum_pos.x,
-                (self.section_pos.y * 16) as f32 - camera.frustum_pos.y,
-                (self.section_pos.z * 16) as f32 - camera.frustum_pos.z,
-            ].into(),
-            max: [
-                (self.section_pos.x * 16) as f32 - camera.frustum_pos.x + 16.0,
-                (self.section_pos.y * 16) as f32 - camera.frustum_pos.y + 16.0,
-                (self.section_pos.z * 16) as f32 - camera.frustum_pos.z + 16.0,
-            ].into()
+            min: Vector3 {
+                x: (self.section_pos.x * 16) as f32 - camera.frustum_pos.x,
+                y: (self.section_pos.y * 16) as f32 - camera.frustum_pos.y,
+                z: (self.section_pos.z * 16) as f32 - camera.frustum_pos.z,
+            },
+            max: Vector3 {
+                x: (self.section_pos.x * 16) as f32 - camera.frustum_pos.x + 16.0,
+                y: (self.section_pos.y * 16) as f32 - camera.frustum_pos.y + 16.0,
+                z: (self.section_pos.z * 16) as f32 - camera.frustum_pos.z + 16.0,
+            }
         };
     }
 

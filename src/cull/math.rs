@@ -4,6 +4,7 @@ use std::cmp::Eq;
 use std::hash::Hash;
 use std::ops::*;
 
+use cgmath::Vector4;
 use core_simd::simd::*;
 use std_float::StdFloat;
 
@@ -148,6 +149,23 @@ where
             self.mul_add(a, b)
         } else {
             self * a + b
+        }
+    }
+}
+
+
+
+pub trait IntoVec4<T> {
+    fn into_vec4(&self) -> Vector4<T>;
+}
+
+impl <T: std::simd::SimdElement> IntoVec4<T> for std::simd::Simd<T, 4> {
+    fn into_vec4(&self) -> Vector4<T> {
+        return Vector4 {
+            x: self[0],
+            y: self[1],
+            z: self[2],
+            w: self[3],
         }
     }
 }

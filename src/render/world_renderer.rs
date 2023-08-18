@@ -3,7 +3,7 @@ use std::{ffi::{c_void, c_uint}, mem, cell::UnsafeCell, ops::Mul, hint, simd::{S
 use cgmath::{Vector4, Matrix4, Matrix, InnerSpace};
 use gl::types::GLsync;
 
-use crate::{gl_util::{framebuffer::{FrameBuffer, self}, texture::Texture, renderbuffer::RenderBuffer, program::Program, gl_helper::{WindowStatus, log_if_error}, buffer::Buffer, shader::Shader, gl_wrapper}, world::{world::World, camera}, cull::frustum_cull::frustum_cull, cull::frustum::{LocalFrustum, BoundsCheckResult, LocalBoundingBox}};
+use crate::{gl_util::{framebuffer::{FrameBuffer, self}, texture::Texture, renderbuffer::RenderBuffer, program::Program, gl_helper::{WindowStatus, log_if_error, log_error}, buffer::Buffer, shader::Shader, gl_wrapper}, world::{world::World, camera}, cull::{frustum_cull::frustum_cull, rasterizer::Rasterizer}, cull::frustum::{LocalFrustum, BoundsCheckResult}};
 
 #[derive(Debug)]
 pub struct WorldRenderer {
@@ -19,6 +19,7 @@ pub struct WorldRenderer {
     pub indices: UnsafeCell<Vec<*const c_void>>,
     pub solid_indirect_buffer: UnsafeCell<Vec<IndirectCommand>>,
     pub trans_indirect_buffer: UnsafeCell<Vec<IndirectCommand>>,
+    pub rasterizer: UnsafeCell<Rasterizer>,
 }
 
 impl WorldRenderer {
@@ -36,6 +37,8 @@ impl WorldRenderer {
             indices: UnsafeCell::new(Vec::new()),
             solid_indirect_buffer: UnsafeCell::new(Vec::new()),
             trans_indirect_buffer: UnsafeCell::new(Vec::new()),
+            
+            rasterizer: UnsafeCell::new(Rasterizer::new(600, 600)),
         };
     }
     
@@ -48,19 +51,18 @@ impl WorldRenderer {
 
     pub fn make_block_texture(&mut self) { unsafe {
         gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE0);
-        let block_texture = Texture::create();
-        block_texture.bind(gl_wrapper::TEXTURE_2D_ARRAY);
-        let mut image: [u8; 16 * 16 * 4 * 64] = [0; 16 * 16 * 4 * 64].map(|_| rand::random::<u8>() & 127);
-        image[0] = 127;
-        image[1] = 127;
-        image[2] = 127;
+        let block_texture = Texture::create(gl_wrapper::TEXTURE_2D_ARRAY);
+        let mut image: [u8; 16 * 16 * 4 * 64] = [0; 16 * 16 * 4 * 64].map(|_| rand::random::<u8>());
+        image[0] = 255;
+        image[1] = 255;
+        image[2] = 255;
         image[3] = 0;
-
-        gl_wrapper::TexImage3D(gl_wrapper::TEXTURE_2D_ARRAY, 0, gl_wrapper::RGBA as i32, 4, 4, 64, 0, gl_wrapper::RGBA, gl_wrapper::BYTE, &raw const image as *const c_void);
-        gl_wrapper::TexParameteri(gl_wrapper::TEXTURE_2D_ARRAY, gl_wrapper::TEXTURE_WRAP_S, gl_wrapper::REPEAT as i32);
-        gl_wrapper::TexParameteri(gl_wrapper::TEXTURE_2D_ARRAY, gl_wrapper::TEXTURE_WRAP_T, gl_wrapper::REPEAT as i32);
-        gl_wrapper::TexParameteri(gl_wrapper::TEXTURE_2D_ARRAY, gl_wrapper::TEXTURE_MIN_FILTER, gl_wrapper::NEAREST as i32);
-        gl_wrapper::TexParameteri(gl_wrapper::TEXTURE_2D_ARRAY, gl_wrapper::TEXTURE_MAG_FILTER, gl_wrapper::NEAREST as i32);
+        block_texture.storage3d(1, gl_wrapper::RGBA8, 4, 4, 64);
+        block_texture.sub_image_3d(0, 0, 0, 0, 4, 4, 64, gl_wrapper::RGBA, gl_wrapper::UNSIGNED_BYTE, &raw const image as *const c_void);
+        block_texture.parameteri(gl_wrapper::TEXTURE_WRAP_S, gl_wrapper::REPEAT as i32);
+        block_texture.parameteri(gl_wrapper::TEXTURE_WRAP_T, gl_wrapper::REPEAT as i32);
+        block_texture.parameteri(gl_wrapper::TEXTURE_MIN_FILTER, gl_wrapper::NEAREST as i32);
+        block_texture.parameteri(gl_wrapper::TEXTURE_MAG_FILTER, gl_wrapper::NEAREST as i32);
         self.block_texture = Some(block_texture);
     } }
     
@@ -77,22 +79,20 @@ impl WorldRenderer {
 
         let framebuffer = FrameBuffer::create();
         framebuffer.bind(gl_wrapper::FRAMEBUFFER);
-    
-        let texture_attachment = Texture::create();
-        gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE0);
-        texture_attachment.bind(gl_wrapper::TEXTURE_2D);
-        gl_wrapper::TexImage2D(gl_wrapper::TEXTURE_2D, 0, gl_wrapper::RGBA32UI as i32, status.width as i32, status.height as i32, 0, gl_wrapper::RGBA_INTEGER, gl_wrapper::INT, 0  as *const c_void);
-        gl_wrapper::TexParameteri(gl_wrapper::TEXTURE_2D, gl_wrapper::TEXTURE_MIN_FILTER, gl_wrapper::NEAREST as i32);
-        gl_wrapper::TexParameteri(gl_wrapper::TEXTURE_2D, gl_wrapper::TEXTURE_MAG_FILTER, gl_wrapper::NEAREST as i32);
-        FrameBuffer::texture2d_attachment(gl_wrapper::FRAMEBUFFER, gl_wrapper::COLOR_ATTACHMENT0, gl_wrapper::TEXTURE_2D, &texture_attachment, 0);
         
+        let texture_attachment = Texture::create(gl_wrapper::TEXTURE_2D);
+        texture_attachment.storage2d(1, gl_wrapper::RGBA32UI, status.width as i32, status.height as i32);
+        texture_attachment.parameteri(gl_wrapper::TEXTURE_MIN_FILTER, gl_wrapper::NEAREST as i32);
+        texture_attachment.parameteri(gl_wrapper::TEXTURE_MAG_FILTER, gl_wrapper::NEAREST as i32);
+        framebuffer.texture2d_attachment(gl_wrapper::COLOR_ATTACHMENT0, &texture_attachment, 0);
+
         let renderbuffer_attachment = RenderBuffer::create();
         renderbuffer_attachment.bind(gl_wrapper::RENDERBUFFER);
-        gl_wrapper::RenderbufferStorage(gl_wrapper::RENDERBUFFER, gl_wrapper::DEPTH24_STENCIL8, status.width as i32, status.height as i32);  
-        FrameBuffer::renderbuffer_attachment(gl_wrapper::FRAMEBUFFER, gl_wrapper::DEPTH_ATTACHMENT, gl_wrapper::RENDERBUFFER, &renderbuffer_attachment);
+        renderbuffer_attachment.storage(gl_wrapper::DEPTH24_STENCIL8, status.width, status.height);
+        framebuffer.renderbuffer_attachment(gl_wrapper::DEPTH_ATTACHMENT, gl_wrapper::RENDERBUFFER, &renderbuffer_attachment);
         
-        let attachments: [u32; 1] = [gl_wrapper::COLOR_ATTACHMENT0];
-        gl_wrapper::DrawBuffers(1, &raw const attachments as *const u32);
+        let attachments = [gl_wrapper::COLOR_ATTACHMENT0];
+        framebuffer.drawbuffers(1, &raw const attachments as *const u32);
 
         self.framebuffer = Some(framebuffer);
         self.texture_attachment = Some(texture_attachment);
@@ -231,11 +231,12 @@ impl WorldRenderer {
 
         // clear solids framebuffer
         let CLEAR_COLOR: [u32; 4] = [0, 0, 0, 0];
-        gl_wrapper::ClearNamedFramebufferuiv(framebuffer.id, gl_wrapper::COLOR, 0, &raw const CLEAR_COLOR as *const u32);
-        gl_wrapper::ClearNamedFramebufferfi(framebuffer.id, gl_wrapper::DEPTH_STENCIL, 0, 1.0, 0);
+        framebuffer.clear_unsigned_integer_color_attachment(0, &raw const CLEAR_COLOR as *const u32);
+        framebuffer.clear_depth_attachment(1.0);
+        
         gl_wrapper::Enable(gl_wrapper::DEPTH_TEST);
         
-        if solid_drawn_sections > 0 {    
+        if solid_drawn_sections > 0 {
             gl_wrapper::MultiDrawElementsIndirect(
                 gl_wrapper::TRIANGLE_STRIP,
                 gl_wrapper::UNSIGNED_INT,
@@ -273,9 +274,9 @@ impl WorldRenderer {
 
         let local_frustum = world.camera.get_frustum();
 
-        for section in world.sections.values() {
+        for section in world.sections.values() {            
             if section.solid_segment.is_none() && section.trans_segment.is_none() { continue; }
-            match local_frustum.test_local_bounding_box(&section.get_local_bounding_box(&world.camera)) {
+            match local_frustum.test_local_bounding_box(&section.get_local_bounding_box(&world.camera).into()) {
                 BoundsCheckResult::Outside => { continue; }
                 BoundsCheckResult::Partial => {}
                 BoundsCheckResult::Inside => {}

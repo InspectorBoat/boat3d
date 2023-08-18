@@ -2,12 +2,13 @@ use std::mem::{transmute, self};
 use std::ops::Shr;
 use std::thread::current;
 
-use cgmath::{Matrix4, SquareMatrix};
+use cgmath::{Matrix4, SquareMatrix, Vector3};
 use core_simd::simd::*;
 use std_float::StdFloat;
 use crate::gl_util::gl_wrapper::CullFace;
 use crate::cull::math;
 
+use super::bounding_box::SimdLocalBoundingBox;
 use super::math::*;
 
 /// When using this, it is expected that coordinates are relative to the camera rather than the
@@ -39,7 +40,7 @@ impl LocalFrustum {
     } }
 
     // #[inline(always)]
-    pub fn test_local_bounding_box(&self, bb: &LocalBoundingBox) -> BoundsCheckResult { unsafe {
+    pub fn test_local_bounding_box(&self, bb: &SimdLocalBoundingBox) -> BoundsCheckResult { unsafe {
         // These unsafe mask shenanigans just check if the sign bit is set for each lane.
         // This is faster than doing a manual comparison with something like simd_gt.
         let is_neg_x = Mask::from_int_unchecked(self.plane_xs.to_bits().cast::<i32>() >> Simd::splat(31));
@@ -76,7 +77,7 @@ impl LocalFrustum {
         // otherwise, return PARTIAL
         let none_outside = outside_length_sq.simd_ge(-self.plane_ws).to_bitmask() == 0b111111;
         let all_inside = inside_length_sq.simd_ge(-self.plane_ws).to_bitmask() == 0b111111;
-        let result = BoundsCheckResult::from_int_unchecked(none_outside as u8 + all_inside as u8);
+        let result = BoundsCheckResult::from_int(none_outside as u8 + all_inside as u8);
         return result;
     } }
 }
@@ -90,17 +91,12 @@ pub enum BoundsCheckResult {
 }
 
 impl BoundsCheckResult {
-    pub fn from_int_unchecked(val: u8) -> Self { unsafe {
+    pub fn from_int(val: u8) -> Self { unsafe {
         return mem::transmute(val);
     } }
 
     pub fn combine(self, rhs: Self) -> Self { unsafe {
-        return BoundsCheckResult::from_int_unchecked((self as u8).min(rhs as u8));
+        return BoundsCheckResult::from_int((self as u8).min(rhs as u8));
     } }
 }
 
-/// Relative to the camera position
-pub struct LocalBoundingBox {
-    pub min: f32x3,
-    pub max: f32x3,
-}
