@@ -4,7 +4,7 @@ use cgmath::{Vector4, Matrix4, Matrix, InnerSpace};
 use cgmath_culling::{Intersection, BoundingBox};
 use gl::types::GLsync;
 
-use crate::{gl_util::{framebuffer::{FrameBuffer, self}, texture::Texture, renderbuffer::RenderBuffer, program::Program, gl_helper::{WindowStatus, log_if_error}, buffer::Buffer, shader::Shader, gl_wrapper}, world::{world::World, camera}, render::frustum_cull::frustum_cull, cull::frustum::{LocalFrustum, BoundsCheckResult, LocalBoundingBox}};
+use crate::{gl_util::{framebuffer::{FrameBuffer, self}, texture::Texture, renderbuffer::RenderBuffer, program::Program, gl_helper::{WindowStatus, log_if_error}, buffer::Buffer, shader::Shader, gl_wrapper}, world::{world::World, camera}, cull::frustum_cull::frustum_cull, cull::frustum::{LocalFrustum, BoundsCheckResult, LocalBoundingBox}};
 
 #[derive(Debug)]
 pub struct WorldRenderer {
@@ -272,7 +272,7 @@ impl WorldRenderer {
         (*self.solid_indirect_buffer.get()).set_len(0);
         (*self.trans_indirect_buffer.get()).set_len(0);
 
-        let local_frustum = LocalFrustum::from_frustum_culler(world.camera.get_frustum());
+        let local_frustum = LocalFrustum::from_matrix(world.camera.get_frustum_matrix());
 
         for section in world.sections.values() {
             if section.solid_segment.is_none() && section.trans_segment.is_none() { continue; }

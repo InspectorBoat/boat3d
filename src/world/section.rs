@@ -279,12 +279,12 @@ impl Section {
     pub fn make_terrain_alt(&mut self) {
         for i in 0..4096 {
             let pos = BlockPos { index: i };
-            if pos.y() == 0 {
-                self.blocks[i] = 4;
-            }
+            // if pos.y() == 0 {
+            //     self.blocks[i] = 4;
+            // }
             self.light[i] = rand::random::<u8>() % 16;
         }
-        // self.blocks[BlockPos::new(1, 1, 1).index] = 3;
+        self.blocks[BlockPos::new(1, 1, 1).index] = 1;
         // self.blocks[BlockPos::new(1, 2, 1).index] = 3;
     }
 

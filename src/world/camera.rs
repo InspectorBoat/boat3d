@@ -32,6 +32,7 @@ impl Camera {
             near: Camera::NEAR_PLANE,
             far: Camera::FAR_PLANE,
         });
+        
         let modelview =
             Matrix4::from_angle_x(Rad(PI) + self.camera_rot.x)
             * Matrix4::from_angle_y(-self.camera_rot.y)
@@ -48,11 +49,11 @@ impl Camera {
             near: Camera::NEAR_PLANE,
             far: Camera::FAR_PLANE,
         });
-        let modelview =
-            Matrix4::from_angle_x(Rad(PI) + self.camera_rot.x)
-            * Matrix4::from_angle_y(-self.camera_rot.y)
-            * Matrix4::from_angle_z(self.camera_rot.z)
-            * Matrix4::from_translation(Vector3 { x: self.frustum_pos.x, y: self.frustum_pos.y, z: -self.frustum_pos.z })
+        
+        let modelview = 
+            Matrix4::from_angle_x(Rad(PI) + self.frustum_rot.x)
+            * Matrix4::from_angle_y(-self.frustum_rot.y)
+            * Matrix4::from_angle_z(self.frustum_rot.z)
             * Matrix4::from_nonuniform_scale(-1.0, -1.0, 1.0);
         return perspective * modelview;
     }

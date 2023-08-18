@@ -2,6 +2,7 @@ use std::mem::{transmute, self};
 use std::ops::Shr;
 use std::thread::current;
 
+use cgmath::{Matrix4, SquareMatrix};
 use cgmath_culling::FrustumCuller;
 use core_simd::simd::*;
 use std_float::StdFloat;
@@ -28,40 +29,13 @@ impl LocalFrustum {
             plane_ws: planes[3],
         }
     }
-
-    pub fn from_frustum_culler(culler: FrustumCuller<f32>) -> Self { unsafe {
-        pub struct PubFrustumCuller {
-            pub nx_x: f32,
-            pub nx_y: f32,
-            pub nx_z: f32,
-            pub nx_w: f32,
-            pub px_x: f32,
-            pub px_y: f32,
-            pub px_z: f32,
-            pub px_w: f32,
-            pub ny_x: f32,
-            pub ny_y: f32,
-            pub ny_z: f32,
-            pub ny_w: f32,
-            pub py_x: f32,
-            pub py_y: f32,
-            pub py_z: f32,
-            pub py_w: f32,
-            pub nz_x: f32,
-            pub nz_y: f32,
-            pub nz_z: f32,
-            pub nz_w: f32,
-            pub pz_x: f32,
-            pub pz_y: f32,
-            pub pz_z: f32,
-            pub pz_w: f32,        
-        }
-        let culler = mem::transmute::<_, PubFrustumCuller>(culler);
+    
+    pub fn from_matrix(matrix: Matrix4<f32>) -> Self { unsafe {
         return LocalFrustum {
-            plane_xs: [culler.nx_x, culler.px_x, culler.ny_x, culler.py_x, culler.nz_x, culler.pz_x].into(),
-            plane_ys: [culler.nx_y, culler.px_y, culler.ny_y, culler.py_y, culler.nz_y, culler.pz_y].into(),
-            plane_zs: [culler.nx_z, culler.px_z, culler.ny_z, culler.py_z, culler.nz_z, culler.pz_z].into(),
-            plane_ws: [culler.nx_w, culler.px_w, culler.ny_w, culler.py_w, culler.nz_w, culler.pz_w].into()
+            plane_xs: [matrix.x.w + matrix.x.x, matrix.x.w - matrix.x.x, matrix.x.w + matrix.x.y, matrix.x.w - matrix.x.y, matrix.x.w + matrix.x.z, matrix.x.w - matrix.x.z].into(),
+            plane_ys: [matrix.y.w + matrix.y.x, matrix.y.w - matrix.y.x, matrix.y.w + matrix.y.y, matrix.y.w - matrix.y.y, matrix.y.w + matrix.y.z, matrix.y.w - matrix.y.z].into(),
+            plane_zs: [matrix.z.w + matrix.z.x, matrix.z.w - matrix.z.x, matrix.z.w + matrix.z.y, matrix.z.w - matrix.z.y, matrix.z.w + matrix.z.z, matrix.z.w - matrix.z.z].into(),
+            plane_ws: [matrix.w.w + matrix.w.x, matrix.w.w - matrix.w.x, matrix.w.w + matrix.w.y, matrix.w.w - matrix.w.y, matrix.w.w + matrix.w.z, matrix.w.w - matrix.w.z].into()
         }
     } }
 

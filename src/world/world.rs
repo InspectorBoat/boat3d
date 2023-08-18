@@ -53,8 +53,8 @@ impl World {
                 for z in 0..World::MAX_SECTION_Z {
                     let mut section = Box::<Section>::new_zeroed().assume_init();
                     section.set_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
-                    section.make_terrain(&noise);
-                    // section.make_terrain_alt();
+                    // section.make_terrain(&noise);
+                    section.make_terrain_alt();
                     self.add_section(section);
                 }
             }
@@ -108,7 +108,7 @@ impl World {
     pub fn add_section(&mut self, section: Box<Section>) { unsafe {
         let (x, y, z) = (section.section_pos.x, section.section_pos.y, section.section_pos.z);
 
-        let section = Box::<Section>::into_raw(section) as usize as *mut Section;
+        let section = Box::<Section>::into_raw(section);
         if let Some(south) = self.sections.get_mut(&Vector3 { x, y, z: z - 1 }) {
             south.neighbors.north = Some(NonNull::new_unchecked(section));
             (*section).neighbors.south = Some(NonNull::new_unchecked(&raw mut **south));
@@ -182,7 +182,7 @@ impl World {
     } }
 
     pub fn update(&mut self, keys: &HashMap<Key, bool>) {
-        let speed = 5.0 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
+        let speed = 0.05 * (if *keys.get(&Key::LeftControl).unwrap_or(&false) { 10.0 } else { 1.0 });
         for (key, pressed) in keys.iter().filter(|(_, pressed)| **pressed) {
             match key {
                 Key::W => {
