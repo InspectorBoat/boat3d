@@ -52,8 +52,8 @@ impl World {
                 for z in 0..World::MAX_SECTION_Z {
                     let mut section = Box::<Section>::new_zeroed().assume_init();
                     section.set_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
-                    // section.make_terrain(&noise);
-                    section.make_terrain_alt();
+                    section.make_terrain(&noise);
+                    // section.make_terrain_alt();
                     self.add_section(section);
                 }
             }
@@ -68,7 +68,6 @@ impl World {
         let total = self.sections.len();
         for (i, section) in self.sections.values_mut().enumerate() {
             section.mesh(&mut self.solid_staging_buffer, &mut self.trans_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
-            
             total_quads += section.solid_quad_count as usize;
 
             // if j == 100 {
@@ -108,7 +107,7 @@ impl World {
         let (x, y, z) = (section.section_pos.x, section.section_pos.y, section.section_pos.z);
 
         let section = Box::<Section>::into_raw(section);
-        if let Some(south) = self.sections.get_mut(&Vector3 { x, y, z: z - 1 }) {
+        if let Some(south) = self.sections.get_mut(&Vector3 { x, y, z: z + 1 }) {
             south.neighbors.north = Some(NonNull::new_unchecked(section));
             (*section).neighbors.south = Some(NonNull::new_unchecked(&raw mut **south));
         }
@@ -120,7 +119,7 @@ impl World {
             down.neighbors.up = Some(NonNull::new_unchecked(section));
             (*section).neighbors.down = Some(NonNull::new_unchecked(&raw mut **down));
         }
-        if let Some(north) = self.sections.get_mut(&Vector3 { x, y, z: z + 1 }) {
+        if let Some(north) = self.sections.get_mut(&Vector3 { x, y, z: z - 1 }) {
             north.neighbors.south = Some(NonNull::new_unchecked(section));
             (*section).neighbors.north = Some(NonNull::new_unchecked(&raw mut **north));
         }
@@ -217,7 +216,7 @@ impl World {
         }
     }
 
-    pub const MAX_SECTION_X: usize = 2;
-    pub const MAX_SECTION_Y: usize = 1;
-    pub const MAX_SECTION_Z: usize = 1;
+    pub const MAX_SECTION_X: usize = 8;
+    pub const MAX_SECTION_Y: usize = 8;
+    pub const MAX_SECTION_Z: usize = 8;
 }

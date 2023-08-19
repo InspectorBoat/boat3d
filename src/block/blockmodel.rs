@@ -38,7 +38,7 @@ impl BlockModel {
             South => { return &self.south; }
             West => { return &self.west; }
             Up => { return &self.up; }
-            _ => { hint::unreachable_unchecked() }
+            _ => { hint::unreachable_unchecked(); }
         }
     } }
 

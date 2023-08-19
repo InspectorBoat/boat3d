@@ -29,7 +29,7 @@ pub struct BlockFace {
 
 impl BlockFace {
     pub fn should_cull_pair(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
-        if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX) }
+        if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX); }
 
         let a = Simd::from_array([a.lef, a.bot, a.rig, a.top]);
         let b = Simd::from_array([b.lef, b.bot, b.rig, b.top]);
@@ -65,8 +65,8 @@ impl BlockFace {
     
     pub const fn full(normal: Normal, texture: u16) -> BlockFace { unsafe {
         let depth = match normal {
-            North | East | Down => { 0 },
-            South | West | Up => { 15 },
+            North | West | Down => { 0 }
+            South | East | Up => { 15 }
             _ => { 0 }
         };
         return BlockFace {
@@ -82,8 +82,8 @@ impl BlockFace {
 
     pub const fn half(normal: Normal, half: HalfFaceType, texture: u16) -> BlockFace { unsafe {
         let depth = match normal {
-            North | East | Down => { 0 },
-            South | West | Up => { 15 },
+            North | West | Down => { 0 },
+            South | East | Up => { 15 },
             _ => { unreachable_unchecked() }
         };
         match half {
@@ -139,8 +139,8 @@ impl BlockFace {
     
     pub const fn quarter(normal: Normal, quarter: QuarterFaceType, texture: u16) -> BlockFace { unsafe {
         let depth = match normal {
-            North | East | Down => { 0 },
-            South | West | Up => { 15 },
+            North | West | Down => { 0 },
+            South | East | Up => { 15 },
             _ => { unreachable_unchecked() }
         };
         match quarter {

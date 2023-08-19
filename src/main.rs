@@ -59,7 +59,7 @@ fn main() { unsafe {
     
     let mut keys: HashMap<glfw::Key, bool> = HashMap::new();
     let mut fps = FpsTracker::new();
-
+    
     let mut rasterizer = Rasterizer::new(600, 600);
     
     let framebuffer = FrameBuffer::create();
@@ -75,8 +75,8 @@ fn main() { unsafe {
         if status.rasterize {
             rasterizer.clear();
             let mut bounding_box = BoundingBox {
-                min: Vector3 { x: 16.0, y: 0.0, z: 16.0 } - world.camera.camera_pos,
-                max: Vector3 { x: 128.0, y: 16.0, z: 128.0 } - world.camera.camera_pos
+                min: Vector3 { x: 0.0, y: 0.0, z: 0.0 } - world.camera.camera_pos,
+                max: Vector3 { x: 16.0, y: 16.0, z: 16.0 } - world.camera.camera_pos
             };
             rasterizer.rasterize(&mut bounding_box, world.camera.get_local_camera_matrix());
             
@@ -86,7 +86,7 @@ fn main() { unsafe {
             gl_wrapper::BlitFramebuffer(0, 0, rasterizer.width as i32, rasterizer.height as i32, 0, 0, status.width, status.height, gl_wrapper::COLOR_BUFFER_BIT, gl_wrapper::NEAREST);
         } else {
             world.render(&status, 0);
-        }
+        }   
         window.swap_buffers();
 
         fps.tick();
