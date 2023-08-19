@@ -156,6 +156,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeCreateWorld<'local>(
         width: 600,
         height: 600,
         mouse_captured: true,
+        rasterize: false
     });
     // world.generate();
     // world.mesh_all();
@@ -246,6 +247,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetCamera<'local>(
             width: window_width,
             height: window_height,
             mouse_captured: true,
+            rasterize: false
         });
     }
     world.camera = Camera {
@@ -290,6 +292,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeRenderWorld<'local>(
         width: world.camera.window_width,
         height: world.camera.window_height,
         mouse_captured: true,
+        rasterize: false
     }, target_framebuffer_id);
     
     gl_wrapper::UseProgram(0);

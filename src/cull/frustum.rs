@@ -8,7 +8,7 @@ use std_float::StdFloat;
 use crate::gl_util::gl_wrapper::CullFace;
 use crate::cull::math;
 
-use super::bounding_box::SimdLocalBoundingBox;
+use super::bounding_box::SimdBoundingBox;
 use super::math::*;
 
 /// When using this, it is expected that coordinates are relative to the camera rather than the
@@ -40,7 +40,7 @@ impl LocalFrustum {
     } }
 
     // #[inline(always)]
-    pub fn test_local_bounding_box(&self, bb: &SimdLocalBoundingBox) -> BoundsCheckResult { unsafe {
+    pub fn test_local_bounding_box(&self, bb: &SimdBoundingBox) -> BoundsCheckResult { unsafe {
         // These unsafe mask shenanigans just check if the sign bit is set for each lane.
         // This is faster than doing a manual comparison with something like simd_gt.
         let is_neg_x = Mask::from_int_unchecked(self.plane_xs.to_bits().cast::<i32>() >> Simd::splat(31));

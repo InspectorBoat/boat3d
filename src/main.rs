@@ -29,7 +29,7 @@ use std::time::Instant;
 use std::{collections::HashMap, hint};
 use std::{env, mem};
 use cgmath::{Vector3, Vector4, Rad};
-use cull::bounding_box::{self, LocalBoundingBox};
+use cull::bounding_box::{self, BoundingBox};
 use cull::rasterizer::Rasterizer;
 use gl_util::fps_tracker::FpsTracker;
 use gl_util::framebuffer::FrameBuffer;
@@ -62,37 +62,31 @@ fn main() { unsafe {
 
     let mut rasterizer = Rasterizer::new(600, 600);
     
-    // let framebuffer = FrameBuffer::create();
-    // framebuffer.bind(gl_wrapper::FRAMEBUFFER);
-    // framebuffer.texture2d_attachment(gl_wrapper::COLOR_ATTACHMENT0, &rasterizer.texture, 0);
+    let framebuffer = FrameBuffer::create();
+    framebuffer.bind(gl_wrapper::FRAMEBUFFER);
+    framebuffer.texture2d_attachment(gl_wrapper::COLOR_ATTACHMENT0, &rasterizer.texture, 0);
 
     while !window.should_close() {
         glfw.poll_events();
         glfw::flush_messages(&events).for_each(|(_, event)| handle_window_event(&mut window, &mut world, event, &mut keys, &mut status));
         
         world.update(&keys);
-        world.render(&status, 0);
-        // let mut bounding_box = LocalBoundingBox {
-        //     min: Vector3 { x: 0.0, y: 0.0, z: 0.0 } - world.camera.camera_pos,
-        //     max: Vector3 { x: 16.0, y: 16.0, z: 16.0 } - world.camera.camera_pos
-        // };
-        // rasterizer.rasterize(&mut bounding_box, world.camera.get_camera_matrix(), world.camera.camera_pos);
-        
-        
-        // rasterizer.render_to_texture();
-        // println!("\ntexture");
-        // log_error();
 
-        // gl_wrapper::BindFramebuffer(gl_wrapper::DRAW_FRAMEBUFFER, 0 as u32);
-        // gl_wrapper::BindFramebuffer(gl_wrapper::READ_FRAMEBUFFER, framebuffer.id);
-        // println!("\nbind");
-        // log_error();
-        
-
-        // gl_wrapper::BlitFramebuffer(0, 0, rasterizer.width as i32, rasterizer.height as i32, 0, 0, status.width, status.height, gl_wrapper::COLOR_BUFFER_BIT, gl_wrapper::NEAREST);
-        // println!("\nblit");
-        // log_error();
-        
+        if status.rasterize {
+            rasterizer.clear();
+            let mut bounding_box = BoundingBox {
+                min: Vector3 { x: 16.0, y: 0.0, z: 16.0 } - world.camera.camera_pos,
+                max: Vector3 { x: 128.0, y: 16.0, z: 128.0 } - world.camera.camera_pos
+            };
+            rasterizer.rasterize(&mut bounding_box, world.camera.get_local_camera_matrix());
+            
+            rasterizer.render_to_texture();
+            gl_wrapper::BindFramebuffer(gl_wrapper::DRAW_FRAMEBUFFER, 0 as u32);
+            gl_wrapper::BindFramebuffer(gl_wrapper::READ_FRAMEBUFFER, framebuffer.id);
+            gl_wrapper::BlitFramebuffer(0, 0, rasterizer.width as i32, rasterizer.height as i32, 0, 0, status.width, status.height, gl_wrapper::COLOR_BUFFER_BIT, gl_wrapper::NEAREST);
+        } else {
+            world.render(&status, 0);
+        }
         window.swap_buffers();
 
         fps.tick();
@@ -138,6 +132,9 @@ fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::Wind
                         world.camera.camera_pos = world.camera.frustum_pos;
                         world.camera.camera_rot = world.camera.frustum_rot;
                     }
+                }
+                Key::R => {
+                    status.rasterize = !status.rasterize;
                 }
                 Key::G => {
                     println!("{:?}", world.camera);

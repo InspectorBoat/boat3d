@@ -57,12 +57,12 @@ impl WorldRenderer {
         image[1] = 255;
         image[2] = 255;
         image[3] = 0;
-        block_texture.storage3d(1, gl_wrapper::RGBA8, 4, 4, 64);
+        block_texture.storage_3d(1, gl_wrapper::RGBA8, 4, 4, 64);
         block_texture.sub_image_3d(0, 0, 0, 0, 4, 4, 64, gl_wrapper::RGBA, gl_wrapper::UNSIGNED_BYTE, &raw const image as *const c_void);
-        block_texture.parameteri(gl_wrapper::TEXTURE_WRAP_S, gl_wrapper::REPEAT as i32);
-        block_texture.parameteri(gl_wrapper::TEXTURE_WRAP_T, gl_wrapper::REPEAT as i32);
-        block_texture.parameteri(gl_wrapper::TEXTURE_MIN_FILTER, gl_wrapper::NEAREST as i32);
-        block_texture.parameteri(gl_wrapper::TEXTURE_MAG_FILTER, gl_wrapper::NEAREST as i32);
+        block_texture.parameter_signed_integer(gl_wrapper::TEXTURE_WRAP_S, gl_wrapper::REPEAT as i32);
+        block_texture.parameter_signed_integer(gl_wrapper::TEXTURE_WRAP_T, gl_wrapper::REPEAT as i32);
+        block_texture.parameter_signed_integer(gl_wrapper::TEXTURE_MIN_FILTER, gl_wrapper::NEAREST as i32);
+        block_texture.parameter_signed_integer(gl_wrapper::TEXTURE_MAG_FILTER, gl_wrapper::NEAREST as i32);
         self.block_texture = Some(block_texture);
     } }
     
@@ -81,9 +81,9 @@ impl WorldRenderer {
         framebuffer.bind(gl_wrapper::FRAMEBUFFER);
         
         let texture_attachment = Texture::create(gl_wrapper::TEXTURE_2D);
-        texture_attachment.storage2d(1, gl_wrapper::RGBA32UI, status.width as i32, status.height as i32);
-        texture_attachment.parameteri(gl_wrapper::TEXTURE_MIN_FILTER, gl_wrapper::NEAREST as i32);
-        texture_attachment.parameteri(gl_wrapper::TEXTURE_MAG_FILTER, gl_wrapper::NEAREST as i32);
+        texture_attachment.storage_2d(1, gl_wrapper::RGBA32UI, status.width as i32, status.height as i32);
+        texture_attachment.parameter_signed_integer(gl_wrapper::TEXTURE_MIN_FILTER, gl_wrapper::NEAREST as i32);
+        texture_attachment.parameter_signed_integer(gl_wrapper::TEXTURE_MAG_FILTER, gl_wrapper::NEAREST as i32);
         framebuffer.texture2d_attachment(gl_wrapper::COLOR_ATTACHMENT0, &texture_attachment, 0);
 
         let renderbuffer_attachment = RenderBuffer::create();
@@ -116,7 +116,7 @@ impl WorldRenderer {
         let index_buffer = Buffer::create();
         index_buffer.bind_target(gl_wrapper::ELEMENT_ARRAY_BUFFER);
         index_buffer.storage(1024 * 1024, gl_wrapper::DYNAMIC_STORAGE_BIT);
-        index_buffer.upload_slice(&index_array.as_slice(), 0, 1024 * 1024);
+        index_buffer.buffer_sub_data(&index_array.as_slice(), 0, 1024 * 1024);
         self.index_buffer = Some(index_buffer);    
     } }
 
@@ -133,16 +133,6 @@ impl WorldRenderer {
             Shader::create(gl_wrapper::VERTEX_SHADER, include_str!("../shader/trans.glsl.vert")),
             Shader::create(gl_wrapper::FRAGMENT_SHADER, include_str!("../shader/trans.glsl.frag"))
         );
-        // texture attachment
-        post_program.uniform_1i(0, 0);
-        // block texture
-        post_program.uniform_1i(1, 1);
-
-        // block texture
-        solid_program.uniform_1i(1, 1);
-
-        // block texture
-        trans_program.uniform_1i(1, 1);
     
         self.solid_program = Some(solid_program);
         self.post_program = Some(post_program);
@@ -153,10 +143,10 @@ impl WorldRenderer {
         world.geometry_buffer_allocator.device_buffer.bind_indexed_target_base(gl_wrapper::SHADER_STORAGE_BUFFER, 0);
         world.light_buffer_allocator.device_buffer.bind_indexed_target_base(gl_wrapper::SHADER_STORAGE_BUFFER, 1);
         if let (Some(framebuffer), Some(solid_program), Some(post_program), Some(trans_program), Some(block_texture), Some(texture_attachment), Some(index_buffer)) = (&self.framebuffer, &self.solid_program, &self.post_program, &self.trans_program, &self.block_texture, &self.texture_attachment, &self.index_buffer) {
-            post_program.uniform_1i(0, 0);
-            post_program.uniform_1i(1, 1);
-            solid_program.uniform_1i(1, 1);    
-            trans_program.uniform_1i(1, 1);
+            post_program.uniform_1i(0, 20);
+            post_program.uniform_1i(1, 21);
+            solid_program.uniform_1i(1, 21);    
+            trans_program.uniform_1i(1, 12);
     
             index_buffer.bind_target(gl_wrapper::ELEMENT_ARRAY_BUFFER);
 
@@ -181,9 +171,9 @@ impl WorldRenderer {
             self.render_post(target_framebuffer_id);  
 
             // blit depth buffer
-            // gl_wrapper::BindFramebuffer(gl_wrapper::DRAW_FRAMEBUFFER, target_framebuffer_id as u32);
-            // gl_wrapper::BindFramebuffer(gl_wrapper::READ_FRAMEBUFFER, framebuffer.id);
-            // gl_wrapper::BlitFramebuffer(0, 0, status.width, status.height, 0, 0, status.width, status.height, gl_wrapper::DEPTH_BUFFER_BIT, gl_wrapper::NEAREST);
+            gl_wrapper::BindFramebuffer(gl_wrapper::DRAW_FRAMEBUFFER, target_framebuffer_id as u32);
+            gl_wrapper::BindFramebuffer(gl_wrapper::READ_FRAMEBUFFER, framebuffer.id);
+            gl_wrapper::BlitFramebuffer(0, 0, status.width, status.height, 0, 0, status.width, status.height, gl_wrapper::DEPTH_BUFFER_BIT, gl_wrapper::NEAREST);
             
             gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, target_framebuffer_id as u32);
 
@@ -201,8 +191,7 @@ impl WorldRenderer {
         gl_wrapper::Enable(gl_wrapper::BLEND);
         gl_wrapper::BlendFunc(gl_wrapper::SRC_ALPHA, gl_wrapper::ONE_MINUS_SRC_ALPHA);
 
-        gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE1);
-        block_texture.bind(gl_wrapper::TEXTURE_2D_ARRAY);
+        block_texture.bind_unit(21);
 
         if trans_drawn_sections > 0 {
             if status.fill_mode == gl_wrapper::LINE {
@@ -226,8 +215,7 @@ impl WorldRenderer {
         solid_program.bind();
         gl_wrapper::Disable(gl_wrapper::BLEND);
         framebuffer.bind(gl_wrapper::FRAMEBUFFER);
-        gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE1);
-        block_texture.bind(gl_wrapper::TEXTURE_2D_ARRAY);
+        block_texture.bind_unit(21);
 
         // clear solids framebuffer
         let CLEAR_COLOR: [u32; 4] = [0, 0, 0, 0];
@@ -257,12 +245,9 @@ impl WorldRenderer {
         // gl_wrapper::ClearColor(1.0, 1.0, 1.0, 1.0);
         // gl_wrapper::Clear(gl_wrapper::COLOR_BUFFER_BIT | gl_wrapper::DEPTH_BUFFER_BIT);
         
-        gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE0);
-        texture_attachment.bind(gl_wrapper::TEXTURE_2D);
+        texture_attachment.bind_unit(20);
+        block_texture.bind_unit(21);
 
-        gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE1);
-        block_texture.bind(gl_wrapper::TEXTURE_2D_ARRAY);
-                
         gl_wrapper::Disable(gl_wrapper::DEPTH_TEST);
         gl_wrapper::DrawArrays(gl_wrapper::TRIANGLES, 0, 6);
     } }

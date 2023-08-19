@@ -87,7 +87,7 @@ impl BufferAllocator {
         if length > segment.length.get() as usize {
             panic!("exceeded allocation size");
         }
-        self.staging_buffer.upload_slice(data, 0, length as isize);
+        self.staging_buffer.buffer_sub_data(data, 0, length as isize);
         
         gl_wrapper::CopyNamedBufferSubData(self.staging_buffer.id, self.device_buffer.id, 0, segment.offset as isize, length as isize);
         // self.buffer.upload_slice(data, (page.start * P) as isize, length);
@@ -97,7 +97,7 @@ impl BufferAllocator {
         if length + offset > segment.length.get() as usize {
             panic!("exceeded allocation size");
         }
-        self.staging_buffer.upload_slice(data, 0, length as isize);
+        self.staging_buffer.buffer_sub_data(data, 0, length as isize);
         
         gl_wrapper::CopyNamedBufferSubData(self.staging_buffer.id, self.device_buffer.id, 0, (segment.offset as usize + offset) as isize, length as isize);
         // self.device_buffer.upload_slice(data, (segment.offset + offset) as isize, length as isize);

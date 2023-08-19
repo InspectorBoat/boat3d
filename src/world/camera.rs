@@ -43,6 +43,22 @@ impl Camera {
         return perspective * modelview;
     }
 
+    pub fn get_local_camera_matrix(&self) -> Matrix4<f32> {
+        let perspective = Matrix4::from(PerspectiveFov {
+            fovy: Camera::FOVY,
+            aspect: self.aspect,
+            near: Camera::NEAR_PLANE,
+            far: Camera::FAR_PLANE,
+        });
+
+        let modelview =
+            Matrix4::from_angle_x(Rad(PI) + self.camera_rot.x)
+            * Matrix4::from_angle_y(-self.camera_rot.y)
+            * Matrix4::from_angle_z(self.camera_rot.z)
+            * Matrix4::from_nonuniform_scale(-1.0, -1.0, 1.0);
+        return perspective * modelview;
+    }
+
     pub fn get_frustum_matrix(&self) -> Matrix4<f32> {
         let perspective = Matrix4::from(PerspectiveFov {
             fovy: Camera::FOVY,

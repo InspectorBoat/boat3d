@@ -43,15 +43,7 @@ impl Buffer {
             flags
         );
     } }
-    pub fn upload<T>(&self, data: &[T], length: isize, usage: u32) { unsafe {
-        gl_wrapper::NamedBufferData(
-            self.id,
-            length,
-            data.as_ptr() as *const c_void,
-            usage
-        );
-    } }
-    pub fn upload_slice<T>(&self, data: &[T], buffer_start: isize, length: isize) { unsafe {
+    pub fn buffer_sub_data<T>(&self, data: &[T], buffer_start: isize, length: isize) { unsafe {
         gl_wrapper::NamedBufferSubData(
             self.id,
             buffer_start,

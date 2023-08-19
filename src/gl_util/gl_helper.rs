@@ -50,11 +50,12 @@ pub struct WindowStatus {
     pub maximized: bool,
     pub width: i32,
     pub height: i32,
-    pub mouse_captured: bool
+    pub mouse_captured: bool,
+    pub rasterize: bool
 }
 
 impl WindowStatus {
     pub fn new() -> WindowStatus {
-        return WindowStatus { fill_mode: gl_wrapper::FILL, maximized: false, mouse_captured: false, width: 600, height: 600 }
+        return WindowStatus { fill_mode: gl_wrapper::FILL, maximized: false, mouse_captured: false, width: 600, height: 600, rasterize: true }
     }
 }

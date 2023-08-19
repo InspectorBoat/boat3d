@@ -6,7 +6,7 @@ use cgmath::Vector3;
 
 use crate::block::blockstate::BLOCKS;
 use crate::block::normal::Normal::{self, *};
-use crate::cull::bounding_box::{SimdLocalBoundingBox, LocalBoundingBox};
+use crate::cull::bounding_box::{SimdBoundingBox, BoundingBox};
 use crate::gl_util::buffer_allocator::{BufferAllocator, SortType::*};
 use crate::gl_util::buffer_allocator::BufferSegment;
 use crate::render::byte_buffer::StagingBuffer;
@@ -1214,9 +1214,8 @@ impl Section {
         light_staging_buffer.reset();
     }
     
-    #[inline(always)]
-    pub fn get_local_bounding_box(&self, camera: &Camera) -> LocalBoundingBox {
-        return LocalBoundingBox {
+    pub fn get_local_bounding_box(&self, camera: &Camera) -> BoundingBox {
+        return BoundingBox {
             min: Vector3 {
                 x: (self.section_pos.x * 16) as f32 - camera.frustum_pos.x,
                 y: (self.section_pos.y * 16) as f32 - camera.frustum_pos.y,
@@ -1226,6 +1225,21 @@ impl Section {
                 x: (self.section_pos.x * 16) as f32 - camera.frustum_pos.x + 16.0,
                 y: (self.section_pos.y * 16) as f32 - camera.frustum_pos.y + 16.0,
                 z: (self.section_pos.z * 16) as f32 - camera.frustum_pos.z + 16.0,
+            }
+        };
+    }
+
+    pub fn get_bounding_box(&self, camera: &Camera) -> BoundingBox {
+        return BoundingBox {
+            min: Vector3 {
+                x: (self.section_pos.x * 16) as f32,
+                y: (self.section_pos.y * 16) as f32,
+                z: (self.section_pos.z * 16) as f32,
+            },
+            max: Vector3 {
+                x: (self.section_pos.x * 16) as f32 + 16.0,
+                y: (self.section_pos.y * 16) as f32 + 16.0,
+                z: (self.section_pos.z * 16) as f32 + 16.0,
             }
         };
     }
