@@ -43,6 +43,9 @@ impl Buffer {
             flags
         );
     } }
+    pub fn map_range(&self, offset: isize, length: isize, access: u32) -> *mut c_void { unsafe {
+        return gl_wrapper::MapNamedBufferRange(self.id, offset, length, access);
+    } }
     pub fn buffer_sub_data(&self, buffer_start: isize, length: isize, data: *const c_void) { unsafe {
         gl_wrapper::NamedBufferSubData(
             self.id,

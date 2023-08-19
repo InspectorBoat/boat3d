@@ -56,6 +56,6 @@ pub struct WindowStatus {
 
 impl WindowStatus {
     pub fn new() -> WindowStatus {
-        return WindowStatus { fill_mode: gl_wrapper::FILL, maximized: false, mouse_captured: false, width: 600, height: 600, rasterize: true }
+        return WindowStatus { fill_mode: gl_wrapper::FILL, maximized: false, mouse_captured: false, width: 600, height: 600, rasterize: false }
     }
 }

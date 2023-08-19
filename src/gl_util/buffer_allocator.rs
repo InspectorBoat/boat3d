@@ -1,6 +1,8 @@
 // Pasted from burger
 
 use std::{num::NonZeroU32, collections::BTreeSet, marker::ConstParamTy, mem, cmp::Ordering, ffi::c_void};
+use crate::render::byte_buffer::StagingBuffer;
+
 use self::SortType::*;
 use super::{buffer::Buffer, gl_wrapper};
 
@@ -9,7 +11,6 @@ pub struct BufferAllocator {
     pub free_segments_by_offset: BTreeSet<BufferSegment<{Length}>>,
     pub free_segments_by_length: BTreeSet<BufferSegment<{Offset}>>,
     pub device_buffer: Buffer,
-    pub staging_buffer: Buffer,
     pub used: u32,
 }
 
@@ -17,16 +18,13 @@ impl BufferAllocator {
     pub fn new(size: usize) -> BufferAllocator { unsafe {
         let device_buffer = Buffer::create();
         device_buffer.storage(size as isize, gl_wrapper::DYNAMIC_STORAGE_BIT);
-        let staging_buffer = Buffer::create();
-        staging_buffer.storage(1024 * 1024, gl_wrapper::DYNAMIC_STORAGE_BIT);
 
         let segment = BufferSegment { offset: 0, length: NonZeroU32::new_unchecked(size as u32) };
-
+        
         return BufferAllocator {
             free_segments_by_offset: BTreeSet::from([segment]),
             free_segments_by_length: BTreeSet::from([segment.into()]),
             device_buffer: device_buffer,
-            staging_buffer: staging_buffer,
             used: 0
         };
     } }
@@ -83,24 +81,14 @@ impl BufferAllocator {
             self.free_segments_by_offset.insert(segment.into());
         }
     } }
-    pub fn upload<T>(&mut self, segment: &BufferSegment, data: &[T], length: usize) { unsafe {
-        if length > segment.length.get() as usize {
-            panic!("exceeded allocation size");
-        }
-        self.staging_buffer.buffer_sub_data(0, length as isize, data.as_ptr() as *const c_void);
-        
-        gl_wrapper::CopyNamedBufferSubData(self.staging_buffer.id, self.device_buffer.id, 0, segment.offset as isize, length as isize);
-        // self.buffer.upload_slice(data, (page.start * P) as isize, length);
-    } }
-
-    pub fn upload_offset(&mut self, segment: &BufferSegment, length: usize, offset: usize, data: *const c_void) { unsafe {
+    pub fn buffer_sub_data(&mut self, segment: &BufferSegment, length: usize, offset: usize, data: *const c_void) { unsafe {
         if length + offset > segment.length.get() as usize {
             panic!("exceeded allocation size");
         }
-        self.staging_buffer.buffer_sub_data(0, length as isize, data);
+        // self.staging_buffer.buffer_sub_data(0, length as isize, data);
         
-        gl_wrapper::CopyNamedBufferSubData(self.staging_buffer.id, self.device_buffer.id, 0, (segment.offset as usize + offset) as isize, length as isize);
-        // self.device_buffer.upload_slice(data, (segment.offset + offset) as isize, length as isize);
+        // gl_wrapper::CopyNamedBufferSubData(self.staging_buffer.id, self.device_buffer.id, 0, (segment.offset as usize + offset) as isize, length as isize);
+        self.device_buffer.buffer_sub_data(segment.offset as isize + offset as isize, length as isize, data);
     } }
 }
 

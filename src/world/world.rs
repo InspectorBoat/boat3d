@@ -40,8 +40,8 @@ impl World {
 
         // reserve space for the sky
         let sky_segment = world.light_buffer_allocator.alloc(1024);
-        let sky_data: [(u32, u32, u32, u32); 1024 / 4 / 4] = [(15, 15, 15, 15); 1024 / 4 / 4];
-        world.light_buffer_allocator.upload_offset(&sky_segment.unwrap(), 1024, 0, &raw const sky_data as *const c_void);
+        let sky_data = [(15_u32, 15_u32, 15_u32, 15_u32); 1024 / 4 / 4];
+        world.light_buffer_allocator.buffer_sub_data(&sky_segment.unwrap(), 1024, 0, &raw const sky_data as *const c_void);
         return world;
     } }
 
@@ -52,8 +52,8 @@ impl World {
                 for z in 0..World::MAX_SECTION_Z {
                     let mut section = Box::<Section>::new_zeroed().assume_init();
                     section.set_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
-                    // section.make_terrain(&noise);
-                    section.make_terrain_alt();
+                    section.make_terrain(&noise);
+                    // section.make_terrain_alt();
                     self.add_section(section);
                 }
             }
@@ -217,7 +217,7 @@ impl World {
         }
     }
 
-    pub const MAX_SECTION_X: usize = 1;
-    pub const MAX_SECTION_Y: usize = 1;
-    pub const MAX_SECTION_Z: usize = 1;
+    pub const MAX_SECTION_X: usize = 4;
+    pub const MAX_SECTION_Y: usize = 4;
+    pub const MAX_SECTION_Z: usize = 4;
 }

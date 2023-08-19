@@ -1,15 +1,15 @@
-use std::{ops::{IndexMut, Index}, mem};
-use crate::{block::{blockface::BlockFace, normal::Normal::*}, world::section::Section, render::{buffer_quad::BufferQuad, gpu_quad::GpuQuad}};
+use std::{ops::{IndexMut, Index}, mem::{self, ManuallyDrop}};
+use crate::{block::{blockface::BlockFace, normal::Normal::*}, world::section::Section, render::{buffer_quad::BufferQuad, gpu_quad::GpuQuad}, gl_util::{buffer::Buffer, gl_wrapper}};
 #[repr(C, align(8))]
 #[derive(Debug)]
 pub struct StagingBuffer {
     pub idx: usize,
-    pub buffer: Box<Buffer>,
+    pub buffer: Box<RawBuffer>,
 }
 
 #[repr(C, align(8))]
 #[derive(Debug)]
-pub struct Buffer(pub [u8; 262144]);
+pub struct RawBuffer(pub [u8; 262144]);
 
 impl StagingBuffer {
     pub fn put(&mut self, val: u8) { unsafe {
@@ -26,6 +26,11 @@ impl StagingBuffer {
         *loc = val;
         self.idx += 4;
     } }
+    pub fn put_i32(&mut self, val: i32) { unsafe {
+        let loc = self.buffer.0.as_mut_ptr().byte_add(self.idx) as *mut i32;
+        *loc = val;
+        self.idx += 4;
+    } }
     pub fn put_u64(&mut self, val: u64) { unsafe {
         let loc = self.buffer.0.as_mut_ptr().byte_add(self.idx) as *mut u64;
         *loc = val;
@@ -39,12 +44,12 @@ impl StagingBuffer {
         let loc = self.buffer.0.as_ptr().byte_add(pos.try_into().unwrap_unchecked()) as *mut u64;
         return *loc;
     } }
-    pub fn new() -> StagingBuffer {
+    pub fn new() -> StagingBuffer { unsafe {
         return StagingBuffer {
             idx: 0,
-            buffer: Box::new(Buffer([0; 262144])),
+            buffer: Box::new(RawBuffer([0; 262144]))
         };
-    }
+    } }
     pub fn put_face(&mut self, face: &BlockFace, pos: usize) { unsafe {
         let loc = self.buffer.0.as_mut_ptr().byte_add(self.idx) as *mut u64;
         *loc = face.as_u64() + Section::INDICES_ZYX[pos] as u64;
@@ -91,14 +96,12 @@ impl<T: TryInto<usize>> Index<T> for StagingBuffer {
     type Output = u8;
 
     fn index(&self, index: T) -> &Self::Output { unsafe {
-        // return &self.arr[index.into()];
         return self.buffer.0.get_unchecked(index.try_into().unwrap_unchecked());
     } }
 }
 
 impl<T: TryInto<usize>> IndexMut<T> for StagingBuffer {
     fn index_mut(&mut self, index: T) -> &mut Self::Output { unsafe {
-        // return &mut self.arr[index.into()];
         return self.buffer.0.get_unchecked_mut(index.try_into().unwrap_unchecked());
     } }
 }
