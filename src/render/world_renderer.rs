@@ -116,7 +116,7 @@ impl WorldRenderer {
         let index_buffer = Buffer::create();
         index_buffer.bind_target(gl_wrapper::ELEMENT_ARRAY_BUFFER);
         index_buffer.storage(1024 * 1024, gl_wrapper::DYNAMIC_STORAGE_BIT);
-        index_buffer.buffer_sub_data(&index_array.as_slice(), 0, 1024 * 1024);
+        index_buffer.buffer_sub_data(0, 1024 * 1024, index_array.as_slice().as_ptr() as *const c_void);
         self.index_buffer = Some(index_buffer);    
     } }
 

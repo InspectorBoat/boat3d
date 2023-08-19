@@ -35,7 +35,7 @@ impl Texture {
         gl_wrapper::BindTexture(target, self.id);
     } }
     pub fn kill(self) { unsafe {
-        gl_wrapper::DeleteTextures(1, &self.id);
+        gl_wrapper::DeleteTextures(1, &raw const self.id);
     } }
 }
 

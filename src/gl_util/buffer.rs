@@ -43,12 +43,12 @@ impl Buffer {
             flags
         );
     } }
-    pub fn buffer_sub_data<T>(&self, data: &[T], buffer_start: isize, length: isize) { unsafe {
+    pub fn buffer_sub_data(&self, buffer_start: isize, length: isize, data: *const c_void) { unsafe {
         gl_wrapper::NamedBufferSubData(
             self.id,
             buffer_start,
             length,
-            data.as_ptr() as *const c_void
+            data
         );
     } }
     // length and offset in bytes

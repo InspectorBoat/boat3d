@@ -41,7 +41,7 @@ impl World {
         // reserve space for the sky
         let sky_segment = world.light_buffer_allocator.alloc(1024);
         let sky_data: [(u32, u32, u32, u32); 1024 / 4 / 4] = [(15, 15, 15, 15); 1024 / 4 / 4];
-        world.light_buffer_allocator.upload_offset(&sky_segment.unwrap(), &sky_data, 1024, 0);
+        world.light_buffer_allocator.upload_offset(&sky_segment.unwrap(), 1024, 0, &raw const sky_data as *const c_void);
         return world;
     } }
 

@@ -1,6 +1,6 @@
 // Pasted from burger
 
-use std::{num::NonZeroU32, collections::BTreeSet, marker::ConstParamTy, mem, cmp::Ordering};
+use std::{num::NonZeroU32, collections::BTreeSet, marker::ConstParamTy, mem, cmp::Ordering, ffi::c_void};
 use self::SortType::*;
 use super::{buffer::Buffer, gl_wrapper};
 
@@ -87,17 +87,17 @@ impl BufferAllocator {
         if length > segment.length.get() as usize {
             panic!("exceeded allocation size");
         }
-        self.staging_buffer.buffer_sub_data(data, 0, length as isize);
+        self.staging_buffer.buffer_sub_data(0, length as isize, data.as_ptr() as *const c_void);
         
         gl_wrapper::CopyNamedBufferSubData(self.staging_buffer.id, self.device_buffer.id, 0, segment.offset as isize, length as isize);
         // self.buffer.upload_slice(data, (page.start * P) as isize, length);
     } }
 
-    pub fn upload_offset<T>(&mut self, segment: &BufferSegment, data: &[T], length: usize, offset: usize) { unsafe {
+    pub fn upload_offset(&mut self, segment: &BufferSegment, length: usize, offset: usize, data: *const c_void) { unsafe {
         if length + offset > segment.length.get() as usize {
             panic!("exceeded allocation size");
         }
-        self.staging_buffer.buffer_sub_data(data, 0, length as isize);
+        self.staging_buffer.buffer_sub_data(0, length as isize, data);
         
         gl_wrapper::CopyNamedBufferSubData(self.staging_buffer.id, self.device_buffer.id, 0, (segment.offset as usize + offset) as isize, length as isize);
         // self.device_buffer.upload_slice(data, (segment.offset + offset) as isize, length as isize);

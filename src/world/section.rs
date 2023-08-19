@@ -1,3 +1,4 @@
+use std::ffi::c_void;
 use std::hint;
 use std::hint::unreachable_unchecked;
 use std::mem;
@@ -1192,9 +1193,10 @@ impl Section {
         self.mesh_solid(solid_staging_buffer, geometry_buffer_allocator);
         self.mesh_solid_light(solid_staging_buffer, light_staging_buffer, light_buffer_allocator);
         if let (Some(solid_segment), Some(solid_light_segment)) = (&self.solid_segment, &self.solid_light_segment) {
-            geometry_buffer_allocator.upload_offset(solid_segment, &[self.section_pos.x, self.section_pos.y, self.section_pos.z], 3 * mem::size_of::<u32>(), 0);
-            geometry_buffer_allocator.upload_offset(solid_segment, &solid_staging_buffer.buffer.0.as_slice(), solid_staging_buffer.idx, 4 * mem::size_of::<u32>());
-            geometry_buffer_allocator.upload_offset(solid_segment, &[(solid_light_segment.offset as usize / mem::size_of::<u32>()) as u32], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
+            geometry_buffer_allocator.upload_offset(solid_segment, 3 * mem::size_of::<u32>(), 0, &raw const self.section_pos as *const c_void);
+            geometry_buffer_allocator.upload_offset(solid_segment, solid_staging_buffer.idx, 4 * mem::size_of::<u32>(), &raw const solid_staging_buffer.buffer.0 as *const c_void);
+            let offset = solid_light_segment.offset / mem::size_of::<u32>() as u32;
+            geometry_buffer_allocator.upload_offset(solid_segment, mem::size_of::<u32>(), 3 * mem::size_of::<u32>(), &raw const offset as *const c_void);
 
             light_buffer_allocator.upload(solid_light_segment, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.idx);
         }
@@ -1204,9 +1206,10 @@ impl Section {
         self.mesh_trans(trans_staging_buffer, geometry_buffer_allocator);
         self.mesh_trans_light(trans_staging_buffer, light_staging_buffer, light_buffer_allocator);
         if let (Some(trans_segment), Some(trans_light_segment)) = (&self.trans_segment, &self.trans_light_segment) {
-            geometry_buffer_allocator.upload_offset(trans_segment, &[self.section_pos.x, self.section_pos.y, self.section_pos.z], 3 * mem::size_of::<u32>(), 0);
-            geometry_buffer_allocator.upload_offset(trans_segment, &trans_staging_buffer.buffer.0.as_slice(), trans_staging_buffer.idx, 4 * mem::size_of::<u32>());
-            geometry_buffer_allocator.upload_offset(trans_segment, &[(trans_light_segment.offset as usize / mem::size_of::<u32>()) as u32], mem::size_of::<u32>(), 3 * mem::size_of::<u32>());
+            geometry_buffer_allocator.upload_offset(trans_segment, 3 * mem::size_of::<u32>(), 0, &raw const self.section_pos as *const c_void);
+            geometry_buffer_allocator.upload_offset(trans_segment, trans_staging_buffer.idx, 4 * mem::size_of::<u32>(), &raw const trans_staging_buffer.buffer.0 as *const c_void);
+            let offset = trans_light_segment.offset / mem::size_of::<u32>() as u32;
+            geometry_buffer_allocator.upload_offset(trans_segment, mem::size_of::<u32>(), 3 * mem::size_of::<u32>(), &raw const offset as *const c_void);
 
             light_buffer_allocator.upload(trans_light_segment, light_staging_buffer.buffer.0.as_slice(), light_staging_buffer.idx);
         }
