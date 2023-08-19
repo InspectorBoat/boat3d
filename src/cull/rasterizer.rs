@@ -19,13 +19,11 @@ pub struct Rasterizer {
 impl Rasterizer {
     pub fn new(width: usize, height: usize) -> Rasterizer { unsafe {
         let texture = Texture::create(gl_wrapper::TEXTURE_2D);
-        log_error();
         texture.storage_2d(1, gl_wrapper::RGBA8, width as i32, height as i32);
         texture.parameter_signed_integer(gl_wrapper::TEXTURE_WRAP_S, gl_wrapper::REPEAT as i32);
         texture.parameter_signed_integer(gl_wrapper::TEXTURE_WRAP_T, gl_wrapper::REPEAT as i32);
         texture.parameter_signed_integer(gl_wrapper::TEXTURE_MIN_FILTER, gl_wrapper::NEAREST as i32);
         texture.parameter_signed_integer(gl_wrapper::TEXTURE_MAG_FILTER, gl_wrapper::NEAREST as i32);
-        log_error();
         return Rasterizer {
             buffer: [0].repeat(width * height).into_boxed_slice(),
             width: width,

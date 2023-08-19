@@ -57,40 +57,40 @@ impl Section {
         if block_id != self.blocks[block_pos.index] {
             self.dirty = true;
             self.blocks[block_pos.index] = block_id;
-            if block_pos.x() == 0 && let Some(west) = self.get_neighbor::<{East}>() {
+            if block_pos.x() == 0 && let Some(west) = self.get_neighbor(East) {
                 west.dirty = true;
             }
-            if block_pos.x() == 15 && let Some(east) = self.get_neighbor::<{West}>() {
+            if block_pos.x() == 15 && let Some(east) = self.get_neighbor(West) {
                 east.dirty = true;
             }
-            if block_pos.z() == 0 && let Some(south) = self.get_neighbor::<{North}>() {
+            if block_pos.z() == 0 && let Some(south) = self.get_neighbor(North) {
                 south.dirty = true;
             }
-            if block_pos.z() == 15 && let Some(north) = self.get_neighbor::<{South}>() {
+            if block_pos.z() == 15 && let Some(north) = self.get_neighbor(South) {
                 north.dirty = true;
             }
-            if block_pos.y() == 0 && let Some(down) = self.get_neighbor::<{Down}>() {
+            if block_pos.y() == 0 && let Some(down) = self.get_neighbor(Down) {
                 down.dirty = true;
             }
-            if block_pos.y() == 15 && let Some(up) = self.get_neighbor::<{Up}>() {
+            if block_pos.y() == 15 && let Some(up) = self.get_neighbor(Up) {
                 up.dirty = true;
             }
         }
     }
 
-    pub fn get_neighbor<const N: Normal>(&self) -> Option<&mut Section> { unsafe {
-        match N {
+    pub fn get_neighbor(&self, normal: Normal) -> Option<&mut Section> { unsafe {
+        match normal {
             South => {
-                return mem::transmute(self.neighbors.north);
-            }
-            North => {
                 return mem::transmute(self.neighbors.south);
             }
+            North => {
+                return mem::transmute(self.neighbors.north);
+            }
             West => {
-                return mem::transmute(self.neighbors.east);
+                return mem::transmute(self.neighbors.west);
             }
             East => {
-                return mem::transmute(self.neighbors.west);
+                return mem::transmute(self.neighbors.east);
             }
             Up => {
                 return mem::transmute(self.neighbors.up);
@@ -105,41 +105,41 @@ impl Section {
     pub fn get_block(&self, block_pos: BlockPos) -> &BlockState { unsafe {
         return &BLOCKS[self.blocks[block_pos.index] as usize];
     } }
-    pub fn get_opposing_block<const N: Normal>(&self, pos: BlockPos) -> &BlockState { unsafe {
-        match N {
+    pub fn get_block_offset(&self, pos: BlockPos, normal: Normal) -> &BlockState { unsafe {
+        match normal {
             North => {
                 if pos.z() == 0 {
-                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_z(15)));
+                    return self.get_neighbor(North).map_or(&BLOCKS[0], |section| section.get_block(pos.set_z(15)));
                 }
                 return &self.get_block(pos - BlockPos::new(0, 0, 1));
             }
-            East => {
-                if pos.x() == 0 {
-                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_x(15)));
-                }
-                return &self.get_block(pos - BlockPos::new(1, 0, 0));
-            }
-            Down => {
-                if pos.y() == 0 {
-                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_y(15)));
-                }
-                return &self.get_block(pos - BlockPos::new(0, 1, 0));
-            }
             South => {
                 if pos.z() == 15 {
-                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_z(0)));
+                    return self.get_neighbor(South).map_or(&BLOCKS[0], |section| section.get_block(pos.set_z(0)));
                 }
                 return &self.get_block(pos + BlockPos::new(0, 0, 1));
             }
             West => {
+                if pos.x() == 0 {
+                    return self.get_neighbor(West).map_or(&BLOCKS[0], |section| section.get_block(pos.set_x(15)));
+                }
+                return &self.get_block(pos - BlockPos::new(1, 0, 0));
+            }
+            East => {
                 if pos.x() == 15 {
-                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_x(0)));
+                    return self.get_neighbor(East).map_or(&BLOCKS[0], |section| section.get_block(pos.set_x(0)));
                 }
                 return &self.get_block(pos + BlockPos::new(1, 0, 0));
             }
+            Down => {
+                if pos.y() == 0 {
+                    return self.get_neighbor(Down).map_or(&BLOCKS[0], |section| section.get_block(pos.set_y(15)));
+                }
+                return &self.get_block(pos - BlockPos::new(0, 1, 0));
+            }
             Up => {
                 if pos.y() == 15 {
-                    return self.get_neighbor::<N>().map_or(&BLOCKS[0], |section| section.get_block(pos.set_y(0)));
+                    return self.get_neighbor(Up).map_or(&BLOCKS[0], |section| section.get_block(pos.set_y(0)));
                 }
                 return &self.get_block(pos + BlockPos::new(0, 1, 0));
             }
@@ -151,7 +151,7 @@ impl Section {
         return &self.get_block(block_pos).model.get_face(N);
     }
     pub fn get_opposing_face<const N: Normal>(&self, block_pos: BlockPos) -> &BlockFace {
-        return &self.get_opposing_block::<N>(block_pos).model.get_face(N.reverse());
+        return &self.get_block_offset(block_pos, N).model.get_face(N.reverse());
     }
 
     pub fn get_light(&self, block_pos: BlockPos) -> u8 {
@@ -161,37 +161,40 @@ impl Section {
         match N {
             South => {
                 if block_pos.z() == 15 {
-                    return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_z(0)));
+                    return self.get_neighbor(N).map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_z(0)));
                 }
                 return self.get_light(block_pos + BlockPos::new(0, 0, 1));
             }
             North => {
                 if block_pos.z() == 0 {
-                    return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_z(15)));
+                    return self.get_neighbor(N).map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_z(15)));
                 }
                 return self.get_light(block_pos - BlockPos::new(0, 0, 1));
             }
             West => {
                 if block_pos.x() == 15 {
-                    return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_x(0)));
+                    if let Some(west) = self.get_neighbor(N) {
+                        return west.get_light(block_pos.set_x(0));
+                    }
+                    return 0;
                 }
                 return self.get_light(block_pos + BlockPos::new(1, 0, 0));
             }
             East => {
                 if block_pos.x() == 0 {
-                    return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_x(15)));
+                    return self.get_neighbor(N).map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_x(15)));
                 }
                 return self.get_light(block_pos - BlockPos::new(1, 0, 0));
             }
             Up => {
                 if block_pos.y() == 15 {
-                    return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_y(0)));
+                    return self.get_neighbor(N).map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_y(0)));
                 }
                 return self.get_light(block_pos + BlockPos::new(0, 1, 0));
             }
             Down => {
                 if block_pos.y() == 0 {
-                    return self.get_neighbor::<N>().map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_y(15)));
+                    return self.get_neighbor(N).map_or_else(|| rand::random::<u8>() & 15, |section| section.get_light(block_pos.set_y(15)));
                 }
                 return self.get_light(block_pos - BlockPos::new(0, 1, 0));
             }
@@ -213,9 +216,9 @@ impl Section {
     } }
     pub fn has_opposing_extra_face<const N: Normal>(&self, block_pos: BlockPos) -> bool { unsafe {
         match N {
-            North => { return self.get_opposing_block::<N>(block_pos).model.extra_south.len() > 0; }
-            East => { return self.get_opposing_block::<N>(block_pos).model.extra_west.len() > 0; }
-            Down => { return self.get_opposing_block::<N>(block_pos).model.extra_up.len() > 0; }
+            North => { return self.get_block_offset(block_pos, N).model.extra_south.len() > 0; }
+            East => { return self.get_block_offset(block_pos, N).model.extra_west.len() > 0; }
+            Down => { return self.get_block_offset(block_pos, N).model.extra_up.len() > 0; }
             _ => { hint::unreachable_unchecked(); }
         }
     } }
@@ -233,12 +236,12 @@ impl Section {
     } }
     pub fn get_opposing_extra_face<const N: Normal>(&self, block_pos: BlockPos) -> &[BlockFace] { unsafe {
         match N {
-            North => { return self.get_opposing_block::<N>(block_pos).model.extra_south; }
-            East => { return self.get_opposing_block::<N>(block_pos).model.extra_west; }
-            Down => { return self.get_opposing_block::<N>(block_pos).model.extra_up; }
-            South => { return self.get_opposing_block::<N>(block_pos).model.extra_north; }
-            West => { return self.get_opposing_block::<N>(block_pos).model.extra_east; }
-            Up => { return self.get_opposing_block::<N>(block_pos).model.extra_down; }
+            North => { return self.get_block_offset(block_pos, N).model.extra_south; }
+            East => { return self.get_block_offset(block_pos, N).model.extra_west; }
+            Down => { return self.get_block_offset(block_pos, N).model.extra_up; }
+            South => { return self.get_block_offset(block_pos, N).model.extra_north; }
+            West => { return self.get_block_offset(block_pos, N).model.extra_east; }
+            Up => { return self.get_block_offset(block_pos, N).model.extra_down; }
             _ => { unreachable_unchecked(); }
         }
     } }
@@ -278,12 +281,13 @@ impl Section {
     pub fn make_terrain_alt(&mut self) {
         for i in 0..4096 {
             let pos = BlockPos { index: i };
-            // if pos.y() == 0 {
+            if pos.x() == 0 || pos.y() == 0 {
                 self.blocks[i] = 1;
-            // }
-            self.light[i] = rand::random::<u8>() % 16;
+            }
+            // self.light[i] = rand::random::<u8>() % 16;
+            self.light[i] = pos.y() as u8;
         }
-        self.blocks[BlockPos::new(1, 1, 1).index] = 1;
+        // self.blocks[BlockPos::new(1, 1, 1).index] = 1;
         // self.blocks[BlockPos::new(1, 2, 1).index] = 3;
     }
 
@@ -720,26 +724,24 @@ impl Section {
         }
     }
     
-    pub fn mesh_south_north_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_north_south_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
                 for z in 0..16_u8 {
                     let block_pos = BlockPos::new(x, y, z);
 
+                    let face_n = self.get_face::<{North}>(block_pos);
+                    let face_s = self.get_opposing_face::<{North}>(block_pos);
 
-                    let face_s = self.get_face::<{North}>(block_pos);
-                    let face_n = self.get_opposing_face::<{North}>(block_pos);
-
-                    let compare = face_s.as_u32() + 0x10101010 - face_n.as_u32();
-                    if compare == 0x10101010 { continue; }
+                    let compare = BlockFace::should_cull_pair(face_n, face_s);
                     
                     let offset = Section::INDICES_ZYX[block_pos.index] as u64;
                     
-                    if compare < 0x10101010 {
-                        Run::add_face::<{North}>(solid_staging_buffer, face_s, block_pos);
+                    if !compare.0 {
+                        Run::add_face::<{North}>(solid_staging_buffer, face_n, block_pos);
                     }
-                    if compare > 0x10101010 {
-                        Run::add_face::<{South}>(solid_staging_buffer, face_n, block_pos);
+                    if !compare.1 {
+                        Run::add_face::<{South}>(solid_staging_buffer, face_s, block_pos);
                     }
                     
                     for face in self.get_extra_face::<{North}>(block_pos) {
@@ -752,25 +754,25 @@ impl Section {
             }
         }
     }
-    pub fn mesh_west_east_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_east_west_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
                 for z in 0..16_u8 {
                     let block_pos = BlockPos::new(x, y, z);
 
-                    let face_w = self.get_face::<{East}>(block_pos);
-                    let face_e = self.get_opposing_face::<{East}>(block_pos);
+                    let face_e = &self.get_block(block_pos).model.get_face(East);
+                    let face_w = &self.get_block_offset(block_pos, East).model.get_face(West);
 
-                    let compare = face_w.as_u32() + 0x10101010 - face_e.as_u32();
+                    let compare = face_e.as_u32() + 0x10101010 - face_w.as_u32();
                     if compare == 0x10101010 { continue; }
                     
                     let offset = Section::INDICES_XYZ[block_pos.index] as u64;
                     
                     if compare < 0x10101010 {
-                        Run::add_face::<{East}>(solid_staging_buffer, face_w, block_pos);
+                        Run::add_face::<{East}>(solid_staging_buffer, face_e, block_pos);
                     }
                     if compare > 0x10101010 {
-                        Run::add_face::<{West}>(solid_staging_buffer, face_e, block_pos);
+                        Run::add_face::<{West}>(solid_staging_buffer, face_w, block_pos);
                     }
 
                     for face in self.get_extra_face::<{East}>(block_pos) {
@@ -837,9 +839,9 @@ impl Section {
                     let block_pos = BlockPos::new(x, y, z);
 
                     let block = self.get_block(block_pos);
-                    let opposing_block_south = self.get_opposing_block::<{North}>(block_pos);
-                    let opposing_block_west = self.get_opposing_block::<{East}>(block_pos);
-                    let opposing_block_down = self.get_opposing_block::<{Down}>(block_pos);
+                    let opposing_block_south = self.get_block_offset(block_pos, North);
+                    let opposing_block_west = self.get_block_offset(block_pos, East);
+                    let opposing_block_down = self.get_block_offset(block_pos, Down);
 
                     'north: for face in block.model.trans_north {
                         for opposing_face in opposing_block_south.model.trans_south {
@@ -885,9 +887,12 @@ impl Section {
         self.trans_segment = geometry_buffer_allocator.alloc(trans_staging_buffer.idx + 4 * mem::size_of::<u32>());
     }
     pub fn mesh_solid(&mut self, solid_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
-        self.mesh_north_south(solid_staging_buffer);
-        self.mesh_east_west(solid_staging_buffer);
-        self.mesh_down_up(solid_staging_buffer);
+        // self.mesh_north_south(solid_staging_buffer);
+        // self.mesh_east_west(solid_staging_buffer);
+        // self.mesh_down_up(solid_staging_buffer);
+        // self.mesh_north_south_no_merge(solid_staging_buffer);
+        self.mesh_east_west_no_merge(solid_staging_buffer);
+        self.mesh_down_up_no_merge(solid_staging_buffer);
         self.mesh_unaligned(solid_staging_buffer);
 
         solid_staging_buffer.format_quads();
@@ -936,7 +941,7 @@ impl Section {
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
                             if z == 15 {
-                                if let Some(south) = self.get_neighbor::<{North}>() {
+                                if let Some(south) = self.get_neighbor(North) {
                                     light_staging_buffer.put_u32(south.get_face_light::<{South}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
@@ -975,14 +980,16 @@ impl Section {
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
                             if x == 15 {
-                                if let Some(west) = self.get_neighbor::<{East}>() {
-                                    light_staging_buffer.put_u32(west.get_face_light::<{West}>(BlockPos::new(x, y, z)) as u32);
-                                }
-                                else {
-                                    light_staging_buffer.put_u32(rand::random::<u32>() & 15);
-                                }
+                                // if let Some(east) = self.get_neighbor(East) {
+                                    println!("{x} {y} {z}");
+                                    light_staging_buffer.put_u32(self.get_face_light::<{West}>(BlockPos::new(x, y, z)) as u32);
+                                // }
+                                // else {
+                                    // light_staging_buffer.put_u32(rand::random::<u32>() & 15);
+                                // }
+                            } else {
+                                light_staging_buffer.put_u32(self.get_face_light::<{West}>(BlockPos::new(x, y, z)) as u32);
                             }
-                            light_staging_buffer.put_u32(self.get_face_light::<{West}>(BlockPos::new(x, y, z)) as u32);
                         }
                     }
                 }
@@ -1014,7 +1021,7 @@ impl Section {
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
                             if y == 15 {
-                                if let Some(down) = self.get_neighbor::<{Down}>() {
+                                if let Some(down) = self.get_neighbor(Down) {
                                     light_staging_buffer.put_u32(down.get_face_light::<{Up}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
@@ -1079,7 +1086,7 @@ impl Section {
                     for x in start_x..=end_x {
                         for y in start_y..=end_y {
                             if z == 15 {
-                                if let Some(south) = self.get_neighbor::<{North}>() {
+                                if let Some(south) = self.get_neighbor(North) {
                                     light_staging_buffer.put_u32(south.get_face_light::<{South}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
@@ -1118,7 +1125,7 @@ impl Section {
                     for y in start_y..=end_y {
                         for z in start_z..=end_z {
                             if x == 15 {
-                                if let Some(west) = self.get_neighbor::<{East}>() {
+                                if let Some(west) = self.get_neighbor(East) {
                                     light_staging_buffer.put_u32(west.get_face_light::<{West}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
@@ -1157,7 +1164,7 @@ impl Section {
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
                             if y == 15 {
-                                if let Some(down) = self.get_neighbor::<{Down}>() {
+                                if let Some(down) = self.get_neighbor(Down) {
                                     light_staging_buffer.put_u32(down.get_face_light::<{Up}>(BlockPos::new(x, y, z)) as u32);
                                 }
                                 else {
@@ -1193,7 +1200,6 @@ impl Section {
         self.mesh_solid(solid_staging_buffer, geometry_buffer_allocator);
         self.mesh_solid_light(solid_staging_buffer, light_staging_buffer, light_buffer_allocator);
         if let (Some(solid_segment), Some(solid_light_segment)) = (&self.solid_segment, &self.solid_light_segment) {
-            // geometry_buffer_allocator.upload_offset_staging_buffer(solid_segment, solid_staging_buffer.idx, 4 * mem::size_of::<u32>(), solid_staging_buffer);
             geometry_buffer_allocator.buffer_sub_data(solid_segment, solid_staging_buffer.idx, 4 * mem::size_of::<u32>(), &raw const solid_staging_buffer.buffer.0 as *const c_void);
             let offset = solid_light_segment.offset / mem::size_of::<u32>() as u32;
             geometry_buffer_allocator.buffer_sub_data(solid_segment, 3 * mem::size_of::<u32>(), 0, &raw const self.section_pos as *const c_void);
