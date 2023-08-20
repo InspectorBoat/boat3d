@@ -57,8 +57,8 @@ impl WorldRenderer {
         image[1] = 255;
         image[2] = 255;
         image[3] = 0;
-        block_texture.storage_3d(1, gl_wrapper::RGBA8, 4, 4, 64);
-        block_texture.sub_image_3d(0, 0, 0, 0, 4, 4, 64, gl_wrapper::RGBA, gl_wrapper::UNSIGNED_BYTE, &raw const image as *const c_void);
+        block_texture.storage_3d(1, gl_wrapper::RGBA8, 1, 1, 1024);
+        block_texture.sub_image_3d(0, 0, 0, 0, 1, 1, 1024, gl_wrapper::RGBA, gl_wrapper::UNSIGNED_BYTE, &raw const image as *const c_void);
         block_texture.parameter_signed_integer(gl_wrapper::TEXTURE_WRAP_S, gl_wrapper::REPEAT as i32);
         block_texture.parameter_signed_integer(gl_wrapper::TEXTURE_WRAP_T, gl_wrapper::REPEAT as i32);
         block_texture.parameter_signed_integer(gl_wrapper::TEXTURE_MIN_FILTER, gl_wrapper::NEAREST as i32);
