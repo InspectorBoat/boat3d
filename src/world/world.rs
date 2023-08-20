@@ -50,7 +50,7 @@ impl World {
         for x in 0..World::MAX_SECTION_X {
             for y in 0..World::MAX_SECTION_Y {
                 for z in 0..World::MAX_SECTION_Z {
-                    let mut section = Box::<Section>::new_zeroed().assume_init();
+                    let mut section = Box::new(Section::new());
                     section.set_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
                     // section.make_terrain(&noise);
                     section.make_terrain_debug();
@@ -217,6 +217,6 @@ impl World {
     }
 
     pub const MAX_SECTION_X: usize = 2;
-    pub const MAX_SECTION_Y: usize = 1;
-    pub const MAX_SECTION_Z: usize = 1;
+    pub const MAX_SECTION_Y: usize = 2;
+    pub const MAX_SECTION_Z: usize = 2;
 }

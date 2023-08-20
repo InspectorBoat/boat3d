@@ -3,7 +3,7 @@ use std::fmt::Debug;
 
 
 #[repr(transparent)]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Ord, Eq)]
 pub struct BlockPos {
     pub index: usize
 }

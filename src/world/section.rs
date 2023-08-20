@@ -32,6 +32,10 @@ pub struct Section {
     pub neighbors: SectionNeighbors,
     // if the chunk needs to be remeshed
     pub dirty: bool,
+    // whether the chunk's block store has been initialized
+    pub has_blocks: bool,
+    // whether the chunk's light store has been initialized
+    pub has_light: bool,
     // number of rectangular block faces in a section
     pub solid_quad_count: u32,
     pub solid_segment: Option<BufferSegment>,
@@ -54,6 +58,7 @@ pub struct SectionNeighbors {
 
 impl Section {
     pub fn set_block(&mut self, block_pos: BlockPos, block_id: u16) {
+        self.has_blocks = true;
         if block_id != self.blocks[block_pos.index] {
             self.dirty = true;
             self.blocks[block_pos.index] = block_id;
@@ -76,6 +81,88 @@ impl Section {
                 up.dirty = true;
             }
         }
+    }
+    pub fn set_blocks(&mut self, blocks: [u16; 4096]) {
+        self.has_blocks = true;
+        self.blocks = blocks;
+        if let Some(west) = self.get_neighbor(East) {
+            west.dirty = true;
+        }
+        if let Some(east) = self.get_neighbor(West) {
+            east.dirty = true;
+        }
+        if let Some(south) = self.get_neighbor(North) {
+            south.dirty = true;
+        }
+        if let Some(north) = self.get_neighbor(South) {
+            north.dirty = true;
+        }
+        if let Some(down) = self.get_neighbor(Down) {
+            down.dirty = true;
+        }
+        if let Some(up) = self.get_neighbor(Up) {
+            up.dirty = true;
+        }
+    }
+    pub fn set_light(&mut self, block_pos: BlockPos, light: u8) {
+        self.has_light = true;
+        if light != self.light[block_pos.index] {
+            self.dirty = true;
+            self.light[block_pos.index] = light;
+            if block_pos.x() == 0 && let Some(west) = self.get_neighbor(East) {
+                west.dirty = true;
+            }
+            if block_pos.x() == 15 && let Some(east) = self.get_neighbor(West) {
+                east.dirty = true;
+            }
+            if block_pos.z() == 0 && let Some(south) = self.get_neighbor(North) {
+                south.dirty = true;
+            }
+            if block_pos.z() == 15 && let Some(north) = self.get_neighbor(South) {
+                north.dirty = true;
+            }
+            if block_pos.y() == 0 && let Some(down) = self.get_neighbor(Down) {
+                down.dirty = true;
+            }
+            if block_pos.y() == 15 && let Some(up) = self.get_neighbor(Up) {
+                up.dirty = true;
+            }
+        }
+    }
+    pub fn set_lights(&mut self, light: [u8; 4096]) {
+        self.has_light = true;
+        self.light = light;
+        if let Some(west) = self.get_neighbor(East) {
+            west.dirty = true;
+        }
+        if let Some(east) = self.get_neighbor(West) {
+            east.dirty = true;
+        }
+        if let Some(south) = self.get_neighbor(North) {
+            south.dirty = true;
+        }
+        if let Some(north) = self.get_neighbor(South) {
+            north.dirty = true;
+        }
+        if let Some(down) = self.get_neighbor(Down) {
+            down.dirty = true;
+        }
+        if let Some(up) = self.get_neighbor(Up) {
+            up.dirty = true;
+        }
+    }
+
+    pub fn can_mesh(&self) -> bool {
+        if let Some(north) = self.get_neighbor(North) && let Some(south) = self.get_neighbor(South)
+            && let Some(east) = self.get_neighbor(East) && let Some(west) = self.get_neighbor(West)
+            // && let Some(up) = self.get_neighbor(Up) && let Some(down) = self.get_neighbor(Down)
+        {
+            return true;
+            // return (north.has_blocks && north.has_light) && (south.has_blocks && south.has_light)
+            //     && (east.has_blocks && east.has_light) && (west.has_blocks && west.has_light)
+                // && (up.has_blocks && north.has_light) && (down.has_blocks && down.has_light);
+        }
+        return false;
     }
 
     pub fn get_neighbor(&self, normal: Normal) -> Option<&mut Section> { unsafe {
@@ -154,37 +241,40 @@ impl Section {
         match normal {
             North => {
                 if block_pos.z() == 0 {
-                    return self.get_neighbor(North).map_or(0, |section| section.get_light(block_pos.set_z(15)));
+                    return self.get_neighbor(North).map_or_else(|| 8, |section| section.get_light(block_pos.set_z(15)));
                 }
                 return self.get_light(block_pos - BlockPos::new(0, 0, 1));
             }
             South => {
                 if block_pos.z() == 15 {
-                    return self.get_neighbor(South).map_or(0, |section| section.get_light(block_pos.set_z(0)));
+                    // actually belongs to chunk to the north
+                    return self.get_light(block_pos.set_z(0));
                 }
                 return self.get_light(block_pos + BlockPos::new(0, 0, 1));
             }
             West => {
                 if block_pos.x() == 0 {
-                    return self.get_neighbor(West).map_or(0, |section| section.get_light(block_pos.set_x(15)));
+                    return self.get_neighbor(West).map_or_else(|| 8, |section| section.get_light(block_pos.set_x(15)));
                 }
                 return self.get_light(block_pos - BlockPos::new(1, 0, 0));
             }
             East => {
                 if block_pos.x() == 15 {
-                    return self.get_neighbor(East).map_or(0, |section| section.get_light(block_pos.set_x(0)));
+                    // actually belongs to chunk to the west
+                    return self.get_light(block_pos.set_x(0));
                 }
                 return self.get_light(block_pos + BlockPos::new(1, 0, 0));
             }
             Down => {
                 if block_pos.y() == 0 {
-                    return self.get_neighbor(Down).map_or(0, |section| section.get_light(block_pos.set_y(15)));
+                    return self.get_neighbor(Down).map_or_else(|| 8, |section| section.get_light(block_pos.set_y(15)));
                 }
                 return self.get_light(block_pos - BlockPos::new(0, 1, 0));
             }
             Up => {
                 if block_pos.y() == 15 {
-                    return self.get_neighbor(Up).map_or(0, |section| section.get_light(block_pos.set_y(0)));
+                    // actually belongs to chunk below
+                    return self.get_light(block_pos.set_y(0));
                 }
                 return self.get_light(block_pos + BlockPos::new(0, 1, 0));
             }
@@ -233,6 +323,8 @@ impl Section {
     } }
 
     pub fn make_terrain(&mut self, noise: &Vec<f32>) { unsafe {
+        self.has_blocks = true;
+        self.has_light = true;
         for x in 0..16 { for y in 0..16 { for z in 0..16 {
             let max_world_y = World::MAX_SECTION_Y * 16;
             let max_world_z = World::MAX_SECTION_Z * 16;
@@ -260,27 +352,38 @@ impl Section {
                     0
                 }
             };
-            *light = rand::random::<u8>() & 0xf;
-            // *light = (*noise_val * 64.0 - 32.0) as u8 & 0xf;
+            // *light = rand::random::<u8>() & 0xf;
+            *light = (*noise_val * 64.0 - 32.0) as u8 & 0xf;
         } } }
     } }
     pub fn make_terrain_debug(&mut self) {
+        self.has_blocks = true;
+        self.has_light = true;
         for i in 0..4096 {
             let pos = BlockPos { index: i };
             if pos.x() == 0 {
                 self.blocks[i] = 1;
             }
-            // if pos.y() == 0 {
-            //     self.blocks[i] = 1;
-            // }
-            // if pos.z() == 0 {
-            //     self.blocks[i] = 1;
-            // }
-            // self.light[i] = rand::random::<u8>() % 16;
-            self.light[i] = if pos.y() == 0 { 0 } else { 15 };
+            if pos.y() == 0 {
+                self.blocks[i] = 1;
+            }
+            if pos.z() == 0 {
+                self.blocks[i] = 1;
+            }
+            self.light[i] = rand::random::<u8>() & 15;
+            // self.light[i] = if pos.y() == 1 && pos.z() == 1 { 0 } else { 15 };
+            // self.light[i] = (pos.x() + pos.y()) as u8;
         }
-        // self.blocks[BlockPos::new(1, 1, 1).index] = 1;
-        // self.blocks[BlockPos::new(1, 2, 1).index] = 3;
+        // self.blocks[BlockPos::new(0, 0, 15).index] = 1;
+        // for x in 0..16 {
+        //     for y in 0..16 {
+        //         for z in 0..16 {
+        //             if x == 0 && y == 0 && z == 0 {
+        //                 self.light[BlockPos::new(x, y, z).index] = 15;
+        //             }
+        //         }
+        //     }            
+        // }
     }
 
     pub fn set_pos(&mut self, section_pos: Vector3<i32>) {
@@ -433,7 +536,6 @@ impl Section {
             row_id += 16;
         }
     }
-    
     pub fn mesh_east_west(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         let mut row_w: [Run; 16] = Default::default();
         let mut run_w: &mut Run = &mut row_w[0];
@@ -580,7 +682,6 @@ impl Section {
             row_id += 16;
         }
     }
-    
     pub fn mesh_down_up(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         let mut row_d: [Run; 16] = Default::default();
         let mut run_d: &mut Run = &mut row_d[0];
@@ -938,7 +1039,7 @@ impl Section {
                     let start_y = quad.y / 16;
                     let end_y = (quad.y + quad.height) / 16;
 
-                    // if this from the neighboring section, z wraps to 15, which is the only way for it to be 15
+                    // if this from the neighboring section, z wraps to 0, which is the only way for it to be 0
                     let z = (quad.z - 16) / 16;
                     
                     for y in start_y..=end_y {
@@ -963,7 +1064,7 @@ impl Section {
                     }
                 }
                 West => {
-                    // if this from the neighboring section, x wraps to 15, which is the only way for it to be 15
+                    // if this from the neighboring section, x wraps to 0, which is the only way for it to be 0
                     let x = quad.x / 16;
 
                     let start_y = quad.y / 16;
@@ -997,7 +1098,7 @@ impl Section {
                     let start_x = quad.x / 16;
                     let end_x = (quad.x + quad.height) / 16;
 
-                    // if this from the neighboring section, y wraps to 15, which is the only way for it to be 15
+                    // if this from the neighboring section, y wraps to 0, which is the only way for it to be 0
                     let y = (quad.y - 16) / 16;
     
                     let start_z = quad.z / 16;
@@ -1005,14 +1106,6 @@ impl Section {
                     
                     for x in start_x..=end_x {
                         for z in start_z..=end_z {
-                            if y == 15 {
-                                if let Some(down) = self.get_neighbor(Down) {
-                                    light_staging_buffer.put_u32(down.get_offset_light(BlockPos::new(x, y, z), Up) as u32);
-                                }
-                                else {
-                                    light_staging_buffer.put_u32(rand::random::<u32>() & 15);
-                                }
-                            }
                             light_staging_buffer.put_u32(self.get_offset_light(BlockPos::new(x, y, z), Up) as u32);
                         }
                     }
@@ -1158,6 +1251,7 @@ impl Section {
     } }
 
     pub fn mesh(&mut self, solid_staging_buffer: &mut StagingBuffer, trans_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) {
+        self.dirty = false;
         geometry_buffer_allocator.free(self.solid_segment.take());
         geometry_buffer_allocator.free(self.trans_segment.take());
         light_buffer_allocator.free(self.solid_light_segment.take());
@@ -1220,6 +1314,10 @@ impl Section {
         };
     }
 
+    pub fn new() -> Section { unsafe {
+        return mem::zeroed();
+    } }
+
     pub const INDICES_ZYX: [u32; 4096] = {
         let mut arr = [0; 4096];
         let mut i = 0;
@@ -1268,3 +1366,11 @@ impl Section {
         arr
     };
 }
+
+/*
+1. Frustum cull sections
+2. Render sections based on previous frame's visibility results (sections that were previously visible are not rendered)
+3. Rasterize minimum enclosing AABBs of sections not culled by frustum test on current depth buffer
+4. Write to visibility results - if any pixel of a section's AABB was drawn, it is visible
+5. Render sections that weren't visible last frame but passed rasterization test
+*/
