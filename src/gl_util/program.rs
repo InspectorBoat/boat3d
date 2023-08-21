@@ -1,4 +1,6 @@
-use super::{shader::Shader, gl_wrapper};
+use std::mem::{ManuallyDrop, self};
+
+use super::{shader::Shader, gl_wrapper, gl_helper::{PANIC_ON_DROP, LOG_ON_DROP}};
 
 #[derive(Debug)]
 pub struct Program {
@@ -6,24 +8,44 @@ pub struct Program {
 }
 
 impl Program {
-    pub fn create(vertex_shader: Shader, fragment_shader: Shader) -> Program { unsafe {
-        let id = gl_wrapper::CreateProgram();
-
-        gl_wrapper::AttachShader(id, vertex_shader.id);
-        gl_wrapper::AttachShader(id, fragment_shader.id);
-        gl_wrapper::LinkProgram(id);
+    pub fn create_with(vertex_shader: Shader, fragment_shader: Shader) -> Program { unsafe {
+        let program = Program::create();
+        
+        program.attach_shader(&vertex_shader);
+        program.attach_shader(&fragment_shader);
+        program.link();
+        program.detach_shader(&vertex_shader);
+        program.detach_shader(&fragment_shader);
+        vertex_shader.kill();
+        fragment_shader.kill();
 
         let mut status = 0;
-        gl_wrapper::GetProgramiv(id, gl_wrapper::LINK_STATUS, &mut status);
+        gl_wrapper::GetProgramiv(program.id, gl_wrapper::LINK_STATUS, &raw mut status);
         if status != gl_wrapper::TRUE as i32 {
             let mut length: i32 = 4096;
-            let mut log: Vec<u8> = vec![0; length as usize];
-            gl_wrapper::GetProgramInfoLog(id, length, &mut length, log.as_mut_ptr() as *mut i8);
+            let mut log: [u8; 4096] = [0; 4096];
+            gl_wrapper::GetProgramInfoLog(program.id, length, &mut length, &raw mut log as *mut i8);
             panic!("Failed to link programs: {}", std::str::from_utf8(&log).unwrap());
         }
+        return program;
+    } }
+
+    pub fn create() -> Program { unsafe {
         return Program {
-            id
+            id: gl_wrapper::CreateProgram()
         };
+    } }
+
+    pub fn attach_shader(&self, shader: &Shader) { unsafe {
+        gl_wrapper::AttachShader(self.id, shader.id);
+    } }
+
+    pub fn link(&self) { unsafe {
+        gl_wrapper::LinkProgram(self.id);
+    } }
+
+    pub fn detach_shader(&self, shader: &Shader) { unsafe {
+        gl_wrapper::DetachShader(self.id, shader.id);
     } }
 
     pub fn bind(&self) { unsafe {
@@ -37,5 +59,20 @@ impl Program {
     pub fn uniform_matrix_4fv(&self, location: i32, count: i32, transpose: bool, v0: *const f32) { unsafe {
         gl_wrapper::ProgramUniformMatrix4fv(self.id, location, count, transpose as u8, v0);
     } }
+
+    pub fn kill(self) { unsafe {
+        gl_wrapper::DeleteProgram(self.id);
+        mem::forget(self);
+    } }
 }
 
+impl Drop for Program {
+    fn drop(&mut self) {
+        if LOG_ON_DROP {
+            println!("dropped program {}", self.id);
+        }
+        if PANIC_ON_DROP {
+            panic!();
+        }
+    }
+}

@@ -90,6 +90,9 @@ impl BufferAllocator {
         // gl_wrapper::CopyNamedBufferSubData(self.staging_buffer.id, self.device_buffer.id, 0, (segment.offset as usize + offset) as isize, length as isize);
         self.device_buffer.buffer_sub_data(segment.offset as isize + offset as isize, length as isize, data);
     } }
+    pub fn kill(self) {
+        self.device_buffer.kill();
+    }
 }
 
 #[derive(PartialEq, PartialOrd, Eq, Clone, Copy, Debug)]

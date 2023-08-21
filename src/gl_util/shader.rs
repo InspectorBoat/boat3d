@@ -1,6 +1,6 @@
-use std::ffi::CString;
+use std::{ffi::CString, mem};
 
-use super::gl_wrapper;
+use super::{gl_wrapper, gl_helper::{PANIC_ON_DROP, LOG_ON_DROP}};
 
 #[derive(Debug)]
 pub struct Shader {
@@ -25,4 +25,19 @@ impl Shader {
         }
         return Shader { id: id };
     } }
+    pub fn kill(self) { unsafe {
+        gl_wrapper::DeleteShader(self.id);
+        mem::forget(self);
+    } }
+}
+
+impl Drop for Shader {
+    fn drop(&mut self) {
+        if LOG_ON_DROP {
+            println!("dropped shader {}", self.id);
+        }
+        if PANIC_ON_DROP {
+            panic!();
+        }
+    }
 }

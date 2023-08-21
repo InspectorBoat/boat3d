@@ -1,4 +1,6 @@
-use super::gl_wrapper;
+use std::mem;
+
+use super::{gl_wrapper, gl_helper::{PANIC_ON_DROP, LOG_ON_DROP}};
 
 #[derive(Debug)]
 pub struct RenderBuffer {
@@ -21,5 +23,17 @@ impl RenderBuffer {
     } }
     pub fn kill(self) { unsafe {
         gl_wrapper::DeleteRenderbuffers(1, &self.id);
+        mem::forget(self);
     } }
+}
+
+impl Drop for RenderBuffer {
+    fn drop(&mut self) {
+        if LOG_ON_DROP {
+            println!("dropped renderbuffer {}", self.id);
+        }
+        if PANIC_ON_DROP {
+            panic!();
+        }
+    }
 }

@@ -1,6 +1,6 @@
-use std::ffi::c_void;
+use std::{ffi::c_void, mem};
 
-use super::{texture::Texture, renderbuffer::RenderBuffer, gl_wrapper};
+use super::{texture::Texture, renderbuffer::RenderBuffer, gl_wrapper, gl_helper::{PANIC_ON_DROP, LOG_ON_DROP}};
 
 #[derive(Debug)]
 pub struct FrameBuffer {
@@ -50,5 +50,18 @@ impl FrameBuffer {
     } }
     pub fn kill(self) { unsafe {
         gl_wrapper::DeleteFramebuffers(1, &self.id);
+        mem::forget(self);
     } }
+    pub const DEFAULT: FrameBuffer = FrameBuffer { id: 0 };
+}
+
+impl Drop for FrameBuffer {
+    fn drop(&mut self) {
+        if LOG_ON_DROP {
+            println!("dropped framebuffer {}", self.id);
+        }
+        if PANIC_ON_DROP {
+            panic!();
+        }
+    }
 }

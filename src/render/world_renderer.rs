@@ -1,4 +1,4 @@
-use std::{ffi::{c_void, c_uint}, mem, cell::UnsafeCell, ops::Mul, hint, simd::{Simd, SimdFloat}};
+use std::{ffi::{c_void, c_uint}, mem::{self, ManuallyDrop}, cell::UnsafeCell, ops::Mul, hint, simd::{Simd, SimdFloat}};
 
 use cgmath::{Vector4, Matrix4, Matrix, InnerSpace};
 use gl::types::GLsync;
@@ -19,7 +19,6 @@ pub struct WorldRenderer {
     pub indices: UnsafeCell<Vec<*const c_void>>,
     pub solid_indirect_buffer: UnsafeCell<Vec<IndirectCommand>>,
     pub trans_indirect_buffer: UnsafeCell<Vec<IndirectCommand>>,
-    pub rasterizer: UnsafeCell<Rasterizer>,
 }
 
 impl WorldRenderer {
@@ -37,8 +36,6 @@ impl WorldRenderer {
             indices: UnsafeCell::new(Vec::new()),
             solid_indirect_buffer: UnsafeCell::new(Vec::new()),
             trans_indirect_buffer: UnsafeCell::new(Vec::new()),
-            
-            rasterizer: UnsafeCell::new(Rasterizer::new(600, 600)),
         };
     }
     
@@ -121,15 +118,15 @@ impl WorldRenderer {
     } }
 
     pub fn make_shader_programs(&mut self) { unsafe {
-        let solid_program = Program::create(
+        let solid_program = Program::create_with(
             Shader::create(gl_wrapper::VERTEX_SHADER, include_str!("../shader/solid.glsl.vert")),
             Shader::create(gl_wrapper::FRAGMENT_SHADER, include_str!("../shader/solid.glsl.frag"))
         );
-        let post_program = Program::create(
+        let post_program = Program::create_with(
             Shader::create(gl_wrapper::VERTEX_SHADER, include_str!("../shader/post.glsl.vert")),
             Shader::create(gl_wrapper::FRAGMENT_SHADER, include_str!("../shader/post.glsl.frag"))
         );
-        let trans_program = Program::create(
+        let trans_program = Program::create_with(
             Shader::create(gl_wrapper::VERTEX_SHADER, include_str!("../shader/trans.glsl.vert")),
             Shader::create(gl_wrapper::FRAGMENT_SHADER, include_str!("../shader/trans.glsl.frag"))
         );
@@ -171,13 +168,13 @@ impl WorldRenderer {
             self.render_post(target_framebuffer_id);  
 
             // blit depth buffer
-            gl_wrapper::BindFramebuffer(gl_wrapper::DRAW_FRAMEBUFFER, target_framebuffer_id as u32);
-            gl_wrapper::BindFramebuffer(gl_wrapper::READ_FRAMEBUFFER, framebuffer.id);
-            gl_wrapper::BlitFramebuffer(0, 0, status.width, status.height, 0, 0, status.width, status.height, gl_wrapper::DEPTH_BUFFER_BIT, gl_wrapper::NEAREST);
+            // gl_wrapper::BindFramebuffer(gl_wrapper::DRAW_FRAMEBUFFER, target_framebuffer_id as u32);
+            // gl_wrapper::BindFramebuffer(gl_wrapper::READ_FRAMEBUFFER, framebuffer.id);
+            // gl_wrapper::BlitFramebuffer(0, 0, status.width, status.height, 0, 0, status.width, status.height, gl_wrapper::DEPTH_BUFFER_BIT, gl_wrapper::NEAREST);
             
-            gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, target_framebuffer_id as u32);
+            // gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, target_framebuffer_id as u32);
 
-            self.draw_trans(trans_drawn_sections, status);
+            // self.draw_trans(trans_drawn_sections, status);
         }
     } }
 
@@ -241,7 +238,7 @@ impl WorldRenderer {
         let Some(block_texture) = &self.block_texture else { panic!(); };
         post_program.bind();
         gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, target_framebuffer_id as u32);
-    
+
         // gl_wrapper::ClearColor(1.0, 1.0, 1.0, 1.0);
         // gl_wrapper::Clear(gl_wrapper::COLOR_BUFFER_BIT | gl_wrapper::DEPTH_BUFFER_BIT);
         
@@ -298,6 +295,33 @@ impl WorldRenderer {
             }
         }
     } }
+
+    pub fn kill(self) {
+        if let Some(framebuffer) = self.framebuffer {
+            framebuffer.kill();
+        }
+        if let Some(texture_attachment) = self.texture_attachment {
+            texture_attachment.kill();
+        }
+        if let Some(renderbuffer_attachment) = self.renderbuffer_attachment {
+            renderbuffer_attachment.kill();
+        }
+        if let Some(index_buffer) = self.index_buffer {
+            index_buffer.kill();
+        }
+        if let Some(solid_program) = self.solid_program {
+            solid_program.kill();
+        }
+        if let Some(post_program) = self.post_program {
+            post_program.kill();
+        }
+        if let Some(trans_program) = self.trans_program {
+            trans_program.kill();
+        }
+        if let Some(block_texture) = self.block_texture {
+            block_texture.kill();
+        }
+    }
 
     pub const ELEMENT_INDICES_PER_QUAD: i32 = 5;
     pub const BYTES_PER_QUAD: i32 = 8;

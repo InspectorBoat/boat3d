@@ -59,3 +59,6 @@ impl WindowStatus {
         return WindowStatus { fill_mode: gl_wrapper::FILL, maximized: false, mouse_captured: false, width: 600, height: 600, rasterize: false }
     }
 }
+
+pub const PANIC_ON_DROP: bool = true;
+pub const LOG_ON_DROP: bool = true;

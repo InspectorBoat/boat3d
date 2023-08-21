@@ -192,7 +192,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeDeleteWorld<'local>(
     STORAGE = gl_pointers as *mut PointerStorage;
     let world = Box::from_raw(world as *mut World);
 
-    mem::drop(world);
+    world.kill();
 } }
 
 // meshes a chunk section
@@ -296,12 +296,6 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeRenderWorld<'local>(
 
     gl_wrapper::Enable(gl_wrapper::PRIMITIVE_RESTART);
     gl_wrapper::PrimitiveRestartIndex(u32::MAX as u32);
-    
-    gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE0);
-    gl_wrapper::Enable(gl_wrapper::TEXTURE_2D);
-    
-    gl_wrapper::ActiveTexture(gl_wrapper::TEXTURE1);
-    gl_wrapper::Enable(gl_wrapper::TEXTURE_3D);
     
     // for (section_pos, section) in world.sections.iter_mut() {
     //     if section.dirty && section.can_mesh() {

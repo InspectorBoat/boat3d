@@ -132,4 +132,7 @@ impl Rasterizer {
         // self.texture.sub_image_2d(0, 0, 0, 100, 100, gl_wrapper::RED, gl_wrapper::UNSIGNED_BYTE, &raw const image as *const c_void);
         self.texture.sub_image_2d(0, 0, 0, 600, 600, gl_wrapper::RED, gl_wrapper::UNSIGNED_BYTE, self.buffer.as_ptr() as *const c_void);
     } }
+    pub fn kill(self) {
+        self.texture.kill();
+    }
 }

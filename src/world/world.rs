@@ -52,8 +52,8 @@ impl World {
                 for z in 0..World::MAX_SECTION_Z {
                     let mut section = Box::new(Section::new());
                     section.set_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
-                    // section.make_terrain(&noise);
-                    section.make_terrain_debug();
+                    section.make_terrain(&noise);
+                    // section.make_terrain_debug();
                     self.add_section(section);
                 }
             }
@@ -216,7 +216,13 @@ impl World {
         }
     }
 
-    pub const MAX_SECTION_X: usize = 2;
-    pub const MAX_SECTION_Y: usize = 2;
-    pub const MAX_SECTION_Z: usize = 2;
+    pub fn kill(self) {
+        self.geometry_buffer_allocator.kill();
+        self.light_buffer_allocator.kill();
+        self.renderer.kill();
+    }
+
+    pub const MAX_SECTION_X: usize = 16;
+    pub const MAX_SECTION_Y: usize = 16;
+    pub const MAX_SECTION_Z: usize = 16;
 }

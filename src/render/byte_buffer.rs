@@ -1,5 +1,5 @@
 use std::{ops::{IndexMut, Index}, mem::{self, ManuallyDrop}};
-use crate::{block::{blockface::BlockFace, normal::Normal::*}, world::section::Section, render::{buffer_quad::BufferQuad, gpu_quad::GpuQuad}, gl_util::{buffer::Buffer, gl_wrapper}};
+use crate::{block::{blockface::BlockFace, normal::Normal::*}, world::{section::Section, blockpos::BlockPos}, render::{buffer_quad::BufferQuad, gpu_quad::GpuQuad}, gl_util::{buffer::Buffer, gl_wrapper}};
 #[repr(C, align(8))]
 #[derive(Debug)]
 pub struct StagingBuffer {
@@ -50,9 +50,9 @@ impl StagingBuffer {
             buffer: Box::new(RawBuffer([0; 262144]))
         };
     } }
-    pub fn put_face(&mut self, face: &BlockFace, pos: usize) { unsafe {
+    pub fn put_face(&mut self, face: &BlockFace, block_pos: BlockPos) { unsafe {
         let loc = self.buffer.0.as_mut_ptr().byte_add(self.idx) as *mut u64;
-        *loc = face.as_u64() + Section::INDICES_ZYX[pos] as u64;
+        *loc = face.as_u64() + Section::INDICES_ZYX[block_pos.index] as u64;
         self.idx += 8;
     } }
     pub fn format_quads(&mut self) { unsafe {

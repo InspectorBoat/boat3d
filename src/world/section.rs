@@ -359,31 +359,20 @@ impl Section {
     pub fn make_terrain_debug(&mut self) {
         self.has_blocks = true;
         self.has_light = true;
-        for i in 0..4096 {
-            let pos = BlockPos { index: i };
-            if pos.x() == 0 {
-                self.blocks[i] = 1;
+        let mut i = 0;
+        for x in 0..16 {
+            for y in 0..16 {
+                for z in 0..16 {
+                    let pos = BlockPos::new(x, y, z);
+                    if pos.index >= 256 { continue; }
+                    self.blocks[pos.index] = i % 2;
+                    self.light[pos.index] = rand::random::<u8>() & 15;
+                    i += 1;
+                }
+                i += 1;
             }
-            if pos.y() == 0 {
-                self.blocks[i] = 1;
-            }
-            if pos.z() == 0 {
-                self.blocks[i] = 1;
-            }
-            self.light[i] = rand::random::<u8>() & 15;
-            // self.light[i] = if pos.y() == 1 && pos.z() == 1 { 0 } else { 15 };
-            // self.light[i] = (pos.x() + pos.y()) as u8;
+            i += 1;
         }
-        // self.blocks[BlockPos::new(0, 0, 15).index] = 1;
-        // for x in 0..16 {
-        //     for y in 0..16 {
-        //         for z in 0..16 {
-        //             if x == 0 && y == 0 && z == 0 {
-        //                 self.light[BlockPos::new(x, y, z).index] = 15;
-        //             }
-        //         }
-        //     }            
-        // }
     }
 
     pub fn set_pos(&mut self, section_pos: Vector3<i32>) {
@@ -845,8 +834,8 @@ impl Section {
                     if !compare.0 {
                         Run::add_face::<{North}>(solid_staging_buffer, north_face, block_pos);
                     }
-                    if !compare.1 {
-                        Run::add_face::<{South}>(solid_staging_buffer, south_face, block_pos);
+                    if !compare.1  && z != 0 {
+                        Run::add_face::<{South}>(solid_staging_buffer, south_face, block_pos - BlockPos::new(0, 0, 1));
                     }
                     
                     for face in self.get_extra_face::<{North}>(block_pos) {
@@ -858,7 +847,27 @@ impl Section {
                 }
             }
         }
+        for x in 0..16_u8 {
+            for y in 0..16_u8 {
+                let block_pos = BlockPos::new(x, y, 15);
+
+                let north_face = self.get_offset_block(block_pos, North).model.get_face(North);
+                let south_face = self.get_block(block_pos).model.get_face(South);
+                let compare = BlockFace::should_cull_pair(north_face, south_face);
+                
+                let offset = Section::INDICES_ZYX[block_pos.index] as u64;
+                
+                if !compare.1 {
+                    Run::add_face::<{South}>(solid_staging_buffer, south_face, block_pos);
+                }
+                
+                for face in self.get_opposing_extra_face::<{North}>(block_pos) {
+                    Run::add_face::<{South}>(solid_staging_buffer, &face, block_pos);
+                }
+            }
+        }
     }
+    
     pub fn mesh_east_west_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
@@ -991,10 +1000,10 @@ impl Section {
         self.trans_segment = geometry_buffer_allocator.alloc(trans_staging_buffer.idx + 4 * mem::size_of::<u32>());
     }
     pub fn mesh_solid(&mut self, solid_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
-        self.mesh_north_south(solid_staging_buffer);
-        self.mesh_east_west(solid_staging_buffer);
-        self.mesh_down_up(solid_staging_buffer);
-        // self.mesh_north_south_no_merge(solid_staging_buffer);
+        // self.mesh_north_south(solid_staging_buffer);
+        // self.mesh_east_west(solid_staging_buffer);
+        // self.mesh_down_up(solid_staging_buffer);
+        self.mesh_north_south_no_merge(solid_staging_buffer);
         // self.mesh_east_west_no_merge(solid_staging_buffer);
         // self.mesh_down_up_no_merge(solid_staging_buffer);
         self.mesh_unaligned(solid_staging_buffer);

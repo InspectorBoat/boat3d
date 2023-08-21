@@ -1,6 +1,6 @@
 use std::{ffi::c_void, mem};
 
-use super::gl_wrapper;
+use super::{gl_wrapper, gl_helper::{PANIC_ON_DROP, LOG_ON_DROP}};
 
 #[derive(Debug)]
 pub struct Buffer {
@@ -33,7 +33,8 @@ impl Buffer {
         return gl_wrapper::IsBuffer(self.id) == gl_wrapper::TRUE;
     } }
     pub fn kill(self) { unsafe {
-        gl_wrapper::DeleteBuffers(1, &self.id);
+        gl_wrapper::DeleteBuffers(1, &raw const self.id);
+        mem::forget(self);
     } } 
     pub fn storage(&self, length: isize, flags: u32) { unsafe {
         gl_wrapper::NamedBufferStorage(
@@ -75,9 +76,11 @@ impl Buffer {
 
 impl Drop for Buffer {
     fn drop(&mut self) {
-        // if self.valid() {
-            // panic!();
-        // }
+        if LOG_ON_DROP {
+            println!("dropped buffer {}", self.id);
+        }
+        if PANIC_ON_DROP {
+            panic!();
+        }
     }
 }
-
