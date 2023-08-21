@@ -52,19 +52,20 @@ impl StagingBuffer {
     } }
     pub fn put_face(&mut self, face: &BlockFace, block_pos: BlockPos) { unsafe {
         let loc = self.buffer.0.as_mut_ptr().byte_add(self.idx) as *mut u64;
-        *loc = face.as_u64() + Section::INDICES_ZYX[block_pos.index] as u64;
+
+        *loc = face.as_u64() + ((block_pos.x() << 4) | (block_pos.y() << 12) | (block_pos.z() << 20)) as u64;
         self.idx += 8;
     } }
     pub fn format_quads(&mut self) { unsafe {
         for buffer_quad in self.iter_mut().map(|quad| mem::transmute::<&mut [u8; 8], &mut BufferQuad>(quad)) {
             let mut gpu_quad = GpuQuad {
-                x: buffer_quad.get_rel_x(),
-                y: buffer_quad.get_rel_y(),
-                z: buffer_quad.get_rel_z(),
-                normal: buffer_quad.get_normal(),
-                width: buffer_quad.get_width(),
-                height: buffer_quad.get_height(),
-                texture: buffer_quad.get_texture(),
+                x: buffer_quad.rel_x(),
+                y: buffer_quad.rel_y(),
+                z: buffer_quad.rel_z(),
+                normal: buffer_quad.normal(),
+                width: buffer_quad.width(),
+                height: buffer_quad.height(),
+                texture: buffer_quad.texture(),
             };
             match gpu_quad.normal {
                 North | South => {
@@ -78,6 +79,43 @@ impl StagingBuffer {
                 }
                 _ => {}
             }
+
+            *buffer_quad = mem::transmute::<GpuQuad, BufferQuad>(gpu_quad);
+        }
+    } }
+    pub fn format_quads_fixed(&mut self) { unsafe {
+        for buffer_quad in self.iter_mut().map(|quad| mem::transmute::<&mut [u8; 8], &mut BufferQuad>(quad)) {
+            let mut left = buffer_quad.left();
+            let mut bottom = buffer_quad.bottom();
+            let mut depth = buffer_quad.depth();
+
+            match buffer_quad.normal() {
+                North | South => {
+                    (left, bottom, depth) = (left, bottom, depth);
+                }
+                East | West => {
+                    (left, bottom, depth) = (depth, bottom, left);
+                }
+                Down | Up => {
+                    (left, bottom, depth) = (bottom, depth, left);
+                }
+                _ => {}
+            }
+
+            let gpu_quad = GpuQuad {
+                x: buffer_quad.block_x() * 16 + left,
+                y: buffer_quad.block_y() * 16 + bottom,
+                z: buffer_quad.block_z() * 16 + depth,
+                normal: buffer_quad.normal(),
+                width: buffer_quad.width(),
+                height: buffer_quad.height(),
+                texture: buffer_quad.texture(),
+            };
+
+            if buffer_quad.normal() == Up {
+                println!("{buffer_quad:?} {gpu_quad:?}");
+            }
+
             *buffer_quad = mem::transmute::<GpuQuad, BufferQuad>(gpu_quad);
         }
     } }

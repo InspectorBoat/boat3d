@@ -68,8 +68,8 @@ impl Run {
     pub fn merge_face(&mut self, buffer: &mut StagingBuffer, face: &BlockFace) { unsafe {
         let buffer_quad = &mut *(&raw mut buffer[self.idx as u32] as *mut BufferQuad);
         buffer_quad.block_width_top += 0x10;
-        buffer_quad.block_rel_z_right &= 0xf0;
-        buffer_quad.block_rel_z_right |= face.rig;
+        buffer_quad.block_z_right &= 0xf0;
+        buffer_quad.block_z_right |= face.rig;
 
         self.end += 1;
         self.rig = face.rig;
@@ -83,8 +83,8 @@ impl Run {
         // copy the quad over
         buffer.put_u64(buffer.get_u64(self.idx));
         let buffer_quad = &mut *(&raw mut buffer[idx] as *mut BufferQuad);
-        buffer_quad.block_rel_y_bottom = rel_y << 4;
-        buffer_quad.block_rel_z_right = (rel_z << 4) | face.rig;
+        buffer_quad.block_y_bottom = rel_y << 4;
+        buffer_quad.block_z_right = (rel_z << 4) | face.rig;
         buffer_quad.block_width_top = ((rel_x - self.beg) << 4) | face.top;
         buffer_quad.block_height_depth &= 0x0f;
 
