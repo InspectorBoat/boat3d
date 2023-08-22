@@ -1,4 +1,6 @@
 use std::{simd::{Simd, SimdPartialOrd, SimdPartialEq}, hint::{unreachable_unchecked, self}};
+use crate::world::merged_quad::RelPos;
+
 use super::normal::Normal;
 use Normal::*;
 use QuarterFaceType::*;
@@ -18,21 +20,21 @@ use QuarterFaceType::*;
 #[derive(Debug)]
 #[repr(C, align(8))]
 pub struct BlockFace {
-    pub lef: u8,
-    pub bot: u8,
-    pub rig: u8,
+    pub left: u8,
+    pub bottom: u8,
+    pub right: u8,
     pub top: u8,
-    pub dep: u8,
-    pub nor: Normal,
-    pub tex: u16,
+    pub depth: u8,
+    pub normal: Normal,
+    pub texture: u16,
 }
 
 impl BlockFace {
     pub fn should_cull_pair_simd(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
-        if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX); }
+        if a.depth != 0 || b.depth != 15 { return (a.texture == u16::MAX, b.texture == u16::MAX); }
 
-        let a = Simd::from_array([a.lef, a.bot, a.rig, a.top]);
-        let b = Simd::from_array([b.lef, b.bot, b.rig, b.top]);
+        let a = Simd::from_array([a.left, a.bottom, a.right, a.top]);
+        let b = Simd::from_array([b.left, b.bottom, b.right, b.top]);
 
         let cull_a = a.simd_ge(b).all();
         let cull_b = b.simd_ge(a).all();
@@ -41,7 +43,7 @@ impl BlockFace {
     }
     
     pub fn should_cull_pair(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
-        if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX); }
+        if a.depth != 0 || b.depth != 15 { return (a.texture == u16::MAX, b.texture == u16::MAX); }
         
         let a = a.as_u32();
         let b = b.as_u32();
@@ -73,10 +75,10 @@ impl BlockFace {
     }
 
     pub fn should_cull_row_pair(row_a: &[&BlockFace; 16], row_b: &[&BlockFace; 16]) -> ([bool; 16], [bool; 16]) {
-        let depth_a = Simd::from_array(row_a.clone().map(|face| face.dep)).simd_eq(Simd::splat(0));
-        let depth_b = Simd::from_array(row_b.clone().map(|face| face.dep)).simd_eq(Simd::splat(15));
-        let tex_a = Simd::from_array(row_a.clone().map(|face| face.tex)).simd_eq(Simd::splat(u16::MAX));
-        let tex_b = Simd::from_array(row_b.clone().map(|face| face.tex)).simd_eq(Simd::splat(u16::MAX));
+        let depth_a = Simd::from_array(row_a.clone().map(|face| face.depth)).simd_eq(Simd::splat(0));
+        let depth_b = Simd::from_array(row_b.clone().map(|face| face.depth)).simd_eq(Simd::splat(15));
+        let tex_a = Simd::from_array(row_a.clone().map(|face| face.texture)).simd_eq(Simd::splat(u16::MAX));
+        let tex_b = Simd::from_array(row_b.clone().map(|face| face.texture)).simd_eq(Simd::splat(u16::MAX));
         let depth = depth_a | depth_b;
 
         let row_a = Simd::from_array(row_a.clone().map(|face| face.as_u32()));
@@ -98,15 +100,15 @@ impl BlockFace {
     pub fn culled_by(&self, b: &BlockFace, normal: Normal) -> bool { unsafe {
         match normal {
             North | East | Down => {
-                if self.dep != 0 || b.dep != 15 { return false; }
+                if self.depth != 0 || b.depth != 15 { return false; }
             },
             South | West | Up => {
-                if self.dep != 15 || b.dep != 0 { return false; }
+                if self.depth != 15 || b.depth != 0 { return false; }
             }
             _ => { hint::unreachable_unchecked(); }
         }
-        let a = Simd::from_array([self.lef, self.bot, self.rig, self.top]);
-        let b = Simd::from_array([b.lef, b.bot, b.rig, b.top]);
+        let a = Simd::from_array([self.left, self.bottom, self.right, self.top]);
+        let b = Simd::from_array([b.left, b.bottom, b.right, b.top]);
 
         return a.simd_ge(b).all();
     } }
@@ -118,6 +120,14 @@ impl BlockFace {
         return *(&raw const *self as *const u32);
     } }
     
+    pub fn min(&self, rel_pos: RelPos) -> RelPos {
+        return RelPos {
+            layer:  rel_pos.layer  * 16 + self.depth,
+            row:    rel_pos.row    * 16 + self.bottom,
+            column: rel_pos.column * 16 + self.left,
+        }
+    }
+
     pub const fn full(normal: Normal, texture: u16) -> BlockFace { unsafe {
         let depth = match normal {
             North | West | Down => { 0 }
@@ -125,13 +135,13 @@ impl BlockFace {
             _ => { 0 }
         };
         return BlockFace {
-            lef: 0,
-            bot: 0,
-            rig: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
             top: 0,
-            dep: depth,
-            nor: normal,
-            tex: texture,
+            depth,
+            normal,
+            texture,
         }
     } }
 
@@ -144,49 +154,49 @@ impl BlockFace {
         match half {
             HalfFaceType::Left => {
                 return BlockFace {
-                    lef: 0,
-                    bot: 0,
-                    rig: 8,
+                    left: 0,
+                    bottom: 0,
+                    right: 8,
                     top: 0,
-                    dep: depth,
-                    nor: normal,
-                    tex: texture,
+                    depth,
+                    normal,
+                    texture,
                 };
             },
             HalfFaceType::Right => {
                 return BlockFace {
-                    lef: 8,
-                    bot: 0,
-                    rig: 0,
+                    left: 8,
+                    bottom: 0,
+                    right: 0,
                     top: 0,
-                    dep: depth,
-                    nor: normal,
-                    tex: texture,
+                    depth,
+                    normal,
+                    texture,
                 };
 
             },
             HalfFaceType::Top => {
                 return BlockFace {
-                    lef: 0,
-                    bot: 8,
-                    rig: 0,
+                    left: 0,
+                    bottom: 8,
+                    right: 0,
                     top: 0,
-                    dep: depth,
-                    nor: normal,
-                    tex: texture,
+                    depth,
+                    normal,
+                    texture,
                 };
 
 
             },
             HalfFaceType::Bottom => {
                 return BlockFace {
-                    lef: 0,
-                    bot: 0,
-                    rig: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
                     top: 8,
-                    dep: depth,
-                    nor: normal,
-                    tex: texture,
+                    depth,
+                    normal,
+                    texture,
                 };
             },
         }
@@ -201,49 +211,49 @@ impl BlockFace {
         match quarter {
             TopLeft => {
                 return BlockFace {
-                    lef: 0,
-                    bot: 8,
-                    rig: 8,
+                    left: 0,
+                    bottom: 8,
+                    right: 8,
                     top: 0,
-                    dep: depth,
-                    nor: normal,
-                    tex: texture,
+                    depth,
+                    normal,
+                    texture,
                 };
             },
             TopRight => {
                 return BlockFace {
-                    lef: 8,
-                    bot: 8,
-                    rig: 0,
+                    left: 8,
+                    bottom: 8,
+                    right: 0,
                     top: 0,
-                    dep: depth,
-                    nor: normal,
-                    tex: texture,
+                    depth,
+                    normal,
+                    texture,
                 };
 
             },
             BottomLeft => {
                 return BlockFace {
-                    lef: 0,
-                    bot: 0,
-                    rig: 8,
+                    left: 0,
+                    bottom: 0,
+                    right: 8,
                     top: 8,
-                    dep: depth,
-                    nor: normal,
-                    tex: texture,
+                    depth,
+                    normal,
+                    texture,
                 };
 
 
             },
             BottomRight => {
                 return BlockFace {
-                    lef: 8,
-                    bot: 0,
-                    rig: 0,
+                    left: 8,
+                    bottom: 0,
+                    right: 0,
                     top: 8,
-                    dep: depth,
-                    nor: normal,
-                    tex: texture,
+                    depth,
+                    normal,
+                    texture,
                 };
             },
         }
@@ -256,21 +266,21 @@ impl BlockFace {
             _ => { 0 }
         };
         return BlockFace {
-            lef: 0x0f, bot: 0x0f, dep: depth, nor: Unaligned,
-            rig: 0x0f, top: 0x0f, tex: u16::MAX
+            left: 0x0f, bottom: 0x0f, depth, normal: Unaligned,
+            right: 0x0f, top: 0x0f, texture: u16::MAX
         };
     }
 
     pub const fn set_depth(self, depth: u8) -> BlockFace {
         return BlockFace { 
-            dep: depth,
+            depth,
             ..self
         };
     }
 
     pub const fn set_texture(self, texture: u16) -> BlockFace {
         return BlockFace { 
-            tex: texture,
+            texture,
             ..self
         };
     }
@@ -279,13 +289,13 @@ impl BlockFace {
 impl Clone for BlockFace {
     fn clone(&self) -> BlockFace {
         return BlockFace {
-            lef: self.lef,
-            bot: self.bot,
-            rig: self.rig,
+            left: self.left,
+            bottom: self.bottom,
+            right: self.right,
             top: self.top,
-            dep: self.dep,
-            nor: self.nor,
-            tex: self.tex 
+            depth: self.depth,
+            normal: self.normal,
+            texture: self.texture 
         };
     }
 }
@@ -300,6 +310,6 @@ pub enum QuarterFaceType {
 
 impl PartialEq for BlockFace {
     fn eq(&self, other: &Self) -> bool {
-        return self.top == other.top && self.lef == other.lef && self.bot == other.bot && self.dep == other.dep && self.nor == other.nor && self.rig == other.rig && self.top == other.top;
+        return self.top == other.top && self.left == other.left && self.bottom == other.bottom && self.depth == other.depth && self.normal == other.normal && self.right == other.right && self.top == other.top;
     }
 }

@@ -30,10 +30,10 @@ impl Run {
      */
     pub fn match_right(&self, face: &BlockFace) -> bool { unsafe {
         return (
-            self.tex == face.tex &&
+            self.tex == face.texture &&
             self.rig == 0 &&
-            face.lef == 0 &&
-            self.bot == face.bot &&
+            face.left == 0 &&
+            self.bot == face.bottom &&
             self.top == face.top
         );
     } }
@@ -43,10 +43,10 @@ impl Run {
      */
     pub fn match_top_left(&self, face: &BlockFace) -> bool { unsafe {
         return (
-            self.tex == face.tex &&
+            self.tex == face.texture &&
             self.top == 0 &&
-            face.bot == 0 &&
-            self.lef == face.lef
+            face.bottom == 0 &&
+            self.lef == face.left
         );
     } }
     /**
@@ -55,8 +55,8 @@ impl Run {
      */
     pub fn match_top_right(&self, face: &BlockFace) -> bool { unsafe {
         return (
-            face.bot == 0 &&
-            self.rig == face.rig
+            face.bottom == 0 &&
+            self.rig == face.right
         );
     } }
     /**
@@ -68,10 +68,10 @@ impl Run {
         let buffer_quad = &mut *(&raw mut buffer[self.idx as u32] as *mut BufferQuad);
         buffer_quad.block_width_top += 0x10;
         buffer_quad.block_z_right &= 0xf0;
-        buffer_quad.block_z_right |= face.rig;
+        buffer_quad.block_z_right |= face.right;
 
         self.end += 1;
-        self.rig = face.rig;
+        self.rig = face.right;
     } }
     /**
      * Pulls the run up after an incomplete merge
@@ -84,7 +84,7 @@ impl Run {
         let buffer_quad = &mut *(&raw mut buffer[idx] as *mut BufferQuad);
         buffer_quad.block_x_left = (block_pos.x() << 4) as u8;
         buffer_quad.block_y_bottom = (block_pos.y() << 4) as u8;
-        buffer_quad.block_z_right = (block_pos.z() << 4) as u8 | face.rig;
+        buffer_quad.block_z_right = (block_pos.z() << 4) as u8 | face.right;
         // buffer_quad.block_y_bottom = rel_y << 4;
         // buffer_quad.block_z_right = (rel_z << 4) | face.rig;
         buffer_quad.block_width_top = ((rel_x - self.beg) << 4) | face.top;
@@ -114,16 +114,16 @@ impl Run {
         self.idx = buffer.idx as u32;
         buffer.put_face(face, pos);
 
-        self.lef = face.lef;
-        self.bot = face.bot;
+        self.lef = face.left;
+        self.bot = face.bottom;
 
-        self.rig = face.rig;
+        self.rig = face.right;
         self.top = face.top;
 
         self.beg = rel_x;
         self.end = rel_x;
 
-        self.tex = face.tex;
+        self.tex = face.texture;
 
         self.row = row;
     }
@@ -133,9 +133,9 @@ impl Run {
      */
     pub fn match_faces(face: &BlockFace, next: &BlockFace) -> bool {
         return (
-            face.tex == next.tex &&
-            face.rig == next.lef &&
-            face.bot == next.bot &&
+            face.texture == next.texture &&
+            face.right == next.left &&
+            face.bottom == next.bottom &&
             face.top == next.top
         );
     }
