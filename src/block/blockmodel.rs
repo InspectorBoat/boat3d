@@ -93,12 +93,12 @@ impl BlockModel {
 
     pub const fn none() -> BlockModel {
         return BlockModel {
-            north: BlockFace::none(),
-            east: BlockFace::none(),
-            down: BlockFace::none(),
-            south: BlockFace::none(),
-            west: BlockFace::none(),
-            up: BlockFace::none(),
+            north: BlockFace::none(North),
+            east: BlockFace::none(East),
+            down: BlockFace::none(Down),
+            south: BlockFace::none(South),
+            west: BlockFace::none(West),
+            up: BlockFace::none(Up),
             extra_north: &[],
             extra_east: &[],
             extra_down: &[],
