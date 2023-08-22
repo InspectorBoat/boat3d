@@ -1,5 +1,6 @@
-use std::{simd::{Simd, SimdPartialOrd, SimdPartialEq}, hint::{unreachable_unchecked, self}};
-use crate::world::merged_quad::RelPos;
+use core_simd::simd::{Simd, SimdPartialOrd, SimdPartialEq};
+use std::hint::{unreachable_unchecked, self};
+use crate::world::merged_quad::{RelPos, RelBlockPos};
 
 use super::normal::Normal;
 use Normal::*;
@@ -17,7 +18,7 @@ use QuarterFaceType::*;
  * 
  */
 
-#[derive(Debug)]
+#[derive(Copy, Debug)]
 #[repr(C, align(8))]
 pub struct BlockFace {
     pub left: u8,
@@ -30,7 +31,7 @@ pub struct BlockFace {
 }
 
 impl BlockFace {
-    pub fn should_cull_pair_simd(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+    pub fn pair_culled_simd(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.depth != 0 || b.depth != 15 { return (a.texture == u16::MAX, b.texture == u16::MAX); }
 
         let a = Simd::from_array([a.left, a.bottom, a.right, a.top]);
@@ -42,7 +43,8 @@ impl BlockFace {
         return (cull_a, cull_b);
     }
     
-    pub fn should_cull_pair(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+    #[inline]
+    pub fn pair_culled(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.depth != 0 || b.depth != 15 { return (a.texture == u16::MAX, b.texture == u16::MAX); }
         
         let a = a.as_u32();
@@ -74,15 +76,16 @@ impl BlockFace {
         return (cull_a, cull_b);
     }
 
-    pub fn should_cull_row_pair(row_a: &[&BlockFace; 16], row_b: &[&BlockFace; 16]) -> ([bool; 16], [bool; 16]) {
-        let depth_a = Simd::from_array(row_a.clone().map(|face| face.depth)).simd_eq(Simd::splat(0));
-        let depth_b = Simd::from_array(row_b.clone().map(|face| face.depth)).simd_eq(Simd::splat(15));
-        let tex_a = Simd::from_array(row_a.clone().map(|face| face.texture)).simd_eq(Simd::splat(u16::MAX));
-        let tex_b = Simd::from_array(row_b.clone().map(|face| face.texture)).simd_eq(Simd::splat(u16::MAX));
+    pub fn row_pair_culled(row_a: Simd<u64, 16>, row_b: Simd<u64, 16>) -> ([bool; 16], [bool; 16]) {
+        let depth_a = (row_a & Simd::splat(0x0000f000)).simd_eq(Simd::splat(0x00000000));
+        let depth_b = (row_b & Simd::splat(0x0000f000)).simd_eq(Simd::splat(0x0000f000));
+        let tex_a = (row_a & Simd::splat(0x000000ff)).simd_eq(Simd::splat(0x000000ff));
+        let tex_b = (row_b & Simd::splat(0x000000ff)).simd_eq(Simd::splat(0x000000ff));
+
         let depth = depth_a | depth_b;
 
-        let row_a = Simd::from_array(row_a.clone().map(|face| face.as_u32()));
-        let row_b = Simd::from_array(row_b.clone().map(|face| face.as_u32()));
+        let row_a = row_a >> Simd::splat(32);
+        let row_b = row_b >> Simd::splat(32);
 
         let diff_row = row_a + Simd::splat(0x10101010) - row_b;
 
@@ -97,13 +100,33 @@ impl BlockFace {
         return (cull_row_a.to_array(), cull_row_b.to_array());
     }
 
-    pub fn culled_by(&self, b: &BlockFace, normal: Normal) -> bool { unsafe {
+    pub fn row_culled_by(row_a: &[&BlockFace; 16], row_b: &[&BlockFace; 16]) -> [bool; 16] {
+        let depth_a = Simd::from_array(row_a.clone().map(|face| face.depth)).simd_eq(Simd::splat(0));
+        let depth_b = Simd::from_array(row_b.clone().map(|face| face.depth)).simd_eq(Simd::splat(15));
+
+        let tex_a = Simd::from_array(row_a.clone().map(|face| face.texture)).simd_eq(Simd::splat(u16::MAX));
+        let tex_b = Simd::from_array(row_b.clone().map(|face| face.texture)).simd_eq(Simd::splat(u16::MAX));
+        
+        let depth = depth_a | depth_b;
+
+        let row_a = Simd::from_array(row_a.clone().map(|face| face.as_u32()));
+        let row_b = Simd::from_array(row_b.clone().map(|face| face.as_u32()));
+
+        let diff_row = row_a + Simd::splat(0x10101010) - row_b;
+
+        let cull_row_a = (diff_row & Simd::splat(0x10101010)).simd_eq(Simd::splat(0x10101010));
+        let cull_row_a = depth.select_mask(cull_row_a.into(), tex_a.into());
+
+        return cull_row_a.to_array();
+    }
+
+    pub fn culled_by_simd(&self, b: &BlockFace, normal: Normal) -> bool { unsafe {
         match normal {
-            North | East | Down => {
-                if self.depth != 0 || b.depth != 15 { return false; }
+            North | West | Down => {
+                if self.depth != 0 || b.depth != 15 { return self.texture == u16::MAX; }
             },
-            South | West | Up => {
-                if self.depth != 15 || b.depth != 0 { return false; }
+            South | East | Up => {
+                if self.depth != 15 || b.depth != 0 { return self.texture == u16::MAX; }
             }
             _ => { hint::unreachable_unchecked(); }
         }
@@ -113,6 +136,24 @@ impl BlockFace {
         return a.simd_ge(b).all();
     } }
 
+    pub fn culled_by(&self, b: &BlockFace, normal: Normal) -> bool { unsafe {
+        match normal {
+            North | West | Down => {
+                if self.depth != 0 || b.depth != 15 { return self.texture == u16::MAX; }
+            },
+            South | East | Up => {
+                if self.depth != 15 || b.depth != 0 { return self.texture == u16::MAX; }
+            }
+            _ => { hint::unreachable_unchecked(); }
+        }
+        let a = self.as_u32();
+        let b = b.as_u32();
+
+        let diff = a + 0x10101010 - b;
+
+        return diff & 0x10101010 == 0x10101010;
+    } }
+
     pub fn as_u64(&self) -> u64 { unsafe {
         return *(&raw const *self as *const u64);
     } }
@@ -120,11 +161,20 @@ impl BlockFace {
         return *(&raw const *self as *const u32);
     } }
     
-    pub fn min(&self, rel_pos: RelPos) -> RelPos {
+    #[inline]
+    pub fn min(&self, rel_block_pos: RelBlockPos) -> RelPos {
         return RelPos {
-            layer:  rel_pos.layer  * 16 + self.depth,
-            row:    rel_pos.row    * 16 + self.bottom,
-            column: rel_pos.column * 16 + self.left,
+            layer:  rel_block_pos.layer  * 16 + self.depth,
+            row:    rel_block_pos.row    * 16 + self.bottom,
+            column: rel_block_pos.column * 16 + self.left,
+        }
+    }
+    #[inline]
+    pub fn max(&self, rel_block_pos: RelBlockPos) -> RelPos {
+        return RelPos {
+            layer:  rel_block_pos.layer  * 16 + self.depth,
+            row:    rel_block_pos.row    * 16 + 16 - self.top,
+            column: rel_block_pos.column * 16 + 16 - self.right,
         }
     }
 

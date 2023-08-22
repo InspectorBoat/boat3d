@@ -29,6 +29,7 @@ impl BufferAllocator {
         };
     } }
     pub fn alloc(&mut self, size: usize) -> Option<BufferSegment> { unsafe {
+        if size == 0 { return None; }
         let size = size as u32;
         if let Some(free_segment) = self.free_segments_by_length.iter().find(|segment| segment.length.get() >= size) {
             self.used += size;
