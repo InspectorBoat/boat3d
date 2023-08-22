@@ -1,10 +1,26 @@
-use super::{blockmodel::BlockModel, block::Block, blockface::{BlockFace, HalfFaceType::*, QuarterFaceType::*}};
+use std::hint;
+
+use super::{blockmodel::BlockModel, block::Block, blockface::{BlockFace, HalfFaceType::*, QuarterFaceType::*}, normal::Normal};
 use crate::block::normal::Normal::*;
 
 #[derive(Clone, Debug)]
 #[repr(C)]
 pub struct BlockState {
     pub model: BlockModel,
+}
+
+impl BlockState {
+    pub fn get_face(&self, normal: Normal) -> &BlockFace { unsafe {
+        match normal {
+            North => { return &self.model.north; }
+            East => { return &self.model.east; }
+            Down => { return &self.model.down; }
+            South => { return &self.model.south; }
+            West => { return &self.model.west; }
+            Up => { return &self.model.up; }
+            _ => { hint::unreachable_unchecked(); }
+        }
+    } }
 }
 
 pub static BLOCKS: [BlockState; 5] = [
@@ -15,12 +31,12 @@ pub static BLOCKS: [BlockState; 5] = [
     // full
     BlockState {
         model: BlockModel::full(1)
-            // .set_texture(South, 1)
-            // .set_texture(East, 2)
-            // .set_texture(Down, 3)
-            // .set_texture(North, 4)
-            // .set_texture(West, 5)
-            // .set_texture(Up, 6),
+            .set_texture(South, 1)
+            .set_texture(East, 2)
+            .set_texture(Down, 3)
+            .set_texture(North, 4)
+            .set_texture(West, 5)
+            .set_texture(Up, 6),
     },
     // stair
     BlockState {
