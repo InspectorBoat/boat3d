@@ -40,8 +40,8 @@ impl BlockFace {
         return (cull_a, cull_b);
     }
     
-    pub fn culled_by<const N: Normal>(&self, b: &BlockFace) -> bool { unsafe {
-        match N {
+    pub fn culled_by(&self, b: &BlockFace, normal: Normal) -> bool { unsafe {
+        match normal {
             North | East | Down => {
                 if self.dep != 0 || b.dep != 15 { return false; }
             },

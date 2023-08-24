@@ -1,3 +1,5 @@
+use std::arch::x86_64::*;
+use std::arch::x86_64::*;
 use std::ffi::c_void;
 use std::hint;
 use std::hint::unreachable_unchecked;
@@ -13,7 +15,7 @@ use crate::gl_util::buffer_allocator::BufferSegment;
 use crate::render::byte_buffer::StagingBuffer;
 use crate::render::gpu_quad::GpuQuad;
 use crate::block::{blockstate::BlockState, blockface::BlockFace};
-use super::blockpos::BlockPos;
+use super::blockpos::{BlockPos, RelBlockPos};
 use super::camera::Camera;
 use super::run::Run;
 use super::world::World;
@@ -364,7 +366,7 @@ impl Section {
             for y in 0..16 {
                 for z in 0..16 {
                     let pos = BlockPos::new(x, y, z);
-                    if x == 15 && y == 1 && z == 1 {
+                    if x <= 2 && y <= 0 && z <= 2 {
                         self.blocks[pos.index] = 1;
                     }
                     self.light[pos.index] = rand::random::<u8>() & 15;
@@ -374,30 +376,26 @@ impl Section {
             }
             i += 1;
         }
+        self.blocks[BlockPos::new(2, 0, 2).index] = 0;
     }
 
     pub fn set_pos(&mut self, section_pos: Vector3<i32>) {
         self.section_pos = section_pos;
     }
     
-    pub fn mesh_north_south(&mut self, solid_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_north_south_greedy(&self, solid_staging_buffer: &mut StagingBuffer) {
         let mut row_n: [Run; 16] = Default::default();
-        let mut run_n: &mut Run = &mut row_n[0];
-        let mut active_run_n: bool = false;
-        let mut same_row_n: bool = false;
+        let mut run_n: usize = 0;
         
         let mut row_s: [Run; 16] = Default::default();
-        let mut run_s: &mut Run = &mut row_s[0];
-        let mut active_run_s: bool = false;
-        let mut same_row_s: bool = false;
-        
-        let mut row_id: u16 = 0;
+        let mut run_s: usize = 0;
         
         // rel_x, rel_y, rel_z = x, y, z
         for rel_z in 0..16_u8 {
             for rel_y in 0..16_u8 {
                 for rel_x in 0..16_u8 {
                     let block_pos = BlockPos::new(rel_x, rel_y, rel_z);
+                    let rel_block_pos = RelBlockPos::new(rel_x, rel_y, rel_z);
 
                     let north_face = self.get_block(block_pos).model.get_face(North);
                     let south_face = self.get_offset_block(block_pos, North).model.get_face(South);
@@ -405,145 +403,66 @@ impl Section {
                     let compare = BlockFace::should_cull_pair(north_face, south_face);
                     
                     'north: {
-                        for face in self.get_extra_face::<{North}>(block_pos) {
-                            Run::add_face::<{North}>(solid_staging_buffer, face, block_pos);
-                        }
-            
                         if compare.0 {
-                            active_run_n = false;
-                            break 'north
+                            run_n = usize::MAX;
+                            break 'north;
                         }
-                        // /*
-                        if active_run_n && same_row_n {
-                            if run_n.match_right(north_face) {
-                                run_n.merge_face(solid_staging_buffer, north_face);
-                                break 'north
-                            } else {
-                                active_run_n = false;
-                            }
+                        if merge_same_row(rel_block_pos, &mut row_n, &mut run_n, north_face, solid_staging_buffer) {
+                            break 'north;
                         }
-                        // /*
-                        if !active_run_n {
-                            run_n = &mut row_n[rel_x as usize];
-                            if run_n.row + 1 == row_id && run_n.match_top_left(north_face) {
-                                same_row_n = false;
-                                active_run_n = true;
-                            }
-                        }
-                        if active_run_n {
-                            if run_n.end == rel_x {
-                                if run_n.match_top_right(north_face) {
-                                    run_n.pull(solid_staging_buffer, north_face, rel_x, rel_y, rel_z);
-                                    active_run_n = false;
-                                }
-                                else {
-                                    run_n.pull_partial(solid_staging_buffer, north_face, rel_x, rel_y, rel_z);
-                                    same_row_n = true;
-                                }
+                        try_begin_merge(&mut run_n, &mut row_n, rel_block_pos, north_face);
+
+                        if run_n != usize::MAX {
+                            if row_n[run_n].ending == rel_x {
+                                end_merge(North, &mut row_n, &mut run_n, rel_block_pos, north_face, solid_staging_buffer, block_pos);
                             }
                             else {
-                                let next_block_pos = block_pos + BlockPos::new(1, 0, 0);
-                                let next_north_face = self.get_block(next_block_pos).model.get_face(North);
-                                let next_south_face = (self.get_offset_block(next_block_pos, North).model.get_face(South));
-
-                                let compare = BlockFace::should_cull_pair(next_north_face, next_south_face);
-
-                                if compare.0 || !Run::match_faces(north_face, next_north_face) {
-                                    run_n.pull_partial(solid_staging_buffer, north_face, rel_x, rel_y, rel_z);
-                                    active_run_n = false;
-                                }
+                                continue_merge(North, self, &mut row_n, &mut run_n, rel_block_pos, north_face, solid_staging_buffer, block_pos + BlockPos::new(1, 0, 0));
                             }
-                            break 'north
+                            break 'north;
                         }
-                        // */
-                        // */
-                        run_n = &mut row_n[rel_x as usize];
-                        same_row_n = true;
-                        active_run_n = true;
-                        run_n.begin::<{North}>(solid_staging_buffer, north_face, block_pos, rel_x, row_id);
+                        run_n = rel_x as usize;
+                        row_n[run_n].begin::<{North}>(solid_staging_buffer, north_face, block_pos, rel_block_pos);
                     }
                     'south: {
-                        for face in self.get_opposing_extra_face::<{North}>(block_pos) {
-                            Run::add_face::<{North}>(solid_staging_buffer, face, block_pos);
-                        }
-
-                        if compare.1 {
-                            active_run_s = false;
+                        if compare.1 || rel_z == 0 {
+                            run_s = usize::MAX;
                             break 'south;
                         }
-                        // /*
-                        if active_run_s && same_row_s {
-                            if run_s.match_right(south_face) {
-                                run_s.merge_face(solid_staging_buffer, south_face);
-                                break 'south;
-                            } else {
-                                active_run_s = false;
-                            }
+                        if merge_same_row(rel_block_pos, &mut row_s, &mut run_s, south_face, solid_staging_buffer) {
+                            break 'south;
                         }
-                        // /*
-                        if !active_run_s {
-                            run_s = &mut row_s[rel_x as usize];
-                            if run_s.row + 1 == row_id && run_s.match_top_left(south_face) {
-                                same_row_s = false;
-                                active_run_s = true;
-                            }
-                        }
-                        if active_run_s {
-                            if run_s.end == rel_x {
-                                if run_s.match_top_right(south_face) {
-                                    run_s.pull(solid_staging_buffer, south_face, rel_x, rel_y, rel_z);
-                                    active_run_s = false;
-                                }
-                                else {
-                                    run_s.pull_partial(solid_staging_buffer, south_face, rel_x, rel_y, rel_z);
-                                    same_row_s = true;
-                                }
+                        try_begin_merge(&mut run_s, &mut row_s, rel_block_pos, south_face);
+                        if run_s != usize::MAX {
+                            if row_s[run_s].ending == rel_x {
+                                end_merge(South, &mut row_s, &mut run_s, rel_block_pos, south_face, solid_staging_buffer, block_pos);
                             }
                             else {
-                                let next_block_pos = block_pos + BlockPos::new(1, 0, 0);
-                                let next_north_face = self.get_block(next_block_pos).model.get_face(North);
-                                let next_south_face = self.get_offset_block(next_block_pos, North).model.get_face(South);
-                                let compare = BlockFace::should_cull_pair(next_north_face, next_south_face);
-                                
-                                if compare.1 || !Run::match_faces(south_face, next_south_face) {
-                                    run_s.pull_partial(solid_staging_buffer, south_face, rel_x, rel_y, rel_z);
-                                    active_run_s = false;
-                                }
+                                continue_merge(South, self, &mut row_s, &mut run_s, rel_block_pos, south_face, solid_staging_buffer, block_pos + BlockPos::new(1, 0, 0));
                             }
-                            break 'south
+                            break 'south;
                         }
-                        // */
-                        // */
-                        run_s = &mut row_s[rel_x as usize];
-                        active_run_s = true;
-                        same_row_s = true;
-                        run_s.begin::<{South}>(solid_staging_buffer, south_face, block_pos, rel_x, row_id);
+                        run_s = rel_x as usize;
+                        row_s[run_s].begin::<{South}>(solid_staging_buffer, south_face, block_pos - BlockPos::new(0, 0, 1), rel_block_pos);
                     }
                 }
-                (active_run_n, active_run_s) = (false, false);
-                row_id += 1;
+                (run_n, run_s) = (usize::MAX, usize::MAX);
             }
-            row_id += 16;
         }
     }
-    pub fn mesh_east_west(&mut self, solid_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_west_east_greedy(&self, solid_staging_buffer: &mut StagingBuffer) {
         let mut row_w: [Run; 16] = Default::default();
-        let mut run_w: &mut Run = &mut row_w[0];
-        let mut active_run_w: bool = false;
-        let mut same_row_w: bool = false;
+        let mut run_w: usize = 0;
         
         let mut row_e: [Run; 16] = Default::default();
-        let mut run_e: &mut Run = &mut row_e[0];
-        let mut active_run_e: bool = false;
-        let mut same_row_e: bool = false;
-        
-        let mut row_id: u16 = 0;
+        let mut run_e: usize = 0;
         
         // rel_x, rel_y, rel_z = z, y, x
         for rel_z in 0..16_u8 {
             for rel_y in 0..16_u8 {
                 for rel_x in 0..16_u8 {
                     let block_pos = BlockPos::new(rel_z, rel_y, rel_x);
+                    let rel_block_pos = RelBlockPos::new(rel_x, rel_y, rel_z);
 
                     let west_face = self.get_block(block_pos).model.get_face(West);
                     let east_face = self.get_offset_block(block_pos, West).model.get_face(East);
@@ -551,275 +470,125 @@ impl Section {
                     let compare = BlockFace::should_cull_pair(west_face, east_face);
 
                     'west: {
-                        for face in self.get_extra_face::<{East}>(block_pos) {
-                            Run::add_face::<{East}>(solid_staging_buffer, face, block_pos);
-                        }
-                        
                         if compare.0 {
-                            active_run_w = false;
-                            break 'west
+                            run_w = usize::MAX;
+                            break 'west;
                         }
 
-                        // /*
-                        if active_run_w && same_row_w {
-                            if run_w.match_right(west_face) {
-                                run_w.merge_face(solid_staging_buffer, west_face);
-                                break 'west
-                            } else {
-                                active_run_w = false;
-                            }
+                        if merge_same_row(rel_block_pos, &mut row_w, &mut run_w, west_face, solid_staging_buffer) {
+                            break 'west;
                         }
-                        // /*
-                        if !active_run_w {
-                            run_w = &mut row_w[rel_x as usize];
-                            if run_w.row + 1 == row_id && run_w.match_top_left(west_face) {
-                                same_row_w = false;
-                                active_run_w = true;
-                            }
-                        }
-                        if active_run_w {
-                            if run_w.end == rel_x {
-                                if run_w.match_top_right(west_face) {
-                                    run_w.pull(solid_staging_buffer, west_face, rel_x, rel_y, rel_z);
-                                    active_run_w = false;
-                                }
-                                else {
-                                    run_w.pull_partial(solid_staging_buffer, west_face, rel_x, rel_y, rel_z);
-                                    same_row_w = true;
-                                }
+                        try_begin_merge(&mut run_w, &mut row_w, rel_block_pos, west_face);
+                        if run_w != usize::MAX {
+                            if row_w[run_w].ending == rel_x {
+                                end_merge(West, &mut row_w, &mut run_w, rel_block_pos, west_face, solid_staging_buffer, block_pos);
                             }
                             else {
-                                let next_block_pos = block_pos + BlockPos::new(0, 0, 1);
-                                let next_west_face = self.get_block(next_block_pos).model.get_face(West);
-                                let next_east_face = self.get_offset_block(next_block_pos, West).model.get_face(East);
-                                let compare = BlockFace::should_cull_pair(next_west_face, next_east_face);
-
-                                if compare.0 || !Run::match_faces(west_face, next_west_face) {
-                                    run_w.pull_partial(solid_staging_buffer, west_face, rel_x, rel_y, rel_z);
-                                    active_run_w = false;
-                                }
+                                continue_merge(West, self, &mut row_w, &mut run_w, rel_block_pos, west_face, solid_staging_buffer, block_pos + BlockPos::new(0, 0, 1));
                             }
-                            break 'west
+                            break 'west;
                         }
-                        // */
-                        // */
-                        run_w = &mut row_w[rel_x as usize];
-                        same_row_w = true;
-                        active_run_w = true;
-                        run_w.begin::<{East}>(solid_staging_buffer, west_face, block_pos, rel_x, row_id);
+                        run_w = rel_x as usize;
+                        row_w[run_w].begin::<{East}>(solid_staging_buffer, west_face, block_pos, rel_block_pos);
                     }
                     'east: {
-                        for face in self.get_opposing_extra_face::<{East}>(block_pos) {
-                            Run::add_face::<{West}>(solid_staging_buffer, face, block_pos);
-                        }
-                        if compare.1 {
-                            active_run_e = false;
+                        if compare.1 || rel_z == 0 {
+                            run_e = usize::MAX;
                             break 'east;
                         }
-                        // /*
-                        if active_run_e && same_row_e {
-                            if run_e.match_right(east_face) {
-                                run_e.merge_face(solid_staging_buffer, east_face);
-                                break 'east;
-                            } else {
-                                active_run_e = false;
-                            }
+                        if merge_same_row(rel_block_pos, &mut row_e, &mut run_e, east_face, solid_staging_buffer) {
+                            break 'east;
                         }
-                        // /*
-                        if !active_run_e {
-                            run_e = &mut row_e[rel_x as usize];
-                            if run_e.row + 1 == row_id && run_e.match_top_left(east_face) {
-                                same_row_e = false;
-                                active_run_e = true;
-                            }
-                        }
-
-                        if active_run_e {
-                            // reached end of run
-                            if run_e.end == rel_x {
-                                if run_e.match_top_right(east_face) {
-                                    run_e.pull(solid_staging_buffer, east_face, rel_x, rel_y, rel_z);
-                                    active_run_e = false;
-                                }
-                                else {
-                                    run_e.pull_partial(solid_staging_buffer, east_face, rel_x, rel_y, rel_z);
-                                    same_row_e = true;
-                                }
+                        try_begin_merge(&mut run_e, &mut row_e, rel_block_pos, east_face);
+                        
+                        if run_e != usize::MAX {
+                            if row_e[run_e].ending == rel_x {
+                                end_merge(East, &mut row_e, &mut run_e, rel_block_pos, east_face, solid_staging_buffer, block_pos);
                             }
                             else {
-                                let next_block_pos = block_pos + BlockPos::new(0, 0, 1);
-                                let next_west_face = self.get_block(next_block_pos).model.get_face(West);
-                                let next_east_face = self.get_offset_block(next_block_pos, West).model.get_face(East);
-                                let compare = BlockFace::should_cull_pair(next_west_face, next_east_face);
-
-                                if compare.1 || !Run::match_faces(east_face, next_east_face) {
-                                    run_e.pull_partial(solid_staging_buffer, east_face, rel_x, rel_y, rel_z);
-                                    active_run_e = false;
-                                }
+                                continue_merge(East, self, &mut row_e, &mut run_e, rel_block_pos, east_face, solid_staging_buffer, block_pos + BlockPos::new(0, 0, 1));
                             }
-                            break 'east
+                            break 'east;
                         }
-                        // */
-                        // */
-                        run_e = &mut row_e[rel_x as usize];
-                        active_run_e = true;
-                        same_row_e = true;
-                        run_e.begin::<{West}>(solid_staging_buffer, east_face, block_pos, rel_x, row_id);
+                        run_e = rel_x as usize;
+                        row_e[run_e].begin::<{East}>(solid_staging_buffer, east_face, block_pos - BlockPos::new(1, 0, 0), rel_block_pos);
                     }
                 }
-                (active_run_w, active_run_e) = (false, false); row_id += 1;
+                (run_w, run_e) = (usize::MAX, usize::MAX);
             }
-            row_id += 16;
         }
     }
-    pub fn mesh_down_up(&mut self, solid_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_down_up_greedy(&self, solid_staging_buffer: &mut StagingBuffer) {
         let mut row_d: [Run; 16] = Default::default();
-        let mut run_d: &mut Run = &mut row_d[0];
-        let mut active_run_d: bool = false;
-        let mut same_row_d: bool = false;
+        let mut run_d: usize = 0;
         
         let mut row_u: [Run; 16] = Default::default();
-        let mut run_u: &mut Run = &mut row_u[0];
-        let mut active_run_u: bool = false;
-        let mut same_row_u: bool = false;
-        
-        let mut row_id: u16 = 0;
+        let mut run_u: usize = 0;
         
         // rel_x, rel_y, rel_z = z, x, y
         for rel_z in 0..16_u8 {
             for rel_y in 0..16_u8 {
                 for rel_x in 0..16_u8 {
                     let block_pos = BlockPos::new(rel_y, rel_z, rel_x);
+                    let rel_block_pos = RelBlockPos::new(rel_x, rel_y, rel_z);
 
                     let down_face = self.get_block(block_pos).model.get_face(Down);
                     let up_face = self.get_offset_block(block_pos, Down).model.get_face(Up);
 
-                    let compare = BlockFace::should_cull_pair(down_face, up_face);
+                    let cull = BlockFace::should_cull_pair(down_face, up_face);
                     'down: {
-                        for face in self.get_extra_face::<{Down}>(block_pos) {
-                            Run::add_face::<{Down}>(solid_staging_buffer, face, block_pos);
-                        }
-            
-                        if compare.0 {
-                            active_run_d = false;
-                            break 'down
+                        if cull.0 {
+                            run_d = usize::MAX;
+                            break 'down;
                         }
 
-                        // /*
-                        if active_run_d && same_row_d {
-                            if run_d.match_right(down_face) {
-                                run_d.merge_face(solid_staging_buffer, down_face);
-                                break 'down
+                        if merge_same_row(rel_block_pos, &mut row_d, &mut run_d, down_face, solid_staging_buffer) {
+                            break 'down;
+                        }
+
+                        try_begin_merge(&mut run_d, &mut row_d, rel_block_pos, down_face);
+
+                        if run_d != usize::MAX {
+                            if row_d[run_d].ending == rel_x {
+                                end_merge(Down, &mut row_d, &mut run_d, rel_block_pos, down_face, solid_staging_buffer, block_pos);
                             } else {
-                                active_run_d = false;
+                                continue_merge(Down, self, &mut row_d, &mut run_d, rel_block_pos, down_face, solid_staging_buffer, block_pos + BlockPos::new(0, 0, 1));
                             }
+                            break 'down;
                         }
-                        // /*
-                        if !active_run_d {
-                            run_d = &mut row_d[rel_x as usize];
-                            if run_d.row + 1 == row_id && run_d.match_top_left(down_face) {
-                                same_row_d = false;
-                                active_run_d = true;
-                            }
-                        }
-                        if active_run_d {
-                            if run_d.end == rel_x {
-                                if run_d.match_top_right(down_face) {
-                                    run_d.pull(solid_staging_buffer, down_face, rel_x, rel_y, rel_z);
-                                    active_run_d = false;
-                                }
-                                else {
-                                    run_d.pull_partial(solid_staging_buffer, down_face, rel_x, rel_y, rel_z);
-                                    same_row_d = true;
-                                }
-                            }
-                            else {
-                                let next_block_pos = block_pos + BlockPos::new(0, 0, 1);
-                                let next_down_face = self.get_block(next_block_pos).model.get_face(Down);
-                                let next_up_face = self.get_offset_block(next_block_pos, Down).model.get_face(Up);
-                                let compare = BlockFace::should_cull_pair(next_down_face, next_up_face);
 
-                                if compare.0 || !Run::match_faces(down_face, next_down_face) {
-                                    run_d.pull_partial(solid_staging_buffer, down_face, rel_x, rel_y, rel_z);
-                                    active_run_d = false;
-                                }
-                            }
-                            break 'down
-                        }
-                        // */
-                        // */
-                        run_d = &mut row_d[rel_x as usize];
-                        same_row_d = true;
-                        active_run_d = true;
-                        run_d.begin::<{Down}>(solid_staging_buffer, down_face, block_pos, rel_x, row_id);
+                        run_d = rel_x as usize;
+                        row_d[run_d].begin::<{Down}>(solid_staging_buffer, down_face, block_pos, rel_block_pos);
                     }
                     'up: {
-                        // break 'up;
-
-                        for face in self.get_opposing_extra_face::<{Down}>(block_pos) {
-                            Run::add_face::<{Up}>(solid_staging_buffer, face, block_pos);
+                        if cull.1 || rel_z == 0 {
+                            break 'up;
                         }
 
-                        if compare.1 {
-                            active_run_u = false;
-                            break 'up
-                        }
-                        // /*
-                        if active_run_u && same_row_u {
-                            if run_u.match_right(up_face) {
-                                run_u.merge_face(solid_staging_buffer, up_face);
-                                break 'up
-                            } else {
-                                active_run_u = false;
-                            }
-                        }
-                        // /* 
-                        if !active_run_u {
-                            run_u = &mut row_u[rel_x as usize];
-                            if run_u.row + 1 == row_id && run_u.match_top_left(up_face) {
-                                same_row_u = false;
-                                active_run_u = true;
-                            }
+                        if merge_same_row(rel_block_pos, &mut row_u, &mut run_u, up_face, solid_staging_buffer) {
+                            break 'up;
                         }
 
-                        if active_run_u {
-                            if run_u.end == rel_x {
-                                if run_u.match_top_right(up_face) {
-                                    run_u.pull(solid_staging_buffer, up_face, rel_x, rel_y, rel_z);
-                                    active_run_u = false;
-                                }
-                                else {
-                                    run_u.pull_partial(solid_staging_buffer, up_face, rel_x, rel_y, rel_z);
-                                    same_row_u = true;
-                                }
+                        try_begin_merge(&mut run_u, &mut row_u, rel_block_pos, up_face);
+
+                        if run_u != usize::MAX {
+                            if row_u[run_u].ending == rel_x {
+                                end_merge(Up, &mut row_u, &mut run_u, rel_block_pos, up_face, solid_staging_buffer, block_pos);
                             }
                             else {
-                                let next_block_pos = block_pos + BlockPos::new(0, 0, 1);
-                                let next_down_face = self.get_block(next_block_pos).model.get_face(Down);
-                                let next_up_face = self.get_offset_block(next_block_pos, Down).model.get_face(Up);
-                                let compare = BlockFace::should_cull_pair(next_down_face, next_up_face);
-
-                                if compare.1 || !Run::match_faces(up_face, next_up_face) {
-                                    run_u.pull_partial(solid_staging_buffer, up_face, rel_x, rel_y, rel_z);
-                                    active_run_u = false;
-                                }
+                                continue_merge(Up, self, &mut row_u, &mut run_u, rel_block_pos, up_face, solid_staging_buffer, block_pos + BlockPos::new(0, 0, 1));
                             }
-                            break 'up
+                            break 'up;
                         }
-                        // */
-                        // */
-                        run_u = &mut row_u[rel_x as usize];
-                        active_run_u = true;
-                        same_row_u = true;
-                        run_u.begin::<{Up}>(solid_staging_buffer, up_face, block_pos, rel_x, row_id);
+                        run_u = rel_x as usize;
+                        row_u[run_u].begin::<{Up}>(solid_staging_buffer, up_face, block_pos - BlockPos::new(0, 1, 0), rel_block_pos);
                     }
                 }
-                (active_run_d, active_run_u) = (false, false); row_id += 1;
+                (run_d, run_u) = (usize::MAX, usize::MAX);
             }
-            row_id += 16;
         }
     }
-    
+
     pub fn mesh_north_south_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
@@ -951,58 +720,57 @@ impl Section {
 
                     'north: for face in block.model.trans_north {
                         for opposing_face in opposing_block_south.model.trans_south {
-                            if face.culled_by::<{North}>(opposing_face) { continue 'north; }
+                            if face.culled_by(opposing_face, North) { continue 'north; }
                         }
                         Run::add_face::<{North}>(trans_staging_buffer, &face, block_pos);
                     }
                     'east: for face in block.model.trans_east {
                         for opposing_face in opposing_block_west.model.trans_west {
-                            if face.culled_by::<{East}>(opposing_face) { continue 'east; }
+                            if face.culled_by(opposing_face, East) { continue 'east; }
                         }
                         Run::add_face::<{East}>(trans_staging_buffer, &face, block_pos);
                     }
                     'down: for face in block.model.trans_down {
                         for opposing_face in opposing_block_down.model.trans_up {
-                            if face.culled_by::<{Down}>(opposing_face) { continue 'down; }
+                            if face.culled_by(opposing_face, Down) { continue 'down; }
                         }
                         Run::add_face::<{Down}>(trans_staging_buffer, &face, block_pos);
                     }
                     'south: for face in opposing_block_south.model.trans_south {
                         for opposing_face in block.model.trans_north {
-                            if face.culled_by::<{South}>(opposing_face) { continue 'south; }
+                            if face.culled_by(opposing_face, South) { continue 'south; }
                         }
                         Run::add_face::<{South}>(trans_staging_buffer, &face, block_pos);
                     }
                     'west: for face in opposing_block_west.model.trans_west {
                         for opposing_face in block.model.trans_east {
-                            if face.culled_by::<{West}>(opposing_face) { continue 'west; }
+                            if face.culled_by(opposing_face, West) { continue 'west; }
                         }
                         Run::add_face::<{West}>(trans_staging_buffer, &face, block_pos);
                     }
                     'up: for face in opposing_block_down.model.trans_up {
                         for opposing_face in block.model.trans_down {
-                            if face.culled_by::<{Up}>(opposing_face) { continue 'up; }
+                            if face.culled_by(opposing_face, Up) { continue 'up; }
                         }
                         Run::add_face::<{Up}>(trans_staging_buffer, &face, block_pos);
                     }
                 }
             }
         }
-        trans_staging_buffer.format_quads_fixed();
+        trans_staging_buffer.format_quads_relative();
         self.trans_quad_count = trans_staging_buffer.idx as u32 / 8;
         self.trans_segment = geometry_buffer_allocator.alloc(trans_staging_buffer.idx + 4 * mem::size_of::<u32>());
     }
     pub fn mesh_solid(&mut self, solid_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
-        // self.mesh_north_south(solid_staging_buffer);
-        // self.mesh_east_west(solid_staging_buffer);
-        // self.mesh_down_up(solid_staging_buffer);
-        self.mesh_north_south_no_merge(solid_staging_buffer);
-        self.mesh_east_west_no_merge(solid_staging_buffer);
-        self.mesh_down_up_no_merge(solid_staging_buffer);
+        self.mesh_north_south_greedy(solid_staging_buffer);
+        self.mesh_west_east_greedy(solid_staging_buffer);
+        self.mesh_down_up_greedy(solid_staging_buffer);
+        // self.mesh_north_south_no_merge(solid_staging_buffer);
+        // self.mesh_east_west_no_merge(solid_staging_buffer);
+        // self.mesh_down_up_no_merge(solid_staging_buffer);
 
         self.mesh_unaligned(solid_staging_buffer);
-
-        solid_staging_buffer.format_quads_fixed();
+        solid_staging_buffer.format_quads_relative();
         self.solid_quad_count = solid_staging_buffer.idx as u32 / 8;
         self.solid_segment = geometry_buffer_allocator.alloc(solid_staging_buffer.idx + 4 * mem::size_of::<u32>());
     } }
@@ -1369,6 +1137,83 @@ impl Section {
         arr
     };
 }
+
+#[inline]
+pub fn try_begin_merge(run: &mut usize, row: &mut [Run; 16], rel_block_pos: RelBlockPos, face: &BlockFace) {
+    if *run == usize::MAX {
+        if row[rel_block_pos.rel_x as usize].row + 1 == rel_block_pos.rel_y && row[rel_block_pos.rel_x as usize].layer == rel_block_pos.rel_z && row[rel_block_pos.rel_x as usize].match_top_left(face) {
+            *run = rel_block_pos.rel_x as usize;
+        }
+    }
+}
+
+#[inline]
+pub fn merge_same_row(rel_block_pos: RelBlockPos, row: &mut [Run; 16], run: &mut usize, face: &BlockFace, solid_staging_buffer: &mut StagingBuffer) -> bool {
+    if *run != usize::MAX && row[*run].row == rel_block_pos.rel_y {
+        if row[*run].match_right(face) {
+            row[*run].merge_face(solid_staging_buffer, face);
+            return true;
+        } else {
+            *run = usize::MAX;
+        }
+    }
+    return false;
+}
+
+#[inline]
+pub fn end_merge(normal: Normal, row: &mut [Run; 16], run: &mut usize, mut rel_block_pos: RelBlockPos, face: &BlockFace, solid_staging_buffer: &mut StagingBuffer, block_pos: BlockPos) {
+    if normal == South || normal == East || normal == Up {
+        rel_block_pos.rel_z -= 1;
+    }
+    if row[*run].match_top_right(face) {
+        row[*run].pull(solid_staging_buffer, face, rel_block_pos.rel_x, rel_block_pos.rel_y, rel_block_pos.rel_z);
+        *run = usize::MAX;
+    }
+    else {
+        row[*run].pull_partial(solid_staging_buffer, face, rel_block_pos.rel_x, rel_block_pos.rel_y, rel_block_pos.rel_z);
+    }
+}
+
+#[inline]
+pub fn continue_merge(normal: Normal, section: &Section, row: &mut [Run; 16], run: &mut usize, mut rel_block_pos: RelBlockPos, face: &BlockFace, solid_staging_buffer: &mut StagingBuffer, next_block_pos: BlockPos) { unsafe {
+    let next_face_a: &BlockFace;
+    let next_face_b: &BlockFace;
+    match normal {
+        North => {
+            next_face_a = section.get_block(next_block_pos).model.get_face(North);
+            next_face_b = section.get_offset_block(next_block_pos, North).model.get_face(South);
+        }
+        South => {
+            next_face_b = section.get_block(next_block_pos).model.get_face(North);
+            next_face_a = section.get_offset_block(next_block_pos, North).model.get_face(South);
+        }
+        West => {
+            next_face_a = section.get_block(next_block_pos).model.get_face(West);
+            next_face_b = section.get_offset_block(next_block_pos, West).model.get_face(East);
+        }
+        East => {
+            next_face_b = section.get_block(next_block_pos).model.get_face(West);
+            next_face_a = section.get_offset_block(next_block_pos, West).model.get_face(East);
+        }
+        Down => {
+            next_face_a = section.get_block(next_block_pos).model.get_face(Down);
+            next_face_b = section.get_offset_block(next_block_pos, Down).model.get_face(Up);
+        }
+        Up => {
+            next_face_b = section.get_block(next_block_pos).model.get_face(Down);
+            next_face_a = section.get_offset_block(next_block_pos, Down).model.get_face(Up);
+        }
+        _ => { unreachable_unchecked(); }
+    }
+
+    if next_face_a.culled_by(next_face_b, normal) || !Run::match_faces(face, next_face_a) {
+        if normal == South || normal == East || normal == Up {
+            rel_block_pos.rel_z -= 1;
+        }    
+        row[*run].pull_partial(solid_staging_buffer, face, rel_block_pos.rel_x, rel_block_pos.rel_y, rel_block_pos.rel_z);
+        *run = usize::MAX;
+    }
+} }
 
 /*
 1. Frustum cull sections

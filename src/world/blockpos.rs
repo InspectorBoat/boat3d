@@ -34,11 +34,11 @@ impl BlockPos {
         return BlockPos { index: (self.index & 0xff0) | (z << 0) };
     }
     #[inline(always)]
-    pub fn new<T: TryInto<usize> + Debug>(x: T, y: T, z: T) -> BlockPos where <T as TryInto<usize>>::Error: Debug { unsafe {
+    pub fn new<T: TryInto<usize>>(x: T, y: T, z: T) -> BlockPos { unsafe {
         return BlockPos {
-            index: (x.try_into().unwrap() << 8) |
-                (y.try_into().unwrap() << 4) |
-                (z.try_into().unwrap() << 0)
+            index: (x.try_into().unwrap_unchecked() << 8) |
+                (y.try_into().unwrap_unchecked() << 4) |
+                (z.try_into().unwrap_unchecked() << 0)
         };
     } }
 }
@@ -72,5 +72,47 @@ impl Debug for BlockPos {
             .field("y", &self.y())
             .field("z", &self.z())
             .finish()
+    }
+}
+
+#[derive(Clone, Copy, Debug)]
+pub struct RelBlockPos {
+    pub rel_x: u8,
+    pub rel_y: u8,
+    pub rel_z: u8,
+}
+
+impl RelBlockPos {
+    #[inline(always)]
+    pub fn new<T: TryInto<u8>>(x: T, y: T, z: T) -> RelBlockPos { unsafe {
+        return RelBlockPos {
+            rel_x: x.try_into().unwrap_unchecked(),
+            rel_y: y.try_into().unwrap_unchecked(),
+            rel_z: z.try_into().unwrap_unchecked()
+        };
+    } }
+}
+
+impl Sub for RelBlockPos {
+    type Output = RelBlockPos;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        return RelBlockPos {
+            rel_x: self.rel_x - rhs.rel_x,
+            rel_y: self.rel_y - rhs.rel_y,
+            rel_z: self.rel_z - rhs.rel_z,
+        };
+    }
+}
+
+impl Add for RelBlockPos {
+    type Output = RelBlockPos;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        return RelBlockPos {
+            rel_x: self.rel_x + rhs.rel_x,
+            rel_y: self.rel_y + rhs.rel_y,
+            rel_z: self.rel_z + rhs.rel_z,
+        };
     }
 }
