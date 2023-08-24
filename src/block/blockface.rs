@@ -28,7 +28,7 @@ pub struct BlockFace {
 }
 
 impl BlockFace {
-    pub fn should_cull_pair(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+    pub fn should_cull_pair_simd(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX); }
 
         let a = Simd::from_array([a.lef, a.bot, a.rig, a.top]);
@@ -40,7 +40,7 @@ impl BlockFace {
         return (cull_a, cull_b);
     }
     
-    pub fn should_cull_pair_(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+    pub fn should_cull_pair(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX); }
         
         let a = a.as_u32();
@@ -55,42 +55,24 @@ impl BlockFace {
         
         // if all of a's fields were >= b
         let cull_a = diff & 0x10101010 == 0x10101010;
-        
-        let diff = diff - 0x01010101;
-
-        // nibble subtraction again:
-        // a > b: 1x
-        // a = b: 0f
-        // a < b: 0x
-        // where 0 < x < 14
-
         // if all of b's fields were >= a
-        // if all of a's fields were <= b
-        // if none of a's fields were > b
+        // if all of a's fields were < b
         let cull_b = diff & 0x10101010 == 0x00000000;
 
         return (cull_a, cull_b);
     }
 
-    pub fn should_cull_row_pair(row_a: &[&BlockFace; 16], row_b: &[&BlockFace; 16]) -> ([bool; 16], [bool; 16]) {
-        let depth_a = Simd::from_array(row_a.clone().map(|face| face.dep)).simd_eq(Simd::splat(0));
-        let depth_b = Simd::from_array(row_b.clone().map(|face| face.dep)).simd_eq(Simd::splat(15));
-        let tex_a = Simd::from_array(row_a.clone().map(|face| face.tex)).simd_eq(Simd::splat(u16::MAX));
-        let tex_b = Simd::from_array(row_b.clone().map(|face| face.tex)).simd_eq(Simd::splat(u16::MAX));
-        let depth = depth_a | depth_b;
-
+    pub fn should_cull_row_pair(row_a: &[BlockFace; 16], row_b: &[BlockFace; 16]) -> ([bool; 16], [bool; 16]) {
+        let depth_a = Simd::from_array(row_a.clone().map(|face| face.dep));
+        let depth_b = Simd::from_array(row_b.clone().map(|face| face.dep));
+        
         let row_a = Simd::from_array(row_a.clone().map(|face| face.as_u32()));
         let row_b = Simd::from_array(row_b.clone().map(|face| face.as_u32()));
 
         let diff_row = row_a + Simd::splat(0x10101010) - row_b;
 
         let cull_row_a = (diff_row & Simd::splat(0x10101010)).simd_eq(Simd::splat(0x10101010));
-        let cull_row_a = depth.select_mask(cull_row_a.into(), tex_a.into());
-
-        let diff_row = diff_row - Simd::splat(1);
-
         let cull_row_b = (diff_row & Simd::splat(0x10101010)).simd_eq(Simd::splat(0x00000000));
-        let cull_row_b = depth.select_mask(cull_row_b.into(), tex_b.into());
 
         return (cull_row_a.to_array(), cull_row_b.to_array());
     }
@@ -249,14 +231,9 @@ impl BlockFace {
         }
     } }
 
-    pub const fn none(normal: Normal) -> BlockFace {
-        let depth = match normal {
-            North | West | Down => { 0 }
-            South | East | Up => { 15 }
-            _ => { 0 }
-        };
+    pub const fn none() -> BlockFace {
         return BlockFace {
-            lef: 0x0f, bot: 0x0f, dep: depth, nor: Unaligned,
+            lef: 0x0f, bot: 0x0f, dep: 0x0, nor: Unaligned,
             rig: 0x0f, top: 0x0f, tex: u16::MAX
         };
     }

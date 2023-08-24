@@ -15,12 +15,12 @@ pub static BLOCKS: [BlockState; 5] = [
     // full
     BlockState {
         model: BlockModel::full(1)
-            // .set_texture(South, 1)
-            // .set_texture(East, 2)
-            // .set_texture(Down, 3)
-            // .set_texture(North, 4)
-            // .set_texture(West, 5)
-            // .set_texture(Up, 6),
+            .set_texture(South, 1)
+            .set_texture(East, 2)
+            .set_texture(Down, 3)
+            .set_texture(North, 4)
+            .set_texture(West, 5)
+            .set_texture(Up, 6),
     },
     // stair
     BlockState {

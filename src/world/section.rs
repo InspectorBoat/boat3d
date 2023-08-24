@@ -247,7 +247,8 @@ impl Section {
             }
             South => {
                 if block_pos.z() == 15 {
-                    return self.get_neighbor(South).map_or_else(|| 8, |section| section.get_light(block_pos.set_z(0)));
+                    // actually belongs to chunk to the north
+                    return self.get_light(block_pos.set_z(0));
                 }
                 return self.get_light(block_pos + BlockPos::new(0, 0, 1));
             }
@@ -259,7 +260,8 @@ impl Section {
             }
             East => {
                 if block_pos.x() == 15 {
-                    return self.get_neighbor(East).map_or_else(|| 8, |section| section.get_light(block_pos.set_x(0)));
+                    // actually belongs to chunk to the west
+                    return self.get_light(block_pos.set_x(0));
                 }
                 return self.get_light(block_pos + BlockPos::new(1, 0, 0));
             }
@@ -271,7 +273,8 @@ impl Section {
             }
             Up => {
                 if block_pos.y() == 15 {
-                    return self.get_neighbor(Up).map_or_else(|| 8, |section| section.get_light(block_pos.set_y(0)));
+                    // actually belongs to chunk below
+                    return self.get_light(block_pos.set_y(0));
                 }
                 return self.get_light(block_pos + BlockPos::new(0, 1, 0));
             }
@@ -361,12 +364,13 @@ impl Section {
             for y in 0..16 {
                 for z in 0..16 {
                     let pos = BlockPos::new(x, y, z);
-                    if x == 15 || y == 15 || z == 15 {
+                    if x == 8 || y == 8 || z == 8 {
                         self.blocks[pos.index] = 1;
                     }
-                    if y == 0 && z == 0 && (x >= 2 && x <= 13 || x == 0){
+                    if y == 7 || y == 9  {
                         self.light[pos.index] = 15;
                     }
+                    // self.light[pos.index] = rand::random::<u8>() & 15;
                     i += 1;
                 }
                 i += 1;
@@ -820,17 +824,15 @@ impl Section {
     }
     
     pub fn mesh_north_south_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
-        for z in 0..16_u8 {
+        for x in 0..16_u8 {
             for y in 0..16_u8 {
-                for x in 0..16_u8 {
+                for z in 0..16_u8 {
                     let block_pos = BlockPos::new(x, y, z);
-
-                    let block = self.blocks[block_pos.index];
 
                     let north_face = self.get_block(block_pos).model.get_face(North);
                     let south_face = self.get_offset_block(block_pos, North).model.get_face(South);
                     let compare = BlockFace::should_cull_pair(north_face, south_face);
-
+                    
                     if !compare.0 {
                         solid_staging_buffer.put_face(north_face, block_pos);
                     }
@@ -840,8 +842,8 @@ impl Section {
                 }
             }
         }
-        for y in 0..16_u8 {
-            for x in 0..16_u8 {
+        for x in 0..16_u8 {
+            for y in 0..16_u8 {
                 let block_pos = BlockPos::new(x, y, 15);
 
                 let north_face = self.get_offset_block(block_pos, South).model.get_face(North);
@@ -877,7 +879,7 @@ impl Section {
         for y in 0..16_u8 {
             for z in 0..16_u8 {
                 let block_pos = BlockPos::new(15, y, z);
-
+                
                 let west_face = self.get_offset_block(block_pos, East).model.get_face(West);
                 let east_face = self.get_block(block_pos).model.get_face(East);
                 let compare = BlockFace::should_cull_pair(west_face, east_face);
@@ -1043,6 +1045,7 @@ impl Section {
                     let start_y = quad.y / 16;
                     let end_y = (quad.y + quad.height) / 16;
 
+                    // if this from the neighboring section, z wraps to 0, which is the only way for it to be 0
                     let z = quad.z / 16;
                     
                     for y in start_y..=end_y {

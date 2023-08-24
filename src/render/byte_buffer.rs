@@ -112,6 +112,10 @@ impl StagingBuffer {
                 texture: buffer_quad.texture(),
             };
 
+            if buffer_quad.normal() == Up {
+                println!("{buffer_quad:?} {gpu_quad:?}");
+            }
+
             *buffer_quad = mem::transmute::<GpuQuad, BufferQuad>(gpu_quad);
         }
     } }
