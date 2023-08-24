@@ -17,7 +17,7 @@ use crate::render::gpu_quad::GpuQuad;
 use crate::block::{blockstate::BlockState, blockface::BlockFace};
 use super::blockpos::{BlockPos, RelBlockPos};
 use super::camera::Camera;
-use super::run::Run;
+use super::merge::{Run, Merger};
 use super::world::World;
 
 /// A 16x16x16 volume of blocks
@@ -385,10 +385,10 @@ impl Section {
     
     pub fn mesh_north_south_greedy(&self, solid_staging_buffer: &mut StagingBuffer) {
         let mut row_n: [Run; 16] = Default::default();
-        let mut run_n: usize = 0;
+        let mut run_n: usize = usize::MAX;
         
         let mut row_s: [Run; 16] = Default::default();
-        let mut run_s: usize = 0;
+        let mut run_s: usize = usize::MAX;
         
         // rel_x, rel_y, rel_z = x, y, z
         for rel_z in 0..16_u8 {
@@ -422,7 +422,7 @@ impl Section {
                             break 'north;
                         }
                         run_n = rel_x as usize;
-                        row_n[run_n].begin::<{North}>(solid_staging_buffer, north_face, block_pos, rel_block_pos);
+                        row_n[run_n].begin(North, solid_staging_buffer, north_face, block_pos, rel_block_pos);
                     }
                     'south: {
                         if compare.1 || rel_z == 0 {
@@ -443,20 +443,23 @@ impl Section {
                             break 'south;
                         }
                         run_s = rel_x as usize;
-                        row_s[run_s].begin::<{South}>(solid_staging_buffer, south_face, block_pos - BlockPos::new(0, 0, 1), rel_block_pos);
+                        row_s[run_s].begin(South, solid_staging_buffer, south_face, block_pos - BlockPos::new(0, 0, 1), rel_block_pos);
                     }
                 }
                 (run_n, run_s) = (usize::MAX, usize::MAX);
             }
         }
     }
-    pub fn mesh_west_east_greedy(&self, solid_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_west_east_greedy(&self, mut solid_staging_buffer: &mut StagingBuffer) {
         let mut row_w: [Run; 16] = Default::default();
-        let mut run_w: usize = 0;
+        let mut run_w: usize = usize::MAX;
         
         let mut row_e: [Run; 16] = Default::default();
-        let mut run_e: usize = 0;
-        
+        let mut run_e: usize = usize::MAX;
+
+        let mut west_merger = Merger::new(&mut solid_staging_buffer);
+        let mut east_merger = Merger::new(&mut solid_staging_buffer);
+
         // rel_x, rel_y, rel_z = z, y, x
         for rel_z in 0..16_u8 {
             for rel_y in 0..16_u8 {
@@ -474,22 +477,34 @@ impl Section {
                             run_w = usize::MAX;
                             break 'west;
                         }
-
-                        if merge_same_row(rel_block_pos, &mut row_w, &mut run_w, west_face, solid_staging_buffer) {
+                        if west_merger.merge_same_row(rel_block_pos, west_face) {
                             break 'west;
                         }
-                        try_begin_merge(&mut run_w, &mut row_w, rel_block_pos, west_face);
-                        if run_w != usize::MAX {
-                            if row_w[run_w].ending == rel_x {
-                                end_merge(West, &mut row_w, &mut run_w, rel_block_pos, west_face, solid_staging_buffer, block_pos);
+                        west_merger.try_begin_merge(rel_block_pos, west_face);
+                        if west_merger.run != usize::MAX {
+                            if west_merger.row[west_merger.run].ending == rel_x {
+                                west_merger.end_merge(West, rel_block_pos, west_face, block_pos);
                             }
                             else {
-                                continue_merge(West, self, &mut row_w, &mut run_w, rel_block_pos, west_face, solid_staging_buffer, block_pos + BlockPos::new(0, 0, 1));
+                                west_merger.continue_merge(West, self, rel_block_pos, west_face, block_pos + BlockPos::new(0, 0, 1));
                             }
                             break 'west;
                         }
-                        run_w = rel_x as usize;
-                        row_w[run_w].begin::<{East}>(solid_staging_buffer, west_face, block_pos, rel_block_pos);
+                        west_merger.begin(West, west_face, block_pos, rel_block_pos);
+                        // if merge_same_row(rel_block_pos, &mut row_w, &mut run_w, west_face, solid_staging_buffer) {
+                        //     break 'west;
+                        // }
+                        // try_begin_merge(&mut run_w, &mut row_w, rel_block_pos, west_face);
+                        // if run_w != usize::MAX {
+                        //     if row_w[run_w].ending == rel_x {
+                        //         end_merge(West, &mut row_w, &mut run_w, rel_block_pos, west_face, solid_staging_buffer, block_pos);
+                        //     }
+                        //     else {
+                        //         continue_merge(West, self, &mut row_w, &mut run_w, rel_block_pos, west_face, solid_staging_buffer, block_pos + BlockPos::new(0, 0, 1));
+                        //     }
+                        //     break 'west;
+                        // }
+                        // begin(West, &mut run_w, &mut row_w, solid_staging_buffer, west_face, block_pos, rel_block_pos);
                     }
                     'east: {
                         if compare.1 || rel_z == 0 {
@@ -510,8 +525,7 @@ impl Section {
                             }
                             break 'east;
                         }
-                        run_e = rel_x as usize;
-                        row_e[run_e].begin::<{East}>(solid_staging_buffer, east_face, block_pos - BlockPos::new(1, 0, 0), rel_block_pos);
+                        begin(East, &mut run_w, &mut row_e, solid_staging_buffer, east_face, block_pos, rel_block_pos);
                     }
                 }
                 (run_w, run_e) = (usize::MAX, usize::MAX);
@@ -520,11 +534,11 @@ impl Section {
     }
     pub fn mesh_down_up_greedy(&self, solid_staging_buffer: &mut StagingBuffer) {
         let mut row_d: [Run; 16] = Default::default();
-        let mut run_d: usize = 0;
+        let mut run_d: usize = usize::MAX;
         
         let mut row_u: [Run; 16] = Default::default();
-        let mut run_u: usize = 0;
-        
+        let mut run_u: usize = usize::MAX;
+
         // rel_x, rel_y, rel_z = z, x, y
         for rel_z in 0..16_u8 {
             for rel_y in 0..16_u8 {
@@ -557,8 +571,7 @@ impl Section {
                             break 'down;
                         }
 
-                        run_d = rel_x as usize;
-                        row_d[run_d].begin::<{Down}>(solid_staging_buffer, down_face, block_pos, rel_block_pos);
+                        begin(Down, &mut run_d, &mut row_d, solid_staging_buffer, down_face, block_pos, rel_block_pos);
                     }
                     'up: {
                         if cull.1 || rel_z == 0 {
@@ -580,8 +593,7 @@ impl Section {
                             }
                             break 'up;
                         }
-                        run_u = rel_x as usize;
-                        row_u[run_u].begin::<{Up}>(solid_staging_buffer, up_face, block_pos - BlockPos::new(0, 1, 0), rel_block_pos);
+                        begin(Up, &mut run_u, &mut row_u, solid_staging_buffer, up_face, block_pos, rel_block_pos);
                     }
                 }
                 (run_d, run_u) = (usize::MAX, usize::MAX);
@@ -1136,6 +1148,12 @@ impl Section {
             y += 1; }
         arr
     };
+}
+
+#[inline]
+pub fn begin(normal: Normal, run: &mut usize, row: &mut [Run; 16], solid_staging_buffer: &mut StagingBuffer, face: &BlockFace, block_pos: BlockPos, rel_block_pos: RelBlockPos) {
+    *run = rel_block_pos.rel_x as usize;
+    row[*run].begin(normal, solid_staging_buffer, face, block_pos, rel_block_pos);
 }
 
 #[inline]

@@ -84,7 +84,7 @@ impl BlockFace {
         let depth = match normal {
             North | West | Down => { 0 },
             South | East | Up => { 15 },
-            _ => { unreachable_unchecked() }
+            _ => { hint::unreachable_unchecked(); }
         };
         match half {
             HalfFaceType::Left => {
@@ -141,7 +141,7 @@ impl BlockFace {
         let depth = match normal {
             North | West | Down => { 0 },
             South | East | Up => { 15 },
-            _ => { unreachable_unchecked() }
+            _ => { hint::unreachable_unchecked(); }
         };
         match quarter {
             TopLeft => {
