@@ -16,7 +16,6 @@ use crate::render::gpu_quad::GpuQuad;
 use crate::block::{blockstate::BlockState, blockface::BlockFace};
 use super::blockpos::BlockPos;
 use super::camera::Camera;
-use super::merged_quad::RelPos;
 use super::run::Run;
 use super::world::World;
 
@@ -494,12 +493,12 @@ impl Section {
             for row in 0..16_u8 {
                 for column in 0..16_u8 {
                     let block_pos = BlockPos::new(layer, row, column);
-                    let rel_pos = RelPos::new(layer, row, column);
-
+                    
                     let west_face = self.get_block(block_pos).get_face(West);
                     let east_face = self.get_offset_block(block_pos, West).get_face(East);
 
                     let cull = BlockFace::should_cull_pair(west_face, east_face);
+                    
 
                     if !cull.0 {
                         
