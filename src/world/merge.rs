@@ -225,7 +225,10 @@ impl Merger {
     #[inline]
     pub fn try_begin_merge(&mut self, rel_block_pos: RelBlockPos, face: &BlockFace) {
         if self.run == usize::MAX {
-            if self.row[rel_block_pos.rel_x as usize].row + 1 == rel_block_pos.rel_y && self.row[rel_block_pos.rel_x as usize].layer == rel_block_pos.rel_z && self.row[rel_block_pos.rel_x as usize].match_top_left(face) {
+            if self.row[rel_block_pos.rel_x as usize].row + 1 == rel_block_pos.rel_y &&
+                self.row[rel_block_pos.rel_x as usize].layer == rel_block_pos.rel_z &&
+                self.row[rel_block_pos.rel_x as usize].match_top_left(face)
+            {
                 self.run = rel_block_pos.rel_x as usize;
             }
         }
@@ -286,11 +289,10 @@ impl Merger {
             }
             _ => { panic!(); }
         }
-    
         if next_face_a.culled_by(next_face_b, normal) || !Run::match_faces(face, next_face_a) {
             if normal == South || normal == East || normal == Up {
                 rel_block_pos.rel_z -= 1;
-            }    
+            }
             self.row[self.run].pull_partial(self.staging_buffer.as_ptr(), face, rel_block_pos);
             self.run = usize::MAX;
         }

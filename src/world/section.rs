@@ -366,7 +366,7 @@ impl Section {
             for y in 0..16 {
                 for z in 0..16 {
                     let pos = BlockPos::new(x, y, z);
-                    if x <= 2 && y <= 0 && z <= 2 {
+                    if x <= 15 && y <= 15 && z <= 15 {
                         self.blocks[pos.index] = 1;
                     }
                     self.light[pos.index] = rand::random::<u8>() & 15;
@@ -376,7 +376,10 @@ impl Section {
             }
             i += 1;
         }
-        self.blocks[BlockPos::new(2, 0, 2).index] = 0;
+        self.blocks[BlockPos::new(15, 8, 8).index] = 0;
+        self.blocks[BlockPos::new(8, 15, 8).index] = 0;
+        self.blocks[BlockPos::new(8, 8, 15).index] = 0;
+        // self.blocks[BlockPos::new(0, 2, 2).index] = 0;
     }
 
     pub fn set_pos(&mut self, section_pos: Vector3<i32>) {
@@ -438,12 +441,50 @@ impl Section {
                             }
                             break 'south;
                         }
-                        south_merger.begin(South, south_face, block_pos, rel_block_pos);
+                        south_merger.begin(South, south_face, block_pos - BlockPos::new(0, 0, 1), rel_block_pos);
                     }
                 }
                 north_merger.stop_merge();
                 south_merger.stop_merge();
             }
+        }
+        for rel_y in 0..16_u8 {
+            for rel_x in 0..16_u8 {
+                let block_pos = BlockPos::new(rel_x, rel_y, 15);
+                let rel_block_pos = RelBlockPos::new(rel_x, rel_y, 15);
+
+                let south_face = self.get_block(block_pos).model.get_face(South);
+                let north_face = self.get_offset_block(block_pos, South).model.get_face(North);
+
+                let cull = south_face.culled_by(north_face, South);
+
+                if cull {
+                    south_merger.stop_merge();
+                    continue;
+                }
+                if south_merger.merge_same_row(rel_block_pos, south_face) {
+                    continue;
+                }
+                south_merger.try_begin_merge(rel_block_pos, south_face);
+                
+                if south_merger.run != usize::MAX {
+                    if south_merger.row[south_merger.run].ending == rel_x {
+                        south_merger.end_merge(South, rel_block_pos, south_face, block_pos);
+                    }
+                    else {
+                        let next_south_face = self.get_block(block_pos + BlockPos::new(1, 0, 0)).model.get_face(South);
+                        let next_north_face = self.get_offset_block(block_pos + BlockPos::new(1, 0, 0), South).model.get_face(North);
+                
+                        if next_south_face.culled_by(next_north_face, South) || !Run::match_faces(south_face, next_south_face) {
+                            south_merger.row[south_merger.run].pull_partial(south_merger.staging_buffer.as_ptr(), south_face, rel_block_pos);
+                            south_merger.run = usize::MAX;
+                        }
+                    }
+                    continue;
+                }
+                south_merger.begin(South, south_face, block_pos, rel_block_pos);
+            }
+            south_merger.stop_merge();
         }
     }
     pub fn mesh_west_east_greedy(&self, mut solid_staging_buffer: &mut StagingBuffer) {
@@ -501,11 +542,50 @@ impl Section {
                             }
                             break 'east;
                         }
-                        east_merger.begin(East, east_face, block_pos, rel_block_pos);
+                        east_merger.begin(East, east_face, block_pos - BlockPos::new(1, 0, 0), rel_block_pos);
                     }
                 }
                 west_merger.stop_merge();
+                east_merger.stop_merge();
             }
+        }
+        for rel_y in 0..16_u8 {
+            for rel_x in 0..16_u8 {
+                let block_pos = BlockPos::new(15, rel_y, rel_x);
+                let rel_block_pos = RelBlockPos::new(rel_x, rel_y, 15);
+
+                let west_face = self.get_offset_block(block_pos, East).model.get_face(West);
+                let east_face = self.get_block(block_pos).model.get_face(East);
+
+                let cull = east_face.culled_by(west_face, East);
+
+                if cull {
+                    east_merger.stop_merge();
+                    continue;
+                }
+                if east_merger.merge_same_row(rel_block_pos, east_face) {
+                    continue;
+                }
+                east_merger.try_begin_merge(rel_block_pos, east_face);
+                
+                if east_merger.run != usize::MAX {
+                    if east_merger.row[east_merger.run].ending == rel_x {
+                        east_merger.end_merge(East, rel_block_pos, east_face, block_pos);
+                    }
+                    else {
+                        let next_west_face = self.get_offset_block(block_pos + BlockPos::new(0, 0, 1), East).model.get_face(West);
+                        let next_east_face = self.get_block(block_pos + BlockPos::new(0, 0, 1)).model.get_face(East);
+
+                        if next_east_face.culled_by(west_face, East) || !Run::match_faces(east_face, next_east_face) {
+                            east_merger.row[east_merger.run].pull_partial(east_merger.staging_buffer.as_ptr(), east_face, rel_block_pos);
+                            east_merger.run = usize::MAX;
+                        }
+                    }
+                    continue;
+                }
+                east_merger.begin(East, east_face, block_pos, rel_block_pos);
+            }
+            east_merger.stop_merge();
         }
     }
     pub fn mesh_down_up_greedy(&self, mut solid_staging_buffer: &mut StagingBuffer) {
@@ -563,11 +643,50 @@ impl Section {
                             }
                             break 'up;
                         }
-                        up_merger.begin(Up, up_face, block_pos, rel_block_pos);
+                        up_merger.begin(Up, up_face, block_pos - BlockPos::new(0, 1, 0), rel_block_pos);
                     }
                 }
                 down_merger.stop_merge();
+                up_merger.stop_merge();
             }
+        }
+        for rel_y in 0..16_u8 {
+            for rel_x in 0..16_u8 {
+                let block_pos = BlockPos::new(rel_y, 15, rel_x);
+                let rel_block_pos = RelBlockPos::new(rel_x, rel_y, 15);
+
+                let down_face = self.get_offset_block(block_pos, Up).model.get_face(Down);
+                let up_face = self.get_block(block_pos).model.get_face(Up);
+
+                let cull = up_face.culled_by(down_face, Up);
+
+                if cull {
+                    up_merger.stop_merge();
+                    continue;
+                }
+                if up_merger.merge_same_row(rel_block_pos, up_face) {
+                    continue;
+                }
+                up_merger.try_begin_merge(rel_block_pos, up_face);
+                
+                if up_merger.run != usize::MAX {
+                    if up_merger.row[up_merger.run].ending == rel_x {
+                        up_merger.end_merge(East, rel_block_pos, up_face, block_pos);
+                    }
+                    else {
+                        let next_down_face = self.get_offset_block(block_pos + BlockPos::new(0, 0, 1), Up).model.get_face(Down);
+                        let next_up_face = self.get_block(block_pos + BlockPos::new(0, 0, 1)).model.get_face(Up);
+
+                        if next_up_face.culled_by(down_face, Up) || !Run::match_faces(up_face, next_up_face) {
+                            up_merger.row[up_merger.run].pull_partial(up_merger.staging_buffer.as_ptr(), up_face, rel_block_pos);
+                            up_merger.run = usize::MAX;
+                        }
+                    }
+                    continue;
+                }
+                up_merger.begin(Up, up_face, block_pos, rel_block_pos);
+            }
+            up_merger.stop_merge();
         }
     }
 

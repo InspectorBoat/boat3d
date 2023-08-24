@@ -52,8 +52,8 @@ impl World {
                 for z in 0..World::MAX_SECTION_Z {
                     let mut section = Box::new(Section::new());
                     section.set_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
-                    section.make_terrain(&noise);
-                    // section.make_terrain_debug();
+                    // section.make_terrain(&noise);
+                    section.make_terrain_debug();
                     self.add_section(section);
                 }
             }
@@ -67,9 +67,9 @@ impl World {
         let mut j = 0;
         let total = self.sections.len();
         for (i, section) in self.sections.values_mut().enumerate() {
+            // if section.section_pos != (Vector3 { x: 2, y: 2, z: 0}) { continue; }
             section.mesh(&mut self.solid_staging_buffer, &mut self.trans_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
             total_quads += section.solid_quad_count as usize;
-
             // if j == 100 {
             //     println!("meshed {i}/{total} : {}%", i as f32 / total as f32 * 100.0);
             //     j = 0;
@@ -85,12 +85,8 @@ impl World {
         let quads_per_section = total_quads as u64 / total_sections as u64;
 
         let elapsed_nanos = start.elapsed().as_nanos() as f64;
-        const NANOSECONDS_PER_CYCLE: f64 = 0.4;
-        let nano_per_section = elapsed_nanos / total_sections as f64;
-        let nanos_per_pair = nano_per_section / 4096.0 / 3.0;
-        let cycles_per_pair = nanos_per_pair / 0.4;
 
-        println!("[6/6 axes] [merged] {total_sections} sections | {elapsed}ms | {sections_per_sec} sections/s | {ms_per_section:.4}ms/section | {cycles_per_pair:.1} cycles/face pair | {total_quads} quads | {quads_per_section} quads/section");
+        println!("[6/6 axes] [merged] {total_sections} sections | {elapsed}ms | {sections_per_sec} sections/s | {ms_per_section:.4}ms/section | {total_quads} quads | {quads_per_section} quads/section");
         let geometry_bytes_used = self.geometry_buffer_allocator.used;
         let light_bytes_used = self.light_buffer_allocator.used;
         let total_megabytes_used = (geometry_bytes_used + light_bytes_used) / 1024 / 1024;
@@ -222,7 +218,7 @@ impl World {
         self.renderer.kill();
     }
 
-    pub const MAX_SECTION_X: usize = 32;
-    pub const MAX_SECTION_Y: usize = 32;
-    pub const MAX_SECTION_Z: usize = 32;
+    pub const MAX_SECTION_X: usize = 16;
+    pub const MAX_SECTION_Y: usize = 16;
+    pub const MAX_SECTION_Z: usize = 16;
 }

@@ -42,10 +42,10 @@ impl BlockFace {
     
     pub fn culled_by(&self, b: &BlockFace, normal: Normal) -> bool { unsafe {
         match normal {
-            North | East | Down => {
+            North | West | Down => {
                 if self.dep != 0 || b.dep != 15 { return false; }
             },
-            South | West | Up => {
+            South | East | Up => {
                 if self.dep != 15 || b.dep != 0 { return false; }
             }
             _ => { panic!(); }
