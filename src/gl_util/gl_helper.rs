@@ -60,5 +60,5 @@ impl WindowStatus {
     }
 }
 
-pub const PANIC_ON_DROP: bool = true;
+pub const PANIC_ON_DROP: bool = false;
 pub const LOG_ON_DROP: bool = true;

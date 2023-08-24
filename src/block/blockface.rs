@@ -48,7 +48,7 @@ impl BlockFace {
             South | West | Up => {
                 if self.dep != 15 || b.dep != 0 { return false; }
             }
-            _ => { hint::unreachable_unchecked(); }
+            _ => { panic!(); }
         }
         let a = Simd::from_array([self.lef, self.bot, self.rig, self.top]);
         let b = Simd::from_array([b.lef, b.bot, b.rig, b.top]);
@@ -84,7 +84,7 @@ impl BlockFace {
         let depth = match normal {
             North | West | Down => { 0 },
             South | East | Up => { 15 },
-            _ => { hint::unreachable_unchecked(); }
+            _ => { panic!(); }
         };
         match half {
             HalfFaceType::Left => {
@@ -141,7 +141,7 @@ impl BlockFace {
         let depth = match normal {
             North | West | Down => { 0 },
             South | East | Up => { 15 },
-            _ => { hint::unreachable_unchecked(); }
+            _ => { panic!() }
         };
         match quarter {
             TopLeft => {

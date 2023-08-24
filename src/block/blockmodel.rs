@@ -38,7 +38,7 @@ impl BlockModel {
             South => { return &self.south; }
             West => { return &self.west; }
             Up => { return &self.up; }
-            _ => { hint::unreachable_unchecked(); }
+            _ => { panic!(); }
         }
     } }
 
@@ -86,7 +86,7 @@ impl BlockModel {
             Up => {
                 self.up = self.up.set_texture(texture);
             }
-            _ => { hint::unreachable_unchecked(); },
+            _ => { panic!(); },
         }
         return self;
     } }

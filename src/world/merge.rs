@@ -78,25 +78,25 @@ impl Run {
      * Pulls the run up after an incomplete merge
      * min_x, min_y, min_z, and texture are already guaranteed to match
      */
-    pub fn pull_partial(&mut self, buffer: *mut StagingBuffer, face: &BlockFace, rel_x: u8, rel_y: u8, rel_z: u8) { unsafe {
+    pub fn pull_partial(&mut self, buffer: *mut StagingBuffer, face: &BlockFace, rel_block_pos: RelBlockPos) { unsafe {
         let idx = (*buffer).idx as u32;
         // copy the quad over
         (*buffer).put_u64((*buffer).get_u64(self.index));
         let buffer_quad = &mut *(&raw mut (*buffer)[idx] as *mut BufferQuad);
-        buffer_quad.block_y_bottom = rel_y << 4;
-        buffer_quad.block_z_right = (rel_z << 4) | face.rig;
-        buffer_quad.block_width_top = ((rel_x - self.beginning) << 4) | face.top;
+        buffer_quad.block_y_bottom = rel_block_pos.rel_y << 4;
+        buffer_quad.block_z_right = (rel_block_pos.rel_z << 4) | face.rig;
+        buffer_quad.block_width_top = ((rel_block_pos.rel_x - self.beginning) << 4) | face.top;
         buffer_quad.block_height_depth &= 0x0f;
 
         self.index = idx;
-        self.ending = rel_x;
+        self.ending = rel_block_pos.rel_x;
         self.row += 1;
     } }
     /**
      * Pulls the run up after a complete merge
      * Only possible change is top
      */
-    pub fn pull(&mut self, buffer: *mut StagingBuffer, face: &BlockFace, rel_x: u8, rel_y: u8, rel_z: u8) { unsafe {
+    pub fn pull(&mut self, buffer: *mut StagingBuffer, face: &BlockFace) { unsafe {
         let buffer_quad = &mut *(&raw mut (*buffer)[self.index] as *mut BufferQuad);
         buffer_quad.block_height_depth += 0x10;
         buffer_quad.block_width_top &= 0xf0;
@@ -122,7 +122,7 @@ impl Run {
                 offset = Section::INDICES_YXZ[pos.index] as u64;
             }
             _ => {
-                unsafe { hint::unreachable_unchecked(); }
+                unsafe { panic!(); }
             }
         }
         (*buffer).put_u64(face.as_u64() + offset);
@@ -219,6 +219,10 @@ impl Merger {
         }
     } }
     #[inline]
+    pub fn stop_merge(&mut self) {
+        self.run = usize::MAX;
+    }
+    #[inline]
     pub fn try_begin_merge(&mut self, rel_block_pos: RelBlockPos, face: &BlockFace) {
         if self.run == usize::MAX {
             if self.row[rel_block_pos.rel_x as usize].row + 1 == rel_block_pos.rel_y && self.row[rel_block_pos.rel_x as usize].layer == rel_block_pos.rel_z && self.row[rel_block_pos.rel_x as usize].match_top_left(face) {
@@ -244,11 +248,11 @@ impl Merger {
             rel_block_pos.rel_z -= 1;
         }
         if self.row[self.run].match_top_right(face) {
-            self.row[self.run].pull(self.staging_buffer.as_ptr(), face, rel_block_pos.rel_x, rel_block_pos.rel_y, rel_block_pos.rel_z);
+            self.row[self.run].pull(self.staging_buffer.as_ptr(), face);
             self.run = usize::MAX;
         }
         else {
-            self.row[self.run].pull_partial(self.staging_buffer.as_ptr(), face, rel_block_pos.rel_x, rel_block_pos.rel_y, rel_block_pos.rel_z);
+            self.row[self.run].pull_partial(self.staging_buffer.as_ptr(), face, rel_block_pos);
         }
     } }
     #[inline]
@@ -287,7 +291,7 @@ impl Merger {
             if normal == South || normal == East || normal == Up {
                 rel_block_pos.rel_z -= 1;
             }    
-            self.row[self.run].pull_partial(self.staging_buffer.as_ptr(), face, rel_block_pos.rel_x, rel_block_pos.rel_y, rel_block_pos.rel_z);
+            self.row[self.run].pull_partial(self.staging_buffer.as_ptr(), face, rel_block_pos);
             self.run = usize::MAX;
         }
     } }    
