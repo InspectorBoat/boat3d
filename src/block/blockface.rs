@@ -1,4 +1,4 @@
-use std::{simd::{Simd, SimdPartialOrd, SimdPartialEq}, hint::{unreachable_unchecked, self}};
+use std::{simd::{Simd, SimdPartialOrd}, hint::{unreachable_unchecked, self}};
 use super::normal::Normal;
 use Normal::*;
 use QuarterFaceType::*;
@@ -28,7 +28,7 @@ pub struct BlockFace {
 }
 
 impl BlockFace {
-    pub fn should_cull_pair_simd(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+    pub fn should_cull_pair(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX); }
 
         let a = Simd::from_array([a.lef, a.bot, a.rig, a.top]);
@@ -40,43 +40,6 @@ impl BlockFace {
         return (cull_a, cull_b);
     }
     
-    pub fn should_cull_pair(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
-        if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX); }
-        
-        let a = a.as_u32();
-        let b = b.as_u32();
-
-        let diff = a + 0x10101010 - b;
-        // nibble subtraction:
-        // a > b: 1x
-        // a = b: 10
-        // a < b: 0x
-        // where 1 < x < 15
-        
-        // if all of a's fields were >= b
-        let cull_a = diff & 0x10101010 == 0x10101010;
-        // if all of b's fields were >= a
-        // if all of a's fields were < b
-        let cull_b = diff & 0x10101010 == 0x00000000;
-
-        return (cull_a, cull_b);
-    }
-
-    pub fn should_cull_row_pair(row_a: &[BlockFace; 16], row_b: &[BlockFace; 16]) -> ([bool; 16], [bool; 16]) {
-        let depth_a = Simd::from_array(row_a.clone().map(|face| face.dep));
-        let depth_b = Simd::from_array(row_b.clone().map(|face| face.dep));
-        
-        let row_a = Simd::from_array(row_a.clone().map(|face| face.as_u32()));
-        let row_b = Simd::from_array(row_b.clone().map(|face| face.as_u32()));
-
-        let diff_row = row_a + Simd::splat(0x10101010) - row_b;
-
-        let cull_row_a = (diff_row & Simd::splat(0x10101010)).simd_eq(Simd::splat(0x10101010));
-        let cull_row_b = (diff_row & Simd::splat(0x10101010)).simd_eq(Simd::splat(0x00000000));
-
-        return (cull_row_a.to_array(), cull_row_b.to_array());
-    }
-
     pub fn culled_by<const N: Normal>(&self, b: &BlockFace) -> bool { unsafe {
         match N {
             North | East | Down => {

@@ -364,13 +364,10 @@ impl Section {
             for y in 0..16 {
                 for z in 0..16 {
                     let pos = BlockPos::new(x, y, z);
-                    if x == 8 || y == 8 || z == 8 {
+                    if x == 15 && y == 1 && z == 1 {
                         self.blocks[pos.index] = 1;
                     }
-                    if y == 7 || y == 9  {
-                        self.light[pos.index] = 15;
-                    }
-                    // self.light[pos.index] = rand::random::<u8>() & 15;
+                    self.light[pos.index] = rand::random::<u8>() & 15;
                     i += 1;
                 }
                 i += 1;
@@ -879,7 +876,7 @@ impl Section {
         for y in 0..16_u8 {
             for z in 0..16_u8 {
                 let block_pos = BlockPos::new(15, y, z);
-                
+
                 let west_face = self.get_offset_block(block_pos, East).model.get_face(West);
                 let east_face = self.get_block(block_pos).model.get_face(East);
                 let compare = BlockFace::should_cull_pair(west_face, east_face);
@@ -1046,7 +1043,7 @@ impl Section {
                     let end_y = (quad.y + quad.height) / 16;
 
                     // if this from the neighboring section, z wraps to 0, which is the only way for it to be 0
-                    let z = quad.z / 16;
+                    let z = (quad.z - 16) / 16;
                     
                     for y in start_y..=end_y {
                         for x in start_x..=end_x {
@@ -1055,7 +1052,7 @@ impl Section {
                     }
                 }
                 East => {
-                    let x = quad.x / 16;
+                    let x = (quad.x - 16) / 16;
     
                     let start_y = quad.y / 16;
                     let end_y = (quad.y + quad.height) / 16;
@@ -1105,7 +1102,7 @@ impl Section {
                     let end_x = (quad.x + quad.height) / 16;
 
                     // if this from the neighboring section, y wraps to 0, which is the only way for it to be 0
-                    let y = quad.y / 16;
+                    let y = (quad.y - 16) / 16;
     
                     let start_z = quad.z / 16;
                     let end_z = (quad.z + quad.width) / 16;

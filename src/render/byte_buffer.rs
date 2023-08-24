@@ -1,4 +1,4 @@
-use std::{ops::{IndexMut, Index}, mem::{self, ManuallyDrop}, arch::x86_64};
+use std::{ops::{IndexMut, Index}, mem::{self, ManuallyDrop}};
 use crate::{block::{blockface::BlockFace, normal::Normal::*}, world::{section::Section, blockpos::BlockPos}, render::{buffer_quad::BufferQuad, gpu_quad::GpuQuad}, gl_util::{buffer::Buffer, gl_wrapper}};
 #[repr(C, align(8))]
 #[derive(Debug)]
