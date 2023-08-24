@@ -28,7 +28,7 @@ pub struct BlockFace {
 }
 
 impl BlockFace {
-    pub fn should_cull_pair_simd(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+    pub fn should_cull_pair(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX); }
 
         let a = Simd::from_array([a.lef, a.bot, a.rig, a.top]);
@@ -40,7 +40,7 @@ impl BlockFace {
         return (cull_a, cull_b);
     }
     
-    pub fn should_cull_pair(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+    pub fn should_cull_pair_(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX); }
         
         let a = a.as_u32();
@@ -95,8 +95,8 @@ impl BlockFace {
         return (cull_row_a.to_array(), cull_row_b.to_array());
     }
 
-    pub fn culled_by(&self, b: &BlockFace, normal: Normal) -> bool { unsafe {
-        match normal {
+    pub fn culled_by<const N: Normal>(&self, b: &BlockFace) -> bool { unsafe {
+        match N {
             North | East | Down => {
                 if self.dep != 0 || b.dep != 15 { return false; }
             },

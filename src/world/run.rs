@@ -5,6 +5,7 @@ use crate::{block::{blockface::BlockFace, normal::Normal::{self, *}}, render::{b
 use super::{section::Section, blockpos::BlockPos};
 
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 #[repr(C)]
 pub struct Run {
     pub lef: u8,
@@ -77,16 +78,13 @@ impl Run {
      * Pulls the run up after an incomplete merge
      * min_x, min_y, min_z, and texture are already guaranteed to match
      */
-    pub fn pull_partial(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, rel_x: u8, rel_y: u8, rel_z: u8, block_pos: BlockPos) { unsafe {
+    pub fn pull_partial(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, rel_x: u8, rel_y: u8, rel_z: u8) { unsafe {
         let idx = buffer.idx as u32;
         // copy the quad over
         buffer.put_u64(buffer.get_u64(self.idx));
         let buffer_quad = &mut *(&raw mut buffer[idx] as *mut BufferQuad);
-        buffer_quad.block_x_left = (block_pos.x() << 4) as u8;
-        buffer_quad.block_y_bottom = (block_pos.y() << 4) as u8;
-        buffer_quad.block_z_right = (block_pos.z() << 4) as u8 | face.rig;
-        // buffer_quad.block_y_bottom = rel_y << 4;
-        // buffer_quad.block_z_right = (rel_z << 4) | face.rig;
+        buffer_quad.block_y_bottom = rel_y << 4;
+        buffer_quad.block_z_right = (rel_z << 4) | face.rig;
         buffer_quad.block_width_top = ((rel_x - self.beg) << 4) | face.top;
         buffer_quad.block_height_depth &= 0x0f;
 
@@ -112,7 +110,22 @@ impl Run {
      */
     pub fn begin<const N: Normal>(&mut self, buffer: &mut StagingBuffer, face: &BlockFace, pos: BlockPos, rel_x: u8, row: u16) {
         self.idx = buffer.idx as u32;
-        buffer.put_face(face, pos);
+        let offset: u32;
+        match N {
+            North | South => {
+                offset = Section::INDICES_ZYX[pos.index];
+            }
+            East | West => {
+                offset = Section::INDICES_XYZ[pos.index];
+            }
+            Down | Up => {
+                offset = Section::INDICES_YXZ[pos.index];
+            }
+            _ => {
+                unsafe { hint::unreachable_unchecked(); }
+            }
+        }
+        buffer.put_u64(face.as_u64() + offset as u64);
 
         self.lef = face.lef;
         self.bot = face.bot;
@@ -125,9 +138,31 @@ impl Run {
 
         self.tex = face.tex;
 
+
         self.row = row;
     }
     
+    /**
+     * Directly adds a face
+     */
+    pub fn add_face<const N: Normal>(buffer: &mut StagingBuffer, face: &BlockFace, pos: BlockPos) { unsafe {
+        let offset: u32;
+        match N {
+            North | South => {
+                offset = Section::INDICES_ZYX[pos.index];
+            }
+            East | West => {
+                offset = Section::INDICES_XYZ[pos.index];
+            }
+            Down | Up => {
+                offset = Section::INDICES_YXZ[pos.index];
+            }
+            _ => {
+                offset = Section::INDICES_ZYX[pos.index];
+            }
+        }
+        buffer.put_u64(face.as_u64() + offset as u64);
+    } }
     /**
      * Matches the top and bottom right corners of the first face with the top and bottom left corners of the next face
      */
