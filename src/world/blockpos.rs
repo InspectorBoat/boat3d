@@ -34,11 +34,11 @@ impl BlockPos {
         return BlockPos { index: (self.index & 0xff0) | (z << 0) };
     }
     #[inline(always)]
-    pub fn new<T: TryInto<usize> + Debug>(x: T, y: T, z: T) -> BlockPos { unsafe {
+    pub fn new<T: TryInto<usize> + Debug>(x: T, y: T, z: T) -> BlockPos where <T as TryInto<usize>>::Error: Debug { unsafe {
         return BlockPos {
-            index: (x.try_into().unwrap_unchecked() << 8) |
-                (y.try_into().unwrap_unchecked() << 4) |
-                (z.try_into().unwrap_unchecked() << 0)
+            index: (x.try_into().unwrap() << 8) |
+                (y.try_into().unwrap() << 4) |
+                (z.try_into().unwrap() << 0)
         };
     } }
 }

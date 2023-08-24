@@ -18,7 +18,6 @@
 #![feature(portable_simd)]
 #![feature(slice_from_ptr_range)]
 #![feature(let_chains)]
-#![feature(inline_const)]
 mod block;
 mod world;
 mod gl_util;

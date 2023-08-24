@@ -1,11 +1,9 @@
-use std::f32::consts::E;
 use std::ffi::c_void;
-use std::hint::{self, black_box};
+use std::hint;
 use std::hint::unreachable_unchecked;
 use std::mem;
 use std::ptr::NonNull;
 use cgmath::Vector3;
-use core_simd::simd::{Simd, SimdPartialEq, Mask, SimdUint, SimdConstPtr};
 
 use crate::block::block::Block;
 use crate::block::blockstate::BLOCKS;
@@ -18,7 +16,7 @@ use crate::render::gpu_quad::GpuQuad;
 use crate::block::{blockstate::BlockState, blockface::BlockFace};
 use super::blockpos::BlockPos;
 use super::camera::Camera;
-use super::merged_quad::{RelPos, RelBlockPos, MergedQuad};
+use super::merged_quad::RelPos;
 use super::run::Run;
 use super::world::World;
 
@@ -365,7 +363,7 @@ impl Section {
             for y in 0..16 {
                 for z in 0..16 {
                     let pos = BlockPos::new(x, y, z);
-                    if x == 0 && y <= 8 && z <= 8 {
+                    if x <= 8 && y == 0 && z <= 8 {
                         self.blocks[pos.index] = 1;
                     }
                     if x == 7 && z == 7 {
@@ -394,7 +392,7 @@ impl Section {
 
                     let north_face = self.get_block(block_pos).model.get_face(North);
                     let south_face = self.get_offset_block(block_pos, North).model.get_face(South);
-                    let compare = BlockFace::pair_culled(north_face, south_face);
+                    let compare = BlockFace::should_cull_pair(north_face, south_face);
 
                     if !compare.0 {
                         solid_staging_buffer.put_face(north_face, block_pos);
@@ -411,7 +409,7 @@ impl Section {
 
                 let north_face = self.get_offset_block(block_pos, South).model.get_face(North);
                 let south_face = self.get_block(block_pos).model.get_face(South);
-                let compare = BlockFace::pair_culled(north_face, south_face);
+                let compare = BlockFace::should_cull_pair(north_face, south_face);
                 
                 if !compare.1 {
                     solid_staging_buffer.put_face(south_face, block_pos);
@@ -428,7 +426,7 @@ impl Section {
                     let west_face = self.get_block(block_pos).model.get_face(West);
                     let east_face = self.get_offset_block(block_pos, West).model.get_face(East);
 
-                    let compare = BlockFace::pair_culled(west_face, east_face);
+                    let compare = BlockFace::should_cull_pair(west_face, east_face);
                     
                     if !compare.0 {
                         solid_staging_buffer.put_face(west_face, block_pos);
@@ -445,7 +443,7 @@ impl Section {
 
                 let west_face = self.get_offset_block(block_pos, East).model.get_face(West);
                 let east_face = self.get_block(block_pos).model.get_face(East);
-                let compare = BlockFace::pair_culled(west_face, east_face);
+                let compare = BlockFace::should_cull_pair(west_face, east_face);
                 
                 if !compare.1 {
                     solid_staging_buffer.put_face(east_face, block_pos);
@@ -462,7 +460,7 @@ impl Section {
                     let down_face = self.get_block(block_pos).model.get_face(Down);
                     let up_face = self.get_offset_block(block_pos, Down).model.get_face(Up);
 
-                    let compare = BlockFace::pair_culled(down_face, up_face);
+                    let compare = BlockFace::should_cull_pair(down_face, up_face);
 
                     if !compare.0 {
                         solid_staging_buffer.put_face(down_face, block_pos);
@@ -479,7 +477,7 @@ impl Section {
 
                 let down_face = self.get_offset_block(block_pos, Up).model.get_face(Down);
                 let up_face = self.get_block(block_pos).model.get_face(Up);
-                let compare = BlockFace::pair_culled(down_face, up_face);
+                let compare = BlockFace::should_cull_pair(down_face, up_face);
                 
                 if !compare.1 {
                     solid_staging_buffer.put_face(up_face, block_pos);
@@ -491,56 +489,25 @@ impl Section {
 
     pub fn mesh_north_south_greedy(&mut self, solid_staging_buffer: &mut StagingBuffer) {
     }
-    pub fn mesh_east_west_greedy(&mut self, solid_staging_buffer: &mut StagingBuffer) { unsafe {
-        for layer in 0..16_usize {
-            for row in 0..16_usize {
-                let west_row_indices = (Simd::splat(layer) << Simd::splat(8)) | (Simd::splat(row) << Simd::splat(4)) | Simd::from_array(Section::INDICES);
-                let mut east_row_indices = (Simd::splat(layer) << Simd::splat(8)) | (Simd::splat(row) << Simd::splat(4)) | Simd::from_array(Section::INDICES);
-                
-                if layer == 0 {
-                    east_row_indices = east_row_indices & Simd::splat(0x00f);
-                }
-                else {
-                    east_row_indices -= Simd::splat(0x001)
-                }
-                let west_row = Simd::gather_select_unchecked(&self.blocks, Mask::splat(true), east_row_indices, Simd::splat(0));
-                let east_row;
-                if layer == 0 {
-                    east_row = Simd::gather_select_unchecked(&self.blocks, Mask::splat(true), east_row_indices, Simd::splat(0));
-                }
-                else if let Some(west) = self.get_neighbor(West) {
-                    east_row = Simd::gather_select_unchecked(&west.blocks, Mask::splat(true), east_row_indices, Simd::splat(0));
-                }
-                else {
-                    east_row = Simd::splat(0);
-                }
-
-                let west_row = mem::transmute::<_, Simd<*const u64, 16>>(west_row.cast::<u64>() * Simd::splat(256) + Simd::splat(0x20) + Simd::splat((&raw const BLOCKS) as u64));
-                let west_row = Simd::gather_select_ptr(west_row, Mask::splat(true), Simd::splat(0));
-                let east_row = mem::transmute::<_, Simd<*const u64, 16>>(east_row.cast::<u64>() * Simd::splat(256) + Simd::splat(0x08) + Simd::splat((&raw const BLOCKS) as u64));
-                let east_row = Simd::gather_select_ptr(east_row, Mask::splat(true), Simd::splat(0));
-
-                let cull = BlockFace::row_pair_culled(west_row, east_row);
-                // black_box(cull);
-                // /*
-                for column in 0..16_usize {
+    pub fn mesh_east_west_greedy(&mut self, solid_staging_buffer: &mut StagingBuffer) {
+        for layer in 0..16_u8 {
+            for row in 0..16_u8 {
+                for column in 0..16_u8 {
                     let block_pos = BlockPos::new(layer, row, column);
-                    let rel_block_pos = RelBlockPos::new(layer, row, column);
+                    let rel_pos = RelPos::new(layer, row, column);
 
                     let west_face = self.get_block(block_pos).get_face(West);
                     let east_face = self.get_offset_block(block_pos, West).get_face(East);
 
-                    let cull = BlockFace::pair_culled(west_face, east_face);
+                    let cull = BlockFace::should_cull_pair(west_face, east_face);
 
-
-                    hint::black_box(east_face);
-                    hint::black_box(west_face);
-                    hint::black_box(cull);
+                    if !cull.0 {
+                        
+                    }
                 }
-                // */
             }
         }
-    } }
+    }
     pub fn mesh_down_up_greedy(&mut self, solid_staging_buffer: &mut StagingBuffer) {
 
     }
@@ -613,14 +580,14 @@ impl Section {
         self.trans_segment = geometry_buffer_allocator.alloc(trans_staging_buffer.idx + 4 * mem::size_of::<u32>());
     }
     pub fn mesh_solid(&mut self, solid_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator) { unsafe {
+        self.mesh_north_south_greedy(solid_staging_buffer);
         self.mesh_east_west_greedy(solid_staging_buffer);
-        self.mesh_east_west_greedy(solid_staging_buffer);
-        self.mesh_east_west_greedy(solid_staging_buffer);
-        // self.mesh_north_south(solid_staging_buffer);
-        // self.mesh_east_west(solid_staging_buffer);
-        // self.mesh_down_up(solid_staging_buffer);
+        self.mesh_down_up_greedy(solid_staging_buffer);
+        self.mesh_north_south(solid_staging_buffer);
+        self.mesh_east_west(solid_staging_buffer);
+        self.mesh_down_up(solid_staging_buffer);
 
-        // self.mesh_unaligned(solid_staging_buffer);
+        self.mesh_unaligned(solid_staging_buffer);
 
         solid_staging_buffer.format_quads_fixed();
         self.solid_quad_count = solid_staging_buffer.idx as u32 / 8;
@@ -874,10 +841,10 @@ impl Section {
 
     pub fn mesh(&mut self, solid_staging_buffer: &mut StagingBuffer, trans_staging_buffer: &mut StagingBuffer, geometry_buffer_allocator: &mut BufferAllocator, light_staging_buffer: &mut StagingBuffer, light_buffer_allocator: &mut BufferAllocator) {
         self.dirty = false;
-        // geometry_buffer_allocator.free(self.solid_segment.take());
-        // geometry_buffer_allocator.free(self.trans_segment.take());
-        // light_buffer_allocator.free(self.solid_light_segment.take());
-        // light_buffer_allocator.free(self.trans_light_segment.take());
+        geometry_buffer_allocator.free(self.solid_segment.take());
+        geometry_buffer_allocator.free(self.trans_segment.take());
+        light_buffer_allocator.free(self.solid_light_segment.take());
+        light_buffer_allocator.free(self.trans_light_segment.take());
 
         self.mesh_solid(solid_staging_buffer, geometry_buffer_allocator);
         self.mesh_solid_light(solid_staging_buffer, light_staging_buffer, light_buffer_allocator);
@@ -891,8 +858,6 @@ impl Section {
         }
         solid_staging_buffer.reset();
         light_staging_buffer.reset();
-
-        return;
 
         self.mesh_trans(trans_staging_buffer, geometry_buffer_allocator);
         self.mesh_trans_light(trans_staging_buffer, light_staging_buffer, light_buffer_allocator);
@@ -941,8 +906,6 @@ impl Section {
     pub fn new() -> Section { unsafe {
         return mem::zeroed();
     } }
-
-    pub const INDICES: [usize; 16] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 }
 
 /*
