@@ -27,7 +27,7 @@ mod cull;
 use std::hint::black_box;
 use std::time::Instant;
 use std::{collections::HashMap, hint};
-use std::{env, mem};
+use std::{env, mem, thread};
 use cgmath::{Vector3, Vector4, Rad};
 use cull::bounding_box::{self, BoundingBox};
 use cull::rasterizer::Rasterizer;

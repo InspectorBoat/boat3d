@@ -103,7 +103,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetSection<'local>(
         let raw_block_data = *(block_data.as_ptr() as *const [i16; 4096]);
         section.set_blocks(convert_block_data(raw_block_data));
     }
-    world.mesh_section(section_pos);
+    // world.mesh_section(section_pos);
 
     if DEBUG { println!("SET section_x:{section_x} section_y:{section_y} section_z:{section_z}, total: {}", world.sections.len()); }
 } }
@@ -129,8 +129,9 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUpdateBlock<'local>(
         let block_id = if block_id == 0 { 0 } else { 1 };
         section.set_block(block_pos, block_id);
     }
-    world.mesh_section(section_pos);
-
+    if IMMEDIATE_MESH {
+        world.mesh_section(section_pos);
+    }
     if DEBUG { println!("SETBLOCK x:{x} y:{y} z:{z}, total: {}", world.sections.len()); }
 } }
 
@@ -154,8 +155,9 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUpdateBlockLight<'local
         let block_pos = BlockPos::new(x & 15, y & 15, z & 15);
         section.set_light(block_pos, block_light as u8);
     }
-    world.mesh_section(section_pos);
-
+    if IMMEDIATE_MESH {
+        world.mesh_section(section_pos);
+    }
     if DEBUG { println!("LIGHT x:{x} y:{y} z:{z} val:{block_light}"); }
 } }
 
@@ -176,8 +178,6 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeCreateWorld<'local>(
         mouse_captured: true,
         rasterize: false
     });
-    // world.generate();
-    // world.mesh_all();
     
     return Box::into_raw(world) as i64;
 } }
@@ -297,11 +297,13 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeRenderWorld<'local>(
     gl_wrapper::Enable(gl_wrapper::PRIMITIVE_RESTART);
     gl_wrapper::PrimitiveRestartIndex(u32::MAX as u32);
     
-    // for (section_pos, section) in world.sections.iter_mut() {
-    //     if section.dirty && section.can_mesh() {
-    //         section.mesh(&mut world.solid_staging_buffer, &mut world.trans_staging_buffer, &mut world.geometry_buffer_allocator, &mut world.light_staging_buffer, &mut world.light_buffer_allocator);
-    //     }
-    // }
+    if !IMMEDIATE_MESH {
+        for (section_pos, section) in world.sections.iter_mut() {
+            if section.dirty && section.can_mesh() {
+                section.mesh(&mut world.solid_staging_buffer, &mut world.trans_staging_buffer, &mut world.geometry_buffer_allocator, &mut world.light_staging_buffer, &mut world.light_buffer_allocator);
+            }
+        }
+    }
 
     world.render(&WindowStatus {
         fill_mode: gl_wrapper::FILL,
@@ -332,6 +334,7 @@ pub fn convert_block_data(raw_block_data: [i16; 4096]) -> [u16; 4096] {
 }
 
 pub const DEBUG: bool = false;
+pub const IMMEDIATE_MESH: bool = false;
 /*
     let boolean = token('Z').map(|_| Primitive::Boolean);
     let byte = token('B').map(|_| Primitive::Byte);

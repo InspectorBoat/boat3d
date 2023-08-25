@@ -142,7 +142,7 @@ impl WorldRenderer {
         if let (Some(framebuffer), Some(solid_program), Some(post_program), Some(trans_program), Some(block_texture), Some(texture_attachment), Some(index_buffer)) = (&self.framebuffer, &self.solid_program, &self.post_program, &self.trans_program, &self.block_texture, &self.texture_attachment, &self.index_buffer) {
             post_program.uniform_1i(0, 20);
             post_program.uniform_1i(1, 21);
-            solid_program.uniform_1i(1, 21);    
+            solid_program.uniform_1i(1, 21);
             trans_program.uniform_1i(1, 12);
     
             index_buffer.bind_target(gl_wrapper::ELEMENT_ARRAY_BUFFER);
@@ -168,13 +168,13 @@ impl WorldRenderer {
             self.render_post(target_framebuffer_id);  
 
             // blit depth buffer
-            // gl_wrapper::BindFramebuffer(gl_wrapper::DRAW_FRAMEBUFFER, target_framebuffer_id as u32);
-            // gl_wrapper::BindFramebuffer(gl_wrapper::READ_FRAMEBUFFER, framebuffer.id);
-            // gl_wrapper::BlitFramebuffer(0, 0, status.width, status.height, 0, 0, status.width, status.height, gl_wrapper::DEPTH_BUFFER_BIT, gl_wrapper::NEAREST);
+            gl_wrapper::BindFramebuffer(gl_wrapper::DRAW_FRAMEBUFFER, target_framebuffer_id as u32);
+            gl_wrapper::BindFramebuffer(gl_wrapper::READ_FRAMEBUFFER, framebuffer.id);
+            gl_wrapper::BlitFramebuffer(0, 0, status.width, status.height, 0, 0, status.width, status.height, gl_wrapper::DEPTH_BUFFER_BIT, gl_wrapper::NEAREST);
             
-            // gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, target_framebuffer_id as u32);
+            gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, target_framebuffer_id as u32);
 
-            // self.draw_trans(trans_drawn_sections, status);
+            self.draw_trans(trans_drawn_sections, status);
         }
     } }
 

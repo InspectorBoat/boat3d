@@ -249,8 +249,7 @@ impl Section {
             }
             South => {
                 if block_pos.z() == 15 {
-                    // actually belongs to chunk to the north
-                    return self.get_light(block_pos.set_z(0));
+                    return self.get_neighbor(South).map_or_else(|| 8, |section| section.get_light(block_pos.set_z(0)));
                 }
                 return self.get_light(block_pos + BlockPos::new(0, 0, 1));
             }
@@ -262,8 +261,7 @@ impl Section {
             }
             East => {
                 if block_pos.x() == 15 {
-                    // actually belongs to chunk to the west
-                    return self.get_light(block_pos.set_x(0));
+                    return self.get_neighbor(East).map_or_else(|| 8, |section| section.get_light(block_pos.set_x(0)));
                 }
                 return self.get_light(block_pos + BlockPos::new(1, 0, 0));
             }
@@ -275,8 +273,7 @@ impl Section {
             }
             Up => {
                 if block_pos.y() == 15 {
-                    // actually belongs to chunk below
-                    return self.get_light(block_pos.set_y(0));
+                    return self.get_neighbor(Up).map_or_else(|| 8, |section| section.get_light(block_pos.set_y(0)));
                 }
                 return self.get_light(block_pos + BlockPos::new(0, 1, 0));
             }
@@ -567,7 +564,7 @@ impl Section {
                     continue;
                 }
                 east_merger.try_begin_merge(rel_block_pos, east_face);
-                
+
                 if east_merger.run != usize::MAX {
                     if east_merger.row[east_merger.run].ending == rel_x {
                         east_merger.end_merge(East, rel_block_pos, east_face, block_pos);
@@ -576,7 +573,7 @@ impl Section {
                         let next_west_face = self.get_offset_block(block_pos + BlockPos::new(0, 0, 1), East).model.get_face(West);
                         let next_east_face = self.get_block(block_pos + BlockPos::new(0, 0, 1)).model.get_face(East);
 
-                        if next_east_face.culled_by(west_face, East) || !Run::match_faces(east_face, next_east_face) {
+                        if next_east_face.culled_by(next_west_face, East) || !Run::match_faces(east_face, next_east_face) {
                             east_merger.row[east_merger.run].pull_partial(east_merger.staging_buffer.as_ptr(), east_face, rel_block_pos);
                             east_merger.run = usize::MAX;
                         }
@@ -677,7 +674,7 @@ impl Section {
                         let next_down_face = self.get_offset_block(block_pos + BlockPos::new(0, 0, 1), Up).model.get_face(Down);
                         let next_up_face = self.get_block(block_pos + BlockPos::new(0, 0, 1)).model.get_face(Up);
 
-                        if next_up_face.culled_by(down_face, Up) || !Run::match_faces(up_face, next_up_face) {
+                        if next_up_face.culled_by(next_down_face, Up) || !Run::match_faces(up_face, next_up_face) {
                             up_merger.row[up_merger.run].pull_partial(up_merger.staging_buffer.as_ptr(), up_face, rel_block_pos);
                             up_merger.run = usize::MAX;
                         }
@@ -690,7 +687,7 @@ impl Section {
         }
     }
 
-    pub fn mesh_north_south_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_north_south_no_merge(&self, solid_staging_buffer: &mut StagingBuffer) {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
                 for z in 0..16_u8 {
@@ -723,7 +720,7 @@ impl Section {
             }
         }
     }
-    pub fn mesh_east_west_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_east_west_no_merge(&self, solid_staging_buffer: &mut StagingBuffer) {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
                 for z in 0..16_u8 {
@@ -757,7 +754,7 @@ impl Section {
             }
         }
     }
-    pub fn mesh_down_up_no_merge(&mut self, solid_staging_buffer: &mut StagingBuffer) {
+    pub fn mesh_down_up_no_merge(&self, solid_staging_buffer: &mut StagingBuffer) {
         for x in 0..16_u8 {
             for y in 0..16_u8 {
                 for z in 0..16_u8 {
@@ -912,7 +909,7 @@ impl Section {
                     let end_y = (quad.y + quad.height) / 16;
 
                     // if this from the neighboring section, z wraps to 0, which is the only way for it to be 0
-                    let z = (quad.z - 16) / 16;
+                    let z = quad.z / 16;
                     
                     for y in start_y..=end_y {
                         for x in start_x..=end_x {
@@ -921,7 +918,7 @@ impl Section {
                     }
                 }
                 East => {
-                    let x = (quad.x - 16) / 16;
+                    let x = quad.x / 16;
     
                     let start_y = quad.y / 16;
                     let end_y = (quad.y + quad.height) / 16;
@@ -971,7 +968,7 @@ impl Section {
                     let end_x = (quad.x + quad.height) / 16;
 
                     // if this from the neighboring section, y wraps to 0, which is the only way for it to be 0
-                    let y = (quad.y - 16) / 16;
+                    let y = quad.y / 16;
     
                     let start_z = quad.z / 16;
                     let end_z = (quad.z + quad.width) / 16;
@@ -1128,7 +1125,7 @@ impl Section {
         geometry_buffer_allocator.free(self.trans_segment.take());
         light_buffer_allocator.free(self.solid_light_segment.take());
         light_buffer_allocator.free(self.trans_light_segment.take());
-
+        
         self.mesh_solid(solid_staging_buffer, geometry_buffer_allocator);
         self.mesh_solid_light(solid_staging_buffer, light_staging_buffer, light_buffer_allocator);
         if let (Some(solid_segment), Some(solid_light_segment)) = (&self.solid_segment, &self.solid_light_segment) {

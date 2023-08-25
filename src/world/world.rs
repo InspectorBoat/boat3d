@@ -52,8 +52,8 @@ impl World {
                 for z in 0..World::MAX_SECTION_Z {
                     let mut section = Box::new(Section::new());
                     section.set_pos(Vector3 { x: x as i32, y: y as i32, z: z as i32 });
-                    // section.make_terrain(&noise);
-                    section.make_terrain_debug();
+                    section.make_terrain(&noise);
+                    // section.make_terrain_debug();
                     self.add_section(section);
                 }
             }
@@ -67,7 +67,7 @@ impl World {
         let mut j = 0;
         let total = self.sections.len();
         for (i, section) in self.sections.values_mut().enumerate() {
-            // if section.section_pos != (Vector3 { x: 2, y: 2, z: 0}) { continue; }
+            // if section.section_pos.z != 2 || section.section_pos.x != 1 || section.section_pos.y != 0 { continue; }
             section.mesh(&mut self.solid_staging_buffer, &mut self.trans_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
             total_quads += section.solid_quad_count as usize;
             // if j == 100 {
@@ -218,7 +218,7 @@ impl World {
         self.renderer.kill();
     }
 
-    pub const MAX_SECTION_X: usize = 16;
-    pub const MAX_SECTION_Y: usize = 16;
-    pub const MAX_SECTION_Z: usize = 16;
+    pub const MAX_SECTION_X: usize = 32;
+    pub const MAX_SECTION_Y: usize = 32;
+    pub const MAX_SECTION_Z: usize = 32;
 }

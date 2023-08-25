@@ -39,7 +39,7 @@ impl LocalFrustum {
         }
     } }
 
-    // #[inline(always)]
+    #[inline]
     pub fn test_local_bounding_box(&self, bb: &SimdBoundingBox) -> BoundsCheckResult { unsafe {
         // These unsafe mask shenanigans just check if the sign bit is set for each lane.
         // This is faster than doing a manual comparison with something like simd_gt.
