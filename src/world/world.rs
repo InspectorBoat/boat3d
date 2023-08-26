@@ -67,7 +67,6 @@ impl World {
         let mut j = 0;
         let total = self.sections.len();
         for (i, section) in self.sections.values_mut().enumerate() {
-            // if section.section_pos.z != 2 || section.section_pos.x != 1 || section.section_pos.y != 0 { continue; }
             section.mesh(&mut self.solid_staging_buffer, &mut self.trans_staging_buffer, &mut self.geometry_buffer_allocator, &mut self.light_staging_buffer, &mut self.light_buffer_allocator);
             total_quads += section.solid_quad_count as usize;
             // if j == 100 {

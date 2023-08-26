@@ -235,7 +235,7 @@ impl Merger {
     }
     #[inline]
     pub fn merge_same_row(&mut self, rel_block_pos: RelBlockPos, face: &BlockFace) -> bool { unsafe {
-        if self.run != usize::MAX && self.row[self.run].row == rel_block_pos.rel_y {
+        if self.run != usize::MAX && self.row[self.run].row == rel_block_pos.rel_y && self.row[self.run].layer == rel_block_pos.rel_z {
             if self.row[self.run].match_right(face) {
                 self.row[self.run].merge_face(self.staging_buffer.as_ptr(), face);
                 return true;

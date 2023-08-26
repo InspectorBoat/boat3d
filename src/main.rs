@@ -31,6 +31,7 @@ use std::{env, mem, thread};
 use cgmath::{Vector3, Vector4, Rad};
 use cull::bounding_box::{self, BoundingBox};
 use cull::rasterizer::Rasterizer;
+use gl_util::buffer_allocator::BufferAllocator;
 use gl_util::fps_tracker::FpsTracker;
 use gl_util::framebuffer::FrameBuffer;
 use gl_util::texture::Texture;
@@ -42,7 +43,7 @@ use world::camera;
 use world::world::World;
 use crate::gl_util::gl_helper;
 
-fn main() { unsafe {
+pub fn main() { unsafe {
     env::set_var("RUST_BACKTRACE", "1");
     let mut glfw = gl_helper::init_glfw();
     let mut status = WindowStatus::new();
@@ -54,7 +55,7 @@ fn main() { unsafe {
     world.renderer.init(&status);
     world.generate();
     world.mesh_all();
-    
+
     glfw.set_swap_interval(glfw::SwapInterval::None);
     
     let mut keys: HashMap<glfw::Key, bool> = HashMap::new();
@@ -74,7 +75,7 @@ fn main() { unsafe {
     world.kill();
 } }
 
-fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::WindowEvent, keys: &mut HashMap<Key, bool>, status: &mut WindowStatus) { unsafe {
+pub fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::WindowEvent, keys: &mut HashMap<Key, bool>, status: &mut WindowStatus) { unsafe {
     match event {
         glfw::WindowEvent::Size(width, height) => {
             gl_wrapper::Viewport(0, 0, width, height);

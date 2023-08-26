@@ -397,7 +397,7 @@ impl Section {
                     let north_face = self.get_block(block_pos).model.get_face(North);
                     let south_face = self.get_offset_block(block_pos, North).model.get_face(South);
 
-                    let compare = BlockFace::should_cull_pair(north_face, south_face);
+                    let compare = BlockFace::pair_culled(north_face, south_face);
                     
                     'north: {
                         if compare.0 {
@@ -444,6 +444,10 @@ impl Section {
                 north_merger.stop_merge();
                 south_merger.stop_merge();
             }
+        }
+        for run in &mut south_merger.row {
+            run.layer = u8::MAX;
+            run.row = u8::MAX;
         }
         for rel_y in 0..16_u8 {
             for rel_x in 0..16_u8 {
@@ -498,7 +502,7 @@ impl Section {
                     let west_face = self.get_block(block_pos).model.get_face(West);
                     let east_face = self.get_offset_block(block_pos, West).model.get_face(East);
 
-                    let compare = BlockFace::should_cull_pair(west_face, east_face);
+                    let compare = BlockFace::pair_culled(west_face, east_face);
 
                     'west: {
                         if compare.0 {
@@ -545,6 +549,10 @@ impl Section {
                 west_merger.stop_merge();
                 east_merger.stop_merge();
             }
+        }
+        for run in &mut east_merger.row {
+            run.layer = u8::MAX;
+            run.row = u8::MAX;
         }
         for rel_y in 0..16_u8 {
             for rel_x in 0..16_u8 {
@@ -599,7 +607,7 @@ impl Section {
                     let down_face = self.get_block(block_pos).model.get_face(Down);
                     let up_face = self.get_offset_block(block_pos, Down).model.get_face(Up);
 
-                    let compare = BlockFace::should_cull_pair(down_face, up_face);
+                    let compare = BlockFace::pair_culled(down_face, up_face);
 
                     'down: {
                         if compare.0 {
@@ -646,6 +654,10 @@ impl Section {
                 down_merger.stop_merge();
                 up_merger.stop_merge();
             }
+        }
+        for run in &mut up_merger.row {
+            run.layer = u8::MAX;
+            run.row = u8::MAX;
         }
         for rel_y in 0..16_u8 {
             for rel_x in 0..16_u8 {
@@ -695,7 +707,7 @@ impl Section {
 
                     let north_face = self.get_block(block_pos).model.get_face(North);
                     let south_face = self.get_offset_block(block_pos, North).model.get_face(South);
-                    let compare = BlockFace::should_cull_pair(north_face, south_face);
+                    let compare = BlockFace::pair_culled(north_face, south_face);
                     
                     if !compare.0 {
                         solid_staging_buffer.put_face(north_face, block_pos);
@@ -712,7 +724,7 @@ impl Section {
 
                 let north_face = self.get_offset_block(block_pos, South).model.get_face(North);
                 let south_face = self.get_block(block_pos).model.get_face(South);
-                let compare = BlockFace::should_cull_pair(north_face, south_face);
+                let compare = BlockFace::pair_culled(north_face, south_face);
                 
                 if !compare.1 {
                     solid_staging_buffer.put_face(south_face, block_pos);
@@ -729,7 +741,7 @@ impl Section {
                     let west_face = self.get_block(block_pos).model.get_face(West);
                     let east_face = self.get_offset_block(block_pos, West).model.get_face(East);
 
-                    let compare = BlockFace::should_cull_pair(west_face, east_face);
+                    let compare = BlockFace::pair_culled(west_face, east_face);
                     
                     if !compare.0 {
                         solid_staging_buffer.put_face(west_face, block_pos);
@@ -746,7 +758,7 @@ impl Section {
 
                 let west_face = self.get_offset_block(block_pos, East).model.get_face(West);
                 let east_face = self.get_block(block_pos).model.get_face(East);
-                let compare = BlockFace::should_cull_pair(west_face, east_face);
+                let compare = BlockFace::pair_culled(west_face, east_face);
                 
                 if !compare.1 {
                     solid_staging_buffer.put_face(east_face, block_pos);
@@ -763,7 +775,7 @@ impl Section {
                     let down_face = self.get_block(block_pos).model.get_face(Down);
                     let up_face = self.get_offset_block(block_pos, Down).model.get_face(Up);
 
-                    let compare = BlockFace::should_cull_pair(down_face, up_face);
+                    let compare = BlockFace::pair_culled(down_face, up_face);
 
                     let offset = Section::INDICES_YXZ[block_pos.index] as u64;
 
@@ -782,7 +794,7 @@ impl Section {
 
                 let down_face = self.get_offset_block(block_pos, Up).model.get_face(Down);
                 let up_face = self.get_block(block_pos).model.get_face(Up);
-                let compare = BlockFace::should_cull_pair(down_face, up_face);
+                let compare = BlockFace::pair_culled(down_face, up_face);
                 
                 if !compare.1 {
                     solid_staging_buffer.put_face(up_face, block_pos);
@@ -867,7 +879,7 @@ impl Section {
         // self.mesh_east_west_no_merge(solid_staging_buffer);
         // self.mesh_down_up_no_merge(solid_staging_buffer);
 
-        self.mesh_unaligned(solid_staging_buffer);
+        // self.mesh_unaligned(solid_staging_buffer);
         solid_staging_buffer.format_quads_relative();
         self.solid_quad_count = solid_staging_buffer.idx as u32 / 8;
         self.solid_segment = geometry_buffer_allocator.alloc(solid_staging_buffer.idx + 4 * mem::size_of::<u32>());

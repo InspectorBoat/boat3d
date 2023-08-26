@@ -28,32 +28,51 @@ pub struct BlockFace {
 }
 
 impl BlockFace {
-    pub fn should_cull_pair(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
+    pub fn pair_culled(a: &BlockFace, b: &BlockFace) -> (bool, bool) {
         if a.dep != 0 || b.dep != 15 { return (a.tex == u16::MAX, b.tex == u16::MAX); }
 
-        let a = Simd::from_array([a.lef, a.bot, a.rig, a.top]);
-        let b = Simd::from_array([b.lef, b.bot, b.rig, b.top]);
+        let a = a.as_u32();
+        let b = b.as_u32();
 
-        let cull_a = a.simd_ge(b).all();
-        let cull_b = b.simd_ge(a).all();
+        let diff = (a + 0x10101010 - b);
 
+        // nibble subtraction:
+        // a > b : 1x
+        // a = b : 10
+        // a < b : 0x
+        // where 1 <= x <= 15
+
+        // all of a's fields >= b's fields
+        let cull_a = diff & 0x10101010 == 0x10101010;
+
+        // subtract 0x01010101 so that:
+        // a > b : 1x
+        // a = b : 0f
+        // a < b : 0x
+        // where 0 <= x <= 14
+
+        // all of a's fields <= b's fields
+        let cull_b = ((diff - 0x01010101) & 0x10101010) == 0x00000000;
+        
         return (cull_a, cull_b);
     }
     
     pub fn culled_by(&self, b: &BlockFace, normal: Normal) -> bool { unsafe {
         match normal {
             North | West | Down => {
-                if self.dep != 0 || b.dep != 15 { return false; }
+                if self.dep != 0 || b.dep != 15 { return self.tex == u16::MAX; }
             },
             South | East | Up => {
-                if self.dep != 15 || b.dep != 0 { return false; }
+                if self.dep != 15 || b.dep != 0 { return self.tex == u16::MAX; }
             }
             _ => { panic!(); }
         }
-        let a = Simd::from_array([self.lef, self.bot, self.rig, self.top]);
-        let b = Simd::from_array([b.lef, b.bot, b.rig, b.top]);
 
-        return a.simd_ge(b).all();
+        let a = self.as_u32();
+        let b = b.as_u32();
+
+        return ((a + 0x10101010 - b) & 0x10101010 == 0x10101010);
+
     } }
 
     pub fn as_u64(&self) -> u64 { unsafe {
@@ -194,9 +213,14 @@ impl BlockFace {
         }
     } }
 
-    pub const fn none() -> BlockFace {
+    pub const fn none(normal: Normal) -> BlockFace {
+        let depth = match normal {
+            North | West | Down => { 0 },
+            South | East | Up => { 15 },
+            _ => { panic!(); }
+        };
         return BlockFace {
-            lef: 0x0f, bot: 0x0f, dep: 0x0, nor: Unaligned,
+            lef: 0x0f, bot: 0x0f, dep: depth, nor: normal,
             rig: 0x0f, top: 0x0f, tex: u16::MAX
         };
     }
