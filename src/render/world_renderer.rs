@@ -3,7 +3,7 @@ use std::{ffi::{c_void, c_uint}, mem::{self, ManuallyDrop}, cell::UnsafeCell, op
 use cgmath::{Vector4, Matrix4, Matrix, InnerSpace};
 use gl::types::GLsync;
 
-use crate::{gl_util::{framebuffer::{FrameBuffer, self}, texture::Texture, renderbuffer::RenderBuffer, program::Program, gl_helper::{WindowStatus, log_if_error, log_error}, buffer::Buffer, shader::Shader, gl_wrapper}, world::{world::World, camera}, cull::{frustum_cull::frustum_cull, rasterizer::Rasterizer}, cull::frustum::{LocalFrustum, BoundsCheckResult}};
+use crate::{gl_util::{framebuffer::{FrameBuffer, self}, texture::Texture, renderbuffer::RenderBuffer, program::Program, gl_helper::{WindowStatus, log_if_error, log_error}, buffer::Buffer, shader::Shader, gl_wrapper}, world::{world::World, camera}, cull::{frustum_cull::frustum_cull, rasterizer::Rasterizer}, cull::frustum::{Frustum, BoundsCheckResult}};
 
 #[derive(Debug)]
 pub struct WorldRenderer {
@@ -254,15 +254,15 @@ impl WorldRenderer {
         (*self.solid_indirect_buffer.get()).set_len(0);
         (*self.trans_indirect_buffer.get()).set_len(0);
 
-        let local_frustum = world.camera.get_frustum();
+        let local_frustum = world.camera.get_local_frustum();
 
         for section in world.sections.values() {            
             if section.solid_segment.is_none() && section.trans_segment.is_none() { continue; }
-            match local_frustum.test_local_bounding_box(&section.get_local_bounding_box(&world.camera).into()) {
-                BoundsCheckResult::Outside => { continue; }
-                BoundsCheckResult::Partial => {}
-                BoundsCheckResult::Inside => {}
-            }
+            // match local_frustum.test_local_bounding_box(&section.get_local_bounding_box(&world.camera).into()) {
+            //     BoundsCheckResult::Outside => { continue; }
+            //     BoundsCheckResult::Partial => {}
+            //     BoundsCheckResult::Inside => {}
+            // }
     
             (*self.indices.get()).push(0 as *const c_void);
 

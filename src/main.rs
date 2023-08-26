@@ -24,6 +24,7 @@ mod render;
 mod entity;
 mod cull;
 
+use std::f32::consts::PI;
 use std::hint::black_box;
 use std::time::Instant;
 use std::{collections::HashMap, hint};
@@ -89,6 +90,12 @@ pub fn handle_window_event(window: &mut Window, world: &mut World, event: glfw::
             if world.camera.prev_mouse != (f64::MAX, f64::MAX) {
                 world.camera.camera_rot.y += Rad((delta.0 / 500.0) as f32);
                 world.camera.camera_rot.x += Rad((delta.1 / 500.0) as f32);
+                if world.camera.camera_rot.x > Rad(PI / 2.0) {
+                    world.camera.camera_rot.x = Rad(PI / 2.0);
+                }
+                if world.camera.camera_rot.x < Rad(-PI / 2.0) {
+                    world.camera.camera_rot.x = Rad(-PI / 2.0);
+                }
             }
             world.camera.prev_mouse = (x, y);
         }

@@ -1,8 +1,8 @@
 use std::f32::consts::PI;
 
-use cgmath::{Matrix4, PerspectiveFov, Rad, Vector3, Euler, Deg, Angle};
+use cgmath::{Matrix4, PerspectiveFov, Rad, Vector3, Euler, Deg, Angle, SquareMatrix, Vector4};
 
-use crate::cull::frustum::LocalFrustum;
+use crate::cull::frustum::Frustum;
 #[derive(Debug, Clone, Copy)]
 pub struct Rot {
     pub yaw: f32,
@@ -13,7 +13,11 @@ pub struct Rot {
 pub struct Camera {
     pub prev_mouse: (f64, f64),
     pub aspect: f32,
-    
+
+    pub fov: Rad<f32>,
+
+    pub far_z: f32,
+
     pub camera_pos: Vector3<f32>,
     pub camera_rot: Euler<Rad<f32>>,
 
@@ -28,45 +32,35 @@ pub struct Camera {
 impl Camera {
     pub fn get_camera_matrix(&self) -> Matrix4<f32> {
         let perspective = Matrix4::from(PerspectiveFov {
-            fovy: Camera::FOVY,
+            fovy: self.fov,
             aspect: self.aspect,
             near: Camera::NEAR_PLANE,
-            far: Camera::FAR_PLANE,
+            far: self.far_z,
         });
+
+        let back_shift =
+        Matrix4::from_angle_y(Rad(PI) + self.camera_rot.y)
+        * Matrix4::from_angle_x(self.camera_rot.x)
+        * Matrix4::from_angle_z(self.camera_rot.z)
+        * Vector4 { x: 0.0, y: 0.0, z: -0.1, w: 1.0 };
 
         let modelview =
             Matrix4::from_angle_x(Rad(PI) + self.camera_rot.x)
             * Matrix4::from_angle_y(-self.camera_rot.y)
             * Matrix4::from_angle_z(self.camera_rot.z)
-            * Matrix4::from_translation(Vector3 { x: self.camera_pos.x, y: self.camera_pos.y, z: -self.camera_pos.z })
+            * Matrix4::from_translation(Vector3 { x: self.camera_pos.x, y: self.camera_pos.y, z: -self.camera_pos.z } + back_shift.truncate())
             * Matrix4::from_nonuniform_scale(-1.0, -1.0, 1.0);
-        return perspective * modelview;
-    }
-
-    pub fn get_local_camera_matrix(&self) -> Matrix4<f32> {
-        let perspective = Matrix4::from(PerspectiveFov {
-            fovy: Camera::FOVY,
-            aspect: self.aspect,
-            near: Camera::NEAR_PLANE,
-            far: Camera::FAR_PLANE,
-        });
-
-        let modelview =
-            Matrix4::from_angle_x(Rad(PI) + self.camera_rot.x)
-            * Matrix4::from_angle_y(-self.camera_rot.y)
-            * Matrix4::from_angle_z(self.camera_rot.z)
-            * Matrix4::from_nonuniform_scale(-1.0, -1.0, 1.0);
+        
         return perspective * modelview;
     }
 
     pub fn get_frustum_matrix(&self) -> Matrix4<f32> {
         let perspective = Matrix4::from(PerspectiveFov {
-            fovy: Camera::FOVY,
+            fovy: self.fov,
             aspect: self.aspect,
             near: Camera::NEAR_PLANE,
-            far: Camera::FAR_PLANE,
+            far: self.far_z,
         });
-        
         let modelview = 
             Matrix4::from_angle_x(Rad(PI) + self.frustum_rot.x)
             * Matrix4::from_angle_y(-self.frustum_rot.y)
@@ -75,8 +69,8 @@ impl Camera {
         return perspective * modelview;
     }
     
-    pub fn get_frustum(&self) -> LocalFrustum {
-        return LocalFrustum::from_matrix(self.get_frustum_matrix());
+    pub fn get_local_frustum(&self) -> Frustum {
+        return Frustum::from_matrix(self.get_frustum_matrix());
     }
 
     pub fn step(&mut self, x: f64, y: f64, z: f64) {
@@ -89,6 +83,10 @@ impl Camera {
         return Camera { 
             prev_mouse: (f64::MAX, f64::MAX),
             aspect: 1.0,
+
+            fov: Rad(PI / 2.0),
+
+            far_z: 48000.0,
 
             camera_pos: Vector3 { x: 0.0, y: 0.0, z: -256.0 * 0.0 },
             camera_rot: Euler { x: Rad(0.0), y: Rad(0.0), z: Rad(0.0) },
@@ -104,6 +102,10 @@ impl Camera {
         // return Camera {
         //     prev_mouse: (-95.0, -41.0),
         //     aspect: 1.0,
+        
+        //     fov: Rad(PI / 2.0),
+
+        //     far_z: 48000.0,
 
         //     camera_pos: Vector3 { x: -7.324981, y: -7.35001, z: -6.9660172 },
         //     camera_rot: Euler { x: Rad(-0.7160001), y: Rad(-0.8439991), z: Rad(0.0) },
@@ -117,7 +119,5 @@ impl Camera {
         //     window_height: 600
         // };
     }
-    pub const NEAR_PLANE: f32 = 0.1;
-    pub const FAR_PLANE: f32 = 48000.0;
-    pub const FOVY: Rad<f32> = Rad(PI / 2.0);
+    pub const NEAR_PLANE: f32 = 0.05;
 }

@@ -13,16 +13,16 @@ use super::math::*;
 
 /// When using this, it is expected that coordinates are relative to the camera rather than the
 /// world origin.
-pub struct LocalFrustum {
+pub struct Frustum {
     plane_xs: f32x6,
     plane_ys: f32x6,
     plane_zs: f32x6,
     plane_ws: f32x6,
 }
 
-impl LocalFrustum {
+impl Frustum {
     pub fn new(planes: [f32x6; 4]) -> Self {
-        LocalFrustum {
+        Frustum {
             plane_xs: planes[0],
             plane_ys: planes[1],
             plane_zs: planes[2],
@@ -31,7 +31,7 @@ impl LocalFrustum {
     }
 
     pub fn from_matrix(matrix: Matrix4<f32>) -> Self { unsafe {
-        return LocalFrustum {
+        return Frustum {
             plane_xs: [matrix.x.w + matrix.x.x, matrix.x.w - matrix.x.x, matrix.x.w + matrix.x.y, matrix.x.w - matrix.x.y, matrix.x.w + matrix.x.z, matrix.x.w - matrix.x.z].into(),
             plane_ys: [matrix.y.w + matrix.y.x, matrix.y.w - matrix.y.x, matrix.y.w + matrix.y.y, matrix.y.w - matrix.y.y, matrix.y.w + matrix.y.z, matrix.y.w - matrix.y.z].into(),
             plane_zs: [matrix.z.w + matrix.z.x, matrix.z.w - matrix.z.x, matrix.z.w + matrix.z.y, matrix.z.w - matrix.z.y, matrix.z.w + matrix.z.z, matrix.z.w - matrix.z.z].into(),

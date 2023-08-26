@@ -25,13 +25,13 @@ mod render;
 mod entity;
 mod cull;
 
-use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem, slice, cell::RefCell, fs::File, str::FromStr};
+use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem, slice, cell::RefCell, fs::File, str::FromStr, f32::consts::PI};
 use std::env;
-use cgmath::{Vector3, Euler, Deg, Rad, conv};
+use cgmath::{Vector3, Euler, Deg, Rad, conv, Matrix4, SquareMatrix, Matrix, Zero};
 use gl::{types, FramebufferParameteri};
 use gl_util::{gl_wrapper::{self, STORAGE, PointerStorage}, gl_helper::{WindowStatus, log_if_error}};
 use glfw::{Context, Window, Action, Key, Glfw, ffi::glfwGetCurrentContext};
-use jni::{JNIEnv, objects::{JClass, JByteBuffer, ReleaseMode, JPrimitiveArray, JObject, JString, JValueOwned, JFieldID}, sys::{jlong, jint, jchar, jcharArray, jshort, jobject, jclass, jdouble, jbyte}, strings::JNIString, signature::ReturnType, descriptors::Desc};
+use jni::{JNIEnv, objects::{JClass, JByteBuffer, ReleaseMode, JPrimitiveArray, JObject, JString, JValueOwned, JFieldID}, sys::{jlong, jint, jchar, jcharArray, jshort, jobject, jclass, jdouble, jbyte, jfloatArray, jfloat}, strings::JNIString, signature::ReturnType, descriptors::Desc};
 use world::{world::World, section::Section, blockpos::BlockPos, camera::Camera};
 use jni::errors::Result;
 
@@ -128,6 +128,8 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUpdateBlock<'local>(
         let block_pos = BlockPos::new(x & 15, y & 15, z & 15);
         let block_id = if block_id == 0 { 0 } else { 1 };
         section.set_block(block_pos, block_id);
+    } else {
+        println!("section not loaded");
     }
     if IMMEDIATE_MESH {
         world.mesh_section(section_pos);
@@ -252,6 +254,8 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetCamera<'local>(
     camera_z: jdouble,
     camera_pitch: jdouble,
     camera_yaw: jdouble,
+    fov: jdouble,
+    far_z: jdouble,
     window_width: jint,
     window_height: jint
 ) { unsafe {
@@ -267,9 +271,18 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetCamera<'local>(
             rasterize: false
         });
     }
+    let mut fov: Rad<f32> = Deg(fov as f32).into();
+    if fov <= Rad(0.0) {
+        fov = Rad(0.0001);
+    } else if fov >= Rad(PI) {
+        fov = Rad(PI - 0.0001);
+    }
+
     world.camera = Camera {
         prev_mouse: (0.0, 0.0),
         aspect: window_width as f32 / window_height as f32,
+        fov: fov,
+        far_z: far_z as f32,
         camera_pos: Vector3 { x: camera_x as f32, y: camera_y as f32, z: camera_z as f32 },
         camera_rot: Euler { x: Deg(camera_pitch as f32).into(), y: Deg(camera_yaw as f32).into(), z: Rad(0.0) },
         frustum_pos: Vector3 { x: camera_x as f32, y: camera_y as f32, z: camera_z as f32 },

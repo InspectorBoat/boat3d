@@ -217,7 +217,7 @@ impl World {
         self.renderer.kill();
     }
 
-    pub const MAX_SECTION_X: usize = 32;
-    pub const MAX_SECTION_Y: usize = 32;
-    pub const MAX_SECTION_Z: usize = 32;
+    pub const MAX_SECTION_X: usize = 8;
+    pub const MAX_SECTION_Y: usize = 8;
+    pub const MAX_SECTION_Z: usize = 8;
 }
