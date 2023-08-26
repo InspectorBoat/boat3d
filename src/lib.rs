@@ -123,13 +123,12 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUpdateBlock<'local>(
     STORAGE = gl_pointers as *mut PointerStorage;
     let world = &mut *(world as *mut World);
 
-    let section_pos = Vector3 { x: x / 16, y: y / 16, z: z / 16 };
+    let section_pos = Vector3 { x: x.div_floor(16), y: y.div_floor(16), z: z.div_floor(16) };
+    println!("{section_pos:?}");
     if let Some(section) = world.sections.get_mut(&section_pos) {
         let block_pos = BlockPos::new(x & 15, y & 15, z & 15);
         let block_id = if block_id == 0 { 0 } else { 1 };
         section.set_block(block_pos, block_id);
-    } else {
-        println!("section not loaded");
     }
     if IMMEDIATE_MESH {
         world.mesh_section(section_pos);
@@ -152,7 +151,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUpdateBlockLight<'local
     STORAGE = gl_pointers as *mut PointerStorage;
     let world = &mut *(world as *mut World);
 
-    let section_pos = Vector3 { x: x / 16, y: y / 16, z: z / 16 };
+    let section_pos = Vector3 { x: x.div_floor(16), y: y.div_floor(16), z: z.div_floor(16) };
     if let Some(section) = world.sections.get_mut(&section_pos) {
         let block_pos = BlockPos::new(x & 15, y & 15, z & 15);
         section.set_light(block_pos, block_light as u8);
