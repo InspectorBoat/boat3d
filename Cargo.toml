@@ -14,6 +14,7 @@ rand = "*"
 cgmath = "^0.16"
 itertools = "0.11.0"
 jni = "0.21.1"
+json = "0.12.4"
 
 [dependencies.glfw]
 version = "*"

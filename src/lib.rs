@@ -368,37 +368,6 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeRenderWorld<'local>(
     gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, target_framebuffer_id as u32);
 } }
 
-// converts block state and baked model data
-#[no_mangle]
-pub extern "system" fn Java_net_boat3d_NativeWorld_nativeConvertModels<'local>(
-    mut env: JNIEnv<'local>,
-    class: JClass<'local>,
-    gl_pointers: jlong,
-    world: jlong,
-    length: jint,
-    block_state_info: jintArray
-) { unsafe {
-    let block_state_info = mem::transmute::<jintArray, JPrimitiveArray<jint>>(block_state_info);
-    let block_state_info = env.get_array_elements_critical(&block_state_info, ReleaseMode::NoCopyBack);
-    if let Ok(block_state_info) = block_state_info {
-        let block_state_info = slice::from_raw_parts(block_state_info.as_ptr(), length as usize);
-        let mut i: usize = 0;
-        while i < length as usize {
-            let block_state_id = block_state_info[i];
-            let quads = block_state_info[i + 1] as usize;
-
-            let vertices = quads * 4;
-            let bytes = vertices * 7;
-            println!("{i} {block_state_id} {quads}");
-            i += 2;
-            for vertex in block_state_info[i..i + bytes].array_chunks::<7>().map(|vertex| mem::transmute::<_, JavaVertex>(*vertex)) {
-                println!("{vertex:?}");
-            }
-            i += quads * 28;
-        }
-    }
-} }
-
 #[derive(Debug)]
 pub struct JavaVertex {
     pos: Vector3<f32>,
