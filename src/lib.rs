@@ -18,6 +18,7 @@
 #![feature(portable_simd)]
 #![feature(slice_from_ptr_range)]
 #![feature(let_chains)]
+#![feature(array_chunks)]
 mod block;
 mod world;
 mod gl_util;
@@ -27,11 +28,11 @@ mod cull;
 
 use std::{collections::HashMap, ptr, os::raw::c_void, hint::{black_box, unreachable_unchecked}, time::SystemTime, mem, slice, cell::RefCell, fs::File, str::FromStr, f32::consts::PI};
 use std::env;
-use cgmath::{Vector3, Euler, Deg, Rad, conv, Matrix4, SquareMatrix, Matrix, Zero};
+use cgmath::{Vector3, Euler, Deg, Rad, conv, Matrix4, SquareMatrix, Matrix, Zero, Vector2};
 use gl::{types, FramebufferParameteri};
 use gl_util::{gl_wrapper::{self, STORAGE, PointerStorage}, gl_helper::{WindowStatus, log_if_error}};
 use glfw::{Context, Window, Action, Key, Glfw, ffi::glfwGetCurrentContext};
-use jni::{JNIEnv, objects::{JClass, JByteBuffer, ReleaseMode, JPrimitiveArray, JObject, JString, JValueOwned, JFieldID}, sys::{jlong, jint, jchar, jcharArray, jshort, jobject, jclass, jdouble, jbyte, jfloatArray, jfloat}, strings::JNIString, signature::ReturnType, descriptors::Desc};
+use jni::{JNIEnv, objects::{JClass, JByteBuffer, ReleaseMode, JPrimitiveArray, JObject, JString, JValueOwned, JFieldID}, sys::{jlong, jint, jchar, jcharArray, jshort, jobject, jclass, jdouble, jbyte, jfloatArray, jfloat, jbyteArray, jintArray}, strings::JNIString, signature::ReturnType, descriptors::Desc};
 use world::{world::World, section::Section, blockpos::BlockPos, camera::Camera};
 use jni::errors::Result;
 
@@ -81,7 +82,7 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUnloadChunk<'local>(
 
 // sets the block data for a chunk section
 #[no_mangle]
-pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetSection<'local>(
+pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetSectionBlockData<'local>(
     mut env: JNIEnv<'local>,
     class: JClass<'local>,
     gl_pointers: jlong,
@@ -103,7 +104,35 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetSection<'local>(
         let raw_block_data = *(block_data.as_ptr() as *const [i16; 4096]);
         section.set_blocks(convert_block_data(raw_block_data));
     }
-    // world.mesh_section(section_pos);
+    
+    if DEBUG { println!("SET section_x:{section_x} section_y:{section_y} section_z:{section_z}, total: {}", world.sections.len()); }
+} }
+
+// sets the block data for a chunk section
+#[no_mangle]
+pub extern "system" fn Java_net_boat3d_NativeWorld_nativeSetSectionBlockLightData<'local>(
+    mut env: JNIEnv<'local>,
+    class: JClass<'local>,
+    gl_pointers: jlong,
+    world: jlong,
+    section_x: jint,
+    section_y: jint,
+    section_z: jint,
+    block_light_data: jbyteArray
+) { unsafe {
+    STORAGE = gl_pointers as *mut PointerStorage;
+    let world = &mut *(world as *mut World);
+
+    let section_pos = Vector3 { x: section_x, y: section_y, z: section_z };
+    let section = world.sections.get_mut(&section_pos).unwrap();
+    let block_light_data = mem::transmute::<jbyteArray, JPrimitiveArray<jbyte>>(block_light_data);
+    let block_light_data = env.get_array_elements_critical(&block_light_data, ReleaseMode::NoCopyBack);
+    
+    if let Ok(block_light_data) = block_light_data {
+        let raw_block_light_data = *(block_light_data.as_ptr() as *const [u8; 2048]);
+        
+        section.set_lights(convert_block_light_data(raw_block_light_data));
+    }
 
     if DEBUG { println!("SET section_x:{section_x} section_y:{section_y} section_z:{section_z}, total: {}", world.sections.len()); }
 } }
@@ -124,7 +153,6 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeUpdateBlock<'local>(
     let world = &mut *(world as *mut World);
 
     let section_pos = Vector3 { x: x.div_floor(16), y: y.div_floor(16), z: z.div_floor(16) };
-    println!("{section_pos:?}");
     if let Some(section) = world.sections.get_mut(&section_pos) {
         let block_pos = BlockPos::new(x & 15, y & 15, z & 15);
         let block_id = if block_id == 0 { 0 } else { 1 };
@@ -194,6 +222,9 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeDeleteWorld<'local>(
     let world = Box::from_raw(world as *mut World);
 
     world.kill();
+    STORAGE = 0 as *mut _;
+    let storage = Box::from_raw(gl_pointers as *mut PointerStorage);
+    drop(storage);
 } }
 
 // meshes a chunk section
@@ -310,8 +341,11 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeRenderWorld<'local>(
     gl_wrapper::PrimitiveRestartIndex(u32::MAX as u32);
     
     if !IMMEDIATE_MESH {
+        let mut meshed = 0;
         for (section_pos, section) in world.sections.iter_mut() {
+            if meshed > 30 { break; }
             if section.dirty && section.can_mesh() {
+                meshed += 1;
                 section.mesh(&mut world.solid_staging_buffer, &mut world.trans_staging_buffer, &mut world.geometry_buffer_allocator, &mut world.light_staging_buffer, &mut world.light_buffer_allocator);
             }
         }
@@ -334,6 +368,44 @@ pub extern "system" fn Java_net_boat3d_NativeWorld_nativeRenderWorld<'local>(
     gl_wrapper::BindFramebuffer(gl_wrapper::FRAMEBUFFER, target_framebuffer_id as u32);
 } }
 
+// converts block state and baked model data
+#[no_mangle]
+pub extern "system" fn Java_net_boat3d_NativeWorld_nativeConvertModels<'local>(
+    mut env: JNIEnv<'local>,
+    class: JClass<'local>,
+    gl_pointers: jlong,
+    world: jlong,
+    length: jint,
+    block_state_info: jintArray
+) { unsafe {
+    let block_state_info = mem::transmute::<jintArray, JPrimitiveArray<jint>>(block_state_info);
+    let block_state_info = env.get_array_elements_critical(&block_state_info, ReleaseMode::NoCopyBack);
+    if let Ok(block_state_info) = block_state_info {
+        let block_state_info = slice::from_raw_parts(block_state_info.as_ptr(), length as usize);
+        let mut i: usize = 0;
+        while i < length as usize {
+            let block_state_id = block_state_info[i];
+            let quads = block_state_info[i + 1] as usize;
+
+            let vertices = quads * 4;
+            let bytes = vertices * 7;
+            println!("{i} {block_state_id} {quads}");
+            i += 2;
+            for vertex in block_state_info[i..i + bytes].array_chunks::<7>().map(|vertex| mem::transmute::<_, JavaVertex>(*vertex)) {
+                println!("{vertex:?}");
+            }
+            i += quads * 28;
+        }
+    }
+} }
+
+#[derive(Debug)]
+pub struct JavaVertex {
+    pos: Vector3<f32>,
+    tint: i32,
+    uv: Vector2<f32>,
+    unused: i32
+}
 pub fn convert_block_data(raw_block_data: [i16; 4096]) -> [u16; 4096] {
     let mut converted_data = [0; 4096];
     for i in 0..4096 {
@@ -342,6 +414,25 @@ pub fn convert_block_data(raw_block_data: [i16; 4096]) -> [u16; 4096] {
         let x = i & 0xf;
         converted_data[BlockPos::new(x, y, z).index] = if raw_block_data[i] == 0 { 0 } else { 1 };
     }
+    return converted_data;
+}
+
+pub fn convert_block_light_data(raw_block_light_data: [u8; 2048]) -> [u8; 4096] {
+    let mut converted_data = [0; 4096];
+    for x in 0..16_usize {
+        for y in 0..16_usize {
+            for z in 0..16_usize {
+                let index = (y << 8 | z << 4 | x);
+                converted_data[BlockPos::new(x, y, z).index] = if index & 1 == 0 { raw_block_light_data[index >> 1] & 0xf } else { raw_block_light_data[index >> 1] >> 4 };
+            }
+        }
+    }
+    // for i in 0..4096 {
+    //     let y = i >> 8;
+    //     let z = i >> 4 & 0xf;
+    //     let x = i & 0xf;
+    //     converted_data[BlockPos::new(x, y, z).index] = if i % 2 == 0 { raw_block_light_data[i >> 1] >> 4} else { raw_block_light_data[i >> 1]};
+    // }
     return converted_data;
 }
 

@@ -7,7 +7,7 @@ pub struct BlockState {
     pub model: BlockModel,
 }
 
-pub static BLOCKS: [BlockState; 5] = [
+pub static mut BLOCKS: [BlockState; 5] = [
     // air
     BlockState {
         model: BlockModel::none(),

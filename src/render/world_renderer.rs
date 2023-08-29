@@ -258,11 +258,11 @@ impl WorldRenderer {
 
         for section in world.sections.values() {            
             if section.solid_segment.is_none() && section.trans_segment.is_none() { continue; }
-            // match local_frustum.test_local_bounding_box(&section.get_local_bounding_box(&world.camera).into()) {
-            //     BoundsCheckResult::Outside => { continue; }
-            //     BoundsCheckResult::Partial => {}
-            //     BoundsCheckResult::Inside => {}
-            // }
+            match local_frustum.test_local_bounding_box(&section.get_local_bounding_box(&world.camera).into()) {
+                BoundsCheckResult::Outside => { continue; }
+                BoundsCheckResult::Partial => {}
+                BoundsCheckResult::Inside => {}
+            }
     
             (*self.indices.get()).push(0 as *const c_void);
 
