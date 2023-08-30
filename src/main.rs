@@ -29,6 +29,7 @@ use std::hint::black_box;
 use std::time::Instant;
 use std::{collections::HashMap, hint};
 use std::{env, mem, thread};
+use block::model::parser::load;
 use cgmath::{Vector3, Vector4, Rad};
 use cull::bounding_box::{self, BoundingBox};
 use cull::rasterizer::Rasterizer;
@@ -51,6 +52,8 @@ pub fn main() { unsafe {
     let (mut window, events) = gl_helper::create_window(&status);
     gl_helper::init_gl(&mut window);
     
+    load();
+
     let mut world = World::new();
     
     world.renderer.init(&status);

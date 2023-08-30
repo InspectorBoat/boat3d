@@ -14630,4 +14630,4 @@ pub fn load_with<F>(mut loadfn: F) where F: FnMut(&'static str) -> *const c_void
 // storage::
 // (*STORAGE).
 
-pub const EXTERNAL_POINTERS: bool = true;
+pub const EXTERNAL_POINTERS: bool = false;

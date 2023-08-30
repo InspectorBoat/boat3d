@@ -24,4 +24,7 @@
         "redundant_field_names"
     ],
     "rust-analyzer.check.noDefaultFeatures": null,
+    "rust-analyzer.linkedProjects": [
+        ".\\Cargo.toml"
+    ],
 }
