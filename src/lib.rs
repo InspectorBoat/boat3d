@@ -19,6 +19,8 @@
 #![feature(slice_from_ptr_range)]
 #![feature(let_chains)]
 #![feature(array_chunks)]
+#![feature(associated_type_defaults)]
+
 mod block;
 mod world;
 mod gl_util;
